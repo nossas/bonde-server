@@ -4,7 +4,7 @@ bundle
 rake db:create
 rails s
 ```
-And the server is fired up
+And the server is on fire :fire:
 
 # Tests
 ```
