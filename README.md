@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/meurio/hub-api.svg?branch=master)](https://travis-ci.org/meurio/hub-api)
+
 # Install
 ```
 bundle
