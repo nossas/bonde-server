@@ -4,6 +4,6 @@ class AddAvatarToUsers < ActiveRecord::Migration
   end
 
   def down
-      remove_column :users, :avatar
+    remove_column :users, :avatar
   end
 end
