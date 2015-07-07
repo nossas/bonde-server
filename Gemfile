@@ -9,3 +9,6 @@ gem 'rspec-rails', group: :test
 gem 'devise_token_auth'
 gem 'omniauth'
 gem 'rack-cors', require: 'rack/cors'
+gem 'carrierwave'
+gem 'rmagick'
+gem 'fog'
