@@ -6,4 +6,8 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   mount_uploader :avatar, AvatarUploader
+
+  def as_json(options = {})
+    UserSerializer.new(self, {root: false})
+  end
 end
