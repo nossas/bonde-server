@@ -10,6 +10,5 @@ CarrierWave.configure do |config|
     }
     config.fog_directory = ENV['AWS_BUCKET']
     config.storage = :fog
-    config.asset_host = ActionController::Base.asset_host
   end
 end
