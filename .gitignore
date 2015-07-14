@@ -12,3 +12,11 @@
 !/log/.keep
 /tmp
 config/database.yml
+
+# Ignore rbenv config
+.ruby-version
+.rbenv-gemsets
+
+# Ignore sublime project files
+*.sublime-project
+*.sublime-workspace
