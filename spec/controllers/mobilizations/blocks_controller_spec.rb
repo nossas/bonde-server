@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BlocksController, type: :controller do
+RSpec.describe Mobilizations::BlocksController, type: :controller do
   describe "GET #index" do
     it "should return blocks by mobilization" do
       mobilization1 = Mobilization.make!
