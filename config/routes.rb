@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :mobilizations, only: [:index]
+  resources :blocks, only: [:index]
   mount_devise_token_auth_for 'User', at: '/auth'
 
   # The priority is based upon order of creation: first created -> highest priority.
