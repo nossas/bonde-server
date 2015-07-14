@@ -13,9 +13,10 @@
 /tmp
 config/database.yml
 
-# Ignore rbenv config
+# Ignore rbenv config and gems
 .ruby-version
 .rbenv-gemsets
+.gems
 
 # Ignore sublime project files
 *.sublime-project
