@@ -58,6 +58,7 @@ GEM
     json (1.8.3)
     loofah (2.0.2)
       nokogiri (>= 1.5.9)
+    machinist (2.0)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.6.1)
@@ -140,6 +141,7 @@ PLATFORMS
 
 DEPENDENCIES
   devise_token_auth
+  machinist (>= 2.0.0.beta2)
   omniauth
   pg
   rack-cors
