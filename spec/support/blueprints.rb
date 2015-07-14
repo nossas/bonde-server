@@ -15,3 +15,10 @@ end
 Block.blueprint do
   mobilization { Mobilization.make! }
 end
+
+Widget.blueprint do
+  block { Block.make! }
+  size { 12 }
+  kind { "content" }
+  settings { {content: "My 12 columns widget"} }
+end
