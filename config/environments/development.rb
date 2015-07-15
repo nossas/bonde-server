@@ -40,14 +40,4 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   default_url_options[:host] = "http://localhost:3000"
-
-  config.middleware.use Rack::Cors do
-    allow do
-      origins '*'
-      resource '*',
-        :headers => :any,
-        :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
-        :methods => [:get, :post, :options, :delete, :put]
-    end
-  end
 end
