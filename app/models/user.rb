@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
 
   mount_uploader :avatar, AvatarUploader
 
+  validates :provider, :uid, :email, presence: true
+
   def as_json(options = {})
     UserSerializer.new(self, {root: false})
   end
