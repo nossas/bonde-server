@@ -6,4 +6,12 @@ class User < ActiveRecord::Base
           :recoverable, :rememberable, :trackable, :validatable,
           :confirmable, :omniauthable
   include DeviseTokenAuth::Concerns::User
+
+  mount_uploader :avatar, AvatarUploader
+
+  validates :provider, :uid, :email, presence: true
+
+  def as_json(options = {})
+    UserSerializer.new(self, {root: false})
+  end
 end

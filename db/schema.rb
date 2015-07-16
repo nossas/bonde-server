@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20150716140537) do
     t.text     "tokens"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "avatar"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree

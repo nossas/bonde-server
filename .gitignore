@@ -12,6 +12,7 @@
 !/log/.keep
 /tmp
 config/database.yml
+public/uploads
 
 # Ignore rbenv config and gems
 .ruby-version

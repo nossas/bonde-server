@@ -8,6 +8,10 @@ gem 'pg'
 gem 'devise_token_auth'
 gem 'omniauth'
 gem 'rack-cors', require: 'rack/cors'
+gem 'carrierwave'
+gem 'rmagick'
+gem 'fog'
+gem 'active_model_serializers'
 gem 'machinist', '>= 2.0.0.beta2'
 
 group :test, :development do
