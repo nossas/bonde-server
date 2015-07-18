@@ -14,7 +14,6 @@ end
 
 Block.blueprint do
   mobilization { Mobilization.make! }
-  position { sn }
 end
 
 Widget.blueprint do

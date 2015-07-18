@@ -1,4 +1,5 @@
 class Widget < ActiveRecord::Base
-  validates :block_id, :size, :kind, presence: true
+  validates :size, :kind, presence: true
   belongs_to :block
+  store_accessor :settings
 end

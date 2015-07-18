@@ -1,15 +1,22 @@
 class Mobilizations::BlocksController < ApplicationController
-  before_action :set_mobilization
   respond_to :json
 
   def index
-    render json: @mobilization.blocks
+    render json: Block.where(mobilization_id: params[:mobilization_id])
+  end
+
+  def create
+    @block = Block.create(block_params.merge(mobilization_id: params[:mobilization_id]))
+    render json: @block
   end
 
   private
 
-  def set_mobilization
-    @mobilization = Mobilization.find(params[:mobilization_id])
+  def block_params
+    if params[:block]
+      params.require(:block).permit([:position, widgets_attributes: [:kind, :size]])
+    else
+      {}
+    end
   end
-
 end
