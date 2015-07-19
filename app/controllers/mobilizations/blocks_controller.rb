@@ -20,7 +20,7 @@ class Mobilizations::BlocksController < ApplicationController
 
   def block_params
     if params[:block]
-      params.require(:block).permit([:position, :bg_class, widgets_attributes: [:kind, :size]])
+      params.require(:block).permit([:position, :bg_class, :hidden, widgets_attributes: [:kind, :size]])
     else
       {}
     end
