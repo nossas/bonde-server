@@ -16,6 +16,12 @@ class Mobilizations::BlocksController < ApplicationController
     render json: @block.reload
   end
 
+  def destroy
+    @block = Block.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
+    @block.destroy!
+    render json: @block
+  end
+
   private
 
   def block_params
