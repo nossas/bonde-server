@@ -6,8 +6,14 @@ class Mobilizations::BlocksController < ApplicationController
   end
 
   def create
-    @block = Block.create(block_params.merge(mobilization_id: params[:mobilization_id]))
+    @block = Block.create!(block_params.merge(mobilization_id: params[:mobilization_id]))
     render json: @block
+  end
+
+  def update
+    @block = Block.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
+    @block.update!(block_params)
+    render json: @block.reload
   end
 
   private

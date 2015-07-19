@@ -51,4 +51,17 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
       expect(widget2.size).to eq(8)
     end
   end
+
+  describe "PUT #update" do
+    it "should update with JSON format" do
+      mobilization = Mobilization.make!
+      block = Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 123
+      put :update, mobilization_id: mobilization.id, id: block.id, format: :json, block: { position: 321, bg_class: 'bg-yellow' }
+      block.reload
+      expect(block.position).to eq(321)
+      expect(block.bg_class).to eq('bg-yellow')
+      expect(response.body).to include(block.to_json)
+    end
+  end
+
 end
