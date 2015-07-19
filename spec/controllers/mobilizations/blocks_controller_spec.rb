@@ -24,14 +24,15 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
       expect(response.body).to include(mobilization.blocks.first.to_json)
     end
 
-    it "should create with JSON format and position param" do
+    it "should create with JSON format and parameters" do
       mobilization = Mobilization.make!
       expect(mobilization.blocks.count).to eq(0)
-      post :create, mobilization_id: mobilization.id, format: :json, block: { position: 12345 }
+      post :create, mobilization_id: mobilization.id, format: :json, block: { position: 12345, bg_class: 'bg-yellow' }
       expect(mobilization.blocks.count).to eq(1)
       block = mobilization.blocks.first
       expect(response.body).to include(block.to_json)
       expect(block.position).to eq(12345)
+      expect(block.bg_class).to eq('bg-yellow')
     end
 
     it "should create nested widgets" do

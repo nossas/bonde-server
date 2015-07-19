@@ -2,7 +2,7 @@ class Mobilizations::BlocksController < ApplicationController
   respond_to :json
 
   def index
-    render json: Block.where(mobilization_id: params[:mobilization_id])
+    render json: Block.where(mobilization_id: params[:mobilization_id]).order(:position)
   end
 
   def create
@@ -14,7 +14,7 @@ class Mobilizations::BlocksController < ApplicationController
 
   def block_params
     if params[:block]
-      params.require(:block).permit([:position, widgets_attributes: [:kind, :size]])
+      params.require(:block).permit([:position, :bg_class, widgets_attributes: [:kind, :size]])
     else
       {}
     end
