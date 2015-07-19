@@ -8,15 +8,19 @@ RSpec.describe Block, type: :model do
   it { should accept_nested_attributes_for :widgets }
 
   describe "#set_position" do
-    it "should set the block's position" do
+    it "should set the block's position to the maximum position + 1" do
       mobilization1 = Mobilization.make!
       mobilization2 = Mobilization.make!
       block1 = Block.make! mobilization: mobilization1
       block2 = Block.make! mobilization: mobilization1
       block3 = Block.make! mobilization: mobilization2
+      block4 = Block.make! mobilization: mobilization2, position: 123
+      block5 = Block.make! mobilization: mobilization2
       expect(block1.position).to eq 1
       expect(block2.position).to eq 2
       expect(block3.position).to eq 1
+      expect(block4.position).to eq 123
+      expect(block5.position).to eq 124
     end
   end
 

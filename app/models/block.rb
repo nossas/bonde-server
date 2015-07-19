@@ -11,7 +11,7 @@ class Block < ActiveRecord::Base
 
   def set_position
     unless self.position.present? || self.mobilization.nil?
-      self.position = self.mobilization.blocks.count + 1
+      self.position = (self.mobilization.blocks.maximum(:position) || 0) + 1
     end
   end
 
