@@ -19,4 +19,24 @@ RSpec.describe Block, type: :model do
       expect(block3.position).to eq 1
     end
   end
+
+  describe "#switch_positions" do
+    it "should switch positions when updating position" do
+      mobilization1 = Mobilization.make!
+      mobilization2 = Mobilization.make!
+      block1 = Block.make! mobilization: mobilization1
+      block2 = Block.make! mobilization: mobilization1
+      block3 = Block.make! mobilization: mobilization2
+      block4 = Block.make! mobilization: mobilization2
+      expect(block1.position).to eq 1
+      expect(block2.position).to eq 2
+      expect(block3.position).to eq 1
+      expect(block4.position).to eq 2
+      block1.update position: 2
+      expect(block1.reload.position).to eq 2
+      expect(block2.reload.position).to eq 1
+      expect(block3.reload.position).to eq 1
+      expect(block4.reload.position).to eq 2
+    end
+  end
 end

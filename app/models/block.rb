@@ -4,9 +4,20 @@ class Block < ActiveRecord::Base
   has_many :widgets
   accepts_nested_attributes_for :widgets
 
-  before_validation do
+  before_validation :set_position
+  before_save :switch_position
+
+  private
+
+  def set_position
     unless self.position.present? || self.mobilization.nil?
       self.position = self.mobilization.blocks.count + 1
     end
-  end  
+  end
+
+  def switch_position
+    if self.position_changed?
+      self.mobilization.blocks.where(position: position_change[1]).update_all(position: position_change[0])
+    end
+  end
 end
