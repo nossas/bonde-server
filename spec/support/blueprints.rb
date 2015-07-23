@@ -10,6 +10,7 @@ end
 Mobilization.blueprint do
   user { User.make! }
   name { "Mobilization #{sn}" }
+  color_scheme { 'meurio-scheme' }
 end
 
 Block.blueprint do
