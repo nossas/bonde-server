@@ -13,6 +13,7 @@ gem 'rmagick'
 gem 'fog'
 gem 'active_model_serializers'
 gem 'machinist', '>= 2.0.0.beta2'
+gem 'pundit'
 
 group :test, :development do
   gem 'rspec-rails'
