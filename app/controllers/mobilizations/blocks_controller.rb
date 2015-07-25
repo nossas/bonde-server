@@ -13,7 +13,7 @@ class Mobilizations::BlocksController < ApplicationController
   def update
     @block = Block.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
     @block.update!(block_params)
-    render json: @block.reload
+    render json: @block
   end
 
   def destroy

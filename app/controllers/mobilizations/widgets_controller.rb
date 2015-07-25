@@ -9,7 +9,7 @@ class Mobilizations::WidgetsController < ApplicationController
   def update
     @widget = Widget.joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]}, widgets: {id: params[:id]}).first
     @widget.update!(widget_params)
-    render json: @widget.reload
+    render json: @widget
   end
 
   private
