@@ -4,6 +4,7 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
   before do
     @widget1 = Widget.make!
     @widget2 = Widget.make!
+    @admin = User.make! admin: true
   end
 
   describe "GET #index" do
@@ -16,18 +17,37 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
   end
 
   describe "PUT #update" do
-    it "should update widget" do
-      put :update, {
-        mobilization_id: @widget1.block.mobilization_id,
-        id: @widget1.id,
-        widget: {
-          settings: {
-            content: "Widget new content"
-          }
-        }
-      }
+    it "should update widget when current user is admin" do
+      stub_current_user(@admin)
+      put :update, update_widget_1_params
 
       expect(response.body).to include("Widget new content")
     end
+
+    it "should update widget when current user is the mobilization's owner" do
+      stub_current_user(@widget1.mobilization.user)
+      put :update, update_widget_1_params
+
+      expect(response.body).to include("Widget new content")
+    end
+
+    it "should return 401 if user is not an admin or mobilization's owner" do
+      stub_current_user(User.make!)
+      put :update, update_widget_1_params
+
+      expect(response).to be_unauthorized
+    end
   end
+end
+
+def update_widget_1_params
+  {
+    mobilization_id: @widget1.block.mobilization_id,
+    id: @widget1.id,
+    widget: {
+      settings: {
+        content: "Widget new content"
+      }
+    }
+  }
 end
