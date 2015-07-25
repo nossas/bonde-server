@@ -2,13 +2,13 @@ class Mobilizations::WidgetsController < ApplicationController
   respond_to :json
 
   def index
-    @widgets = Widget.joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]})
+    @widgets = Widget.joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]}).order(:id)
     render json: @widgets
   end
 
   def update
-    @widget = Widget.find(params[:id])
-    @widget.update_attributes(widget_params)
+    @widget = Widget.joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]}, widgets: {id: params[:id]}).first
+    @widget.update!(widget_params)
     render json: @widget
   end
 
