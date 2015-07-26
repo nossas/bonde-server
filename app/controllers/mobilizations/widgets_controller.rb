@@ -1,8 +1,10 @@
 class Mobilizations::WidgetsController < ApplicationController
   respond_to :json
+  after_action :verify_authorized, except: %i[index]
+  after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @widgets = Widget.joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]}).order(:id)
+    @widgets = policy_scope(Widget).joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]}).order(:id)
     render json: @widgets
   end
 
@@ -16,6 +18,6 @@ class Mobilizations::WidgetsController < ApplicationController
   private
 
   def widget_params
-    params.require(:widget).permit(settings: [:content])
+    params.require(:widget).permit(*policy(@widget || Widget.new).permitted_attributes)
   end
 end

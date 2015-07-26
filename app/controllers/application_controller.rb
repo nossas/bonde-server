@@ -3,6 +3,8 @@ class ApplicationController < ActionController::API
 
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  after_action :verify_authorized, unless: -> {devise_controller?}
+  after_action :verify_policy_scoped, unless: -> {devise_controller?}
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -13,6 +15,6 @@ class ApplicationController < ActionController::API
   end
 
   def user_not_authorized
-    render nothing: true, status: :unauthorized
+    render json: {error: 'Unauthorized'}, status: :unauthorized
   end
 end

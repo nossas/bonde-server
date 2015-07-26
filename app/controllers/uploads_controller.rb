@@ -1,7 +1,9 @@
 class UploadsController < ApplicationController
   respond_to :json
+  after_action :verify_policy_scoped, only: %i[]
 
   def index
+    authorize :upload
     storage = Fog::Storage.new({
       :provider              => 'AWS',
       :aws_access_key_id     => ENV['AWS_ID'],

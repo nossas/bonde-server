@@ -1,7 +1,7 @@
-class WidgetPolicy < ApplicationPolicy
+class BlockPolicy < ApplicationPolicy
   def permitted_attributes
     if create?
-      [settings: [:content]]
+      [:position, :bg_class, :hidden, widgets_attributes: [:kind, :size]]
     else
       []
     end

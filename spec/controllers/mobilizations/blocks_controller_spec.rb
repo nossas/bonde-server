@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Mobilizations::BlocksController, type: :controller do
+  before do
+    @user = User.make!
+    stub_current_user(@user)
+  end
+
   describe "GET #index" do
     it "should return blocks by mobilization" do
       mobilization1 = Mobilization.make!
@@ -55,7 +60,7 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
 
   describe "PUT #update" do
     it "should update with JSON format" do
-      mobilization = Mobilization.make!
+      mobilization = Mobilization.make! user: @user
       block = Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 123, hidden: false
       put :update, mobilization_id: mobilization.id, id: block.id, format: :json, block: { position: 321, bg_class: 'bg-yellow', hidden: true }
       block.reload
@@ -68,7 +73,7 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
 
   describe "DELETE #destroy" do
     it "should destroy with JSON format" do
-      mobilization = Mobilization.make!
+      mobilization = Mobilization.make! user: @user
       block = Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 123, hidden: false
       expect(mobilization.blocks.count).to eq(1)
       delete :destroy, mobilization_id: mobilization.id, id: block.id, format: :json

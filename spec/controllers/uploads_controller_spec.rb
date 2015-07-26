@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe UploadsController, type: :controller do
+  before do
+    @user = User.make!
+    stub_current_user(@user)
+  end
+
   describe "GET #index" do
     it "should return signed URL to PUT file on S3" do
       ENV['AWS_ID'] = 'foo'
