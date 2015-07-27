@@ -1,7 +1,7 @@
 class BlockPolicy < ApplicationPolicy
   def permitted_attributes
     if create?
-      [:position, :bg_class, :hidden, widgets_attributes: [:kind, :size]]
+      [:position, :bg_class, :bg_image, :hidden, widgets_attributes: [:kind, :size]]
     else
       []
     end

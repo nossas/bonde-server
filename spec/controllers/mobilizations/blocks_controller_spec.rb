@@ -32,12 +32,13 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
     it "should create with JSON format and parameters" do
       mobilization = Mobilization.make!
       expect(mobilization.blocks.count).to eq(0)
-      post :create, mobilization_id: mobilization.id, format: :json, block: { position: 12345, bg_class: 'bg-yellow', hidden: true }
+      post :create, mobilization_id: mobilization.id, format: :json, block: { position: 12345, bg_class: 'bg-yellow', bg_image: 'foobar.jpg', hidden: true }
       expect(mobilization.blocks.count).to eq(1)
       block = mobilization.blocks.first
       expect(response.body).to include(block.to_json)
       expect(block.position).to eq(12345)
       expect(block.bg_class).to eq('bg-yellow')
+      expect(block.bg_image).to eq('foobar.jpg')
       expect(block.hidden).to eq(true)
     end
 
@@ -62,10 +63,11 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
     it "should update with JSON format" do
       mobilization = Mobilization.make! user: @user
       block = Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 123, hidden: false
-      put :update, mobilization_id: mobilization.id, id: block.id, format: :json, block: { position: 321, bg_class: 'bg-yellow', hidden: true }
+      put :update, mobilization_id: mobilization.id, id: block.id, format: :json, block: { position: 321, bg_class: 'bg-yellow', bg_image: 'foobar.jpg',  hidden: true }
       block.reload
       expect(block.position).to eq(321)
       expect(block.bg_class).to eq('bg-yellow')
+      expect(block.bg_image).to eq('foobar.jpg')
       expect(block.hidden).to eq(true)
       expect(response.body).to include(block.to_json)
     end
