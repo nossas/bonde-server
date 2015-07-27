@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe UploadPolicy do
   context "for a visitor" do
     subject { described_class.new(nil, nil) }
-    it { should_not allow(:index) }
+    it { should allow(:index) }
   end
 
   context "for a non-owner user" do

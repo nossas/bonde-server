@@ -22,7 +22,8 @@ RSpec.describe UploadsController, type: :controller do
       url = storage.put_object_url(ENV['AWS_BUCKET'], "uploads/foo_bar", 15.minutes.from_now.to_time.to_i, headers, options)
       get :index, contentType: 'image/jpeg', objectName: 'foo_bar', format: :json
       expect(response.body).to include('foobar')
-      expect(response.body).to include('uploads/foo_bar')
+      expect(response.body).to include("uploads")
+      expect(response.body).to include('foo_bar')
       expect(response.body).to include('Amz-Signature=')
     end
   end
