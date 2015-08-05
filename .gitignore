@@ -22,3 +22,4 @@ public/uploads
 # Ignore sublime project files
 *.sublime-project
 *.sublime-workspace
+config/initializers/01_dev_vars.rb
