@@ -12,6 +12,7 @@
 !/log/.keep
 /tmp
 config/database.yml
+config/initializers/01_env_vars.rb
 public/uploads
 
 # Ignore rbenv config and gems
@@ -22,4 +23,3 @@ public/uploads
 # Ignore sublime project files
 *.sublime-project
 *.sublime-workspace
-config/initializers/01_dev_vars.rb
