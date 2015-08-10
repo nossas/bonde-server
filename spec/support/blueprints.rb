@@ -19,7 +19,9 @@ end
 
 Widget.blueprint do
   block { Block.make! }
-  size { 12 }
+  sm_size { 12 }
+  md_size { 12 }
+  lg_size { 12 }
   kind { "content" }
   settings { {content: "My 12 columns widget"} }
 end
