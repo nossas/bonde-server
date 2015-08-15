@@ -1,0 +1,4 @@
+pt-BR:
+  devise_token_auth:
+    sessions:
+      bad_credentials: "Seu e-mail e senha não correspondem"
