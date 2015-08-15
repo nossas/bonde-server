@@ -6,5 +6,21 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-user = User.create(email: 'foo@bar.com', uid: 'foo@bar.com', provider: 'email', password: 'foobar', first_name: 'Foo', last_name: 'Bar')
+user = User.create(
+  email: 'foo@bar.com',
+  uid: 'foo@bar.com',
+  provider: 'email',
+  password: 'foobar',
+  first_name: 'Foo',
+  last_name: 'Bar',
+  admin: true
+)
+
 user.confirm!
+
+Mobilization.create(
+  name: "Save the Whales!",
+  user: user,
+  color_scheme: "meurio-scheme",
+  font_set: "brush-up-set"
+)
