@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :mobilizations, only: [:index] do
+  resources :mobilizations, only: [:index, :update] do
     resources :blocks, controller: 'mobilizations/blocks', only: [:index, :create, :update, :destroy]
     resources :widgets, controller: 'mobilizations/widgets', only: [:index, :update]
   end

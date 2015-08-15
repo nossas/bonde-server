@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810215000) do
+ActiveRecord::Schema.define(version: 20150813210737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,11 +29,12 @@ ActiveRecord::Schema.define(version: 20150810215000) do
 
   create_table "mobilizations", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.integer  "user_id"
     t.string   "color_scheme"
     t.string   "font_set"
+    t.string   "google_analytics_code"
   end
 
   create_table "users", force: :cascade do |t|

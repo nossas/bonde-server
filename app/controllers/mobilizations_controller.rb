@@ -8,4 +8,19 @@ class MobilizationsController < ApplicationController
     @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
     render json: @mobilizations
   end
+
+  def update
+    @mobilization = Mobilization.find(params[:id])
+    authorize @mobilization
+    @mobilization.update!(mobilization_params)
+    render json: @mobilization
+  end
+
+  def mobilization_params
+    if params[:mobilization]
+      params.require(:mobilization).permit(*policy(@mobilization || Mobilization.new).permitted_attributes)
+    else
+      {}
+    end
+  end
 end
