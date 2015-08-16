@@ -32,7 +32,7 @@ RSpec.describe MobilizationPolicy do
     end
     it "should return permitted attributes" do
       expect(subject.permitted_attributes).to eq [
-        :name, :color_scheme, :google_analytics_code
+        :name, :color_scheme, :google_analytics_code, :goal
       ]
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe MobilizationPolicy do
     end
     it "should return permitted attributes" do
       expect(subject.permitted_attributes).to eq [
-        :name, :color_scheme, :google_analytics_code
+        :name, :color_scheme, :google_analytics_code, :goal
       ]
     end
   end

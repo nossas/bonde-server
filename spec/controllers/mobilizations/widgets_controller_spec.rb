@@ -4,7 +4,9 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
   before do
     @widget1 = Widget.make!
     @widget2 = Widget.make!
+    @user = User.make! admin: false
     @admin = User.make! admin: true
+    stub_current_user(@user)
   end
 
   describe "GET #index" do

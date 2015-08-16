@@ -7,6 +7,7 @@ RSpec.describe MobilizationsController, type: :controller do
       @user2 = User.make!
       @mob1 = Mobilization.make! user: @user1
       @mob2 = Mobilization.make! user: @user2
+      stub_current_user(@user1)
     end
 
     it "should return all mobilizations" do
