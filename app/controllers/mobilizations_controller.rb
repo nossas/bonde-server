@@ -9,6 +9,14 @@ class MobilizationsController < ApplicationController
     render json: @mobilizations
   end
 
+  def create
+    @mobilization = Mobilization.new(mobilization_params)
+    @mobilization.user = current_user
+    authorize @mobilization
+    @mobilization.save!
+    render json: @mobilization
+  end
+
   def update
     @mobilization = Mobilization.find(params[:id])
     authorize @mobilization
