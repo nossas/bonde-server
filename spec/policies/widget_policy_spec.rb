@@ -31,7 +31,7 @@ RSpec.describe WidgetPolicy do
       expect(subject.scope).to eq Widget
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [settings: [:content]]
+      expect(subject.permitted_attributes).to eq [:kind, settings: [:content]]
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe WidgetPolicy do
       expect(subject.scope).to eq Widget
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [settings: [:content]]
+      expect(subject.permitted_attributes).to eq [:kind, settings: [:content]]
     end
   end
 end

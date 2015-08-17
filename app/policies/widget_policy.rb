@@ -1,7 +1,7 @@
 class WidgetPolicy < ApplicationPolicy
   def permitted_attributes
     if create?
-      [settings: [:content]]
+      [:kind, settings: [:content]]
     else
       []
     end
