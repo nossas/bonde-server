@@ -18,6 +18,10 @@ class Mobilizations::WidgetsController < ApplicationController
   private
 
   def widget_params
-    params.require(:widget).permit(*policy(@widget || Widget.new).permitted_attributes)
+    params.require(:widget).permit(*policy(@widget || Widget.new).permitted_attributes).tap do |whitelisted|
+      if params[:widget][:settings] && params[:widget][:settings][:fields]
+        whitelisted[:settings][:fields] = params[:widget][:settings][:fields].to_json
+      end
+    end
   end
 end

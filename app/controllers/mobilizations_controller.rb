@@ -4,9 +4,17 @@ class MobilizationsController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @mobilizations = policy_scope(Mobilization).all
+    @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
     @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
     render json: @mobilizations
+  end
+
+  def create
+    @mobilization = Mobilization.new(mobilization_params)
+    @mobilization.user = current_user
+    authorize @mobilization
+    @mobilization.save!
+    render json: @mobilization
   end
 
   def update
