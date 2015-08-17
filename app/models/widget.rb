@@ -3,4 +3,8 @@ class Widget < ActiveRecord::Base
   belongs_to :block
   has_one :mobilization, through: :block
   store_accessor :settings
+
+  def as_json(options = {})
+    WidgetSerializer.new(self, {root: false})
+  end
 end
