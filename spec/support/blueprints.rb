@@ -12,6 +12,8 @@ Mobilization.blueprint do
   name { "Mobilization #{sn}" }
   color_scheme { 'meurio-scheme' }
   goal { 'Make the world a better place' }
+  header_font { 'ubuntu' }
+  body_font { 'open-sans' }
 end
 
 Block.blueprint do
