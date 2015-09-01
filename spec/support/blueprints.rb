@@ -28,3 +28,8 @@ Widget.blueprint do
   kind { "content" }
   settings { {content: "My 12 columns widget"} }
 end
+
+FormEntry.blueprint do
+  widget { Widget.make! }
+  fields { 'Fields' }
+end
