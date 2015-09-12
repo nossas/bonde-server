@@ -19,8 +19,9 @@ user = User.create(
 user.confirm!
 
 Mobilization.create(
-  name: "Save the Whales!",
+  name: 'Save the Whales!',
   user: user,
-  color_scheme: "meurio-scheme",
-  font_set: "brush-up-set"
+  color_scheme: 'meurio-scheme',
+  header_font: 'ubuntu',
+  body_font: 'open-sans'
 )

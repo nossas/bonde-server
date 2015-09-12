@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150821173644) do
+ActiveRecord::Schema.define(version: 20150901035437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,17 +27,27 @@ ActiveRecord::Schema.define(version: 20150821173644) do
     t.text     "bg_image"
   end
 
+  create_table "form_entries", force: :cascade do |t|
+    t.integer  "widget_id"
+    t.text     "fields"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "form_entries", ["widget_id"], name: "index_form_entries_on_widget_id", using: :btree
+
   create_table "mobilizations", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.integer  "user_id"
     t.string   "color_scheme"
-    t.string   "font_set"
     t.string   "google_analytics_code"
     t.text     "goal"
     t.string   "facebook_share_title"
     t.text     "facebook_share_description"
+    t.string   "header_font"
+    t.string   "body_font"
   end
 
   create_table "users", force: :cascade do |t|
@@ -81,4 +91,5 @@ ActiveRecord::Schema.define(version: 20150821173644) do
     t.integer  "lg_size"
   end
 
+  add_foreign_key "form_entries", "widgets"
 end

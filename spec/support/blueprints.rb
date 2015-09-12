@@ -12,6 +12,8 @@ Mobilization.blueprint do
   name { "Mobilization #{sn}" }
   color_scheme { 'meurio-scheme' }
   goal { 'Make the world a better place' }
+  header_font { 'ubuntu' }
+  body_font { 'open-sans' }
 end
 
 Block.blueprint do
@@ -25,4 +27,9 @@ Widget.blueprint do
   lg_size { 12 }
   kind { "content" }
   settings { {content: "My 12 columns widget"} }
+end
+
+FormEntry.blueprint do
+  widget { Widget.make! }
+  fields { 'Fields' }
 end
