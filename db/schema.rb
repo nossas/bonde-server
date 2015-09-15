@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150901035437) do
+ActiveRecord::Schema.define(version: 20150915141520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,10 +44,11 @@ ActiveRecord::Schema.define(version: 20150901035437) do
     t.string   "color_scheme"
     t.string   "google_analytics_code"
     t.text     "goal"
-    t.string   "facebook_share_title"
-    t.text     "facebook_share_description"
     t.string   "header_font"
     t.string   "body_font"
+    t.string   "facebook_share_title"
+    t.text     "facebook_share_description"
+    t.string   "facebook_share_image"
   end
 
   create_table "users", force: :cascade do |t|
