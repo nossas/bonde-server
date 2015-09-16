@@ -48,12 +48,14 @@ class FormEntry < ActiveRecord::Base
   end
 
   def update_mailchimp
-    subscribe_to_list(self.email, {
-      FNAME: self.first_name,
-      LNAME: self.last_name,
-      EMAIL: self.email
-    })
-    segment = find_or_create_segment_by_name(self.segment_name)
-    subscribe_to_segment(segment["id"], self.email)
+    if(!Rails.env.test?)
+      subscribe_to_list(self.email, {
+        FNAME: self.first_name,
+        LNAME: self.last_name,
+        EMAIL: self.email
+      })
+      segment = find_or_create_segment_by_name(self.segment_name)
+      subscribe_to_segment(segment["id"], self.email)
+    end
   end
 end
