@@ -1,59 +1,59 @@
 class FormEntry < ActiveRecord::Base
+  include Mailchimpable
+
   validates :widget, :fields, presence: true
   belongs_to :widget
 
   after_create :update_mailchimp
 
+  def fields_as_json
+    JSON.parse(self.fields)
+  end
+
+  def first_name
+    fields_as_json.each do |field|
+      if field['label'] && ['nome'].include?(field['label'].downcase)
+        return field['value']
+      end
+    end
+  end
+
+  def last_name
+    fields_as_json.each do |field|
+      if field['label'] && ['sobrenome', 'sobre-nome', 'sobre nome'].include?(field['label'].downcase)
+        return field['value']
+      end
+    end
+  end
+
+  def email
+    fields_as_json.each do |field|
+      if field['kind'] == 'email'
+        return field['value']
+      end
+    end
+  end
+
+  def phone
+    fields_as_json.each do |field|
+      if field['label'] && ['telefone', 'fone', 'celular'].include?(field['label'].downcase)
+        return field['value']
+      end
+    end
+  end
+
+  def segment_name
+    mobilization = self.widget.mobilization
+    segment_name = "M#{mobilization.id}A#{self.widget_id} - #{mobilization.name[0..89]}"
+  end
+
   def update_mailchimp
-    fields = JSON.parse(self.fields)
-    email = nil
-    first_name = nil
-    last_name = nil
-    phone = nil
-    fields.each do |field|
-      if !email && field['kind'] == 'email'
-        email = field['value']
-      elsif field['label'] && !first_name && ['nome'].include?(field['label'].downcase)
-        first_name = field['value']
-      elsif field['label'] && !last_name && ['sobrenome', 'sobre-nome', 'sobre nome'].include?(field['label'].downcase)
-        last_name = field['value']
-      elsif field['label'] && !phone && ['telefone', 'fone', 'celular'].include?(field['label'].downcase)
-        phone = field['value']
-      end
-    end
-    merge_vars = {}
-    merge_vars[:FNAME] = first_name if first_name
-    merge_vars[:LNAME] = last_name if last_name
-    merge_vars[:PHONE] = phone if phone
-    if email
-      begin
-        mailchimp = Gibbon::API.new
-        mailchimp.lists.subscribe({id: ENV['MAILCHIMP_LIST_ID'], email: {email: email}, merge_vars: merge_vars, double_optin: false, update_existing: true})
-        mobilization = self.widget.mobilization
-        segment_name = "M#{mobilization.id}A#{self.widget_id} - #{mobilization.name[0..89]}"
-        segments = mailchimp.lists.static_segments({id: ENV['MAILCHIMP_LIST_ID']})
-        segments.each do |segment|
-          if /#{segment_name}/.match(segment["name"])
-            @segment = segment
-            break
-          end
-        end
-        unless @segment
-          @segment = mailchimp.lists.static_segment_add({
-            id: ENV['MAILCHIMP_LIST_ID'],
-            name: segment_name
-          })
-        end
-        if @segment
-          mailchimp.lists.static_segment_members_add({
-            id: ENV['MAILCHIMP_LIST_ID'],
-            seg_id: @segment["id"],
-            batch: [{email: email}]
-          })
-        end
-      rescue Exception => e
-        logger.fatal e
-      end
-    end
+    subscribe_to_list(self.email, {
+      FNAME: self.first_name,
+      LNAME: self.last_name,
+      EMAIL: self.email
+    })
+    segment = find_or_create_segment_by_name(self.segment_name)
+    subscribe_to_segment(segment["id"], self.email)
   end
 end
