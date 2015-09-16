@@ -38,6 +38,7 @@ RSpec.describe MobilizationPolicy do
         :goal,
         :facebook_share_title,
         :facebook_share_description,
+        :facebook_share_image,
         :header_font,
         :body_font
       ]
@@ -65,6 +66,7 @@ RSpec.describe MobilizationPolicy do
         :goal,
         :facebook_share_title,
         :facebook_share_description,
+        :facebook_share_image,
         :header_font,
         :body_font
       ]
