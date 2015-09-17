@@ -25,7 +25,7 @@ RSpec.describe FormEntryMailer, type: :mailer do
 
     it "should send an email with the properly subject" do
       email = FormEntryMailer.thank_you_email(@form_entry).deliver_now
-      expect(email.subject).to be_eql(@mobilization.name)
+      expect(email.subject).to include(@mobilization.name)
     end
 
     it "should send an email with the properly body" do
