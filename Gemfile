@@ -18,5 +18,6 @@ gem 'gibbon', '1.1.5'
 
 group :test, :development do
   gem 'rspec-rails'
+  gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers'
 end
