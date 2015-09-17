@@ -5,6 +5,7 @@ class FormEntry < ActiveRecord::Base
   belongs_to :widget
 
   after_create :update_mailchimp
+  after_create :send_email
 
   def fields_as_json
     JSON.parse(self.fields)
@@ -56,6 +57,12 @@ class FormEntry < ActiveRecord::Base
       })
       segment = find_or_create_segment_by_name(self.segment_name)
       subscribe_to_segment(segment["id"], self.email)
+    end
+  end
+
+  def send_email
+    if self.email.present?
+      FormEntryMailer.thank_you_email(self).deliver_later
     end
   end
 end
