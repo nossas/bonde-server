@@ -31,5 +31,5 @@ end
 
 FormEntry.blueprint do
   widget { Widget.make! }
-  fields { 'Fields' }
+  fields { [].to_json }
 end

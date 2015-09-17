@@ -6,7 +6,7 @@ module Shareable
       "&redirect_uri=#{URI.escape(self.url)}"\
   end
 
-  def twitter_share_link
+  def twitter_share_url
     "https://twitter.com/intent/tweet"\
       "?text=#{URI.escape(self.name)}"\
       "&url=#{URI.escape(self.url)}"
