@@ -53,7 +53,8 @@ class FormEntry < ActiveRecord::Base
       subscribe_to_list(self.email, {
         FNAME: self.first_name,
         LNAME: self.last_name,
-        EMAIL: self.email
+        EMAIL: self.email,
+        PHONE: self.phone
       })
       segment = find_or_create_segment_by_name(self.segment_name)
       subscribe_to_segment(segment["id"], self.email)
