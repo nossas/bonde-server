@@ -3,11 +3,14 @@ require "rails_helper"
 RSpec.describe FormEntryMailer, type: :mailer do
   describe "#thank_you_email" do
     before do
+      @user = stub_model(User, email: "fooz@barz.com")
+
       @mobilization = stub_model(
         Mobilization,
         name: "My Mobilization Name",
         facebook_share_url: "http://facebook.com/share",
-        twitter_share_url: "http://twitter.com/share"
+        twitter_share_url: "http://twitter.com/share",
+        user: @user
       )
 
       @widget = stub_model(
@@ -21,6 +24,11 @@ RSpec.describe FormEntryMailer, type: :mailer do
     it "should send an email to the properly destination" do
       email = FormEntryMailer.thank_you_email(@form_entry).deliver_now
       expect(email.to).to be_eql([@form_entry.email])
+    end
+
+    it "should send an email with the properly sender" do
+      email = FormEntryMailer.thank_you_email(@form_entry).deliver_now
+      expect(email.from).to be_eql([@mobilization.user.email])
     end
 
     it "should send an email with the properly subject" do

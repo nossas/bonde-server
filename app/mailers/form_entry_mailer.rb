@@ -5,7 +5,8 @@ class FormEntryMailer < ApplicationMailer
 
     mail(
       to: form_entry.email,
-      subject: "Obrigado por participar da mobilização #{@mobilization.name}"
+      subject: "Obrigado por participar da mobilização #{@mobilization.name}",
+      from: @mobilization.user.email
     )
   end
 end
