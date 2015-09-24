@@ -4,7 +4,7 @@
 ```
 bundle
 rake db:create
-rails s
+bundle exec puma -C config/puma.rb
 ```
 And the server is on fire :fire:
 
