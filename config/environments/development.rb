@@ -40,4 +40,5 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   default_url_options[:host] = "http://localhost:3000"
+  config.logger = Logger.new(STDOUT)
 end
