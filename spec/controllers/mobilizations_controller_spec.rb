@@ -26,6 +26,13 @@ RSpec.describe MobilizationsController, type: :controller do
       expect(response.body).to include(@mob1.name)
       expect(response.body).to_not include(@mob2.name)
     end
+
+    it "should return mobilizations by id" do
+      get :index, ids: [@mob1.id]
+
+      expect(response.body).to include(@mob1.name)
+      expect(response.body).to_not include(@mob2.name)
+    end
   end
 
   describe "POST #create" do
