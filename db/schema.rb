@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151008121750) do
+ActiveRecord::Schema.define(version: 20151009182634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20151008121750) do
     t.boolean  "hidden"
     t.text     "bg_image"
     t.string   "name"
+    t.boolean  "menu_hidden"
   end
 
   create_table "form_entries", force: :cascade do |t|

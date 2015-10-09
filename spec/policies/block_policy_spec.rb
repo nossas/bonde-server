@@ -31,7 +31,10 @@ RSpec.describe BlockPolicy do
       expect(subject.scope).to eq Block
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [:position, :bg_class, :bg_image, :hidden, :name, widgets_attributes: [:kind, :sm_size, :md_size, :lg_size]]
+      expect(subject.permitted_attributes).to eq [
+        :position, :bg_class, :bg_image, :hidden, :name, :menu_hidden,
+        widgets_attributes: [:kind, :sm_size, :md_size, :lg_size]
+      ]
     end
   end
 
@@ -50,7 +53,10 @@ RSpec.describe BlockPolicy do
       expect(subject.scope).to eq Block
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [:position, :bg_class, :bg_image, :hidden, :name, widgets_attributes: [:kind, :sm_size, :md_size, :lg_size]]
+      expect(subject.permitted_attributes).to eq [
+        :position, :bg_class, :bg_image, :hidden, :name, :menu_hidden,
+        widgets_attributes: [:kind, :sm_size, :md_size, :lg_size]
+      ]
     end
   end
 end
