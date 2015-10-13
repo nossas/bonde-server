@@ -173,6 +173,12 @@ GEM
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.2)
+    heroics (0.0.14)
+      erubis (~> 2.7.0)
+      excon
+      moneta
+      multi_json (>= 1.9.2)
+      netrc
     httparty (0.13.5)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -188,12 +194,14 @@ GEM
     mime-types (2.6.1)
     mini_portile (0.6.2)
     minitest (5.8.0)
+    moneta (0.8.0)
     mono_logger (1.1.0)
     multi_json (1.11.2)
     multi_xml (0.5.5)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     omniauth (1.2.2)
@@ -201,6 +209,8 @@ GEM
       rack (~> 1.0)
     orm_adapter (0.5.0)
     pg (0.18.2)
+    platform-api (0.3.0)
+      heroics (~> 0.0.10)
     puma (2.13.4)
     pundit (1.0.1)
       activesupport (>= 3.0.0)
@@ -291,6 +301,7 @@ DEPENDENCIES
   machinist (>= 2.0.0.beta2)
   omniauth
   pg
+  platform-api
   puma
   pundit
   rack-cors
