@@ -18,6 +18,6 @@ class Mobilization < ActiveRecord::Base
   private
 
   def slugify
-    self.slug = "#{self.class.count}-#{self.name.parameterize}"
+    self.slug ||= "#{self.class.count}-#{self.name.try(:parameterize)}"
   end
 end
