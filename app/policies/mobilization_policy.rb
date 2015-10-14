@@ -10,7 +10,9 @@ class MobilizationPolicy < ApplicationPolicy
         :facebook_share_description,
         :facebook_share_image,
         :header_font,
-        :body_font
+        :body_font,
+        :custom_domain,
+        :slug
       ]
     else
       []

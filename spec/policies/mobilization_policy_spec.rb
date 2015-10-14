@@ -40,7 +40,9 @@ RSpec.describe MobilizationPolicy do
         :facebook_share_description,
         :facebook_share_image,
         :header_font,
-        :body_font
+        :body_font,
+        :custom_domain,
+        :slug
       ]
     end
   end
@@ -68,7 +70,9 @@ RSpec.describe MobilizationPolicy do
         :facebook_share_description,
         :facebook_share_image,
         :header_font,
-        :body_font
+        :body_font,
+        :custom_domain,
+        :slug
       ]
     end
   end
