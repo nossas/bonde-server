@@ -1,5 +1,6 @@
 class Mobilization < ActiveRecord::Base
   include Shareable
+  include Filterable
 
   validates :name, :user_id, :goal, presence: true
   belongs_to :user
