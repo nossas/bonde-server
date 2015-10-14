@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20151013165520) do
     t.string   "header_font"
     t.string   "body_font"
     t.string   "facebook_share_image"
-    t.string   "slug"
+    t.string   "slug",                       null: false
     t.string   "custom_domain"
   end
 
