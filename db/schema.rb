@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20151013165520) do
     t.string   "facebook_share_title"
     t.text     "facebook_share_description"
     t.string   "facebook_share_image"
-    t.string   "slug"
+    t.string   "slug",                       null: false
     t.string   "custom_domain"
   end
 

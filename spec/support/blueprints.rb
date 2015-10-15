@@ -14,8 +14,8 @@ Mobilization.blueprint do
   goal { 'Make the world a better place' }
   header_font { 'ubuntu' }
   body_font { 'open-sans' }
-  slug { "mobilization-#{sn}" }
   custom_domain { "mymobilization" }
+  slug { "#{sn}-mobilization" }
 end
 
 Block.blueprint do
