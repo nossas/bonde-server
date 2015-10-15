@@ -3,7 +3,7 @@ module Filterable
 
   module ClassMethods
     def filter(params)
-      result = []
+      result = self.where(nil)
       params.each do |key, value|
         result = self.public_send("find_by", {"#{key}": value}) if key.present?
       end
