@@ -5,7 +5,9 @@ class MobilizationsController < ApplicationController
 
   def index
     @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
-    @mobilizations = @mobilizations.filter(params.slice(:user_id, :custom_domain, :slug))
+    @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
+    @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
+    @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
     @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
     render json: @mobilizations
   end
