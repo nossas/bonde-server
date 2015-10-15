@@ -23,7 +23,7 @@ class Mobilization < ActiveRecord::Base
   end
 
   def set_custom_domain
-    return unless self.custom_domain.changed?
+    return unless self.custom_domain_changed?
     delete_domain(self.custom_domain_was)
     create_domain({hostname: self.custom_domain})
   end
