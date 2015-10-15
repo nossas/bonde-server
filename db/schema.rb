@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20151013165520) do
     t.boolean  "hidden"
     t.text     "bg_image"
     t.string   "name"
+    t.boolean  "menu_hidden"
   end
 
   create_table "form_entries", force: :cascade do |t|
@@ -45,10 +46,10 @@ ActiveRecord::Schema.define(version: 20151013165520) do
     t.string   "color_scheme"
     t.string   "google_analytics_code"
     t.text     "goal"
-    t.string   "facebook_share_title"
-    t.text     "facebook_share_description"
     t.string   "header_font"
     t.string   "body_font"
+    t.string   "facebook_share_title"
+    t.text     "facebook_share_description"
     t.string   "facebook_share_image"
     t.string   "slug",                       null: false
     t.string   "custom_domain"
