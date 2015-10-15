@@ -6,21 +6,20 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-user = User.create(
-  email: 'foo@bar.com',
-  uid: 'foo@bar.com',
-  provider: 'email',
-  password: 'foobar',
-  first_name: 'Foo',
-  last_name: 'Bar',
-  admin: true
-)
-
-user.confirm!
+user = User.find_or_create_by(email: 'foo@bar.com') do |u|
+  u.uid = 'foo@bar.com'
+  u.provider = 'email'
+  u.password = 'foobar'
+  u.first_name = 'Foo'
+  u.last_name = 'Bar'
+  u.admin = true
+  u.confirm!
+end
 
 Mobilization.create(
   name: 'Save the Whales!',
   user: user,
+  goal: 'More whales, more happyness',
   color_scheme: 'meurio-scheme',
   header_font: 'ubuntu',
   body_font: 'open-sans'

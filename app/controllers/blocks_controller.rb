@@ -4,7 +4,8 @@ class BlocksController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @blocks = policy_scope(Mobilization).filter(params.slice(:custom_domain, :slug)).blocks
-    render json: @blocks.order(:position)
+    mobilization = policy_scope(Mobilization).filter(params.slice(:custom_domain, :slug))
+    blocks = mobilization.present? ? mobilization.blocks.order(:position) : []
+    render json: blocks
   end
 end
