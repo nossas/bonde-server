@@ -4,7 +4,8 @@ class WidgetsController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @widgets = policy_scope(Mobilization).filter(params.slice(:custom_domain, :slug)).widgets
-    render json: @widgets.order(:id)
+    mobilization = policy_scope(Mobilization).filter(params.slice(:custom_domain, :slug))
+    widgets = mobilization.present? ? mobilization.widgets.order(:id) : []
+    render json: widgets
   end
 end
