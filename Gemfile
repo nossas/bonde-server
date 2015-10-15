@@ -23,4 +23,5 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers'
+  gem 'webmock'
 end
