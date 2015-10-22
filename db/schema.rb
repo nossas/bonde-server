@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151013165520) do
+ActiveRecord::Schema.define(version: 20151022141822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,8 +40,8 @@ ActiveRecord::Schema.define(version: 20151013165520) do
 
   create_table "mobilizations", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.integer  "user_id"
     t.string   "color_scheme"
     t.string   "google_analytics_code"
@@ -51,8 +51,9 @@ ActiveRecord::Schema.define(version: 20151013165520) do
     t.string   "header_font"
     t.string   "body_font"
     t.string   "facebook_share_image"
-    t.string   "slug",                       null: false
+    t.string   "slug",                                   null: false
     t.string   "custom_domain"
+    t.string   "twitter_share_text",         limit: 140
   end
 
   create_table "users", force: :cascade do |t|

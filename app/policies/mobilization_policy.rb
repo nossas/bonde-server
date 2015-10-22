@@ -9,6 +9,7 @@ class MobilizationPolicy < ApplicationPolicy
         :facebook_share_title,
         :facebook_share_description,
         :facebook_share_image,
+        :twitter_share_text,
         :header_font,
         :body_font,
         :custom_domain,
