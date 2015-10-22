@@ -13,7 +13,7 @@ module Mailchimpable
         id: ENV['MAILCHIMP_LIST_ID'],
         name: segment_name
       })
-    rescue Gibbon::GibbonError => e
+    rescue Exception => e
       logger.error(e)
     end
   end
@@ -27,7 +27,7 @@ module Mailchimpable
         double_optin: false,
         update_existing: true
       })
-    rescue Gibbon::GibbonError => e
+    rescue Exception => e
       logger.error(e)
     end
   end
@@ -39,7 +39,7 @@ module Mailchimpable
         seg_id: segment['id'],
         batch: [{email: email}]
       })
-    rescue NoMethodError => e
+    rescue Exception => e
       logger.error(e)
     end
   end
