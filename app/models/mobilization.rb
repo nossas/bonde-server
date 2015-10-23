@@ -13,7 +13,11 @@ class Mobilization < ActiveRecord::Base
   before_save :set_custom_domain
 
   def url
-    "#{ENV["CLIENT_URL"]}/mobilizations/#{self.id}"
+    if self.custom_domain.present?
+      "http://#{self.custom_domain}"
+    else
+      "http://#{self.slug}.#{ENV["CLIENT_HOST"]}"
+    end
   end
 
   private
