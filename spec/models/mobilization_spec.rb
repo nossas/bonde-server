@@ -18,4 +18,12 @@ RSpec.describe Mobilization, type: :model do
       expect(@mobilization.slug).to include @mobilization.name.parameterize
     end
   end
+
+  context "set Twitter's share text" do
+    subject { Mobilization.create!(name: "mobilization", goal: "change the world", user: User.make!) }
+
+    it "should include mobilization's name" do
+      expect(subject.twitter_share_text).to include subject.name
+    end
+  end
 end

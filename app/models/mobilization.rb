@@ -11,6 +11,7 @@ class Mobilization < ActiveRecord::Base
 
   before_validation :slugify
   before_save :set_custom_domain
+  before_create :set_twitter_share_text
 
   def url
     if self.custom_domain.present?
@@ -30,5 +31,9 @@ class Mobilization < ActiveRecord::Base
     return unless self.custom_domain_changed?
     delete_domain(self.custom_domain_was)
     create_domain({hostname: self.custom_domain})
+  end
+
+  def set_twitter_share_text
+    self.twitter_share_text = "Acabei de colaborar com #{self.name}. Participe você também: "
   end
 end
