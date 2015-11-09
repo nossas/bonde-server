@@ -54,7 +54,7 @@ class FormEntry < ActiveRecord::Base
         FNAME: self.first_name,
         LNAME: self.last_name,
         EMAIL: self.email,
-        PHONE: self.phone
+        PHONE: self.phone || ""
       })
       segment = find_or_create_segment_by_name(self.segment_name)
       subscribe_to_segment(segment, self.email)
