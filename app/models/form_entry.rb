@@ -37,7 +37,7 @@ class FormEntry < ActiveRecord::Base
 
   def phone
     fields_as_json.each do |field|
-      if field['label'] && ['telefone', 'fone', 'celular'].include?(field['label'].downcase)
+      if field['label'] && ['celular'].include?(field['label'].downcase)
         return field['value']
       end
     end
