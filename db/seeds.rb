@@ -24,3 +24,15 @@ Mobilization.create(
   header_font: 'ubuntu',
   body_font: 'open-sans'
 )
+
+Organization.create([
+  { name: "Minha Blumenau", city: "Blumenau" },
+  { name: "Minha Campinas", city: "Campinas" },
+  { name: "Minha Curitiba", city: "Curitiba" },
+  { name: "Minha Garopaba", city: "Garopaba" },
+  { name: "Minha Ouro Preto", city: "Ouro Preto" },
+  { name: "Minha Porto Alegre", city: "Porto Alegre" },
+  { name: "Meu Recife", city: "Recife" },
+  { name: "Meu Rio", city: "Rio de Janeiro" },
+  { name: "Minha Sampa", city: "São Paulo" }
+])
