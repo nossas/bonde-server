@@ -16,6 +16,7 @@ Mobilization.blueprint do
   body_font { 'open-sans' }
   custom_domain { "mymobilization" }
   slug { "#{sn}-mobilization" }
+  organization { Organization.make! }
 end
 
 Block.blueprint do

@@ -7,11 +7,19 @@ RSpec.describe Mobilization, type: :model do
   it { should validate_presence_of :user_id }
   it { should validate_presence_of :name }
   it { should validate_presence_of :goal }
+  it { should validate_presence_of :organization_id }
   it { should validate_length_of :twitter_share_text }
+
+  before { @organization = Organization.make! }
 
   context "generate a slug" do
     before do
-      @mobilization = Mobilization.create!(name: "mobilization", goal: "change the world", user: User.make!)
+      @mobilization = Mobilization.create!(
+        name: "mobilization",
+        goal: "change the world",
+        user: User.make!,
+        organization_id: @organization.id
+      )
     end
 
     it "should include mobilization's name" do
@@ -20,7 +28,14 @@ RSpec.describe Mobilization, type: :model do
   end
 
   context "set Twitter's share text" do
-    subject { Mobilization.create!(name: "mobilization", goal: "change the world", user: User.make!) }
+    subject {
+      Mobilization.create!(
+        name: "mobilization",
+        goal: "change the world",
+        user: User.make!,
+        organization_id: @organization.id
+      )
+    }
 
     it "should include mobilization's name" do
       expect(subject.twitter_share_text).to include subject.name

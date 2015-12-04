@@ -3,9 +3,10 @@ class Mobilization < ActiveRecord::Base
   include Herokuable
   include Filterable
 
-  validates :name, :user_id, :goal, :slug, presence: true
+  validates :name, :user_id, :goal, :slug, :organization_id, presence: true
   validates :slug, uniqueness: true
   belongs_to :user
+  belongs_to :organization
   has_many :blocks
   has_many :widgets, through: :blocks
 

@@ -13,7 +13,8 @@ class MobilizationPolicy < ApplicationPolicy
         :header_font,
         :body_font,
         :custom_domain,
-        :slug
+        :slug,
+        :organization_id
       ]
     else
       []
