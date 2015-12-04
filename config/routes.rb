@@ -8,5 +8,6 @@ Rails.application.routes.draw do
   resources :blocks, only: [:index]
   resources :widgets, only: [:index]
   resources :uploads, only: [:index]
+  resources :organizations, only: [:index]
   mount_devise_token_auth_for 'User', at: '/auth'
 end
