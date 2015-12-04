@@ -51,8 +51,15 @@ RSpec.describe MobilizationsController, type: :controller do
 
   describe "POST #create" do
     it "should create with JSON format" do
+      organization = Organization.make!
       expect(Mobilization.count).to eq(0)
-      post :create, format: :json, mobilization: {name: 'Foo', goal: 'Bar'}
+
+      post :create, format: :json, mobilization: {
+        name: 'Foo',
+        goal: 'Bar',
+        organization_id: organization.id
+      }
+
       expect(Mobilization.count).to eq(1)
       expect(response.body).to include(Mobilization.first.to_json)
     end

@@ -43,7 +43,8 @@ RSpec.describe MobilizationPolicy do
         :header_font,
         :body_font,
         :custom_domain,
-        :slug
+        :slug,
+        :organization_id
       ]
     end
   end
@@ -74,7 +75,8 @@ RSpec.describe MobilizationPolicy do
         :header_font,
         :body_font,
         :custom_domain,
-        :slug
+        :slug,
+        :organization_id
       ]
     end
   end
