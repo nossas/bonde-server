@@ -12,6 +12,7 @@ class Mobilization < ActiveRecord::Base
 
   before_validation :slugify
   before_save :set_custom_domain
+  before_save :set_color_scheme
   before_create :set_twitter_share_text
 
   def url
@@ -36,5 +37,11 @@ class Mobilization < ActiveRecord::Base
 
   def set_twitter_share_text
     self.twitter_share_text = "Acabei de colaborar com #{self.name}. Participe você também: "
+  end
+
+  def set_color_scheme
+    if self.organization.present?
+      self.color_scheme = "#{self.organization.name.gsub(' ', '').parameterize}-scheme"
+    end
   end
 end
