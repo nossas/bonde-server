@@ -5,6 +5,6 @@ class OrganizationsController < ApplicationController
     skip_authorization
     skip_policy_scope
 
-    render json: Organization.all
+    render json: Organization.order(:city)
   end
 end
