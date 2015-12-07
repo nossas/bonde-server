@@ -3,6 +3,8 @@ class FormEntry < ActiveRecord::Base
 
   validates :widget, :fields, presence: true
   belongs_to :widget
+  has_one :mobilization, through: :widget
+  has_one :organization, through: :mobilization
 
   after_create :update_mailchimp
   after_create :send_email
@@ -54,7 +56,8 @@ class FormEntry < ActiveRecord::Base
         FNAME: self.first_name,
         LNAME: self.last_name,
         EMAIL: self.email,
-        PHONE: self.phone || ""
+        PHONE: self.phone || "",
+        ORG: self.organization.name
       })
       segment = find_or_create_segment_by_name(self.segment_name)
       subscribe_to_segment(segment, self.email)
