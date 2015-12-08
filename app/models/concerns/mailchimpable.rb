@@ -25,7 +25,7 @@ module Mailchimpable
         email: {email: email},
         merge_vars: merge_vars,
         double_optin: false,
-        update_existing: true
+        update_existing: false
       })
     rescue Exception => e
       logger.error(e)
