@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204202424) do
+ActiveRecord::Schema.define(version: 20151209193105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,11 +98,12 @@ ActiveRecord::Schema.define(version: 20151204202424) do
     t.integer  "block_id"
     t.hstore   "settings"
     t.string   "kind"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "sm_size"
     t.integer  "md_size"
     t.integer  "lg_size"
+    t.string   "mailchimp_segment_id"
   end
 
   add_foreign_key "form_entries", "widgets"
