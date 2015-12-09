@@ -32,11 +32,11 @@ module Mailchimpable
     end
   end
 
-  def subscribe_to_segment(segment, email)
+  def subscribe_to_segment(segment_id, email)
     begin
       api_client.lists.static_segment_members_add({
         id: ENV['MAILCHIMP_LIST_ID'],
-        seg_id: segment['id'],
+        seg_id: segment_id,
         batch: [{email: email}]
       })
     rescue Exception => e

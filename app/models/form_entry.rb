@@ -59,8 +59,7 @@ class FormEntry < ActiveRecord::Base
         PHONE: self.phone || "",
         ORG: self.organization.name
       })
-      segment = find_or_create_segment_by_name(self.segment_name)
-      subscribe_to_segment(segment, self.email)
+      subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
     end
   end
 
