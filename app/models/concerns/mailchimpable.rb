@@ -14,7 +14,7 @@ module Mailchimpable
         name: segment_name
       })
     rescue Exception => e
-      logger.error(e)
+      Rails.logger.error(e)
     end
   end
 
