@@ -1,21 +1,9 @@
 module Mailchimpable
-  def find_or_create_segment_by_name(segment_name)
-    begin
-      segments = api_client.lists.static_segments({id: ENV['MAILCHIMP_LIST_ID']})
-
-      segments.each do |segment|
-        if /#{segment_name}/.match(segment["name"])
-          return segment
-        end
-      end
-
-      return api_client.lists.static_segment_add({
-        id: ENV['MAILCHIMP_LIST_ID'],
-        name: segment_name
-      })
-    rescue Exception => e
-      Rails.logger.error(e)
-    end
+  def create_segment(segment_name)
+    return api_client.lists.static_segment_add({
+      id: ENV['MAILCHIMP_LIST_ID'],
+      name: segment_name
+    })
   end
 
   def subscribe_to_list(email, merge_vars)

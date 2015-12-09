@@ -45,11 +45,6 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
-  def segment_name
-    mobilization = self.widget.mobilization
-    segment_name = "M#{mobilization.id}A#{self.widget_id} - #{mobilization.name[0..89]}"
-  end
-
   def update_mailchimp
     if(!Rails.env.test?)
       subscribe_to_list(self.email, {
