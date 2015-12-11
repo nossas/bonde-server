@@ -8,7 +8,7 @@ class Widget < ActiveRecord::Base
   has_many :form_entries
   store_accessor :settings
 
-  after_create :create_mailchimp_segment
+  after_create :create_mailchimp_segment, if: :form?
 
   def as_json(options = {})
     WidgetSerializer.new(self, {root: false})
@@ -16,6 +16,10 @@ class Widget < ActiveRecord::Base
 
   def segment_name
     "M#{self.mobilization.id}A#{self.id} - #{self.mobilization.name[0..89]}"
+  end
+
+  def form?
+    self.kind == "form"
   end
 
   def create_mailchimp_segment
