@@ -6,14 +6,14 @@ module Mailchimpable
     })
   end
 
-  def subscribe_to_list(email, merge_vars)
+  def subscribe_to_list(email, merge_vars, options = {})
     begin
       api_client.lists.subscribe({
         id: ENV['MAILCHIMP_LIST_ID'],
         email: {email: email},
         merge_vars: merge_vars,
-        double_optin: false,
-        update_existing: false
+        double_optin: options[:double_optin] || false,
+        update_existing: options[:update_existing] || false
       })
     rescue Exception => e
       logger.error(e)

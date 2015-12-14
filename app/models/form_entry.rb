@@ -55,6 +55,11 @@ class FormEntry < ActiveRecord::Base
         ORG: self.organization.name
       })
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
+      subscribe_to_list(
+        self.email,
+        { groupings: [{ id: 49, groups: self.organization.name }] },
+        { update_existing: true }
+      )
     end
   end
 
