@@ -32,13 +32,13 @@ module Mailchimpable
     end
   end
 
-  def update_member(email, merge_vars, options = {})
+  def update_member(email, merge_vars)
     begin
       api_client.lists.update_member({
         id: ENV['MAILCHIMP_LIST_ID'],
         email: {email: email},
         merge_vars: merge_vars,
-        replace_interests: options[:replace_interests] || true
+        replace_interests: false
       })
     rescue Exception => e
       logger.error(e)
