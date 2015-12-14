@@ -32,6 +32,19 @@ module Mailchimpable
     end
   end
 
+  def update_member(email, merge_vars, options = {})
+    begin
+      api_client.lists.update_member({
+        id: ENV['MAILCHIMP_LIST_ID'],
+        email: {email: email},
+        merge_vars: merge_vars,
+        replace_interests: options[:replace_interests] || true
+      })
+    rescue Exception => e
+      logger.error(e)
+    end
+  end
+
   def api_client
     return Gibbon::API.new
   end
