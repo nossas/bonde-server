@@ -4,12 +4,17 @@ class MobilizationsController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
-    @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
-    @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
-    @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
-    @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
-    render json: @mobilizations
+    begin
+      @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
+      @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
+      @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
+      @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
+      @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
+      render json: @mobilizations
+    rescue Exception => e
+      Appsignal.add_exception e
+      Rails.logger.error e
+    end
   end
 
   def create

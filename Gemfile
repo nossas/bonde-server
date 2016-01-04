@@ -18,6 +18,7 @@ gem 'gibbon', '1.1.5'
 gem "resque", "~> 2.0.0.pre.1", github: "resque/resque"
 gem 'puma'
 gem 'platform-api'
+gem 'appsignal'
 
 group :test, :development do
   gem 'rspec-rails'
