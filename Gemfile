@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.2'
+ruby '2.3.0'
 
 gem 'rails', '4.2.3'
 gem 'rails-api'
@@ -19,6 +19,7 @@ gem "resque", "~> 2.0.0.pre.1", github: "resque/resque"
 gem 'puma'
 gem 'platform-api'
 gem 'appsignal'
+gem "codeclimate-test-reporter", group: :test, require: nil
 
 group :test, :development do
   gem 'rspec-rails'
