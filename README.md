@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/meurio/hub-api.svg?branch=master)](https://travis-ci.org/meurio/hub-api)
+[![Build Status](https://travis-ci.org/ourcities/hub-api.svg?branch=master)](https://travis-ci.org/ourcities/hub-api)
+[![Test
+Coverage](https://codeclimate.com/github/ourcities/hub-api/badges/coverage.svg)](https://codeclimate.com/github/ourcities/hub-api/coverage)
 
 # Install
 ```

@@ -12,3 +12,4 @@ script: "bundle exec rake db:migrate && bundle exec rspec spec"
 branches:
   only:
     - master
+    - staging
