@@ -5,7 +5,7 @@ Coverage](https://codeclimate.com/github/ourcities/hub-api/badges/coverage.svg)]
 # Install
 ```
 bundle
-rake db:create
+rake db:create db:migrate db:seed
 bundle exec puma -C config/puma.rb
 ```
 And the server is on fire :fire:
