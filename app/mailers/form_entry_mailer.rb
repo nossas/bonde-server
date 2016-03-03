@@ -3,10 +3,16 @@ class FormEntryMailer < ApplicationMailer
     @widget = form_entry.widget
     @mobilization = @widget.mobilization
 
+    from_address = if @mobilization.user.first_name
+                     "#{@mobilization.user.first_name} <#{@mobilization.user.email}>"
+                   else
+                     @mobilization.user.email
+                   end
+
     mail(
       to: form_entry.email,
       subject: @mobilization.name,
-      from: @mobilization.user.email
+      from: from_address
     )
   end
 end
