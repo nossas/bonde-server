@@ -21,6 +21,7 @@ gem 'platform-api'
 gem 'appsignal'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'rails_12factor'
+gem 'newrelic_rpm', group: :production
 
 group :test, :development do
   gem 'rspec-rails'
