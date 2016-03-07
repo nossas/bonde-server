@@ -213,7 +213,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     netrc (0.10.3)
-    newrelic_rpm (3.5.8.72)
+    newrelic_rpm (3.15.0.314)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     omniauth (1.2.2)
@@ -325,7 +325,7 @@ DEPENDENCIES
   fog
   gibbon (= 1.1.5)
   machinist (>= 2.0.0.beta2)
-  newrelic_rpm
+  newrelic_rpm (= 3.15.0.314)
   omniauth
   pg
   platform-api
