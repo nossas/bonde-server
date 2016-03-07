@@ -20,8 +20,11 @@ gem 'puma'
 gem 'platform-api'
 gem 'appsignal'
 gem 'codeclimate-test-reporter', group: :test, require: nil
-gem 'rails_12factor'
-gem 'newrelic_rpm', group: :production
+
+group :production do
+  gem 'newrelic_rpm'
+  gem 'rails_stdout_logging'
+end
 
 group :test, :development do
   gem 'rspec-rails'
