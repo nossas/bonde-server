@@ -16,3 +16,4 @@ deploy:
   app: hub-api
   on:
     repo: ourcities/hub-api
+  run: "rake db:migrate"
