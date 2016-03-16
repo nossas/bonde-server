@@ -29,6 +29,7 @@ Widget.blueprint do
   md_size { 12 }
   lg_size { 12 }
   kind { "content" }
+  action_community { false }
   settings { {content: "My 12 columns widget"} }
 end
 
