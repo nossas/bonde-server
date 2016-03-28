@@ -21,7 +21,7 @@ class MobilizationsController < ApplicationController
     begin
       @mobilizations = policy_scope(Mobilization).
         where.not(custom_domain: nil).
-        where.not(custom_domain: 'null').count
+        where.not(custom_domain: 'null')
       render json: @mobilizations
     rescue Exception => e
       Appsignal.add_exception e
