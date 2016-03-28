@@ -19,6 +19,6 @@ class WidgetSerializer < ActiveModel::Serializer
   end
 
   def action_opportunity
-    object.kind == 'form'
+    object.form?
   end
 end
