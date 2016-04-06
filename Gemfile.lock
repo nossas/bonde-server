@@ -213,6 +213,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     netrc (0.10.3)
+    newrelic_rpm (3.15.0.314)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     omniauth (1.2.2)
@@ -251,10 +252,6 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails_12factor (0.0.2)
-      rails_serve_static_assets
-      rails_stdout_logging
-    rails_serve_static_assets (0.0.1)
     rails_stdout_logging (0.0.3)
     railties (4.2.5.2)
       actionpack (= 4.2.5.2)
@@ -328,6 +325,7 @@ DEPENDENCIES
   fog
   gibbon (= 1.1.5)
   machinist (>= 2.0.0.beta2)
+  newrelic_rpm (= 3.15.0.314)
   omniauth
   pg
   platform-api
@@ -336,7 +334,7 @@ DEPENDENCIES
   rack-cors
   rails (= 4.2.5.2)
   rails-api
-  rails_12factor
+  rails_stdout_logging
   resque (~> 2.0.0.pre.1)!
   rmagick
   rspec-activemodel-mocks

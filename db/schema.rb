@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151209193105) do
+ActiveRecord::Schema.define(version: 20160316001445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,12 +46,12 @@ ActiveRecord::Schema.define(version: 20151209193105) do
     t.string   "color_scheme"
     t.string   "google_analytics_code"
     t.text     "goal"
-    t.string   "header_font"
-    t.string   "body_font"
     t.string   "facebook_share_title"
     t.text     "facebook_share_description"
+    t.string   "header_font"
+    t.string   "body_font"
     t.string   "facebook_share_image"
-    t.string   "slug"
+    t.string   "slug",                                   null: false
     t.string   "custom_domain"
     t.string   "twitter_share_text",         limit: 140
     t.integer  "organization_id"
@@ -98,12 +98,13 @@ ActiveRecord::Schema.define(version: 20151209193105) do
     t.integer  "block_id"
     t.hstore   "settings"
     t.string   "kind"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.integer  "sm_size"
     t.integer  "md_size"
     t.integer  "lg_size"
     t.string   "mailchimp_segment_id"
+    t.boolean  "action_community",     default: false
   end
 
   add_foreign_key "form_entries", "widgets"

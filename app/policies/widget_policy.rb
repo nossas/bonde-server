@@ -7,6 +7,7 @@ class WidgetPolicy < ApplicationPolicy
         :button_text,
         :count_text,
         :email_text,
+        :action_community,
 
         :title_text,
         :main_color,
@@ -30,4 +31,3 @@ class WidgetPolicy < ApplicationPolicy
     user.present? && record.mobilization.user == user
   end
 end
-#116588043

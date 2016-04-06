@@ -15,7 +15,12 @@ class Widget < ActiveRecord::Base
   end
 
   def segment_name
-    "M#{self.mobilization.id}A#{self.id} - #{self.mobilization.name[0..89]}"
+    mob = self.mobilization
+    mob_id = mob.id
+    mob_name = mob.name
+
+    return "M#{mob_id}C#{self.id} - [Comunidade] #{mob_name[0..89]}" if action_community?
+    "M#{mob_id}A#{self.id} - #{mob_name[0..89]}"
   end
 
   def form?

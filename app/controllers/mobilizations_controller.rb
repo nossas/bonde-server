@@ -1,7 +1,7 @@
 class MobilizationsController < ApplicationController
   respond_to :json
-  after_action :verify_authorized, except: %i[index]
-  after_action :verify_policy_scoped, only: %i[index]
+  after_action :verify_authorized, except: %i[index published]
+  after_action :verify_policy_scoped, only: %i[index published]
 
   def index
     begin
@@ -15,6 +15,19 @@ class MobilizationsController < ApplicationController
       Appsignal.add_exception e
       Rails.logger.error e
     end
+  end
+
+  def published
+    begin
+      @mobilizations = policy_scope(Mobilization).
+        where.not(custom_domain: nil).
+        where.not(custom_domain: 'null')
+      render json: @mobilizations
+    rescue Exception => e
+      Appsignal.add_exception e
+      Rails.logger.error e
+    end
+
   end
 
   def create
