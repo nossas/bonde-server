@@ -39,7 +39,7 @@ FormEntry.blueprint do
 end
 
 Donation.blueprint do
-  widget { Widget.make! }
+  widget { Widget.make!(kind: 'donation') }
 end
 
 Organization.blueprint do
