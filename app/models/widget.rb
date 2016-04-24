@@ -6,6 +6,7 @@ class Widget < ActiveRecord::Base
   belongs_to :block
   has_one :mobilization, through: :block
   has_many :form_entries
+  has_many :donations
   store_accessor :settings
 
   after_create :create_mailchimp_segment, if: :form?

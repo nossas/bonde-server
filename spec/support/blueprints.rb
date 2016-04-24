@@ -43,6 +43,7 @@ Donation.blueprint do
 end
 
 Organization.blueprint do
-  name { "Meu Rio #{sn}" }
+  name { "Nossas Cidades #{sn}" }
   city { "Rio de Janeiro #{sn}" }
+  pagarme_recipient_id { "re_fakerecipient" }
 end
