@@ -38,6 +38,10 @@ FormEntry.blueprint do
   fields { [].to_json }
 end
 
+Donation.blueprint do
+  widget { Widget.make! }
+end
+
 Organization.blueprint do
   name { "Meu Rio #{sn}" }
   city { "Rio de Janeiro #{sn}" }
