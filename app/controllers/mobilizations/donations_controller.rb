@@ -5,8 +5,11 @@ class Mobilizations::DonationsController < ApplicationController
   def create
     @donation = Donation.new(donation_params)
     authorize @donation
-    @donation.save!
-    render json: @donation
+    if @donation.save!
+      render json: @donation
+    else
+      render json: @donation.errors, status: :unprocessable_entity
+    end
   end
 
   private
