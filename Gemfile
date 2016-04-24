@@ -20,6 +20,7 @@ gem 'puma'
 gem 'platform-api'
 gem 'appsignal'
 gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'pagarme', '2.1.2'
 
 group :production do
   gem 'newrelic_rpm', '3.15.0.314'
