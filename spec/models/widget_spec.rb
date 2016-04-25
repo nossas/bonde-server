@@ -8,6 +8,7 @@ RSpec.describe Widget, type: :model do
   it { should validate_presence_of :kind }
   it { should validate_uniqueness_of :mailchimp_segment_id }
   it { should have_many :form_entries }
+  it { should have_many :donations }
 
   describe "#segment_name" do
     subject { @widget.segment_name }

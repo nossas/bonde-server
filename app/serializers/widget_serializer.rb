@@ -1,5 +1,7 @@
 class WidgetSerializer < ActiveModel::Serializer
-  attributes :id, :block_id, :kind, :settings, :sm_size, :md_size, :lg_size, :form_entries_count, :created_at, :updated_at, :action_community, :action_opportunity
+  attributes :id, :block_id, :kind, :settings, :sm_size, :md_size, :lg_size,
+    :form_entries_count, :donations_count, :created_at, :updated_at,
+    :action_community, :action_opportunity
 
   def settings
     return unless object.settings
@@ -16,6 +18,10 @@ class WidgetSerializer < ActiveModel::Serializer
 
   def form_entries_count
     object.form_entries.count
+  end
+
+  def donations_count
+    object.donations.count
   end
 
   def action_opportunity

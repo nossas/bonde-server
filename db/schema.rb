@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160316001445) do
+ActiveRecord::Schema.define(version: 20160425102822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,18 @@ ActiveRecord::Schema.define(version: 20160316001445) do
     t.string   "name"
     t.boolean  "menu_hidden"
   end
+
+  create_table "donations", force: :cascade do |t|
+    t.integer  "widget_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "token"
+    t.string   "payment_method"
+    t.integer  "amount"
+    t.string   "email"
+  end
+
+  add_index "donations", ["widget_id"], name: "index_donations_on_widget_id", using: :btree
 
   create_table "form_entries", force: :cascade do |t|
     t.integer  "widget_id"
@@ -60,8 +72,9 @@ ActiveRecord::Schema.define(version: 20160316001445) do
   create_table "organizations", force: :cascade do |t|
     t.string   "name"
     t.string   "city"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.string   "pagarme_recipient_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -107,5 +120,6 @@ ActiveRecord::Schema.define(version: 20160316001445) do
     t.boolean  "action_community",     default: false
   end
 
+  add_foreign_key "donations", "widgets"
   add_foreign_key "form_entries", "widgets"
 end
