@@ -51,11 +51,13 @@ class Donation < ActiveRecord::Base
   end
 
   def email
-    'someemail@email.com'
+    find_transaction["customer"]["email"]
   end
 
   def send_mail
-    DonationsMailer.thank_you_email(self).deliver_later
+    if email
+      DonationsMailer.thank_you_email(self).deliver_later
+    end
   end
 
   def client
