@@ -19,12 +19,12 @@ class Donation < ActiveRecord::Base
       begin
         @transaction.capture({
           :amount => self.amount,
-          :split_rules => split_rules,
-          :metadata => {
-            :widget_id => self.widget.sid,
-            :mobilization_id => self.mobilization.id,
-            :organization_id => self.organization.id
-          }
+          :split_rules => split_rules
+          # :metadata => {
+          #   :widget_id => self.widget.sid,
+          #   :mobilization_id => self.mobilization.id,
+          #   :organization_id => self.organization.id
+          # }
         })
       rescue PagarMeError => e
         logger.error("\n==> ERRO NA DOAÇÃO: #{e.inspect}\n")
