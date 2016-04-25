@@ -9,7 +9,7 @@ class Donation < ActiveRecord::Base
   after_create :send_mail
 
   def find_transaction
-    @transaction = PagarMe::Transaction.find_by_id("468589")
+    @transaction = PagarMe::Transaction.find_by_id(self.token)
   end
 
   def capture_transaction
@@ -20,7 +20,11 @@ class Donation < ActiveRecord::Base
         @transaction.capture({
           amount: self.amount,
           split_rules: split_rules,
-          customer: self.customer
+          :metadata => {
+            widget_id: self.widget.sid,
+            mobilization_id: self.mobilization.id,
+            organization_id: self.organization.id
+          }
         })
       rescue PagarMeError => e
         logger.error("\n==> ERRO NA DOAÇÃO: #{e.inspect}\n")
@@ -55,6 +59,6 @@ class Donation < ActiveRecord::Base
   end
 
   def client
-    PagarMe.api_key = ENV['PAGARME_API_KEY']
+    PagarMe.api_key = ENV["PAGARME_API_KEY"]
   end
 end
