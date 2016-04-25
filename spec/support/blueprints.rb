@@ -40,6 +40,10 @@ end
 
 Donation.blueprint do
   widget { Widget.make!(kind: 'donation') }
+  token { "fake_transaction_kefh2309r3hhskjdfh" }
+  amount { 3000 }
+  payment_method { "credit_card" }
+  email { "#{sn}@trashmail.com" }
 end
 
 Organization.blueprint do
