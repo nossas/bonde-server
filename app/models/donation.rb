@@ -27,6 +27,7 @@ class Donation < ActiveRecord::Base
             :widget_id => self.widget.id,
             :mobilization_id => self.mobilization.id,
             :organization_id => self.organization.id,
+            :city => self.organization.city,
             :email => self.email
           }
         })
