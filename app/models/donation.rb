@@ -15,20 +15,23 @@ class Donation < ActiveRecord::Base
   def capture_transaction
     self.transaction do
       @transaction = find_transaction
+      self.email = @transaction["customer"]["email"]
+      self.save
 
       begin
         @transaction.capture({
           :amount => self.amount,
           :payment_method => self.payment_method,
-          :split_rules => split_rules
-          # :metadata => {
-          #   :widget_id => self.widget.sid,
-          #   :mobilization_id => self.mobilization.id,
-          #   :organization_id => self.organization.id
-          # }
+          :split_rules => split_rules,
+          :metadata => {
+            :widget_id => self.widget.id,
+            :mobilization_id => self.mobilization.id,
+            :organization_id => self.organization.id,
+            :email => self.email
+          }
         })
       rescue PagarMe::PagarMeError => e
-        logger.error("\n==> ERRO NA DOAÇÃO: #{e.inspect}\n")
+        logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
     end
   end
@@ -51,17 +54,11 @@ class Donation < ActiveRecord::Base
     { charge_processing_fee: false, liable: true, percentage: 85, recipient_id: recipient }
   end
 
-  def email
-    find_transaction["customer"]["email"]
-  end
-
   def send_mail
-    self.transaction do
-      begin
-        DonationsMailer.thank_you_email(self).deliver_later if email
-      rescue StandardError => e
-        logger.error("\n==> ERRO SENDING DONATION EMAIL: #{e.inspect}\n")
-      end
+    begin
+      DonationsMailer.thank_you_email(self).deliver_later!
+    rescue StandardError => e
+      logger.error("\n==> ERROR SENDING DONATION EMAIL: #{e.inspect}\n")
     end
   end
 

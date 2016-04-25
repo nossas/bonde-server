@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160425061713) do
+ActiveRecord::Schema.define(version: 20160425102822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20160425061713) do
     t.string   "token"
     t.string   "payment_method"
     t.integer  "amount"
+    t.string   "email"
   end
 
   add_index "donations", ["widget_id"], name: "index_donations_on_widget_id", using: :btree

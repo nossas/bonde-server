@@ -10,7 +10,7 @@ class DonationsMailer < ApplicationMailer
 
     mail(
       to: donation.email,
-      subject: @mobilization.name,
+      subject: "[#{@mobilization.name}] Obrigada por doar!",
       from: from_address
     )
   end
