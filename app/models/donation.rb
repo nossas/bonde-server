@@ -9,7 +9,7 @@ class Donation < ActiveRecord::Base
   after_create :send_mail
 
   def find_transaction
-    @transaction = PagarMe::Transaction.find_by_id(self.token)
+    PagarMe::Transaction.find_by_id(self.token)
   end
 
   def capture_transaction
