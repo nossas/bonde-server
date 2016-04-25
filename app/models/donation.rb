@@ -19,6 +19,7 @@ class Donation < ActiveRecord::Base
       begin
         @transaction.capture({
           :amount => self.amount,
+          :payment_method => self.payment_method,
           :split_rules => split_rules
           # :metadata => {
           #   :widget_id => self.widget.sid,
@@ -26,7 +27,7 @@ class Donation < ActiveRecord::Base
           #   :organization_id => self.organization.id
           # }
         })
-      rescue PagarMeError => e
+      rescue PagarMe::PagarMeError => e
         logger.error("\n==> ERRO NA DOAÇÃO: #{e.inspect}\n")
       end
     end
