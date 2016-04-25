@@ -56,8 +56,12 @@ class Donation < ActiveRecord::Base
   end
 
   def send_mail
-    if email
-      DonationsMailer.thank_you_email(self).deliver_later
+    self.transaction do
+      begin
+        DonationsMailer.thank_you_email(self).deliver_later if email
+      rescue StandardError => e
+        logger.error("\n==> ERRO SENDING DONATION EMAIL: #{e.inspect}\n")
+      end
     end
   end
 
