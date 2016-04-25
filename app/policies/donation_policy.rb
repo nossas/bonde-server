@@ -5,7 +5,7 @@ class DonationPolicy < ApplicationPolicy
 
   def permitted_attributes
     if create? || update?
-      [:widget_id]
+      [:widget_id, :token, :payment_method]
     else
       []
     end
