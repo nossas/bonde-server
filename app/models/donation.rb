@@ -31,6 +31,10 @@ class Donation < ActiveRecord::Base
             :email => self.email
           }
         })
+
+        if self.payment_method == 'boleto' && Rails.env.production?
+          @transaction.collect_payment({email: self.email})
+        end
       rescue PagarMe::PagarMeError => e
         logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
