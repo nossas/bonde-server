@@ -1,12 +1,9 @@
-<% organization_name = @mobilization.organization.name %>
-<% city = organization_name.split(/\s/)[1] %>
-
 <p>
   Olá,
 </p>
 
 <p>
-  Recebemos sua doação e ficamos muito contentes em saber que você acredita neste projeto! Juntos, vamos fazer de <%= city %> uma cidade mais inclusiva, sustentável e agradável de se viver :)
+  Recebemos sua doação e ficamos muito contentes em saber que você acredita neste projeto! Juntos, construiremos uma cidade mais inclusiva, sustentável e agradável de se viver :)
 </p>
 
 <p>
@@ -27,5 +24,5 @@
 
 <p>
   Abraços, <br />
-  Equipe <%= organization_name %>.
+  Equipe <%= organization_name %> e <%= @mobilization.custom_domain %>.
 </p>
