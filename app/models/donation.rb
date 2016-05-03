@@ -5,32 +5,32 @@ class Donation < ActiveRecord::Base
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
-  after_create :capture_transaction
+  after_create :create_transaction
   after_create :send_mail
 
-  def find_transaction
-    PagarMe::Transaction.find_by_id(self.token)
+  def new_transaction
+    PagarMe::Transaction.new({
+      :card_hash => self.card_hash,
+      :amount => self.amount,
+      :payment_method => self.payment_method,
+      :split_rules => split_rules,
+      :metadata => {
+        :widget_id => self.widget.id,
+        :mobilization_id => self.mobilization.id,
+        :organization_id => self.organization.id,
+        :city => self.organization.city,
+        :email => self.email }
+    })
   end
 
-  def capture_transaction
+  def create_transaction
     self.transaction do
-      @transaction = find_transaction
+      @transaction = new_transaction
       self.email = @transaction["customer"]["email"]
       self.save
 
       begin
-        @transaction.capture({
-          :amount => self.amount,
-          :payment_method => self.payment_method,
-          :split_rules => split_rules,
-          :metadata => {
-            :widget_id => self.widget.id,
-            :mobilization_id => self.mobilization.id,
-            :organization_id => self.organization.id,
-            :city => self.organization.city,
-            :email => self.email
-          }
-        })
+        @transaction.charge
 
         if self.payment_method == 'boleto' && Rails.env.production?
           @transaction.collect_payment({email: self.email})
@@ -42,8 +42,8 @@ class Donation < ActiveRecord::Base
   end
 
   def split_rules
-    organization_sr = PagarMe::SplitRule.new(organization_rule).create
-    city_sr = PagarMe::SplitRule.new(city_rule).create
+    organization_sr = PagarMe::SplitRule.new(organization_rule)
+    city_sr = PagarMe::SplitRule.new(city_rule)
 
     [organization_sr, city_sr]
   end
