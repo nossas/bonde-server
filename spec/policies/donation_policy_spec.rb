@@ -14,7 +14,7 @@ RSpec.describe DonationPolicy do
     end
 
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [:widget_id, :payment_method, :amount, :email, :card_hash, :customer]
+      expect(subject.permitted_attributes).to eq donation_attributes
     end
   end
 
@@ -27,7 +27,28 @@ RSpec.describe DonationPolicy do
     end
 
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [:widget_id, :payment_method, :amount, :email, :card_hash, :customer]
+      expect(subject.permitted_attributes).to eq donation_attributes
     end
   end
+end
+
+def donation_attributes
+  [:widget_id, :payment_method, :amount, :email, :card_hash, customer: [
+    :name,
+    :email,
+    :document_number,
+    phone: [
+      :ddd,
+      :number
+    ],
+    address: [
+      :zipcode,
+      :street,
+      :street_number,
+      :complementary,
+      :neighborhood,
+      :city,
+      :state
+    ]
+  ]]
 end

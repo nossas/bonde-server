@@ -1,6 +1,7 @@
 require 'pagarme'
 
 class Donation < ActiveRecord::Base
+  store_accessor :customer
   belongs_to :widget
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
