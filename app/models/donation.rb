@@ -20,14 +20,14 @@ class Donation < ActiveRecord::Base
         :mobilization_id => self.mobilization.id,
         :organization_id => self.organization.id,
         :city => self.organization.city,
-        :email => self.email }
+        :email => self.customer["email"] }
     })
   end
 
   def create_transaction
     self.transaction do
       @transaction = new_transaction
-      self.email = @transaction["customer"]["email"]
+      self.email = self.customer["email"]
       self.save
 
       begin
@@ -51,8 +51,7 @@ class Donation < ActiveRecord::Base
 
   def organization_rule
     recipient = Organization.find_by_name("Nossas Cidades").pagarme_recipient_id
-    { charge_processing_fee: true, liable: false, percentage: 15, recipient_id: recipient
-    }
+    { charge_processing_fee: true, liable: false, percentage: 15, recipient_id: recipient }
   end
 
   def city_rule
