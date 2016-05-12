@@ -32,9 +32,10 @@ RSpec.describe WidgetPolicy do
     end
     it "should return permitted attributes" do
       expect(subject.permitted_attributes).to eq [:kind, settings: [
-        :content, :call_to_action, :button_text, :count_text, :email_text, :action_community,
-        :title_text, :main_color, :donation_value1, :donation_value2, :donation_value3,
-        :donation_value4, :donation_value5, :payment_methods, :customer_data]]
+        :content, :call_to_action, :button_text, :count_text, :sender_name, :sender_email,
+        :email_text, :action_community, :title_text, :main_color, :donation_value1,
+        :donation_value2, :donation_value3, :donation_value4, :donation_value5,
+        :payment_methods, :customer_data]]
     end
   end
 
@@ -55,9 +56,10 @@ RSpec.describe WidgetPolicy do
     end
     it "should return permitted attributes" do
       expect(subject.permitted_attributes).to eq [:kind, settings: [
-        :content, :call_to_action, :button_text, :count_text, :email_text, :action_community,
-        :title_text, :main_color, :donation_value1, :donation_value2, :donation_value3,
-        :donation_value4, :donation_value5, :payment_methods, :customer_data]]
+        :content, :call_to_action, :button_text, :count_text, :sender_name, :sender_email,
+        :email_text, :action_community, :title_text, :main_color, :donation_value1,
+        :donation_value2, :donation_value3, :donation_value4, :donation_value5,
+        :payment_methods, :customer_data]]
     end
   end
 end

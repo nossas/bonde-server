@@ -6,6 +6,8 @@ class WidgetPolicy < ApplicationPolicy
         :call_to_action,
         :button_text,
         :count_text,
+        :sender_name,
+        :sender_email,
         :email_text,
         :action_community,
 
