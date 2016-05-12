@@ -8,6 +8,8 @@ class Donation < ActiveRecord::Base
   after_create :capture_transaction
   after_create :send_mail
 
+  scope :by_widget, -> (widget_id) { where(widget_id: widget_id) }
+
   def find_transaction
     PagarMe::Transaction.find_by_id(self.token)
   end
