@@ -8,8 +8,8 @@ class WidgetPolicy < ApplicationPolicy
         :count_text,
         :sender_name,
         :sender_email,
-        :email_subject,
         :email_text,
+        :email_subject,
         :action_community,
 
         :title_text,
