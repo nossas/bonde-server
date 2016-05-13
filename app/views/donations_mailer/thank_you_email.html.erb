@@ -1,18 +1,4 @@
-<p>
-  Olá,
-</p>
-
-<p>
-  Recebemos sua doação e ficamos muito contentes em saber que você acredita neste projeto! Juntos, construiremos uma cidade mais inclusiva, sustentável e agradável de se viver :)
-</p>
-
-<p>
-  Quer ajudar ainda mais? Compartilhe a campanha no seu Facebook!
-  </br>
-  Estimule seus amigos e amigas a apoiarem também!
-</p>
-
-<p>Fique de olho para saber as novidades da rede!</p>
+<%= simple_format @widget.settings["email_text"] %>
 
 <p>
   <%= link_to "Compartilhe no Facebook", @mobilization.facebook_share_url %>
@@ -20,9 +6,4 @@
   <% if @mobilization.custom_domain %>
   <%= link_to "Nosso site", @mobilization.custom_domain %>
   <% end %>
-</p>
-
-<p>
-  Abraços, <br />
-  Equipe <%= @mobilization.organization.name %> e <%= @mobilization.custom_domain %>.
 </p>
