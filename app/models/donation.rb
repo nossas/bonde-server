@@ -26,6 +26,22 @@ class Donation < ActiveRecord::Base
     })
   end
 
+  def self.to_csv
+    attributes = %w{id email amount payment_method mobilization_name widget_id created_at}
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      all.each do |donation|
+        csv << attributes.map{ |a| donation.send(a) }
+      end
+    end
+  end
+
+  def mobilization_name
+    self.mobilization.name
+  end
+
   def create_transaction
     self.transaction do
       @transaction = new_transaction
