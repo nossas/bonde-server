@@ -43,20 +43,21 @@ class Donation < ActiveRecord::Base
   end
 
   def split_rules
-    organization_sr = PagarMe::SplitRule.new(organization_rule)
-    city_sr = PagarMe::SplitRule.new(city_rule)
+    unless organization_rule[:recipient_id] == city_rule[:recipient_id]
+      organization_sr = PagarMe::SplitRule.new(organization_rule)
+      city_sr = PagarMe::SplitRule.new(city_rule)
 
-    [organization_sr, city_sr]
+      [organization_sr, city_sr]
+    end
   end
 
   def organization_rule
-    recipient = Organization.find_by_name("Nossas Cidades").pagarme_recipient_id
-    { charge_processing_fee: true, liable: false, percentage: 15, recipient_id: recipient }
+    { charge_processing_fee: false, liable: false, percentage: 15, recipient_id: ENV['ORG_RECIPIENT_ID'] }
   end
 
   def city_rule
     recipient = self.organization.pagarme_recipient_id
-    { charge_processing_fee: false, liable: true, percentage: 85, recipient_id: recipient }
+    { charge_processing_fee: true, liable: true, percentage: 85, recipient_id: recipient }
   end
 
   def send_mail
