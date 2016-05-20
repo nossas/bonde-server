@@ -27,4 +27,10 @@ class DonationPolicy < ApplicationPolicy
       []
     end
   end
+
+  private
+
+  def is_owned_by?(user)
+    user.present? && record.widget.mobilization.user == user
+  end
 end
