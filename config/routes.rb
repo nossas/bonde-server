@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     resources :blocks, controller: 'mobilizations/blocks', only: [:index, :create, :update, :destroy]
     resources :widgets, controller: 'mobilizations/widgets', only: [:index, :update]
     resources :form_entries, controller: 'mobilizations/form_entries', only: [:create]
-    resources :donations, controller: 'mobilizations/donations', only: [:create]
+    resources :donations, controller: 'mobilizations/donations', only: [:create, :index]
   end
 
   resources :blocks, only: [:index]
