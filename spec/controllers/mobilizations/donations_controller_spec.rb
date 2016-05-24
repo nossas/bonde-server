@@ -10,7 +10,8 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
     @widget = Widget.make! kind: 'donation', mobilization: @mobilization
   end
 
-  describe "GET #index" do
+  xdescribe "GET #index" do
+
     it "should return donations by widget" do
       widget2 = Widget.make! kind: 'donation', mobilization: @mobilization
       donation1 = Donation.make! widget: @widget
