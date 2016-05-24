@@ -9,6 +9,8 @@ class Donation < ActiveRecord::Base
   after_create :create_transaction
   after_create :send_mail
 
+  scope :by_widget, -> (widget_id) { where(widget_id: widget_id) }
+
   def new_transaction
     PagarMe::Transaction.new({
       :card_hash => self.card_hash,

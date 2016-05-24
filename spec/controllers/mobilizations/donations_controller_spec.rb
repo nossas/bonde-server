@@ -6,7 +6,21 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
 
     @user = User.make!
     stub_current_user(@user)
-    @widget = Widget.make! kind: 'donation'
+    @mobilization = Mobilization.make!
+    @widget = Widget.make! kind: 'donation', mobilization: @mobilization
+  end
+
+  describe "GET #index" do
+    it "should return donations by widget" do
+      widget2 = Widget.make! kind: 'donation', mobilization: @mobilization
+      donation1 = Donation.make! widget: @widget
+      donation2 = Donation.make! widget: widget2
+
+      get :index, mobilization_id: @mobilization.id, widget_id: @widget.id
+
+      expect(response.body).to include(donation1.to_json)
+      expect(response.body).to_not include(donation2.to_json)
+    end
   end
 
   describe "POST #create" do
