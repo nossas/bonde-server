@@ -6,7 +6,7 @@ class Donation < ActiveRecord::Base
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
-  after_create :create_transaction
+  after_create :create_transaction, unless: :skip?
   after_create :send_mail
 
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) }
