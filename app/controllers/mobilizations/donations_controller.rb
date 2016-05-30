@@ -1,4 +1,5 @@
 require 'csv'
+require 'base64'
 
 class Mobilizations::DonationsController < ApplicationController
   respond_to :json
@@ -7,10 +8,11 @@ class Mobilizations::DonationsController < ApplicationController
 
   def index
     @donations = policy_scope(Donation).by_widget(params[:widget_id])
+    authorize @donations
 
     respond_with do |format|
       format.json { render json: @donations }
-      format.csv { send_data @donations.to_csv }
+      format.csv { send_data Base64.encode64(@donations.to_csv) }
     end
   end
 

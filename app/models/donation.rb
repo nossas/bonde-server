@@ -9,7 +9,7 @@ class Donation < ActiveRecord::Base
   after_create :create_transaction, unless: :skip?
   after_create :send_mail
 
-  scope :by_widget, -> (widget_id) { where(widget_id: widget_id) }
+  scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
 
   def new_transaction
     PagarMe::Transaction.new({
