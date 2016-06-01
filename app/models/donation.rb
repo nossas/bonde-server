@@ -9,6 +9,7 @@ class Donation < ActiveRecord::Base
   after_create :create_transaction, unless: :skip?
   after_create :send_mail
 
+  delegate :name, to: :mobilization, prefix: true
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
 
   def new_transaction
@@ -38,9 +39,9 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  def mobilization_name
-    self.mobilization.name
-  end
+  #def mobilization_name
+    #self.mobilization.name
+  #end
 
   def create_transaction
     self.transaction do
