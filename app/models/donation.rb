@@ -28,7 +28,7 @@ class Donation < ActiveRecord::Base
   end
 
   def self.to_csv
-    attributes = %w{id email amount payment_method mobilization_name widget_id created_at}
+    attributes = %w{id email amount payment_method mobilization_name widget_id created_at customer}
 
     CSV.generate(headers: true) do |csv|
       csv << attributes
