@@ -9,3 +9,19 @@ script: bundle exec rake db:migrate && bundle exec rspec spec
 branches:
   only:
   - master
+deploy:
+  - provider: heroku
+    api_key:
+      secure: D7E7ufvq3Aei0wDOK8GCpBXopfnWM2LhaqIwkCcYlS0YdxVQGV7CThU3vP7X6m4Cn9lQiKru2MeNTHaYe7wrq1BdOiGNAq5u4egb5Z34asPfzfotb6TdzgfnXeF8gbxBhc22IEh2AjRkXFFdFCFBu43aOgfiIICKAnAwrlyaTgY0facHpz1tWI5Md51SwmaeGzdsGDCcjlPO2m5pKD6sRgeylFbFkiZN+/zJ4boOtJ+MZm4c9zZBHHObe1ZupbQ4NL5S89QnCcaTFbsRspG4ZnCd5aig0/HC/Sfi8UMSriwuArkTmj4zceqieRc+PjYYOJ97ey7PvzyQgqL8Bg94Jef9OY+N11PWdsEu/7xlEuZ2hLf0bt+f7MMM8qde5ob3HgQrfxmvcLQQXAaoPyh6dVI4WAMpFAK+o71NVe31bOl06qZodkl7QGQHS2XA7zr1YmqQ1jF3ToXotDmXmqAVQQZxcLEC5p5hVkfpuSy/klXL/PHIVF5LIRqHGDBJ3Q/iNz82K17aqOn4ckNYKOAQ7wiEsKsdyNhXmmASqLgZSlIsaBdo+naR5WD+2kxoomjaxr+tm9YIrb71Blm6fWsNs7Srpi+qcakl1YWBi3bX/k7rT9CWzPiot8sujwa9q80lcvaiSRUlES2wPhbdNRYBR8KdEHW1ZMdLyZfn/dDz2mo=
+    app: hub-api
+    on:
+      repo: ourcities/hub-api
+    run: "rake db:migrate"
+  - provider: heroku
+    api_key:
+      secure: D7E7ufvq3Aei0wDOK8GCpBXopfnWM2LhaqIwkCcYlS0YdxVQGV7CThU3vP7X6m4Cn9lQiKru2MeNTHaYe7wrq1BdOiGNAq5u4egb5Z34asPfzfotb6TdzgfnXeF8gbxBhc22IEh2AjRkXFFdFCFBu43aOgfiIICKAnAwrlyaTgY0facHpz1tWI5Md51SwmaeGzdsGDCcjlPO2m5pKD6sRgeylFbFkiZN+/zJ4boOtJ+MZm4c9zZBHHObe1ZupbQ4NL5S89QnCcaTFbsRspG4ZnCd5aig0/HC/Sfi8UMSriwuArkTmj4zceqieRc+PjYYOJ97ey7PvzyQgqL8Bg94Jef9OY+N11PWdsEu/7xlEuZ2hLf0bt+f7MMM8qde5ob3HgQrfxmvcLQQXAaoPyh6dVI4WAMpFAK+o71NVe31bOl06qZodkl7QGQHS2XA7zr1YmqQ1jF3ToXotDmXmqAVQQZxcLEC5p5hVkfpuSy/klXL/PHIVF5LIRqHGDBJ3Q/iNz82K17aqOn4ckNYKOAQ7wiEsKsdyNhXmmASqLgZSlIsaBdo+naR5WD+2kxoomjaxr+tm9YIrb71Blm6fWsNs7Srpi+qcakl1YWBi3bX/k7rT9CWzPiot8sujwa9q80lcvaiSRUlES2wPhbdNRYBR8KdEHW1ZMdLyZfn/dDz2mo=
+    app: hub-api-staging
+    on:
+      repo: ourcities/hub-api
+      branch: dev
+    run: "rake db:migrate"
