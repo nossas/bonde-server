@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'base64'
 
 RSpec.describe Mobilizations::DonationsController, type: :controller do
   before do
@@ -14,8 +13,8 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
 
   describe "GET #index" do
     it "should render donations in CSV format" do
-      get :index, format: 'csv', mobilization_id: @widget.mobilization.id
-      expect(Base64.decode64(response.body)).to eq Donation.to_csv
+      get :index, format: 'text', mobilization_id: @widget.mobilization.id
+      expect(response.body).to eq Donation.to_csv
     end
 
     it "should render donations in JSON format" do

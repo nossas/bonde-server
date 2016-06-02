@@ -1,6 +1,3 @@
-require 'csv'
-require 'base64'
-
 class Mobilizations::DonationsController < ApplicationController
   respond_to :json
   after_action :verify_authorized
@@ -12,7 +9,7 @@ class Mobilizations::DonationsController < ApplicationController
 
     respond_with do |format|
       format.json { render json: @donations }
-      format.csv { send_data Base64.encode64(@donations.to_csv) }
+      format.text { render text: @donations.to_csv, :type => 'text/csv', :disposition => 'inline' }
     end
   end
 
