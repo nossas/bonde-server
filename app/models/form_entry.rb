@@ -7,7 +7,7 @@ class FormEntry < ActiveRecord::Base
   has_one :organization, through: :mobilization
 
   after_create :update_mailchimp
-  after_create :send_email
+  #after_create :send_email
 
   def fields_as_json
     JSON.parse(self.fields)
