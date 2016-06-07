@@ -14,7 +14,7 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
   describe "GET #index" do
     it "should render donations in CSV format" do
       get :index, format: 'text', mobilization_id: @widget.mobilization.id
-      expect(response.body).to eq Donation.to_csv
+      expect(response.body).to eq Donation.to_txt
     end
 
     it "should render donations in JSON format" do

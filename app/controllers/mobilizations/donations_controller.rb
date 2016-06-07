@@ -9,7 +9,7 @@ class Mobilizations::DonationsController < ApplicationController
 
     respond_with do |format|
       format.json { render json: @donations }
-      format.text { render text: @donations.to_csv, :type => 'text/csv', :disposition => 'inline' }
+      format.text { render text: @donations.to_txt, :type => 'text/csv', :disposition => 'inline', layout: false }
     end
   end
 
