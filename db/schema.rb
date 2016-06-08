@@ -11,11 +11,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160525213731) do
+ActiveRecord::Schema.define(version: 20160601004700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "activists", force: :cascade do |t|
+    t.string   "first_name",      null: false
+    t.string   "last_name"
+    t.string   "email",           null: false
+    t.string   "phone"
+    t.string   "document_number"
+    t.string   "document_type"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "address_id"
+  end
+
+  add_index "activists", ["address_id"], name: "index_activists_on_address_id", using: :btree
+
+  create_table "addresses", force: :cascade do |t|
+    t.string   "zipcode"
+    t.string   "street"
+    t.string   "street_number"
+    t.string   "complementary"
+    t.string   "neighborhood"
+    t.string   "city"
+    t.string   "state"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
 
   create_table "blocks", force: :cascade do |t|
     t.integer  "mobilization_id"
@@ -31,15 +57,17 @@ ActiveRecord::Schema.define(version: 20160525213731) do
 
   create_table "donations", force: :cascade do |t|
     t.integer  "widget_id"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "token"
     t.string   "payment_method"
     t.integer  "amount"
     t.string   "email"
     t.string   "card_hash"
     t.hstore   "customer"
-    t.boolean  "skip",           default: false
+    t.boolean  "skip",               default: false
+    t.string   "transaction_id"
+    t.string   "transaction_status"
   end
 
   add_index "donations", ["customer"], name: "index_donations_on_customer", using: :gin
@@ -124,6 +152,7 @@ ActiveRecord::Schema.define(version: 20160525213731) do
     t.boolean  "action_community",     default: false
   end
 
+  add_foreign_key "activists", "addresses"
   add_foreign_key "donations", "widgets"
   add_foreign_key "form_entries", "widgets"
 end
