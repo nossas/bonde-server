@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DonationPolicy do
-  before do
-    allow_any_instance_of(Donation).to receive(:create_transaction)
-  end
-
   context "for a visitor" do
     subject { described_class.new(nil, Donation.make!) }
     it { should allow(:create) }

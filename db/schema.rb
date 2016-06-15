@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603225456) do
+ActiveRecord::Schema.define(version: 20160610182122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,18 @@ ActiveRecord::Schema.define(version: 20160603225456) do
     t.string   "name"
     t.boolean  "menu_hidden"
   end
+
+  create_table "credit_cards", force: :cascade do |t|
+    t.integer  "activist_id"
+    t.text     "last_digits"
+    t.text     "card_brand"
+    t.text     "card_key"
+    t.text     "subscription_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "credit_cards", ["activist_id"], name: "index_credit_cards_on_activist_id", using: :btree
 
   create_table "donations", force: :cascade do |t|
     t.integer  "widget_id"

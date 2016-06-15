@@ -2,8 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Mobilizations::DonationsController, type: :controller do
   before do
-    allow_any_instance_of(Donation).to receive(:create_transaction)
-
     @user = User.make!
     stub_current_user(@user)
     @mobilization = Mobilization.make!
