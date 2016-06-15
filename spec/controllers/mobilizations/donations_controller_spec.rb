@@ -8,16 +8,26 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
     stub_current_user(@user)
     @mobilization = Mobilization.make!
     @widget = Widget.make! kind: 'donation', mobilization: @mobilization
+    @donation = Donation.make! widget: @widget
   end
 
-  xdescribe "GET #index" do
+  describe "GET #index" do
+    it "should render donations in CSV format" do
+      get :index, format: 'text', mobilization_id: @widget.mobilization.id
+      expect(response.body).to eq Donation.to_txt
+    end
+
+    it "should render donations in JSON format" do
+      get :index, format: 'json', mobilization_id: @widget.mobilization.id
+      expect(response.body).to include @donation.to_json
+    end
 
     it "should return donations by widget" do
       widget2 = Widget.make! kind: 'donation', mobilization: @mobilization
       donation1 = Donation.make! widget: @widget
       donation2 = Donation.make! widget: widget2
 
-      get :index, mobilization_id: @mobilization.id, widget_id: @widget.id
+      get :index, mobilization_id: @mobilization.id, widget_id: @widget.id, format: 'json'
 
       expect(response.body).to include(donation1.to_json)
       expect(response.body).to_not include(donation2.to_json)

@@ -9,7 +9,8 @@ class Donation < ActiveRecord::Base
   after_create :create_transaction, unless: :skip?
   after_create :send_mail
 
-  scope :by_widget, -> (widget_id) { where(widget_id: widget_id) }
+  delegate :name, to: :mobilization, prefix: true
+  scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
 
   def new_transaction
     PagarMe::Transaction.new({
@@ -24,6 +25,23 @@ class Donation < ActiveRecord::Base
         :city => self.organization.city,
         :email => self.customer["email"] }
     })
+  end
+
+  def self.to_txt
+    attributes = %w{id email amount_formatted payment_method mobilization_name
+    widget_id created_at customer transaction_id transaction_status}
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      all.each do |donation|
+        csv << attributes.map{ |a| donation.send(a) }
+      end
+    end
+  end
+
+  def amount_formatted
+    self.amount / 100
   end
 
   def create_transaction

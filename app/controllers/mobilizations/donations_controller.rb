@@ -5,7 +5,12 @@ class Mobilizations::DonationsController < ApplicationController
 
   def index
     @donations = policy_scope(Donation).by_widget(params[:widget_id])
-    render json: @donations
+    authorize @donations
+
+    respond_with do |format|
+      format.json { render json: @donations }
+      format.text { render text: @donations.to_txt, :type => 'text/csv', :disposition => 'inline', layout: false }
+    end
   end
 
   def create
