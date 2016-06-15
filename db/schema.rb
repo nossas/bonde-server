@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160610182122) do
+ActiveRecord::Schema.define(version: 20160615192131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,10 +57,9 @@ ActiveRecord::Schema.define(version: 20160610182122) do
 
   create_table "credit_cards", force: :cascade do |t|
     t.integer  "activist_id"
-    t.text     "last_digits"
-    t.text     "card_brand"
-    t.text     "card_key"
-    t.text     "subscription_id"
+    t.string   "last_digits"
+    t.string   "card_brand"
+    t.string   "card_id",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -80,6 +79,8 @@ ActiveRecord::Schema.define(version: 20160610182122) do
     t.boolean  "skip",               default: false
     t.string   "transaction_id"
     t.string   "transaction_status"
+    t.boolean  "subscription"
+    t.string   "credit_card"
   end
 
   add_index "donations", ["customer"], name: "index_donations_on_customer", using: :gin
