@@ -1,12 +1,10 @@
-require 'pagarme'
-
 class Donation < ActiveRecord::Base
   store_accessor :customer
   belongs_to :widget
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
-  after_create :send_mail
+  after_create :send_mail, unless: :skip?
 
   delegate :name, to: :mobilization, prefix: true
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
