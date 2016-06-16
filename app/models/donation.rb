@@ -1,6 +1,7 @@
 class Donation < ActiveRecord::Base
   store_accessor :customer
   belongs_to :widget
+  belongs_to :activist
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
