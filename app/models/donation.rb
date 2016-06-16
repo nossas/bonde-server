@@ -10,6 +10,10 @@ class Donation < ActiveRecord::Base
   delegate :name, to: :mobilization, prefix: true
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
 
+  def boleto?
+    self.payment_method == 'boleto'
+  end
+
   def self.to_txt
     attributes = %w{id email amount_formatted payment_method mobilization_name
     widget_id created_at customer transaction_id transaction_status}

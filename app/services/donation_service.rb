@@ -35,6 +35,8 @@ class DonationService
   private
 
   def self.new_transaction(donation)
+    self.create_card(donation) unless donation.boleto?
+
     PagarMe::Transaction.new({
       :card_hash => donation.card_hash,
       :amount => donation.amount,
@@ -59,6 +61,10 @@ class DonationService
 
       begin
         @transaction.charge
+        donation.update_attributes(
+          transaction_id: @transaction.id,
+          transaction_status: @transaction.status
+        )
 
         if donation.payment_method == 'boleto' && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
@@ -66,6 +72,14 @@ class DonationService
       rescue PagarMe::PagarMeError => e
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
+    end
+  end
+
+  def self.create_card(donation)
+    card = PagarMe::Card.new({ :card_number => donation.card_hash })
+
+    if card.create
+      donation.update_attributes(credit_card: card.id)
     end
   end
 

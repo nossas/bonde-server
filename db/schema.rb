@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616043646) do
+ActiveRecord::Schema.define(version: 20160616195620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,10 +25,7 @@ ActiveRecord::Schema.define(version: 20160616043646) do
     t.string   "document_type"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.integer  "address_id"
   end
-
-  add_index "activists", ["address_id"], name: "index_activists_on_address_id", using: :btree
 
   create_table "addresses", force: :cascade do |t|
     t.string   "zipcode"
@@ -169,7 +166,6 @@ ActiveRecord::Schema.define(version: 20160616043646) do
     t.boolean  "action_community",     default: false
   end
 
-  add_foreign_key "activists", "addresses"
   add_foreign_key "addresses", "activists"
   add_foreign_key "donations", "activists"
   add_foreign_key "donations", "widgets"
