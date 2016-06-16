@@ -14,11 +14,13 @@ class WidgetPolicy < ApplicationPolicy
 
         :title_text,
         :main_color,
+				:default_donation_value,
         :donation_value1,
         :donation_value2,
         :donation_value3,
         :donation_value4,
         :donation_value5,
+				:payment_type,
         :payment_methods,
         :customer_data
         ]
