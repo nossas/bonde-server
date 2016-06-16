@@ -15,6 +15,12 @@ class Mobilizations::DonationsController < ApplicationController
 
   def create
     @donation = Donation.new(donation_params)
+    activist_params = donation_params[:customer]
+    address_params = activist_params.delete(:address)
+
+    @donation.create_activist(activist_params)
+    @donation.activist.addresses.create(address_params)
+
     authorize @donation
 
     if @donation.save!

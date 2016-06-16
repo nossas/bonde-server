@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616034612) do
+ActiveRecord::Schema.define(version: 20160616043646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,10 @@ ActiveRecord::Schema.define(version: 20160616034612) do
     t.string   "state"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.integer  "activist_id"
   end
+
+  add_index "addresses", ["activist_id"], name: "index_addresses_on_activist_id", using: :btree
 
   create_table "blocks", force: :cascade do |t|
     t.integer  "mobilization_id"
@@ -80,8 +83,10 @@ ActiveRecord::Schema.define(version: 20160616034612) do
     t.string   "transaction_status"
     t.boolean  "subscription"
     t.string   "credit_card"
+    t.integer  "activist_id"
   end
 
+  add_index "donations", ["activist_id"], name: "index_donations_on_activist_id", using: :btree
   add_index "donations", ["customer"], name: "index_donations_on_customer", using: :gin
   add_index "donations", ["widget_id"], name: "index_donations_on_widget_id", using: :btree
 
@@ -165,6 +170,8 @@ ActiveRecord::Schema.define(version: 20160616034612) do
   end
 
   add_foreign_key "activists", "addresses"
+  add_foreign_key "addresses", "activists"
+  add_foreign_key "donations", "activists"
   add_foreign_key "donations", "widgets"
   add_foreign_key "form_entries", "widgets"
 end
