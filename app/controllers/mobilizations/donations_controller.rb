@@ -17,6 +17,7 @@ class Mobilizations::DonationsController < ApplicationController
     @donation = Donation.new(donation_params)
     authorize @donation
     if @donation.save!
+      DonationService.run(@donation.id)
       render json: @donation
     else
       render json: @donation.errors, status: :unprocessable_entity
