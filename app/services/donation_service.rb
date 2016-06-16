@@ -72,7 +72,7 @@ class DonationService
   def rules(donation)
     city = city_rule(donation)
 
-    if organization_rule[:recipient_id] == city[:recipient_id]
+    if organization_rule[:recipient_id] != city[:recipient_id]
       organization_sr = split_rules(organization_rule)
       city_sr = split_rules(city)
       [organization_sr, city_sr]
