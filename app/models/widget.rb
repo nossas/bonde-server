@@ -33,7 +33,7 @@ class Widget < ActiveRecord::Base
   end
 
   def recurring?
-    self.settings["payment_type"] == "recurring" if self.settings
+    self.settings["payment_type"] != "unique" if self.settings
   end
 
   def donation_values
