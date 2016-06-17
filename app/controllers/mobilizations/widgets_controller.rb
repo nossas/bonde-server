@@ -11,8 +11,13 @@ class Mobilizations::WidgetsController < ApplicationController
   def update
     @widget = Widget.find(params[:id])
     authorize @widget
-    @widget.update!(widget_params)
-    render json: @widget
+
+    if @widget.update!(widget_params)
+      SubscriptionService.find_or_create_plans(@widget) if @widget.recurring?
+      render json: @widget
+    else
+      render json: @widget.errors, status: :unprocessable_entity
+    end
   end
 
   private
