@@ -37,7 +37,7 @@ class DonationService
     self.find_or_create_card(donation) unless donation.boleto?
 
     PagarMe::Transaction.new({
-      card_hash: donation.card_hash,
+      card_id: donation.credit_card,
       amount: donation.amount,
       payment_method: donation.payment_method,
       split_rules: self.rules(donation),
@@ -77,9 +77,16 @@ class DonationService
 
   def self.find_or_create_card(donation)
     return PagarMe::Card.find(donation.credit_card) if donation.credit_card
-    card = PagarMe::Card.new({ :card_number => donation.card_hash })
+    card = PagarMe::Card.new(card_hash: donation.card_hash)
 
     if card.create
+      CreditCard.create(
+        last_digits: card.last_digits,
+        card_brand: card.brand,
+        card_id: card.id,
+        expiration_date: card.expiration_date,
+        activist: donation.activist
+      )
       donation.update_attributes(credit_card: card.id)
     end
   end
