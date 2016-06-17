@@ -1,9 +1,8 @@
 require 'pagarme'
 
 class DonationService
-  def self.run(donation_id)
-    donation = Donation.find(donation_id)
-    self.create_transaction(donation)
+  def self.run(donation, address)
+    self.create_transaction(donation, address)
   end
 
   # Helper method to find a transaction by metadata
@@ -35,27 +34,28 @@ class DonationService
   private
 
   def self.new_transaction(donation)
-    self.create_card(donation) unless donation.boleto?
+    self.find_or_create_card(donation) unless donation.boleto?
 
     PagarMe::Transaction.new({
-      :card_hash => donation.card_hash,
-      :amount => donation.amount,
-      :payment_method => donation.payment_method,
-      :split_rules => self.rules(donation),
-      :metadata => {
-        :widget_id => donation.widget.id,
-        :mobilization_id => donation.mobilization.id,
-        :organization_id => donation.organization.id,
-        :city => donation.organization.city,
-        :email => donation.activist.email,
-        :donation_id => donation.id
+      card_hash: donation.card_hash,
+      amount: donation.amount,
+      payment_method: donation.payment_method,
+      split_rules: self.rules(donation),
+      metadata: {
+        widget_id: donation.widget.id,
+        mobilization_id: donation.mobilization.id,
+        organization_id: donation.organization.id,
+        city: donation.organization.city,
+        email: donation.activist.email,
+        donation_id: donation.id
       }
     })
   end
 
-  def self.create_transaction(donation)
+  def self.create_transaction(donation, address)
     ActiveRecord::Base.transaction do
       @transaction = self.new_transaction(donation)
+      @transaction.customer = self.customer_params(donation, address)
       donation.email = donation.activist.email
       donation.save
 
@@ -66,7 +66,7 @@ class DonationService
           transaction_status: @transaction.status
         )
 
-        if donation.payment_method == 'boleto' && Rails.env.production?
+        if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
         end
       rescue PagarMe::PagarMeError => e
@@ -75,7 +75,8 @@ class DonationService
     end
   end
 
-  def self.create_card(donation)
+  def self.find_or_create_card(donation)
+    return PagarMe::Card.find(donation.credit_card) if donation.credit_card
     card = PagarMe::Card.new({ :card_number => donation.card_hash })
 
     if card.create
@@ -107,5 +108,29 @@ class DonationService
 
   def self.organization_rule
     { charge_processing_fee: false, liable: false, percentage: 15, recipient_id: ENV['ORG_RECIPIENT_ID'] }
+  end
+
+  def self.customer_params(donation, address)
+    {
+      name: donation.activist.name,
+      email: donation.activist.email,
+      document_number: donation.activist.document_number,
+      phone: {
+        ddd: self.phone(donation.activist.phone)[:ddd],
+        number: self.phone(donation.activist.phone)[:number]
+      },
+      address: {
+        street: address.street,
+        street_number: address.street_number,
+        complementary: address.complementary,
+        zipcode: address.zipcode,
+        neighborhood: address.neighborhood
+      }
+    }
+  end
+
+  def self.phone(number)
+    phone_number = number.gsub(/\D/, ' ').split(' ')
+    { ddd: phone_number[0], number: phone_number[1] }
   end
 end

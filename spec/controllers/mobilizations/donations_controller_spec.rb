@@ -40,23 +40,6 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
         post(:create, mobilization_id: @widget.mobilization.id, format: :json, donation: donation_params)
       }.to change { Donation.count }.by 1
     end
-
-    it "should create associated activist" do
-      post(:create, mobilization_id: @widget.mobilization.id, format: :json, donation: donation_params)
-
-      donation = Donation.last
-      expect(donation.activist.name).to eq customer_params[:name]
-      expect(donation.activist.phone).not_to be_empty
-    end
-
-    it "should create associated activist address" do
-      post(:create, mobilization_id: @widget.mobilization.id, format: :json, donation: donation_params)
-
-      donation = Donation.last
-      addresses = donation.activist.addresses
-      expect(addresses).not_to be_empty
-      expect(addresses.first.street).to eq customer_params[:address]["street"]
-    end
   end
 end
 
