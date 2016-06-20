@@ -39,8 +39,8 @@ FormEntry.blueprint do
 end
 
 Donation.blueprint do
-  widget { Widget.make!(kind: 'donation') }
-  token { "fake_transaction_kefh2309r3hhskjdfh" }
+  widget { Widget.make!(kind: 'donation', mobilization: Mobilization.make!) }
+  card_hash { "fake/card_hash_kefh2309r3hhskjdfh" }
   amount { 3000 }
   payment_method { "credit_card" }
   email { "#{sn}@trashmail.com" }

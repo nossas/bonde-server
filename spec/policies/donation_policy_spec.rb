@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DonationPolicy do
-  before do
-    allow_any_instance_of(Donation).to receive(:create_transaction)
-  end
-
   context "for a visitor" do
     subject { described_class.new(nil, Donation.make!) }
     it { should allow(:create) }
@@ -33,22 +29,29 @@ RSpec.describe DonationPolicy do
 end
 
 def donation_attributes
-  [:widget_id, :payment_method, :amount, :email, :card_hash, customer: [
-    :name,
-    :email,
-    :document_number,
-    phone: [
-      :ddd,
-      :number
-    ],
-    address: [
-      :zipcode,
-      :street,
-      :street_number,
-      :complementary,
-      :neighborhood,
-      :city,
-      :state
-    ]
-  ]]
+  [:widget_id,
+   :subscription,
+   :period,
+   :payment_method,
+   :amount,
+   :email,
+   :card_hash,
+   customer: [
+     :name,
+     :email,
+     :document_number,
+     phone: [
+       :ddd,
+       :number
+     ],
+     address: [
+       :zipcode,
+       :street,
+       :street_number,
+       :complementary,
+       :neighborhood,
+       :city,
+       :state
+     ]
+   ]]
 end

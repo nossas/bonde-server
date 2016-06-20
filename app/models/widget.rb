@@ -28,6 +28,21 @@ class Widget < ActiveRecord::Base
     self.kind == "form"
   end
 
+  def donation?
+    self.kind == "donation"
+  end
+
+  def recurring?
+    self.settings["payment_type"] != "unique" if self.settings
+  end
+
+  def donation_values
+    values = []
+    1.upto(4){|n| values << self.settings["donation_value#{n}"]}
+    values.delete("")
+    values
+  end
+
   def create_mailchimp_segment
     if !Rails.env.test?
       segment = create_segment(segment_name)

@@ -15,8 +15,18 @@ class Mobilizations::DonationsController < ApplicationController
 
   def create
     @donation = Donation.new(donation_params)
+    activist_params = donation_params[:customer]
+    address_params = activist_params.delete(:address)
+
     authorize @donation
+
     if @donation.save!
+      find_or_create_activist(activist_params)
+      address = find_or_create_address(address_params)
+
+      DonationService.run(@donation, address) unless @donation.subscription?
+      SubscriptionService.run(@donation, address) if @donation.subscription?
+
       render json: @donation
     else
       render json: @donation.errors, status: :unprocessable_entity
@@ -24,6 +34,19 @@ class Mobilizations::DonationsController < ApplicationController
   end
 
   private
+
+  def find_or_create_activist(activist_params)
+    if activist = @donation.activist.try(:find_by_email, activist_params[:email])
+      @donation.activist_id = activist.id
+    else
+      @donation.create_activist(activist_params)
+    end
+  end
+
+  def find_or_create_address(address_params)
+    @donation.activist.addresses.find_by(address_params) ||
+      @donation.activist.addresses.create(address_params)
+  end
 
   def donation_params
     params.require(:donation).permit(*policy(@donation || Donation.new).permitted_attributes).tap do |whitelisted|

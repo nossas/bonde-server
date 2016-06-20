@@ -6,6 +6,8 @@ before_script:
 - psql -c 'create role hub SUPERUSER LOGIN;' postgres
 - psql -c 'create database hub_api_test;' -U hub postgres
 script: bundle exec rake db:migrate && bundle exec rspec spec
+services:
+  - redis-server
 branches:
   only:
   - master

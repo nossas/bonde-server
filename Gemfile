@@ -15,7 +15,7 @@ gem 'active_model_serializers'
 gem 'machinist', '>= 2.0.0.beta2'
 gem 'pundit'
 gem 'gibbon', '1.1.5'
-gem 'resque', "~> 2.0.0.pre.1", github: "resque/resque"
+gem 'resque', '1.26.0'
 gem 'puma'
 gem 'platform-api'
 gem 'appsignal'
@@ -31,6 +31,7 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers'
+  gem 'byebug'
 end
 
 group :test do

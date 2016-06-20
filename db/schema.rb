@@ -11,11 +11,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160525213731) do
+ActiveRecord::Schema.define(version: 20160620130706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "activists", force: :cascade do |t|
+    t.string   "name",            null: false
+    t.string   "email",           null: false
+    t.string   "phone"
+    t.string   "document_number"
+    t.string   "document_type"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.string   "zipcode"
+    t.string   "street"
+    t.string   "street_number"
+    t.string   "complementary"
+    t.string   "neighborhood"
+    t.string   "city"
+    t.string   "state"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "activist_id"
+  end
+
+  add_index "addresses", ["activist_id"], name: "index_addresses_on_activist_id", using: :btree
 
   create_table "blocks", force: :cascade do |t|
     t.integer  "mobilization_id"
@@ -29,19 +54,40 @@ ActiveRecord::Schema.define(version: 20160525213731) do
     t.boolean  "menu_hidden"
   end
 
+  create_table "credit_cards", force: :cascade do |t|
+    t.integer  "activist_id"
+    t.string   "last_digits"
+    t.string   "card_brand"
+    t.string   "card_id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "expiration_date"
+  end
+
+  add_index "credit_cards", ["activist_id"], name: "index_credit_cards_on_activist_id", using: :btree
+
   create_table "donations", force: :cascade do |t|
     t.integer  "widget_id"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "token"
     t.string   "payment_method"
     t.integer  "amount"
     t.string   "email"
     t.string   "card_hash"
     t.hstore   "customer"
-    t.boolean  "skip",           default: false
+    t.boolean  "skip",               default: false
+    t.string   "transaction_id"
+    t.string   "transaction_status"
+    t.boolean  "subscription"
+    t.string   "credit_card"
+    t.integer  "activist_id"
+    t.string   "subscription_id"
+    t.integer  "period"
+    t.integer  "plan_id"
   end
 
+  add_index "donations", ["activist_id"], name: "index_donations_on_activist_id", using: :btree
   add_index "donations", ["customer"], name: "index_donations_on_customer", using: :gin
   add_index "donations", ["widget_id"], name: "index_donations_on_widget_id", using: :btree
 
@@ -79,6 +125,31 @@ ActiveRecord::Schema.define(version: 20160525213731) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.string   "pagarme_recipient_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.string   "transaction_status"
+    t.string   "transaction_id"
+    t.integer  "plan_id"
+    t.integer  "donation_id"
+    t.string   "subscription_id"
+    t.integer  "activist_id"
+    t.integer  "address_id"
+    t.integer  "credit_card_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "payments", ["donation_id"], name: "index_payments_on_donation_id", using: :btree
+
+  create_table "plans", force: :cascade do |t|
+    t.string   "plan_id"
+    t.string   "name"
+    t.integer  "amount"
+    t.integer  "days"
+    t.text     "payment_methods", default: ["credit_card", "boleto"], array: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: :cascade do |t|
@@ -124,6 +195,8 @@ ActiveRecord::Schema.define(version: 20160525213731) do
     t.boolean  "action_community",     default: false
   end
 
+  add_foreign_key "addresses", "activists"
+  add_foreign_key "donations", "activists"
   add_foreign_key "donations", "widgets"
   add_foreign_key "form_entries", "widgets"
 end
