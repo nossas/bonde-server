@@ -357,6 +357,7 @@ DEPENDENCIES
   rails (= 4.2.5.2)
   rails-api
   rails_stdout_logging
+  redis (= 3.3.0)
   resque (= 1.26.0)
   rmagick
   rspec-activemodel-mocks
