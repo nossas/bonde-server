@@ -9,7 +9,7 @@ class SubscriptionService < DonationService
 
   def self.find_or_create_plans(widget)
     widget.donation_values.each do |value|
-      period = donation.period || "30"
+      period = widget.settings["recurring_period"] || "30"
       plan_name = "#{PLAN_NAMES[:"#{period}"]} #{value}"
       amount = value.to_i * 100
       plan = Plan.find_by(name: plan_name, days: period, amount: amount)
