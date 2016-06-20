@@ -4,6 +4,7 @@ class Donation < ActiveRecord::Base
   belongs_to :activist
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
+  has_many :payments
 
   after_create :send_mail, unless: :skip?
 

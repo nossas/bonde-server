@@ -1,10 +1,12 @@
 require 'pagarme'
 
 class SubscriptionService < DonationService
+  include Rails.application.routes.url_helpers
+
   PLAN_NAMES = {"30": "Plano Mensal", "180": "Plano Semestral", "365": "Plano Anual"}
 
-  def self.run(donation)
-    self.create_subscription(donation)
+  def self.run(donation, address)
+    self.create_subscription(donation, address)
   end
 
   def self.find_or_create_plans(widget)
@@ -38,21 +40,13 @@ class SubscriptionService < DonationService
   def self.new_subscription(donation)
     period = donation.period || "30"
     plan = Plan.find_by(days: period, amount: donation.amount)
+
     self.find_or_create_card(donation) unless donation.boleto?
 
     PagarMe::Subscription.new({
       payment_method: donation.payment_method,
       card_id: donation.credit_card,
       plan_id: plan.plan_id,
-      postback_url: 'http://requestb.in/rigksfri',
-      customer: {
-        email: donation.activist.email,
-        name: donation.activist.name,
-        phone: {
-          ddd: self.phone(donation.activist.phone)[:ddd],
-          number: self.phone(donation.activist.phone)[:number]
-        }
-      },
       metadata: {
         widget_id: donation.widget.id,
         mobilization_id: donation.mobilization.id,
@@ -64,16 +58,35 @@ class SubscriptionService < DonationService
     })
   end
 
-  def self.create_subscription(donation)
+  def self.create_subscription(donation, address)
     ActiveRecord::Base.transaction do
       subscription = self.new_subscription(donation)
+      subscription.customer = self.customer_params(donation, address)
 
       begin
         subscription.create
-        donation.update_attributes(subscription_id: subscription.id)
+        donation.update_attributes(
+          subscription_id: subscription.id,
+          plan_id: Plan.find_by_plan_id(subscription.plan.id).id
+        )
+        self.create_payment(donation)
       rescue PagarMe::PagarMeError => e
         Rails.logger.error("\n==> SUBSCRIPTION ERROR: #{e.inspect}\n")
       end
     end
+  end
+
+  def self.create_payment(donation)
+    card = CreditCard.find_by_card_id(donation.credit_card) if donation.credit_card
+
+    donation.payments.create(
+      transaction_status: donation.transaction_status,
+      transaction_id: donation.transaction_id,
+      plan_id: donation.plan_id,
+      donation_id: donation.id,
+      subscription_id: donation.subscription_id,
+      activist_id: donation.activist_id,
+      credit_card_id: card.try(:id)
+    )
   end
 end

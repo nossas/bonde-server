@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160617192325) do
+ActiveRecord::Schema.define(version: 20160620130706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20160617192325) do
     t.integer  "activist_id"
     t.string   "subscription_id"
     t.integer  "period"
+    t.integer  "plan_id"
   end
 
   add_index "donations", ["activist_id"], name: "index_donations_on_activist_id", using: :btree
@@ -125,6 +126,21 @@ ActiveRecord::Schema.define(version: 20160617192325) do
     t.datetime "updated_at",           null: false
     t.string   "pagarme_recipient_id"
   end
+
+  create_table "payments", force: :cascade do |t|
+    t.string   "transaction_status"
+    t.string   "transaction_id"
+    t.integer  "plan_id"
+    t.integer  "donation_id"
+    t.string   "subscription_id"
+    t.integer  "activist_id"
+    t.integer  "address_id"
+    t.integer  "credit_card_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "payments", ["donation_id"], name: "index_payments_on_donation_id", using: :btree
 
   create_table "plans", force: :cascade do |t|
     t.string   "plan_id"
