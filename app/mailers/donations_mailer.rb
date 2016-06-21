@@ -12,7 +12,7 @@ class DonationsMailer < ApplicationMailer
     from_address = sender ? "#{sender} <#{email_address}>" : email_address
 
     mail(
-      to: donation.email,
+      to: donation.customer['email'],
       subject: subject,
       from: from_address
     )
