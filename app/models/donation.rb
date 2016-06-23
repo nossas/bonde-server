@@ -10,6 +10,7 @@ class Donation < ActiveRecord::Base
 
   delegate :name, to: :mobilization, prefix: true
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
+  scope :by_organization, -> (organization_id) { joins(:mobilization).where("organization_id = ?", organization_id) if organization_id }
 
   def boleto?
     self.payment_method == 'boleto'

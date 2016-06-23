@@ -30,6 +30,17 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
       expect(response.body).to include(donation1.to_json)
       expect(response.body).to_not include(donation2.to_json)
     end
+
+    it "should return donations by organization" do
+      widget2 = Widget.make! kind: 'donation', mobilization: @mobilization
+      donation1 = Donation.make! widget: @widget
+      donation2 = Donation.make! widget: widget2
+
+      get :index, mobilization_id: @mobilization.id, organization_id: widget2.mobilization.organization_id, format: 'json'
+
+      expect(response.body).not_to include(donation1.to_json)
+      expect(response.body).to include(donation2.to_json)
+    end
   end
 
   describe "POST #create" do

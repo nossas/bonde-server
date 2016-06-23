@@ -1,10 +1,13 @@
 class Mobilizations::DonationsController < ApplicationController
   respond_to :json
   after_action :verify_authorized
-  after_action :verify_policy_scoped, only: %i[]
+  after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @donations = policy_scope(Donation).by_widget(params[:widget_id])
+    @donations = policy_scope(Donation)
+      .by_organization(params[:organization_id])
+      .by_widget(params[:widget_id])
+
     authorize @donations
 
     respond_with do |format|
