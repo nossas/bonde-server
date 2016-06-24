@@ -10,7 +10,7 @@ class Donation < ActiveRecord::Base
 
   delegate :name, to: :mobilization, prefix: true
 
-  default_scope joins(:mobilization)
+  default_scope { joins(:mobilization) }
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
   scope :by_organization, -> (organization_id) { where("organization_id = ?", organization_id) if organization_id }
 
@@ -19,8 +19,10 @@ class Donation < ActiveRecord::Base
   end
 
   def self.to_txt
-    attributes = %w{id email amount_formatted payment_method mobilization_name
-    widget_id created_at customer transaction_id transaction_status}
+    attributes = %w{
+    id email amount_formatted payment_method mobilization_name widget_id
+    created_at donor transaction_id transaction_status subscription_id
+    }
 
     CSV.generate(headers: true) do |csv|
       csv << attributes
@@ -29,6 +31,14 @@ class Donation < ActiveRecord::Base
         csv << attributes.map{ |a| donation.send(a) }
       end
     end
+  end
+
+  def subscription?
+    self.subscription_id.present?
+  end
+
+  def donor
+    self.activist.name if self.activist
   end
 
   def amount_formatted
