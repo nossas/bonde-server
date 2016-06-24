@@ -9,8 +9,10 @@ class Donation < ActiveRecord::Base
   after_create :send_mail, unless: :skip?
 
   delegate :name, to: :mobilization, prefix: true
+
+  default_scope joins(:mobilization)
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
-  scope :by_organization, -> (organization_id) { joins(:mobilization).where("organization_id = ?", organization_id) if organization_id }
+  scope :by_organization, -> (organization_id) { where("organization_id = ?", organization_id) if organization_id }
 
   def boleto?
     self.payment_method == 'boleto'
