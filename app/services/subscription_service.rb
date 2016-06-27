@@ -62,6 +62,8 @@ class SubscriptionService < DonationService
     ActiveRecord::Base.transaction do
       subscription = self.new_subscription(donation)
       subscription.customer = self.customer_params(donation, address)
+      donation.email = donation.activist.email
+      donation.save
 
       begin
         subscription.create

@@ -19,7 +19,7 @@ RSpec.describe DonationsMailer, type: :mailer do
         settings: {email_text: "Thank you for doing this!"}
       )
 
-      @donation = stub_model Donation, widget: @widget, customer: { email: 'donor@foobar.com' }
+      @donation = stub_model Donation, widget: @widget, email: 'donor@foobar.com'
     end
 
     it "should deliver a message from mobilization's creator" do
@@ -29,7 +29,7 @@ RSpec.describe DonationsMailer, type: :mailer do
 
     it "should deliver a message to donor" do
       email = DonationsMailer.thank_you_email(@donation).deliver_now
-      expect(email.to).to eq([@donation.customer['email']])
+      expect(email.to).to eq([@donation.email])
     end
 
     it "should send an email with the properly subject" do
