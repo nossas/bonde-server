@@ -33,10 +33,6 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  def subscription?
-    self.subscription_id.present?
-  end
-
   def donor
     self.activist.name if self.activist
   end
