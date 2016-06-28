@@ -9,28 +9,28 @@ class SubscriptionService < DonationService
     self.create_subscription(donation, address)
   end
 
-  def self.find_or_create_plans(widget)
+  def self.create_plans(widget)
     widget.donation_values.each do |value|
       period = widget.settings["recurring_period"] || "30"
       plan_name = "#{PLAN_NAMES[:"#{period}"]} #{value}"
       amount = value.to_i * 100
       plan = Plan.find_by(name: plan_name, days: period, amount: amount)
 
-      return plan unless plan.nil?
+      if plan.nil?
+        plan = PagarMe::Plan.new({
+          name: plan_name,
+          amount: amount,
+          days: period
+        })
 
-      plan = PagarMe::Plan.new({
-        name: plan_name,
-        amount: amount,
-        days: period
-      })
-
-      if plan.create
-        Plan.create(
-          name: plan.name,
-          amount: plan.amount,
-          days: period,
-          plan_id: plan.id
-        )
+        if plan.create
+          Plan.create(
+            name: plan.name,
+            amount: plan.amount,
+            days: period,
+            plan_id: plan.id
+          )
+        end
       end
     end
   end
@@ -62,6 +62,8 @@ class SubscriptionService < DonationService
     ActiveRecord::Base.transaction do
       subscription = self.new_subscription(donation)
       subscription.customer = self.customer_params(donation, address)
+      donation.email = donation.activist.email
+      donation.save
 
       begin
         subscription.create

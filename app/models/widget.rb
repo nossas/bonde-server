@@ -37,8 +37,11 @@ class Widget < ActiveRecord::Base
   end
 
   def donation_values
+    s = self.settings
     values = []
-    1.upto(4){|n| values << self.settings["donation_value#{n}"]}
+    values_number = s.keys.count{|x| x =~ /^donation_value/}
+
+    1.upto(values_number){|n| values << s["donation_value#{n}"]}
     values.delete("")
     values
   end
