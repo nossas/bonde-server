@@ -19,7 +19,6 @@ gem 'redis', '3.3.0'
 gem 'resque', '1.26.0', require: 'resque/server'
 gem 'puma'
 gem 'platform-api'
-gem 'appsignal'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'pagarme', '2.1.2'
 
