@@ -12,6 +12,7 @@ class MobilizationsController < ApplicationController
       @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
       render json: @mobilizations
     rescue Exception => e
+      Appsignal.add_exception e
       Rails.logger.error e
     end
   end
@@ -23,6 +24,7 @@ class MobilizationsController < ApplicationController
         where.not(custom_domain: 'null')
       render json: @mobilizations
     rescue Exception => e
+      Appsignal.add_exception e
       Rails.logger.error e
     end
 
