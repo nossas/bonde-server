@@ -40,9 +40,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
-    appsignal (0.11.17)
-      rack
-      thread_safe
     arel (6.0.3)
     bcrypt (3.1.10)
     builder (3.2.2)
@@ -338,7 +335,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
-  appsignal
   byebug
   carrierwave
   codeclimate-test-reporter
