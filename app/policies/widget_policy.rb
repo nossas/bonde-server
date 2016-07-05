@@ -27,7 +27,6 @@ class WidgetPolicy < ApplicationPolicy
 
         :choicesA,
         :choices1,
-        :title,
         :labelChoices1,
         :labelChoicesA
         ]
