@@ -26,7 +26,10 @@ class WidgetPolicy < ApplicationPolicy
         :customer_data,
 
         :choicesA,
-        :choices1
+        :choices1,
+        :title,
+        :labelChoices1,
+        :labelChoicesA
         ]
       ]
     else
