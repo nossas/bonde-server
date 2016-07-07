@@ -7,11 +7,15 @@ DOKKU_HOST="reboo-staging.org"
 if [[ "$CIRCLE_BRANCH" == "master" ]]; then
   DOKKU_HOST="reboo.org"
 fi
-REPO_URI="dokku@$DOKKU_HOST:api"
 
-# deploy code changes (and implicitly restart the app and any running workers)
+REPO_URI="dokku@$DOKKU_HOST:api"
+REPO_SSL="dokku@$DOKKU_HOST:api-ssl"
+
 git remote add dokku $REPO_URI
+git remote add dokku-ssl $REPO_SSL
+
 git push dokku $CIRCLE_SHA1:refs/heads/master
+git push dokku-ssl $CIRCLE_SHA1:refs/heads/master
 
 $HOME/.dokku/contrib/dokku_client.sh run "rake db:migrate"
 
