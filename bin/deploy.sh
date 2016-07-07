@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 rm -rf ~/.dokku
 git clone https://github.com/dokku/dokku.git ~/.dokku
@@ -10,8 +10,8 @@ fi
 REPO_URI="dokku@$DOKKU_HOST:api"
 
 # deploy code changes (and implicitly restart the app and any running workers)
-git remote add deploy $REPO_URI
-git push deploy $CIRCLE_SHA1:refs/heads/master
+git remote add dokku $REPO_URI
+git push dokku $CIRCLE_SHA1:refs/heads/master
 
 $HOME/.dokku/contrib/dokku_client.sh run "rake db:migrate"
 
