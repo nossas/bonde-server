@@ -78,6 +78,7 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+staging:
 production:
   <<: *default
   database: hub_api_production
