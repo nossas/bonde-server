@@ -21,8 +21,9 @@ gem 'puma'
 gem 'platform-api'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'pagarme', '2.1.2'
+gem 'sentry-raven'
 
-group :production do
+group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'
   gem 'rails_stdout_logging'
 end
