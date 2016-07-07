@@ -1,0 +1,29 @@
+machine:
+  timezone:
+    America/Sao_Paulo # Set the timezone
+  ruby:
+    version: 2.3.0
+  services:
+    - redis
+  environment:
+    CODECLIMATE_REPO_TOKEN: e56889a515587db93387c446318a2b19e1201d1ceef87bd1f7f5c006063d3377
+
+checkout:
+  post:
+    - cp config/database.sample.yml config/database.yml
+    - psql -c 'create role hub SUPERUSER LOGIN;' postgres
+    - psql -c 'create database hub_api_test;' -U hub postgres
+
+test:
+  pre:
+    - bundle exec rake db:migrate
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./bin/deploy.sh
+  feature:
+    branch: /add-.*/
+    commands:
+      - ./bin/deploy.sh

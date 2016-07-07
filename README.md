@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ourcities/hub-api.svg?branch=master)](https://travis-ci.org/ourcities/hub-api)
+[![CircleCI](https://circleci.com/gh/ourcities/hub-api.svg?style=svg&circle-token=2a4587154e7472e2ac2b77cc3a9f6f7e663035e0)](https://circleci.com/gh/ourcities/hub-api)
 [![Test
 Coverage](https://codeclimate.com/github/ourcities/hub-api/badges/coverage.svg)](https://codeclimate.com/github/ourcities/hub-api/coverage)
 
