@@ -1,0 +1,29 @@
+machine:
+  timezone:
+    America/Sao_Paulo # Set the timezone
+  ruby:
+    version: 2.3.0
+  services:
+    - redis
+
+checkout:
+  post:
+    - cp config/database.sample.yml config/database.yml
+    - psql -c 'create role hub SUPERUSER LOGIN;' postgres
+    - psql -c 'create database hub_api_test;' -U hub postgres
+
+test:
+  pre:
+    - bundle exec rake db:migrate
+  override:
+    - bundle exec rspec spec
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./deploy.sh
+  feature:
+    branch: /add-.*/
+    commands:
+      - ./bin/deploy.sh
