@@ -75,11 +75,7 @@ test:
 #
 # You can use this database configuration with:
 #
-#   production:
-#     url: <%= ENV['DATABASE_URL'] %>
-#
+staging:
 production:
   <<: *default
-  database: hub_api_production
-  username: hub-api
-  password: <%= ENV['HUB_API_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
