@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :blocks, only: [:index]
   resources :widgets, only: [:index] do
     get :action_opportunities, on: :collection
+    resources :match, controller: 'widgets/match', only: [:index, :create]
   end
   resources :uploads, only: [:index]
   resources :organizations, only: [:index]

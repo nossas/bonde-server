@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160620130706) do
+ActiveRecord::Schema.define(version: 20160707013254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,17 @@ ActiveRecord::Schema.define(version: 20160620130706) do
   end
 
   add_index "form_entries", ["widget_id"], name: "index_form_entries_on_widget_id", using: :btree
+
+  create_table "matches", force: :cascade do |t|
+    t.integer  "widget_id"
+    t.string   "first_choice"
+    t.string   "second_choice"
+    t.string   "goal_image"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "matches", ["widget_id"], name: "index_matches_on_widget_id", using: :btree
 
   create_table "mobilizations", force: :cascade do |t|
     t.string   "name"
@@ -199,4 +210,5 @@ ActiveRecord::Schema.define(version: 20160620130706) do
   add_foreign_key "donations", "activists"
   add_foreign_key "donations", "widgets"
   add_foreign_key "form_entries", "widgets"
+  add_foreign_key "matches", "widgets"
 end
