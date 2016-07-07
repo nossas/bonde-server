@@ -14,8 +14,8 @@ REPO_SSL="dokku@$DOKKU_HOST:api-ssl"
 git remote add dokku $REPO_URI
 git remote add dokku-ssl $REPO_SSL
 
-git push dokku $CIRCLE_SHA1:refs/heads/master
-git push dokku-ssl $CIRCLE_SHA1:refs/heads/master
+git push dokku $CIRCLE_BRANCH:master
+git push dokku-ssl $CIRCLE_BRANCH:master
 
 $HOME/.dokku/contrib/dokku_client.sh run "rake db:migrate"
 
