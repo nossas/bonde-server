@@ -5,6 +5,8 @@ machine:
     version: 2.3.0
   services:
     - redis
+  enviroment:
+    CODECLIMATE_REPO_TOKEN: e56889a515587db93387c446318a2b19e1201d1ceef87bd1f7f5c006063d3377
 
 checkout:
   post:
