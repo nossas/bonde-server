@@ -22,7 +22,7 @@ deployment:
   production:
     branch: master
     commands:
-      - ./deploy.sh
+      - ./bin/deploy.sh
   feature:
     branch: /add-.*/
     commands:
