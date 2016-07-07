@@ -15,8 +15,6 @@ checkout:
 test:
   pre:
     - bundle exec rake db:migrate
-  override:
-    - bundle exec rspec spec
 
 deployment:
   production:
