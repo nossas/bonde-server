@@ -10,6 +10,20 @@ class Widgets::MatchController < ApplicationController
     render json: @match
   end
 
+  def update
+    @match = Match.where(widget_id: params[:widget_id], id: params[:id]).first
+    authorize @match
+    @match.update!(match_params)
+    render json: @match
+  end
+
+  def destroy
+    @match = Match.where(widget_id: params[:widget_id], id: params[:id]).first
+    authorize @match
+    @match.destroy!
+    render json: @match
+  end
+
   private
 
   def match_params
