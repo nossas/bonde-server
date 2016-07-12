@@ -18,9 +18,14 @@ class Widgets::MatchController < ApplicationController
   end
 
   def destroy
-    @match = Match.where(widget_id: params[:widget_id], id: params[:id]).first
+    ###
+    # NOT WORKING ):
+    ###
+    body = JSON.parse request.body.read
+    column_hash = { body['column_name'] => body['value'] }
+    @match = Match.where(column_hash, widget_id: params[:widget_id])
     authorize @match
-    @match.destroy!
+    # @match.destroy!
     render json: @match
   end
 
