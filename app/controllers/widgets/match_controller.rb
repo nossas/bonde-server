@@ -7,7 +7,7 @@ class Widgets::MatchController < ApplicationController
   def show
     @match = Match.find(params[:id])
     authorize @match
-    render json: @match
+    render json: @match.as_json.merge(:widget_title => @widget.settings['title_text'])
   end
 
   def create

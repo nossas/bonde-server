@@ -10,11 +10,10 @@ Rails.application.routes.draw do
   resources :blocks, only: [:index]
   resources :widgets, only: [:index] do
     get :action_opportunities, on: :collection
-    resources :match, controller: 'widgets/match', only: [:create, :update]
+    resources :match, controller: 'widgets/match', only: [:create, :update, :show]
     match 'match' => 'widgets/match#destroy', :via => :delete
   end
 
-  resources :matches, controller: 'widgets/match', only: [:show]
   resources :uploads, only: [:index]
   resources :organizations, only: [:index]
   mount_devise_token_auth_for 'User', at: '/auth'
