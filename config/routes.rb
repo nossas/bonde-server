@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     resources :match, controller: 'widgets/match', only: [:create, :update]
     match 'match' => 'widgets/match#destroy', :via => :delete
   end
+
+  resources :matches, controller: 'widgets/match', only: [:show]
   resources :uploads, only: [:index]
   resources :organizations, only: [:index]
   mount_devise_token_auth_for 'User', at: '/auth'

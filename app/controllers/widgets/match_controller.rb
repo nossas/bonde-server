@@ -4,6 +4,12 @@ class Widgets::MatchController < ApplicationController
   after_action :verify_authorized, except: %i[index]
   after_action :verify_policy_scoped, only: %i[index]
 
+  def show
+    @match = Match.find(params[:id])
+    authorize @match
+    render json: @match
+  end
+
   def create
     authorize @widget, :update?
     @match = @widget.matches.new(match_params)
