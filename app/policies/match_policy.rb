@@ -14,6 +14,6 @@ class MatchPolicy < ApplicationPolicy
   private
 
   def is_owned_by?(user)
-    user.present? && record.mobilization.user == user
+    user.present? && record.widget.mobilization.user == user
   end
 end

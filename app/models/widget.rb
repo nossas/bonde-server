@@ -11,6 +11,7 @@ class Widget < ActiveRecord::Base
   store_accessor :settings
 
   after_create :create_mailchimp_segment, if: :form?
+  delegate :user, to: :mobilization
 
   def as_json(options = {})
     WidgetSerializer.new(self, {root: false})

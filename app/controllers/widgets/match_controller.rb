@@ -1,32 +1,33 @@
 class Widgets::MatchController < ApplicationController
   respond_to :json
+  before_action :load_widget
   after_action :verify_authorized, except: %i[index]
   after_action :verify_policy_scoped, only: %i[index]
 
   def create
-    @match = Match.new(match_params.merge(widget_id: params[:widget_id]))
-    authorize @match
+    authorize @widget, :update?
+    @match = @widget.matches.new(match_params)
     @match.save!
     render json: @match
   end
 
   def update
-    @match = Match.where(widget_id: params[:widget_id], id: params[:id]).first
-    authorize @match
-    @match.update!(match_params)
+    authorize @widget, :update?
+    @match = @widget.matches.find(params[:id])
+    @match.update_attribtues(match_params)
     render json: @match
   end
 
   def destroy
+    authorize @widget, :update?
     ###
-    # NOT WORKING ):
+    # MAYBE WORKING :)
     ###
     body = JSON.parse request.body.read
     column_hash = { body['column_name'] => body['value'] }
-    @match = Match.where(column_hash, widget_id: params[:widget_id])
-    authorize @match
+    @widget.matches.where(column_hash).destroy_all
     # @match.destroy!
-    render json: @match
+    render json: { ok: true }
   end
 
   private
@@ -37,5 +38,9 @@ class Widgets::MatchController < ApplicationController
     else
       {}
     end
+  end
+
+  def load_widget
+    @widget ||= Widget.find(params[:widget_id])
   end
 end
