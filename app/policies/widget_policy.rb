@@ -23,7 +23,12 @@ class WidgetPolicy < ApplicationPolicy
         :recurring_period,
         :payment_type,
         :payment_methods,
-        :customer_data
+        :customer_data,
+
+        :choicesA,
+        :choices1,
+        :labelChoices1,
+        :labelChoicesA
         ]
       ]
     else
