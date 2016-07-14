@@ -33,6 +33,7 @@ group :test, :development do
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers'
   gem 'byebug'
+  gem 'pry'
 end
 
 group :test do
