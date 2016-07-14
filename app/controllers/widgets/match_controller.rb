@@ -29,9 +29,17 @@ class Widgets::MatchController < ApplicationController
   end
 
   def delete_where
-    @matches = collection.where(match_params)
-    @matches.destroy_all
-    render json: { ok: true }
+    if params[:match].present?
+      @matches = collection.where(match_params)
+      matches_ids = @matches.ids
+      @matches.destroy_all
+      render json: { ok: {
+        widget_id: params[:widget_id],
+        deleted_matches: matches_ids
+      } }
+    else
+      render json: { ok: false }
+    end
   end
 
   private
