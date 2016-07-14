@@ -6,32 +6,31 @@ class Widgets::MatchController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def show
-    @match = Match.find(params[:id])
+    @match = collection.find(params[:id])
     render json: @match.as_json.merge(:widget_title => @widget.settings['title_text'])
   end
 
   def create
-    @match = @widget.matches.new(match_params)
+    @match = collection.new(match_params)
     @match.save!
     render json: @match
   end
 
   def update
-    @match = @widget.matches.find(params[:id])
+    @match = collection.find(params[:id])
     @match.update_attributes(match_params)
     render json: @match
   end
 
   def destroy
-    @match = @widget.matches.find(params[:id])
+    @match = collection.find(params[:id])
     @match.destroy
-    ###
-    # MAYBE WORKING :)
-    ###
-    #body = JSON.parse request.body.read
-    #column_hash = { body['column_name'] => body['value'] }
-    #@widget.matches.where(column_hash).destroy_all
-    # @match.destroy!
+    render json: { ok: true }
+  end
+
+  def delete_where
+    @matches = collection.where(match_params)
+    @matches.destroy_all
     render json: { ok: true }
   end
 
@@ -43,6 +42,10 @@ class Widgets::MatchController < ApplicationController
     else
       {}
     end
+  end
+
+  def collection
+    @matches ||= @widget.matches
   end
 
   def load_widget

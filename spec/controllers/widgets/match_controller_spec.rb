@@ -47,4 +47,17 @@ RSpec.describe Widgets::MatchController, type: :controller do
     before  { delete :destroy, widget_id: match.widget_id, id: match.id }
     it_behaves_like "user access"
   end
+
+  describe "DELETE delete_where" do
+    let!(:match_2) { Match.make! widget: widget, first_choice: 'foo' }
+    let!(:match_3) { Match.make! widget: widget, first_choice: 'foo' }
+
+    before { delete :delete_where, widget_id: match.widget_id, match: { first_choice: 'foo'} }
+
+    it_behaves_like "user access"
+
+    it "should have deleted all matchs that match with filters" do
+      expect(widget.matches.size).to eq(1)
+    end
+  end
 end
