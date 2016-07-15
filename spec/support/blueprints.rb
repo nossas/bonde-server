@@ -33,6 +33,13 @@ Widget.blueprint do
   settings { {content: "My 12 columns widget"} }
 end
 
+Match.blueprint do
+  widget { Widget.make! }
+  first_choice { 'first_choice' }
+  second_choice { 'second_choice' }
+  goal_image { 'goal_image_path' }
+end
+
 FormEntry.blueprint do
   widget { Widget.make! }
   fields { [].to_json }

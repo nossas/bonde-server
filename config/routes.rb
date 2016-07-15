@@ -10,8 +10,9 @@ Rails.application.routes.draw do
   resources :blocks, only: [:index]
   resources :widgets, only: [:index] do
     get :action_opportunities, on: :collection
-    resources :match, controller: 'widgets/match', only: [:create, :update, :show]
-    match 'match' => 'widgets/match#destroy', :via => :delete
+    resources :match, controller: 'widgets/match', only: [:create, :update, :show, :destroy] do
+      delete 'delete_where', on: :collection
+    end
   end
 
   resources :uploads, only: [:index]
