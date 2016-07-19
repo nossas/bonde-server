@@ -45,6 +45,15 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
+  def city
+    fields_as_json.each do |field|
+      if field['label'] && ['cidade'].include?(field['label'].downcase)
+        return field['value']
+      end
+    end
+  end
+
+
   def update_mailchimp
     if(!Rails.env.test?)
       subscribe_to_list(self.email, {
@@ -52,6 +61,7 @@ class FormEntry < ActiveRecord::Base
         LNAME: self.last_name,
         EMAIL: self.email,
         PHONE: self.phone || "",
+        CITY: self.city,
         ORG: self.organization.name
       })
 
