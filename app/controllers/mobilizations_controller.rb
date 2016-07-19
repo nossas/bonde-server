@@ -4,6 +4,7 @@ class MobilizationsController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index published]
 
   def index
+    # TODO: Lets use has_scope here :)
     begin
       @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
       @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
