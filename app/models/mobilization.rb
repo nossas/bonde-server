@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Mobilization < ActiveRecord::Base
   include Shareable
   include Herokuable
@@ -9,6 +10,7 @@ class Mobilization < ActiveRecord::Base
   belongs_to :organization
   has_many :blocks
   has_many :widgets, through: :blocks
+  has_many :form_entries, through: :widgets
 
   before_validation :slugify
   before_save :set_custom_domain

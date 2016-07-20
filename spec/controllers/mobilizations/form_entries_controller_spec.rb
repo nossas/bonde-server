@@ -1,14 +1,38 @@
 require 'rails_helper'
 
 RSpec.describe Mobilizations::FormEntriesController, type: :controller do
+  let(:user) { User.make! }
+  let(:mobilization) { Mobilization.make! user: user }
+  let(:block) { Block.make! mobilization: mobilization }
+  let(:widget) { Widget.make! block: block }
+  let(:current_user) { user }
+
   before do
-    @user = User.make!
-    stub_current_user(@user)
+    widget
+    stub_current_user(current_user)
+  end
+
+  describe "GET #index" do
+
+    context "when access with not mobilization user" do
+      let(:current_user) { User.make! }
+
+      it "should raise record not found" do
+        expect do
+          get :index, mobilization_id: mobilization.id
+        end.to raise_error ActiveRecord::RecordNotFound
+      end
+    end
+
+    context "when access with mobilization user" do
+      let!(:form_entry) { FormEntry.make! widget: widget }
+      before { get :index, mobilization_id: mobilization.id }
+      it { is_expected.to respond_with 200 }
+    end
   end
 
   describe "POST #create" do
     it "should create with JSON format and parameters" do
-      widget = Widget.make!
       expect(widget.form_entries.count).to eq(0)
       post(
         :create,

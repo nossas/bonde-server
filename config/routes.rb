@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     get :published, on: :collection
     resources :blocks, controller: 'mobilizations/blocks', only: [:index, :create, :update, :destroy]
     resources :widgets, controller: 'mobilizations/widgets', only: [:index, :update]
-    resources :form_entries, controller: 'mobilizations/form_entries', only: [:create]
+    resources :form_entries, controller: 'mobilizations/form_entries', only: [:create, :index]
     resources :donations, controller: 'mobilizations/donations', only: [:create, :index]
   end
 
