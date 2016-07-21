@@ -4,7 +4,9 @@ class Mobilizations::FormEntriesController < ApplicationController
 
   def index
     authorize parent, :update?
-    render json: parent.form_entries.to_json
+    @form_entries = parent.form_entries
+    @form_entries = @form_entries.where(widget_id: params[:widget_id]) if params[:widget_id].present?
+    render json: @form_entries.to_json
   end
 
   def create
