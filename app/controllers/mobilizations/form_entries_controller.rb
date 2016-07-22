@@ -3,6 +3,10 @@ class Mobilizations::FormEntriesController < ApplicationController
   after_action :verify_policy_scoped, only: %i[]
 
   def index
+    ###
+    # TODO: Organizar endpoints de forma aninhada exemplo:
+    # Endpoint: /mobilizations/:mobilization_id/widgets/:widget_id/form_entries
+    ###
     authorize parent, :update?
     @form_entries = parent.form_entries
     @form_entries = @form_entries.where(widget_id: params[:widget_id]) if params[:widget_id].present?
@@ -23,6 +27,6 @@ class Mobilizations::FormEntriesController < ApplicationController
   end
 
   def parent
-    @mobilization ||= current_user.mobilizations.find params[:mobilization_id]
+    @mobilization ||= policy_scope(Mobilization).find params[:mobilization_id]
   end
 end
