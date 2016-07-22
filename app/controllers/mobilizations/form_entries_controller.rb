@@ -7,7 +7,7 @@ class Mobilizations::FormEntriesController < ApplicationController
     # TODO: Organizar endpoints de forma aninhada exemplo:
     # Endpoint: /mobilizations/:mobilization_id/widgets/:widget_id/form_entries
     ###
-    authorize parent, :update?
+    authorize parent, :authenticated?
     @form_entries = parent.form_entries
     @form_entries = @form_entries.where(widget_id: params[:widget_id]) if params[:widget_id].present?
     render json: @form_entries.to_json

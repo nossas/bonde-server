@@ -6,7 +6,7 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   let(:block) { Block.make! mobilization: mobilization }
   let(:widget) { Widget.make! block: block }
   let(:widget2) { Widget.make! block: block }
-  let(:current_user) { user }
+  let(:current_user) { User.make! admin: false }
 
   before do
     widget
