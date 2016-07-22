@@ -26,7 +26,9 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
 
       it "should return form_entries by widget_id" do
         get(:index, mobilization_id: mobilization.id, widget_id: widget.id)
+        widget.reload
         expect(response.body).to eq([form_entry].to_json)
+        expect(widget.exported_at).not_to eq(nil)
       end
     end
   end
