@@ -20,4 +20,8 @@ class MobilizationPolicy < ApplicationPolicy
       []
     end
   end
+
+  def authenticated?
+    user.present?
+  end
 end

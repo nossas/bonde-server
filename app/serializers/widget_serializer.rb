@@ -1,7 +1,7 @@
 class WidgetSerializer < ActiveModel::Serializer
   attributes :id, :block_id, :kind, :settings, :sm_size, :md_size, :lg_size,
     :form_entries_count, :donations_count, :created_at, :updated_at,
-    :action_community, :action_opportunity, :match_list
+    :action_community, :action_opportunity, :match_list, :exported_at
 
   def match_list
     object.matches

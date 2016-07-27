@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160707013254) do
+ActiveRecord::Schema.define(version: 20160722185641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -204,6 +204,7 @@ ActiveRecord::Schema.define(version: 20160707013254) do
     t.integer  "lg_size"
     t.string   "mailchimp_segment_id"
     t.boolean  "action_community",     default: false
+    t.datetime "exported_at"
   end
 
   add_foreign_key "addresses", "activists"

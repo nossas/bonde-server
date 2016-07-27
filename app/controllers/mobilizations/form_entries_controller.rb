@@ -3,8 +3,21 @@ class Mobilizations::FormEntriesController < ApplicationController
   after_action :verify_policy_scoped, only: %i[]
 
   def index
-    authorize parent, :update?
-    render json: parent.form_entries.to_json
+    ###
+    # TODO: Organizar endpoints de forma aninhada exemplo:
+    # Endpoint: /mobilizations/:mobilization_id/widgets/:widget_id/form_entries
+    ###
+    authorize parent, :authenticated?
+    @form_entries = parent.form_entries
+
+    if params[:widget_id].present?
+      @form_entries = @form_entries.where(widget_id: params[:widget_id])
+      if widget = policy_scope(Widget).find(params[:widget_id])
+        widget.update_attribute :exported_at, DateTime.now
+      end
+    end
+
+    render json: @form_entries.to_json
   end
 
   def create
@@ -21,6 +34,6 @@ class Mobilizations::FormEntriesController < ApplicationController
   end
 
   def parent
-    @mobilization ||= current_user.mobilizations.find params[:mobilization_id]
+    @mobilization ||= policy_scope(Mobilization).find params[:mobilization_id]
   end
 end
