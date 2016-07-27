@@ -47,7 +47,7 @@ class FormEntry < ActiveRecord::Base
 
   def city
     fields_as_json.each do |field|
-      if field['label'] && ['cidade'].include?(field['label'].downcase)
+      if field['label'] && field['label'].downcase == 'cidade'
         return field['value']
       end
     end
@@ -56,14 +56,20 @@ class FormEntry < ActiveRecord::Base
 
   def update_mailchimp
     if(!Rails.env.test?)
-      subscribe_to_list(self.email, {
+      subscribe_attributes =  {
         FNAME: self.first_name,
         LNAME: self.last_name,
         EMAIL: self.email,
         PHONE: self.phone || "",
         CITY: self.city,
         ORG: self.organization.name
-      })
+      }
+
+      if !self.city.present? || self.city.try(:downcase) == 'outra'
+        subscribe_attributes.delete(:CITY) 
+      end
+
+      subscribe_to_list(self.email, subscribe_attributes)
 
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
 
