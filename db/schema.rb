@@ -11,11 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722185641) do
+ActiveRecord::Schema.define(version: 20160804203515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "activist_matches", force: :cascade do |t|
+    t.integer  "activist_id"
+    t.integer  "match_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "activist_matches", ["activist_id"], name: "index_activist_matches_on_activist_id", using: :btree
+  add_index "activist_matches", ["match_id"], name: "index_activist_matches_on_match_id", using: :btree
 
   create_table "activists", force: :cascade do |t|
     t.string   "name",            null: false
@@ -207,6 +217,8 @@ ActiveRecord::Schema.define(version: 20160722185641) do
     t.datetime "exported_at"
   end
 
+  add_foreign_key "activist_matches", "activists"
+  add_foreign_key "activist_matches", "matches"
   add_foreign_key "addresses", "activists"
   add_foreign_key "donations", "activists"
   add_foreign_key "donations", "widgets"
