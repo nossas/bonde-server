@@ -5,7 +5,6 @@ class ActivistMatchesController < ApplicationController
 
   def create
     @activist = Activist.new(activist_params)
-    authorize @activist
     @activist.save!
 
     @activist_match = ActivistMatch.new(activist_match_params.merge(:activist_id => @activist.id))
