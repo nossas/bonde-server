@@ -25,10 +25,21 @@ RSpec.describe Widgets::MatchController, type: :controller do
     end
   end
 
+  shared_examples "public access" do
+    context "when user is mobilization owner" do
+      it { is_expected.to respond_with 200 }
+    end
+
+    context "when user is not mobilization owner" do
+      let(:current_user) { User.make! }
+      it { is_expected.to respond_with 200 }
+    end
+  end
+
   describe "GET #show" do
     before  { get :show, widget_id: match.widget_id, id: match.id }
 
-    it_behaves_like "user access"
+    it_behaves_like "public access"
   end
 
   describe "POST #create" do
