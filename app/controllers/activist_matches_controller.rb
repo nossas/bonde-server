@@ -4,12 +4,18 @@ class ActivistMatchesController < ApplicationController
   after_action :verify_policy_scoped, only: %i[]
 
   def create
-    @activist = Activist.new(activist_params)
+    @activist = Activist.new(activist_params.merge(:name => activist_name))
     @activist.save!
 
     @activist_match = ActivistMatch.new(activist_match_params.merge(:activist_id => @activist.id))
+    @activist_match.firstname = params[:activist_match][:activist][:firstname]
+    @activist_match.lastname = params[:activist_match][:activist][:lastname]
     @activist_match.save!
     render json: @activist_match
+  end
+
+  def activist_name
+    "#{params[:activist_match][:activist][:firstname]} #{params[:activist_match][:activist][:lastname]}"
   end
 
   def activist_params
