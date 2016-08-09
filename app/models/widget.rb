@@ -10,8 +10,12 @@ class Widget < ActiveRecord::Base
   has_many :matches
   store_accessor :settings
 
-  after_create :create_mailchimp_segment, if: :form?
+  after_create :create_mailchimp_segment, if: :is_mailchimpable?
   delegate :user, to: :mobilization
+
+  def test
+    binding.pry
+  end
 
   def as_json(options = {})
     WidgetSerializer.new(self, {root: false})
@@ -26,8 +30,16 @@ class Widget < ActiveRecord::Base
     "M#{mob_id}A#{self.id} - #{mob_name[0..89]}"
   end
 
+  def is_mailchimpable?
+    self.form? || self.match?
+  end
+
   def form?
     self.kind == "form"
+  end
+
+  def match?
+    self.kind == "match"
   end
 
   def donation?
