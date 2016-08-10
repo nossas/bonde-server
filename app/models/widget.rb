@@ -13,10 +13,6 @@ class Widget < ActiveRecord::Base
   after_create :create_mailchimp_segment, if: :is_mailchimpable?
   delegate :user, to: :mobilization
 
-  def test
-    binding.pry
-  end
-
   def as_json(options = {})
     WidgetSerializer.new(self, {root: false})
   end
