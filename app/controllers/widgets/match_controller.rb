@@ -1,8 +1,8 @@
 class Widgets::MatchController < ApplicationController
   respond_to :json
   before_action :load_widget
-  before_action :authorize_action
-  after_action :verify_authorized, except: %i[index]
+  before_action :authorize_action, except: %i[show]
+  after_action :verify_authorized, except: %i[show]
   after_action :verify_policy_scoped, only: %i[index]
 
   def show
