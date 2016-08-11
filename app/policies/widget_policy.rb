@@ -6,6 +6,8 @@ class WidgetPolicy < ApplicationPolicy
         # Generic config widget to working send form
         :email_text,
         :email_subject,
+        :email_done,
+
         # Generic widget config
         :title_text,
         :main_color,
