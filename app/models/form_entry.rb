@@ -66,7 +66,7 @@ class FormEntry < ActiveRecord::Base
       }
 
       if !self.city.present? || self.city.try(:downcase) == 'outra'
-        subscribe_attributes.delete(:CITY) 
+        subscribe_attributes.delete(:CITY)
       end
 
       subscribe_to_list(self.email, subscribe_attributes)
@@ -74,7 +74,7 @@ class FormEntry < ActiveRecord::Base
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
 
       update_member(self.email, {
-        groupings: [{ id: 49, groups: [self.organization.name] }]
+        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }]
       })
     end
   end
