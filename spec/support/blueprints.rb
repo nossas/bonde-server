@@ -45,6 +45,20 @@ FormEntry.blueprint do
   fields { [].to_json }
 end
 
+Activist.blueprint do
+  name { "Foo Bar" }
+  email { "foo@bar.org" }
+  phone { { ddd: "11", number: "999999999" }.to_s }
+  document_number { "12345678909" }
+end
+
+ActivistPressure.blueprint do
+  widget { Widget.make! }
+  activist { Activist.make! }
+  firstname { "Foo" }
+  lastname { 'Bar' }
+end
+
 Donation.blueprint do
   widget { Widget.make!(kind: 'donation', mobilization: Mobilization.make!) }
   card_hash { "fake/card_hash_kefh2309r3hhskjdfh" }
