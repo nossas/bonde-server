@@ -1,6 +1,54 @@
 require 'rails_helper'
 
 RSpec.describe WidgetPolicy do
+
+  permitted_attributes = [:kind, settings: [
+    # Can re-use settings
+    # Autofire config
+    :email_text,
+    :email_subject,
+    :sender_name,
+    :sender_email,
+
+    # Generic widget config
+    :title_text,
+    :main_color,
+    :button_text,
+    :count_text,
+    :show_counter,
+
+    # Settings specific widget
+    # Content Widget
+    :content,
+
+    # Pressure Widget
+    :targets,
+    :pressure_subject,
+    :pressure_body,
+
+    # Donation widget
+    :default_donation_value,
+    :donation_value1,
+    :donation_value2,
+    :donation_value3,
+    :donation_value4,
+    :donation_value5,
+    :recurring_period,
+    :payment_type,
+    :payment_methods,
+    :customer_data,
+
+    # Match Widget
+    :choicesA,
+    :choices1,
+    :labelChoices1,
+    :labelChoicesA,
+
+    :call_to_action,
+    :action_community
+    ]
+  ]
+
   context "for a visitor" do
     subject { described_class.new(nil, Widget.make!) }
     it { should allow(:index) }
@@ -31,11 +79,7 @@ RSpec.describe WidgetPolicy do
       expect(subject.scope).to eq Widget
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [:kind, settings: [
-        :content, :call_to_action, :button_text, :count_text, :sender_name, :sender_email,
-        :email_text, :email_subject, :action_community, :title_text, :main_color, :default_donation_value, :donation_value1,
-        :donation_value2, :donation_value3, :donation_value4, :donation_value5, :recurring_period, :payment_type,
-        :payment_methods, :customer_data, :choicesA, :choices1, :labelChoices1, :labelChoicesA]]
+      expect(subject.permitted_attributes).to eq permitted_attributes
     end
   end
 
@@ -55,11 +99,7 @@ RSpec.describe WidgetPolicy do
       expect(subject.scope).to eq Widget
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [:kind, settings: [
-        :content, :call_to_action, :button_text, :count_text, :sender_name, :sender_email,
-        :email_text, :email_subject, :action_community, :title_text, :main_color, :default_donation_value, :donation_value1,
-        :donation_value2, :donation_value3, :donation_value4, :donation_value5, :recurring_period, :payment_type,
-        :payment_methods, :customer_data, :choicesA, :choices1, :labelChoices1, :labelChoicesA]]
+      expect(subject.permitted_attributes).to eq permitted_attributes
     end
   end
 end

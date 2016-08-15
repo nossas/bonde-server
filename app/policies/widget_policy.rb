@@ -3,10 +3,11 @@ class WidgetPolicy < ApplicationPolicy
     if create?
       [:kind, settings: [
         # Can re-use settings
-        # Generic config widget to working send form
+        # Autofire config
         :email_text,
         :email_subject,
-        :email_done,
+        :sender_name,
+        :sender_email,
 
         # Generic widget config
         :title_text,
@@ -18,6 +19,11 @@ class WidgetPolicy < ApplicationPolicy
         # Settings specific widget
         # Content Widget
         :content,
+
+        # Pressure Widget
+        :targets,
+        :pressure_subject,
+        :pressure_body,
 
         # Donation widget
         :default_donation_value,
@@ -38,8 +44,6 @@ class WidgetPolicy < ApplicationPolicy
         :labelChoicesA,
 
         :call_to_action,
-        :sender_name,
-        :sender_email,
         :action_community
         ]
       ]
