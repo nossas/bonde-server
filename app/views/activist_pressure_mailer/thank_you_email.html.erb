@@ -1,0 +1,17 @@
+<% if @widget.settings.present? && @widget.settings['email_text'].present? %>
+<%= simple_format @widget.settings["email_text"] %>
+<% else %>
+<p>Obrigado por apostar na força da ação coletiva em rede.</p>
+<p>Sua participação é muito importante e, agora, precisamos da sua ajuda para que mais gente colabore com esta mobilização.</p>
+<p>Compartilhe nas suas redes clicando em um dos links abaixo. </p>
+<p>Um abraço.</p>
+<% end %>
+<p>
+  <%= link_to "Compartilhe no Facebook", @mobilization.facebook_share_url %>
+  <br />
+  <%= link_to "Compartilhe no Twitter", @mobilization.twitter_share_url %>
+	<br />
+  <% if @mobilization.custom_domain %>
+  <%= link_to "Nosso site", @mobilization.custom_domain %>
+  <% end %>
+</p>

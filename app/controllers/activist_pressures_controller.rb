@@ -10,6 +10,7 @@ class ActivistPressuresController < ApplicationController
     @activist_pressure = ActivistPressure.new(activist_pressure_params.merge(:activist_id => @activist.id))
     @activist_pressure.firstname = firstname
     @activist_pressure.lastname = lastname
+    @activist_pressure.pressure = pressure
     @activist_pressure.save!
     render json: @activist_pressure
   end
@@ -43,5 +44,9 @@ class ActivistPressuresController < ApplicationController
 
     def lastname
       params[:activist_pressure][:activist][:lastname]
+    end
+
+    def pressure
+      params[:activist_pressure][:pressure]
     end
 end

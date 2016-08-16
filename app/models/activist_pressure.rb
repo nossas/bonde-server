@@ -1,8 +1,7 @@
 class ActivistPressure < ActiveRecord::Base
   include Mailchimpable
 
-  attr_accessor :firstname
-  attr_accessor :lastname
+  attr_accessor :firstname, :lastname, :pressure
 
   validates :widget, :activist, presence: true
   belongs_to :activist
@@ -11,7 +10,7 @@ class ActivistPressure < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :organization, through: :mobilization
 
-  after_create :update_mailchimp
+  after_create :update_mailchimp, :send_thank_you_email
 
   def update_mailchimp
     if(!Rails.env.test?)
@@ -26,6 +25,12 @@ class ActivistPressure < ActiveRecord::Base
       update_member(self.activist.email, {
         groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }]
       })
+    end
+  end
+
+  def send_thank_you_email
+    if self.pressure.present?
+      ActivistPressureMailer.thank_you_email(self).deliver_later
     end
   end
 end
