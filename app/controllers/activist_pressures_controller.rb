@@ -16,37 +16,35 @@ class ActivistPressuresController < ApplicationController
   end
 
   private
-    def activist_name
-      "#{firstname} #{lastname}"
-    end
+  def activist_name
+    "#{firstname} #{lastname}"
+  end
 
-    def activist_params
-      if params[:activist_pressure][:activist]
-        params[:activist_pressure]
-          .require(:activist)
-          .permit(*policy(@activist || Activist.new).permitted_attributes)
-      else
-      end
+  def activist_params
+    if params[:activist_pressure][:activist]
+      params[:activist_pressure]
+        .require(:activist)
+        .permit(*policy(@activist || Activist.new).permitted_attributes)
     end
+  end
 
-    def activist_pressure_params
-      if params[:activist_pressure]
-        params
-          .require(:activist_pressure)
-          .permit(*policy(@activist_pressure || ActivistPressure.new).permitted_attributes)
-      else
-      end
+  def activist_pressure_params
+    if params[:activist_pressure]
+      params
+        .require(:activist_pressure)
+        .permit(*policy(@activist_pressure || ActivistPressure.new).permitted_attributes)
     end
+  end
 
-    def firstname
-      params[:activist_pressure][:activist][:firstname]
-    end
+  def firstname
+    params[:activist_pressure][:activist][:firstname]
+  end
 
-    def lastname
-      params[:activist_pressure][:activist][:lastname]
-    end
+  def lastname
+    params[:activist_pressure][:activist][:lastname]
+  end
 
-    def pressure
-      params[:activist_pressure][:pressure]
-    end
+  def pressure
+    params[:activist_pressure][:pressure]
+  end
 end

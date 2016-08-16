@@ -3,24 +3,25 @@ class ActivistPressureMailer < ApplicationMailer
     @activist = activist_pressure.activist
     @widget = activist_pressure.widget
     @mobilization = @widget.mobilization
-    settings = @widget.settings
-    pressure = activist_pressure.pressure
+    @settings = @widget.settings
 
-    from_address = @mobilization.user.email
-    from_address = "#{@mobilization.user.first_name} <#{@mobilization.user.email}>" if @mobilization.user.first_name
-    subject = @mobilization.name
+    mail to: @activist.email, subject: subject, from: from
+  end
 
-    if settings.present?
-      hasSender = settings['sender_name'] && settings['sender_email']
+  private
+  def from
+    has_sender = @settings['sender_name'] && @settings['sender_email']
+    has_first_name = @mobilization.user.first_name
 
-      from_address = "#{settings['sender_name']} <#{settings['sender_email']}>" if hasSender
-      subject = settings['email_subject'] if settings['email_subject']
+    if @settings.present?
+      return "#{@mobilization.user.first_name} <#{@mobilization.user.email}>" if has_first_name
+      return "#{@settings['sender_name']} <#{@settings['sender_email']}>" if has_sender
     end
+    @mobilization.user.email
+  end
 
-    mail(
-      to: @activist.email,
-      subject: subject,
-      from: from_address
-    )
+  def subject
+    return @settings['email_subject'] if @settings['email_subject']
+    @mobilization.name
   end
 end

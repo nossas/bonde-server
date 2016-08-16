@@ -13,18 +13,10 @@ class ActivistPressure < ActiveRecord::Base
   after_create :update_mailchimp, :send_thank_you_email
 
   def update_mailchimp
-    if(!Rails.env.test?)
-      subscribe_attributes =  {
-        FNAME: self.firstname,
-        LNAME: self.lastname,
-        EMAIL: self.activist.email
-      }
-
+    unless Rails.env.test?
       subscribe_to_list(self.activist.email, subscribe_attributes)
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
-      update_member(self.activist.email, {
-        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }]
-      })
+      update_member(self.activist.email, { groupings: groupings })
     end
   end
 
@@ -32,5 +24,20 @@ class ActivistPressure < ActiveRecord::Base
     if self.pressure.present?
       ActivistPressureMailer.thank_you_email(self).deliver_later
     end
+  end
+
+  private
+  def subscribe_attributes
+    {
+      FNAME: self.firstname,
+      LNAME: self.lastname,
+      EMAIL: self.activist.email
+    }
+  end
+
+  def groupings
+    [
+      { id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }
+    ]
   end
 end
