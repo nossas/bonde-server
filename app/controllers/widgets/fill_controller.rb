@@ -1,15 +1,15 @@
 class Widgets::FillController < ApplicationController
   respond_to :json
+  before_action :load_widget
   after_action :verify_authorized, except: %i[create]
   after_action :verify_policy_scoped, only: %i[]
 
   def create
-    widget = Widget.find(params[:widget_id])
     @activist = Activist.new(activist_params)
     @activist.save!
 
     result = {}
-    if widget.kind === 'pressure'
+    if @widget.kind === 'pressure'
       @activist_pressure = ActivistPressure.new(activist_pressure_params)
       @activist_pressure.firstname = firstname
       @activist_pressure.lastname = lastname
@@ -22,6 +22,10 @@ class Widgets::FillController < ApplicationController
   end
 
   private
+  def load_widget
+    @widget ||= Widget.find(params[:widget_id])
+  end
+
   def activist_name
     "#{firstname} #{lastname}"
   end
