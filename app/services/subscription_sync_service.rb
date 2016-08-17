@@ -30,10 +30,10 @@ class SubscriptionSyncService
           plan_id: @parent_donation.plan_id,
           email: @parent_donation.email,
           payment_method: @parent_donation.payment_method,
-          parent_id: @parent_donation.id
+          parent_id: @parent_donation.id,
+          created_at: transaction.date_created
         )
       end
-
     end
   end
 end
