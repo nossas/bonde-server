@@ -12,7 +12,7 @@ class ActivistPressure < ActiveRecord::Base
 
   after_create :update_mailchimp, :send_thank_you_email, :send_pressure_email
 
-  def as_json(options = {})
+  def as_json(*)
     ActivistPressureSerializer.new(self, {root: false})
   end
 

@@ -4,12 +4,12 @@ class Widgets::FillController < ApplicationController
   after_action :verify_policy_scoped, only: %i[]
 
   def create
-    @widget = Widget.find(params[:widget_id])
+    widget = Widget.find(params[:widget_id])
     @activist = Activist.new(activist_params)
     @activist.save!
 
     result = {}
-    if @widget.kind === 'pressure'
+    if widget.kind === 'pressure'
       @activist_pressure = ActivistPressure.new(activist_pressure_params)
       @activist_pressure.firstname = firstname
       @activist_pressure.lastname = lastname
