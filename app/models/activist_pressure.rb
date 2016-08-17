@@ -25,7 +25,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_pressure_email
-    ActivistPressureMailer.pressure_email(self).deliver_later
+    ActivistPressureMailer.pressure_email(self).deliver_now
   end
 
   private
