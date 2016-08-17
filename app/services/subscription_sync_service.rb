@@ -19,6 +19,8 @@ class SubscriptionSyncService
       else
         Donation.create(
           transaction_id: transaction.id,
+          amount: @parent_donation.amount,
+          activist_id: @parent_donation.activist_id,
           transaction_status: transaction.status,
           widget_id: @parent_donation.widget_id,
           subscription_id: @subscription.id,
