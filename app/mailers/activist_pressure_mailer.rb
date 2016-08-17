@@ -16,7 +16,7 @@ class ActivistPressureMailer < ApplicationMailer
 
   private
   def from
-    has_sender = @settings['sender_name'] && @settings['sender_email']
+    has_sender = @settings.present? && @settings['sender_name'] && @settings['sender_email']
     has_first_name = @mobilization.user.first_name
 
     if @settings.present?
@@ -27,7 +27,7 @@ class ActivistPressureMailer < ApplicationMailer
   end
 
   def subject
-    return @settings['email_subject'] if @settings['email_subject']
+    return @settings['email_subject'] if @settings.present? && @settings['email_subject']
     @mobilization.name
   end
 
