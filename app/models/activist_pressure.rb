@@ -12,6 +12,10 @@ class ActivistPressure < ActiveRecord::Base
 
   after_create :update_mailchimp, :send_thank_you_email, :send_pressure_email
 
+  def as_json(options = {})
+    ActivistPressureSerializer.new(self, {root: false})
+  end
+
   def update_mailchimp
     unless Rails.env.test?
       subscribe_to_list(self.activist.email, subscribe_attributes)
@@ -21,7 +25,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_thank_you_email
-    ActivistPressureMailer.thank_you_email(self).deliver_later
+    ActivistPressureMailer.thank_you_email(self).deliver_now
   end
 
   def send_pressure_email
