@@ -57,6 +57,7 @@ ActivistPressure.blueprint do
   activist { Activist.make! }
   firstname { "Foo" }
   lastname { 'Bar' }
+  mail { { cc: ["barfoo@foobar.com"], subject: "Foo Bar Subject!", body: "Foo Bar Body!" } }
 end
 
 Donation.blueprint do

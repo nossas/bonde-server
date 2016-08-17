@@ -1,16 +1,16 @@
 class ActivistPressure < ActiveRecord::Base
   include Mailchimpable
 
-  attr_accessor :firstname, :lastname, :pressure
+  attr_accessor :firstname, :lastname, :mail
 
-  validates :widget, :activist, presence: true
+  validates :widget, :activist, :mail, presence: true
   belongs_to :activist
   belongs_to :widget
   has_one :block, through: :widget
   has_one :mobilization, through: :block
   has_one :organization, through: :mobilization
 
-  after_create :update_mailchimp, :send_thank_you_email
+  after_create :update_mailchimp, :send_thank_you_email, :send_pressure_email
 
   def update_mailchimp
     unless Rails.env.test?
@@ -21,9 +21,11 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_thank_you_email
-    if self.pressure.present?
-      ActivistPressureMailer.thank_you_email(self).deliver_later
-    end
+    ActivistPressureMailer.thank_you_email(self).deliver_later
+  end
+
+  def send_pressure_email
+    ActivistPressureMailer.pressure_email(self).deliver_later
   end
 
   private

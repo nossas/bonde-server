@@ -13,7 +13,7 @@ class Widgets::FillController < ApplicationController
       @activist_pressure = ActivistPressure.new(activist_pressure_params)
       @activist_pressure.firstname = firstname
       @activist_pressure.lastname = lastname
-      @activist_pressure.pressure = pressure
+      @activist_pressure.mail = mail
       @activist_pressure.save!
       result = @activist_pressure
     end
@@ -50,7 +50,7 @@ class Widgets::FillController < ApplicationController
     params[:fill][:activist][:lastname]
   end
 
-  def pressure
-    params[:fill][:pressure]
+  def mail
+    params[:fill][:mail]
   end
 end

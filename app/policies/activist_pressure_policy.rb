@@ -4,7 +4,8 @@ class ActivistPressurePolicy < ApplicationPolicy
       :widget_id,
       :activist_id,
       :firstname,
-      :lastname
+      :lastname,
+      :mail
     ]
   end
 end

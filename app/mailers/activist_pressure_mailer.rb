@@ -8,6 +8,12 @@ class ActivistPressureMailer < ApplicationMailer
     mail to: @activist.email, subject: subject, from: from
   end
 
+  def pressure_email(activist_pressure)
+    @activist = activist_pressure.activist
+    @mail = activist_pressure.mail
+    mail to: targets, subject: @mail[:subject], from: activist_email
+  end
+
   private
   def from
     has_sender = @settings['sender_name'] && @settings['sender_email']
@@ -23,5 +29,14 @@ class ActivistPressureMailer < ApplicationMailer
   def subject
     return @settings['email_subject'] if @settings['email_subject']
     @mobilization.name
+  end
+
+  def targets
+    @mail[:cc].join(',')
+  end
+
+  def activist_email
+    return "#{@activist[:name]} <#{@activist[:email]}>" if @activist[:name]
+    @activist[:email]
   end
 end
