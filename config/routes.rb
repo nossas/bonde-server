@@ -13,10 +13,10 @@ Rails.application.routes.draw do
     resources :match, controller: 'widgets/match', only: [:create, :update, :show, :destroy] do
       delete 'delete_where', on: :collection
     end
+    resources :fill, controller: 'widgets/fill', only: [:create]
   end
 
   resources :activist_matches, only: [:create]
-  resources :activist_pressures, only: [:create]
   resources :uploads, only: [:index]
   resources :organizations, only: [:index]
   mount_devise_token_auth_for 'User', at: '/auth'

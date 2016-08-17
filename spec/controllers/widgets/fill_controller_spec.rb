@@ -1,7 +1,6 @@
-
 require 'rails_helper'
 
-RSpec.describe ActivistPressuresController, type: :controller do
+RSpec.describe Widgets::FillController, type: :controller do
   let(:user) { User.make! }
   let(:mobilization) { Mobilization.make! user: user }
   let(:block) { Block.make! mobilization: mobilization }
@@ -28,7 +27,8 @@ RSpec.describe ActivistPressuresController, type: :controller do
   describe "POST #create" do
     before {
       post :create,
-      activist_pressure: { widget_id: widget, activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
+      widget_id: widget,
+      fill: { activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
     }
 
     it_behaves_like "public access"
