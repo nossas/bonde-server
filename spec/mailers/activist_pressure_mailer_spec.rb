@@ -26,35 +26,36 @@ RSpec.describe ActivistPressureMailer, type: :mailer do
 
         @activist = stub_model Activist, name: 'Foo Bar', email: 'foo@bar.org'
         @activist_pressure = stub_model ActivistPressure, widget: @widget, activist: @activist
+        expect(ActivistPressure).to receive(:find).and_return(stub_model ActivistPressure, widget: @widget, activist: @activist)
       end
 
       it 'should send an email to the properly destination' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.to).to be_eql([@activist_pressure.activist.email])
       end
 
       it 'should send an email with the properly sender' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.from).to be_eql([@mobilization.user.email])
       end
 
       it 'should send an email with the properly subject' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.subject).to include(@mobilization.name)
       end
 
       it 'should send an email with the properly body' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.body).to include(@widget.settings['email_text'])
       end
 
       it 'should send an email with a Facebook share link' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.body).to include(@mobilization.facebook_share_url)
       end
 
       it 'should send an email with a Twitter share link' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.body).to include(@mobilization.twitter_share_url)
       end
     end
@@ -74,20 +75,21 @@ RSpec.describe ActivistPressureMailer, type: :mailer do
 
         @activist = stub_model Activist, name: 'Foo Bar', email: 'foo@bar.org'
         @activist_pressure = stub_model ActivistPressure, widget: @widget, activist: @activist
+        expect(ActivistPressure).to receive(:find).and_return(stub_model ActivistPressure, widget: @widget, activist: @activist)
       end
 
       it 'should send an email to the properly destination' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.to).to be_eql([@activist_pressure.activist.email])
       end
 
       it 'should send an email with the properly sender' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.from).to be_eql([@activist_pressure.widget.settings['sender_email']])
       end
 
       it 'should send an email with the properly subject' do
-        email = ActivistPressureMailer.thank_you_email(@activist_pressure).deliver_now
+        email = ActivistPressureMailer.thank_you_email(@activist_pressure.id).deliver_now
         expect(email.subject).to include(@activist_pressure.widget.settings['email_subject'])
       end
     end
@@ -127,25 +129,26 @@ RSpec.describe ActivistPressureMailer, type: :mailer do
 
       @activist = stub_model Activist, name: 'Foo Bar', email: 'foo@bar.org'
       @activist_pressure = stub_model ActivistPressure, widget: @widget, activist: @activist, mail: @mail
+      expect(ActivistPressure).to receive(:find).and_return(stub_model ActivistPressure, widget: @widget, activist: @activist)
     end
 
     it 'should send an email to the properly targets' do
-      email = ActivistPressureMailer.pressure_email(@activist_pressure).deliver_now
+      email = ActivistPressureMailer.pressure_email(@activist_pressure.id, @mail).deliver_now
       expect(email.to).to be_eql(@mail[:cc])
     end
 
     it 'should send an email with the properly sender' do
-      email = ActivistPressureMailer.pressure_email(@activist_pressure).deliver_now
+      email = ActivistPressureMailer.pressure_email(@activist_pressure.id, @mail).deliver_now
       expect(email.from).to be_eql([@activist.email])
     end
 
     it 'should send an email with the properly subject' do
-      email = ActivistPressureMailer.pressure_email(@activist_pressure).deliver_now
+      email = ActivistPressureMailer.pressure_email(@activist_pressure.id, @mail).deliver_now
       expect(email.subject).to include(@mail[:subject])
     end
 
     it 'should send an email with the properly body' do
-      email = ActivistPressureMailer.pressure_email(@activist_pressure).deliver_now
+      email = ActivistPressureMailer.pressure_email(@activist_pressure.id, @mail).deliver_now
       expect(email.body).to include(@mail[:body])
     end
   end

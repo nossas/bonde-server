@@ -25,11 +25,11 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_thank_you_email
-    ActivistPressureMailer.thank_you_email(self).deliver_now
+    ActivistPressureMailer.thank_you_email(self.id).deliver_later
   end
 
   def send_pressure_email
-    ActivistPressureMailer.pressure_email(self).deliver_now
+    ActivistPressureMailer.pressure_email(self.id, self.mail).deliver_later
   end
 
   private

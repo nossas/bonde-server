@@ -1,5 +1,6 @@
 class ActivistPressureMailer < ApplicationMailer
-  def thank_you_email(activist_pressure)
+  def thank_you_email(id)
+    activist_pressure = load_model(id)
     @activist = activist_pressure.activist
     @widget = activist_pressure.widget
     @mobilization = @widget.mobilization
@@ -8,10 +9,15 @@ class ActivistPressureMailer < ApplicationMailer
     mail to: @activist.email, subject: subject, from: from
   end
 
-  def pressure_email(activist_pressure)
+  def pressure_email(id, recipient)
+    activist_pressure = load_model(id)
     @activist = activist_pressure.activist
-    @mail = activist_pressure.mail
+    @mail = recipient
     mail to: targets, subject: @mail[:subject], from: activist_email
+  end
+
+  def load_model(id)
+    ActivistPressure.find(id)
   end
 
   private
