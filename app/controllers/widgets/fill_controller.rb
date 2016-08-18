@@ -23,7 +23,7 @@ class Widgets::FillController < ApplicationController
 
   private
   def load_widget
-    @widget ||= Widget.find(params[:widget_id])
+    @widget ||= policy_scope(Widget).find(params[:widget_id])
   end
 
   def activist_name

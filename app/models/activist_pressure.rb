@@ -10,18 +10,16 @@ class ActivistPressure < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :organization, through: :mobilization
 
-  after_create :update_mailchimp, :send_thank_you_email, :send_pressure_email
+  after_create :update_mailchimp, :send_thank_you_email, :send_pressure_email, unless: :is_test?
 
   def as_json(*)
     ActivistPressureSerializer.new(self, {root: false})
   end
 
   def update_mailchimp
-    unless Rails.env.test?
-      subscribe_to_list(self.activist.email, subscribe_attributes)
-      subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
-      update_member(self.activist.email, { groupings: groupings })
-    end
+    subscribe_to_list(self.activist.email, subscribe_attributes)
+    subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
+    update_member(self.activist.email, { groupings: groupings })
   end
 
   def send_thank_you_email
@@ -33,6 +31,10 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   private
+  def is_test?
+    Rails.env.test?
+  end
+
   def subscribe_attributes
     {
       FNAME: self.firstname,
