@@ -8,12 +8,13 @@ class Widget < ActiveRecord::Base
   has_many :form_entries
   has_many :donations
   has_many :matches
+  has_many :activist_pressures
   store_accessor :settings
 
   after_create :create_mailchimp_segment, if: :is_mailchimpable?
   delegate :user, to: :mobilization
 
-  def as_json(options = {})
+  def as_json(*)
     WidgetSerializer.new(self, {root: false})
   end
 

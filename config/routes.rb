@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :match, controller: 'widgets/match', only: [:create, :update, :show, :destroy] do
       delete 'delete_where', on: :collection
     end
+    resources :fill, controller: 'widgets/fill', only: [:create]
   end
 
   resources :activist_matches, only: [:create]

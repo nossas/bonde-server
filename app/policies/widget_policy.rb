@@ -2,18 +2,31 @@ class WidgetPolicy < ApplicationPolicy
   def permitted_attributes
     if create?
       [:kind, settings: [
-        :content,
-        :call_to_action,
-        :button_text,
-        :count_text,
-        :sender_name,
-        :sender_email,
+        # Can re-use settings
+        # Autofire config
         :email_text,
         :email_subject,
-        :action_community,
+        :sender_name,
+        :sender_email,
 
+        # Generic widget config
         :title_text,
         :main_color,
+        :button_text,
+        :count_text,
+        :show_counter,
+
+        # Settings specific widget
+        # Content Widget
+        :content,
+
+        # Pressure Widget
+        :targets,
+        :pressure_subject,
+        :pressure_body,
+        :reply_email,
+
+        # Donation widget
         :default_donation_value,
         :donation_value1,
         :donation_value2,
@@ -25,10 +38,14 @@ class WidgetPolicy < ApplicationPolicy
         :payment_methods,
         :customer_data,
 
+        # Match Widget
         :choicesA,
         :choices1,
         :labelChoices1,
-        :labelChoicesA
+        :labelChoicesA,
+
+        :call_to_action,
+        :action_community
         ]
       ]
     else
