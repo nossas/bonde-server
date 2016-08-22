@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 20160815195858) do
     t.string   "subscription_id"
     t.integer  "period"
     t.integer  "plan_id"
+    t.integer  "parent_id"
   end
 
   add_index "donations", ["activist_id"], name: "index_donations_on_activist_id", using: :btree
