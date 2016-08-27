@@ -12,6 +12,14 @@ class SubscriptionSyncService
   end
 
   def sync
+    # TODO: thie unless, fixes weird missing transaction_id and status on donation
+    unless @parent_donation.transaction_id.present?
+      payment = @parent_donation.payments.first
+      @parent_donation.update_attributes(
+        transaction_id: payment.transaction_id,
+        transaction_status: payment.transaction_status,
+      )
+    end
     @subscription.transactions.each do |transaction|
       if donation = Donation.find_by_transaction_id(transaction.id)
         next if donation.status == transaction.status
