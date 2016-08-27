@@ -20,10 +20,20 @@ class SubscriptionSyncService
         transaction_status: payment.transaction_status,
       )
     end
+
     @subscription.transactions.each do |transaction|
-      if donation = Donation.find_by_transaction_id(transaction.id)
+      begin
+        payables = transaction.payables
+      rescue
+        payables = nil
+      end
+
+      donation = Donation.find_by_transaction_id(transaction.id)
+
+      if donation.present? 
         next if donation.status == transaction.status
         donation.update_attribute(:transaction_status, transaction.status)
+        donation.update_attribute(:payables, payables.try(:to_json)) if payables
       else
         Donation.create(
           transaction_id: transaction.id,
@@ -39,7 +49,8 @@ class SubscriptionSyncService
           email: @parent_donation.email,
           payment_method: @parent_donation.payment_method,
           parent_id: @parent_donation.id,
-          created_at: transaction.date_created
+          created_at: transaction.date_created,
+          payables: payables.try(:to_json)
         )
       end
     end
