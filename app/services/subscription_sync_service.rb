@@ -22,12 +22,7 @@ class SubscriptionSyncService
     end
 
     @subscription.transactions.each do |transaction|
-      begin
-        payables = transaction.payables
-      rescue
-        payables = nil
-      end
-
+      payables = transaction.payables
       donation = Donation.find_by_transaction_id(transaction.id)
 
       if donation.present? 
@@ -53,6 +48,8 @@ class SubscriptionSyncService
           payables: payables.try(:to_json)
         )
       end
+
+      sleep 0.5
     end
   end
 end
