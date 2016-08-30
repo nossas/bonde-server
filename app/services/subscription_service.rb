@@ -69,7 +69,9 @@ class SubscriptionService < DonationService
         subscription.create
         donation.update_attributes(
           subscription_id: subscription.id,
-          plan_id: Plan.find_by_plan_id(subscription.plan.id).id
+          plan_id: Plan.find_by_plan_id(subscription.plan.id).id,
+          transaction_id: subscription.try(:current_transaction).try(:id),
+          transaction_status: subscription.try(:current_transaction).try(:status)
         )
         self.create_payment(donation)
       rescue PagarMe::PagarMeError => e
