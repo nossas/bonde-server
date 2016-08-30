@@ -31,7 +31,7 @@ class SubscriptionSyncService
       donation = Donation.find_by_transaction_id(transaction.id)
 
       if donation.present? 
-        next if donation.status == transaction.status
+        next if donation.transaction_status == transaction.status
         donation.update_attribute(:transaction_status, transaction.status)
         donation.update_attribute(:payables, payables.try(:to_json)) if payables
       else
