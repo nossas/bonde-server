@@ -8,7 +8,7 @@ class SubscriptionSyncService
 
   def initialize(subscription_id)
     @subscription = PagarMe::Subscription.find_by_id(subscription_id)
-    @parent_donation = Donation.find @subscription.metadata['donation_id']
+    @parent_donation = Donation.unscoped.find @subscription.metadata['donation_id']
   end
 
   def sync
@@ -22,16 +22,11 @@ class SubscriptionSyncService
     end
 
     @subscription.transactions.each do |transaction|
-      begin
-        payables = transaction.payables
-      rescue
-        payables = nil
-      end
-
+      payables = transaction.payables
       donation = Donation.find_by_transaction_id(transaction.id)
 
       if donation.present? 
-        next if donation.status == transaction.status
+        next if donation.transaction_status == transaction.status
         donation.update_attribute(:transaction_status, transaction.status)
         donation.update_attribute(:payables, payables.try(:to_json)) if payables
       else
@@ -53,6 +48,8 @@ class SubscriptionSyncService
           payables: payables.try(:to_json)
         )
       end
+
+      sleep 0.5
     end
   end
 end
