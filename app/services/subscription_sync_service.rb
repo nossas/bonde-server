@@ -8,7 +8,7 @@ class SubscriptionSyncService
 
   def initialize(subscription_id)
     @subscription = PagarMe::Subscription.find_by_id(subscription_id)
-    @parent_donation = Donation.find @subscription.metadata['donation_id']
+    @parent_donation = Donation.unscoped.find @subscription.metadata['donation_id']
   end
 
   def sync
