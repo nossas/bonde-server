@@ -23,7 +23,7 @@ class SubscriptionSyncService
 
     @subscription.transactions.each do |transaction|
       payables = transaction.payables
-      donation = Donation.find_by_transaction_id(transaction.id)
+      donation = Donation.unscoped.find_by_transaction_id(transaction.id)
 
       if donation.present? 
         next if donation.transaction_status == transaction.status
