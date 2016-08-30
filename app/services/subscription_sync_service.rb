@@ -25,10 +25,11 @@ class SubscriptionSyncService
       payables = transaction.payables
       donation = Donation.unscoped.find_by_transaction_id(transaction.id)
 
-      if donation.present? 
-        next if donation.transaction_status == transaction.status
-        donation.update_attribute(:transaction_status, transaction.status)
-        donation.update_attribute(:payables, payables.try(:to_json)) if payables
+      if donation.present?
+        donation.update_attributes(
+          payables: payables.to_json,
+          transaction_status: transaction.status
+        )
       else
         Donation.create(
           transaction_id: transaction.id,
@@ -45,7 +46,7 @@ class SubscriptionSyncService
           payment_method: @parent_donation.payment_method,
           parent_id: @parent_donation.id,
           created_at: transaction.date_created,
-          payables: payables.try(:to_json)
+          payables: payables.to_json
         )
       end
 
