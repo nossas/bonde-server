@@ -21,6 +21,14 @@ namespace :payments do
     end
   end
 
+  desc "Sync all not subscription donations transfer"
+  task sync_transfer_donations: [:environment] do
+    Organization.where("pagarme_recipient_id is not null").each do |org|
+      begin
+      TransferService.sync_transferred_donations(org.id)
+      rescue Exception => e
+        Rails.logger.info "Could not sync for organization -> #{org.id} | #{e.inspect}"
+      end
     end
   end
 end
