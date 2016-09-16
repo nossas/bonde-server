@@ -28,7 +28,8 @@ class SubscriptionSyncService
       if donation.present?
         donation.update_attributes(
           payables: payables.to_json,
-          transaction_status: transaction.status
+          transaction_status: transaction.status,
+          gateway_data: transaction.to_json
         )
       else
         Donation.create(
@@ -46,6 +47,7 @@ class SubscriptionSyncService
           payment_method: @parent_donation.payment_method,
           parent_id: @parent_donation.id,
           created_at: transaction.date_created,
+          gateway_data: transaction.to_json,
           payables: payables.to_json
         )
       end
