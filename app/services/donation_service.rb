@@ -1,6 +1,15 @@
 require 'pagarme'
 
 class DonationService
+  def self.update_from_gateway(donation)
+    transaction = PagarMe::Transaction.find_by_id donation.transaction_id
+    donation.update_attributes(
+      transaction_status: transaction.status,
+      payables: transaction.payables.to_json,
+      gateway_data: transaction.to_json
+    )
+  end
+
   def self.run(donation, address)
     self.create_transaction(donation, address)
   end
