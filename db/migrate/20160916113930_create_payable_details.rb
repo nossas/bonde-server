@@ -53,7 +53,7 @@ CREATE OR REPLACE VIEW public.payable_details AS
                     WHEN (date_part('day'::text, ((dd.value ->> 'payment_date'::text))::timestamp without time zone) > (COALESCE(NULLIF(o.transfer_day, 0), 5))::double precision) THEN (make_date((date_part('year'::text, ((dd.value ->> 'payment_date'::text))::timestamp without time zone))::integer, (date_part('month'::text, (((dd.value ->> 'payment_date'::text))::timestamp without time zone + '1 mon'::interval)))::integer, COALESCE(NULLIF(o.transfer_day, 0), 5)))::timestamp without time zone
                     ELSE ((dd.value ->> 'payment_date'::text))::timestamp without time zone
                 END AS receive_period) transfer_d ON (true)
-  WHERE (((dd.value ->> 'type'::text) = 'credit'::text) AND ((dd.value ->> 'object'::text) = 'payable'::text) AND dd.value->>'recipient_id'::text = o.pagarme_recipient_id);
+  WHERE (((dd.value ->> 'type'::text) = 'credit'::text) AND ((dd.value ->> 'object'::text) = 'payable'::text) AND (dd.value->>'recipient_id'::text = o.pagarme_recipient_id) OR d.subscription);
     }
   end
 
