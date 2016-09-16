@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   resources :activist_matches, only: [:create]
   resources :uploads, only: [:index]
-  resources :organizations, only: [:index]
+  resources :organizations, only: [:index] do
+    resources :payable_details, only: [:index], controller: 'organizations/payable_details'
+  end
   mount_devise_token_auth_for 'User', at: '/auth'
 end
