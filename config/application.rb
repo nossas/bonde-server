@@ -11,6 +11,7 @@ module HubApi
     config.time_zone = 'Brasilia'
     config.i18n.default_locale = :'pt-BR'
     config.active_job.queue_adapter = :resque
+    config.active_record.schema_format = :sql
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true

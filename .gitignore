@@ -24,3 +24,5 @@ public/uploads
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+db/structure.sql
+db/schema.rb
