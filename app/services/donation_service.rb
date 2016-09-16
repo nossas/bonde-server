@@ -63,7 +63,9 @@ class DonationService
         @transaction.charge
         donation.update_attributes(
           transaction_id: @transaction.id,
-          transaction_status: @transaction.status
+          transaction_status: @transaction.status,
+          gateway_data: @transaction.try(:to_json),
+          payables: @transaction.try(:payables)
         )
 
         if donation.boleto? && Rails.env.production?
