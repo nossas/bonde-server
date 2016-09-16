@@ -9,6 +9,18 @@ namespace :payments do
     end
   end
 
+  desc "Sync all donations status and data"
+  task sync_donations: [:environment] do
+    Donation.unscoped.where("not subscription and transaction_id is not null").order('donations.id desc').find_each do |resource| 
+      begin
+        Rails.logger.info "Start sync for  donation -> #{resource.transaction_id}"
+        DonationService.update_from_gateway(resource)
+      rescue Expiration => e
+        Rails.logger.info "Donation #{resource.transaction_id} not synched #{e.inspect}"
+      end
+    end
+  end
+
     end
   end
 end
