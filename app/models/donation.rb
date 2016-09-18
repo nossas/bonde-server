@@ -7,6 +7,7 @@ class Donation < ActiveRecord::Base
   belongs_to :parent, class_name: 'Donation'
   belongs_to :payable_transfer
   has_many :payments
+  has_many :payable_details
 
   after_create :send_mail, unless: :skip?
 
