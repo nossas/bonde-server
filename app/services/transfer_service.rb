@@ -1,12 +1,36 @@
 require 'pagarme'
 
 class TransferService
+  def self.request_subscriptions_transfer(org_id)
+    self.new(org_id).request_transfer_for_subscriptions
+  end
+
   def self.sync_transferred_donations(org_id)
     self.new(org_id).sync_transferred_donations
   end
 
   def initialize(org_id)
     @organization ||= Organization.find org_id
+  end
+
+  def request_transfer_for_subscriptions
+    return unless @organization.transfer_enabled?
+
+    if @organization.pagarme_recipient_id.present?
+      if DateTime.now.day >= (@organization.transfer_day || 5) && @organization.subscription_payables_to_transfer.exists?
+        PayableTransfer.transaction do
+          payable_transfer = @organization.payable_transfers.create(
+            amount: @organization.total_to_receive_from_subscriptions,
+            transfer_status: 'pending'
+          )
+          @organization.subscription_payables_to_transfer.each do |payment|
+            payment.donation.update_attribute(:payable_transfer_id, payable_transfer.id)
+          end
+        end
+      end
+    else
+      Rails.logger.info "[TransferService] Organization #{@organization.id} has not recipient_id"
+    end
   end
 
   # Sync with pagarme all donations that already transferred
