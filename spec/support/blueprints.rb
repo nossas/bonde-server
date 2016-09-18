@@ -73,3 +73,10 @@ Organization.blueprint do
   city { "Rio de Janeiro #{sn}" }
   pagarme_recipient_id { "re_fakerecipient" }
 end
+
+PayableTransfer.blueprint do
+  transfer_id { 12345 }
+  transfer_status { 'transferred' }
+  organization { Organization.make! }
+  amount { 100 }
+end
