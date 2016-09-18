@@ -9,6 +9,24 @@ class TransferService
     self.new(org_id).sync_transferred_donations
   end
 
+  def self.make_transfer(payable_transfer_id)
+    payable_transfer = PayableTransfer.find payable_transfer_id
+    return if payable_transfer.transfer_id.present?
+
+    PayableTransfer.transaction do
+      transfer = PagarMe::Transfer.create(
+        recipient_id: payable_transfer.organization.pagarme_recipient_id,
+        amount: (payable_transfer.amount * 100.0).to_i
+      )
+
+      payable_transfer.update_attributes(
+        transfer_status: transfer.status,
+        transfer_data: transfer.to_json,
+        transfer_id: transfer.id
+      )
+    end
+  end
+
   def initialize(org_id)
     @organization ||= Organization.find org_id
   end
