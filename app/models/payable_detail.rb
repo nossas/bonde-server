@@ -3,6 +3,7 @@ class PayableDetail < ActiveRecord::Base
   self.table_name = 'public.payable_details'
 
   belongs_to :organization
+  belongs_to :donation
   default_scope { order('transaction_id desc') }
   scope :by_widget, ->(id) { where(widget_id: id) }
   scope :by_mobilization, ->(id) { where(mobilization_id: id) }
