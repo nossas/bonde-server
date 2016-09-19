@@ -4,7 +4,7 @@ RSpec.describe DonationService do
   let(:donation) { Donation.make! gateway_data: nil}
   describe '#update_from_gateway' do
     let(:transaction) do
-      double(payables: [], gateway_data: {id: 'foo'})
+      double(payables: [], gateway_data: {id: 'foo'}, status: '')
     end
 
     before do
