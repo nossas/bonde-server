@@ -67,11 +67,14 @@ class SubscriptionService < DonationService
 
       begin
         subscription.create
+        current_transaction = subscription.try(:current_transaction)
         donation.update_attributes(
           subscription_id: subscription.id,
           plan_id: Plan.find_by_plan_id(subscription.plan.id).id,
-          transaction_id: subscription.try(:current_transaction).try(:id),
-          transaction_status: subscription.try(:current_transaction).try(:status)
+          transaction_id: current_transaction.try(:id),
+          transaction_status: current_transaction.try(:status),
+          gateway_data: current_transaction.try(:to_json),
+          payables: current_transaction.try(:payables).try(:to_json)
         )
         self.create_payment(donation)
       rescue PagarMe::PagarMeError => e

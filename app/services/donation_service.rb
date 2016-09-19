@@ -1,6 +1,15 @@
 require 'pagarme'
 
 class DonationService
+  def self.update_from_gateway(donation)
+    transaction = PagarMe::Transaction.find_by_id donation.transaction_id
+    donation.update_attributes(
+      transaction_status: transaction.status,
+      payables: transaction.payables.to_json,
+      gateway_data: transaction.to_json
+    )
+  end
+
   def self.run(donation, address)
     self.create_transaction(donation, address)
   end
@@ -63,7 +72,9 @@ class DonationService
         @transaction.charge
         donation.update_attributes(
           transaction_id: @transaction.id,
-          transaction_status: @transaction.status
+          transaction_status: @transaction.status,
+          gateway_data: @transaction.try(:to_json),
+          payables: @transaction.try(:payables)
         )
 
         if donation.boleto? && Rails.env.production?

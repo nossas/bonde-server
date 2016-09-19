@@ -5,7 +5,9 @@ class Donation < ActiveRecord::Base
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
   belongs_to :parent, class_name: 'Donation'
+  belongs_to :payable_transfer
   has_many :payments
+  has_many :payable_details
 
   after_create :send_mail, unless: :skip?
 

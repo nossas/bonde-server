@@ -175,6 +175,9 @@ GEM
       multi_json (>= 1.9.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    has_scope (0.7.0)
+      actionpack (>= 4.1, < 5.1)
+      activesupport (>= 4.1, < 5.1)
     hashdiff (0.2.2)
     hashie (3.4.2)
     heroics (0.0.14)
@@ -353,6 +356,7 @@ DEPENDENCIES
   devise_token_auth
   fog
   gibbon (= 1.1.5)
+  has_scope
   machinist (>= 2.0.0.beta2)
   newrelic_rpm (= 3.15.0.314)
   omniauth
@@ -380,4 +384,4 @@ RUBY VERSION
    ruby 2.3.0p0
 
 BUNDLED WITH
-   1.12.5
+   1.13.0
