@@ -71,7 +71,7 @@ class TransferService
               payable_transfer.update_attributes(
                 transfer_data: movement_object.to_json,
                 transfer_status: movement_object.status,
-                amount: movement_object.amount / 100.0
+                amount: operation.amount / 100.0
               )
             end
 
