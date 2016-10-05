@@ -65,8 +65,14 @@ class TransferService
           operations.each do |operation|
             movement_object = operation.movement_object
             if operation["type"] == 'transfer'
-              payable_transfer = @organization.payable_transfers.find_or_create_by(
-                transfer_id: movement_object.id)
+              payable_transfer = @organization.payable_transfers.find_by(transfer_id: movemet_object.id)
+
+              if payable_transfer.nil?
+                payable_transfer = @organization.payable_transfers.create(
+                  transfer_id: movement_object.id,
+                  amount: operation.amount / 100.0
+                )
+              end
 
               payable_transfer.update_attributes(
                 transfer_data: movement_object.to_json,
