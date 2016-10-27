@@ -8,5 +8,6 @@ class TemplateMobilization < ActiveRecord::Base
   belongs_to :organization
 
   has_many :template_blocks
+  has_many :template_widgets, through: :template_blocks
 
 end
