@@ -66,10 +66,6 @@ RSpec.describe TemplateMobilization, type: :model do
 	  	it "should have the same organization_id as original mobilization" do 
 	  		expect(@template.organization_id).to eq(@mobilization.organization_id)
 	  	end
-
-	  	it "should have the same template_blocks number as original mobilization" do 
-	  		expect(@template.template_blocks.size).to eq(@mobilization.blocks.size)
-	  	end
   	end
   end
 end

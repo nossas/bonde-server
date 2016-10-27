@@ -13,9 +13,6 @@ class TemplateBlock < ActiveRecord::Base
     template_block.name = block.name
     template_block.position = block.position
     template_block.menu_hidden = block.menu_hidden
-    block.widgets.each do |widget|
-    	template_block.template_widgets << TemplateWidget.create_from(widget, template_block)
-    end
   	template_block
   end
 end

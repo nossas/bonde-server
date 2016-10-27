@@ -23,9 +23,6 @@ class TemplateMobilization < ActiveRecord::Base
   	template.custom_domain = mobilization.custom_domain
   	template.twitter_share_text = mobilization.twitter_share_text
   	template.organization_id = mobilization.organization_id
-  	mobilization.blocks.each do |block|
-  		template.template_blocks << TemplateBlock.create_from(block, template)
-  	end
   	template
   end
 

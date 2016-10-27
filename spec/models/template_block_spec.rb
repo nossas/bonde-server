@@ -46,10 +46,6 @@ RSpec.describe TemplateBlock, type: :model do
 	  it "should have same menu_hidden value" do 
 	  	expect(@templateBlock.menu_hidden).to eq(@block.menu_hidden)
 	  end
-
-	  it "should have the same template_widget number as original block" do 
-  		expect(@templateBlock.template_widgets.size).to eq(@block.widgets.size)
-  	  end
   	end
   end
 end
