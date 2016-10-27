@@ -78,4 +78,52 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
       end
     end
   end
+
+  context "POST #create" do 
+    describe "create a template from existing mobilization" do
+      before do
+        @mobilization = Mobilization.make! user:@user1
+        block = Block.make! mobilization: @mobilization
+        Widget.make! block:block
+        block = Block.make! mobilization: @mobilization
+        Widget.make! block:block
+        Widget.make! block:block
+      end
+
+      it "should return 200 status response" do
+        post :create, {mobilization_id: @mobilization.id}
+
+        expect(response.status).to eq(200)
+      end
+
+      it "should return the template created data" do
+        post :create, {mobilization_id: @mobilization.id}
+
+        expect(response.body).to include(@mobilization.name)
+      end
+
+      it "should create all block nested data" do
+        post :create, {mobilization_id: @mobilization.id}
+
+        data = JSON.parse response.body
+        expect(TemplateBlock.where("template_mobilization_id = #{data['id']}").count).to eq(2) 
+      end
+
+      it "should create all nested widget data" do
+        post :create, {mobilization_id: @mobilization.id}
+
+        data = JSON.parse response.body
+        expect( TemplateWidget.joins(:template_block).where("template_blocks.template_mobilization_id = #{data['id']}").count).to eq(3) 
+      end
+
+    end
+
+    describe "deal with inexisting mobilization" do
+      it "should return an 404" do
+        post :create, {mobilization_id: 0}
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
 end

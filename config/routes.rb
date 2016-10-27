@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :donations, controller: 'mobilizations/donations', only: [:create, :index]
   end
   
-  resources :template_mobilizations, only: [:index, :destroy], path: '/templates' do
+  resources :template_mobilizations, only: [:index, :destroy, :create], path: '/templates' do
   end
 
   resources :blocks, only: [:index]
