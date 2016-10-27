@@ -7,4 +7,6 @@ class TemplateMobilization < ActiveRecord::Base
   belongs_to :user
   belongs_to :organization
 
+  has_many :template_blocks
+
 end
