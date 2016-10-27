@@ -34,4 +34,48 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
       end
     end
   end
+
+  context "DELETE #destroy" do 
+    describe "existing template" do
+      before do
+        @template = TemplateMobilization.make! user:@user1
+        @block = TemplateBlock.make! template_mobilization:@template
+        @widget = TemplateWidget.make! template_block:@block
+        @template.template_blocks << @block
+        @block.template_widgets << @widget
+      end
+  
+      it "should delete the template_mobilization" do
+        delete :destroy, id: @template.id
+  
+        expect(TemplateMobilization.exists? @template.id).to be false
+      end
+  
+      it "should delete the blocks related to the template_mobilization" do
+        delete :destroy, id: @template.id
+  
+        expect(TemplateBlock.exists? @block.id).to be false
+      end
+  
+      it "should delete the widgets related to the template_mobilization" do
+        delete :destroy, id: @template.id
+  
+        expect(TemplateWidget.exists? @widget.id).to be false
+      end
+
+      it "should return a 200 status" do
+        delete :destroy, id: @template.id
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    describe "inexisting template" do
+      it "should return a 404 status" do
+        delete :destroy, id: 0
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
 end

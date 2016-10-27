@@ -106,3 +106,14 @@ TemplateBlock.blueprint do
   name { 'template_block name' }
   menu_hidden { false }
 end
+
+TemplateWidget.blueprint do
+  template_block { TemplateBlock.make! }
+  sm_size { 10 }
+  md_size { 15 }
+  lg_size { 20 }
+  kind { "content" }
+  action_community { true }
+  settings { {content: "My 12 columns widget"} }
+end
+
