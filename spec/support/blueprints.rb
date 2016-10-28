@@ -89,6 +89,7 @@ end
 TemplateMobilization.blueprint do
   user { User.make! }
   name { "TemplateMobilization #{sn}" }
+  goal { 'Change the world, make it better place' }
   color_scheme { 'minhasampa-scheme' }
   header_font { 'Sans Serif' }
   body_font { 'open-sans' }

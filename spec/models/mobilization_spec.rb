@@ -90,6 +90,10 @@ RSpec.describe Mobilization, type: :model do
       expect(subject.twitter_share_text).to eq(@template.twitter_share_text)
     end
 
+    it "should copy the goal value" do
+      expect(subject.goal).to eq(@template.goal)
+    end
+
     it "should copy the organization_id value" do
       expect(subject.organization_id).to eq(@template.organization_id)
     end

@@ -60,6 +60,7 @@ class Mobilization < ActiveRecord::Base
     mobilization.custom_domain = template.custom_domain
     mobilization.twitter_share_text = template.twitter_share_text
     mobilization.organization_id = template.organization_id
+    mobilization.goal = template.goal
     mobilization
   end
 end
