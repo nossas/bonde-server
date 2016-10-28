@@ -47,12 +47,8 @@ RSpec.describe Mobilization, type: :model do
       @template = TemplateMobilization.make!
     end
     subject {
-      Mobilization.create_from(@template)
+      Mobilization.make!.copy_from(@template)
     }
-
-    it "should copy the name value" do
-      expect(subject.name).to eq(@template.name)
-    end
 
     it "should copy the color_scheme value" do
       expect(subject.color_scheme).to eq(@template.color_scheme)
@@ -88,10 +84,6 @@ RSpec.describe Mobilization, type: :model do
 
     it "should copy the twitter_share_text value" do
       expect(subject.twitter_share_text).to eq(@template.twitter_share_text)
-    end
-
-    it "should copy the goal value" do
-      expect(subject.goal).to eq(@template.goal)
     end
 
     it "should copy the organization_id value" do

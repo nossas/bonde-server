@@ -25,6 +25,20 @@ class Mobilization < ActiveRecord::Base
     end
   end
 
+  def copy_from template
+    self.color_scheme = template.color_scheme
+    self.facebook_share_title = template.facebook_share_title
+    self.facebook_share_description = template.facebook_share_description
+    self.header_font = template.header_font
+    self.body_font = template.body_font
+    self.facebook_share_image = template.facebook_share_image
+    self.slug = template.slug
+    self.custom_domain = template.custom_domain
+    self.twitter_share_text = template.twitter_share_text
+    self.organization_id = template.organization_id
+    self
+  end
+
   private
 
   def slugify
@@ -47,20 +61,4 @@ class Mobilization < ActiveRecord::Base
     end
   end
 
-  def self.create_from template
-    mobilization = Mobilization.new
-    mobilization.name = template.name
-    mobilization.color_scheme = template.color_scheme
-    mobilization.facebook_share_title = template.facebook_share_title
-    mobilization.facebook_share_description = template.facebook_share_description
-    mobilization.header_font = template.header_font
-    mobilization.body_font = template.body_font
-    mobilization.facebook_share_image = template.facebook_share_image
-    mobilization.slug = template.slug
-    mobilization.custom_domain = template.custom_domain
-    mobilization.twitter_share_text = template.twitter_share_text
-    mobilization.organization_id = template.organization_id
-    mobilization.goal = template.goal
-    mobilization
-  end
 end
