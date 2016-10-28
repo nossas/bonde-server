@@ -79,8 +79,8 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
     end
   end
 
-  context "POST #create" do 
-    describe "create a template from existing mobilization" do
+  context 'POST #create' do 
+    describe 'create a template from existing mobilization' do
       before do
         @mobilization = Mobilization.make! user:@user1
         block = Block.make! mobilization: @mobilization
@@ -90,27 +90,48 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
         Widget.make! block:block
       end
 
-      it "should return 200 status response" do
-        post :create, {mobilization_id: @mobilization.id}
+      it 'should return 200 status response' do
+        post :create, {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
 
         expect(response.status).to eq(200)
       end
 
-      it "should return the template created data" do
-        post :create, {mobilization_id: @mobilization.id}
+      it 'should save the new template in the database' do
+        TemplateMobilization.all.delete_all
+        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
 
-        expect(response.body).to include(@mobilization.name)
+        expect(TemplateMobilization.count).to eq(1)        
       end
 
-      it "should create all block nested data" do
-        post :create, {mobilization_id: @mobilization.id}
+      it 'should save use the name parameter as template\'s name' do
+        TemplateMobilization.delete_all
+        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
+
+        expect(TemplateMobilization.first.name).to eq('Pinky & Brain\'s world conquest')        
+      end
+
+      it 'should save use the goal parameter as template\'s goal' do
+        TemplateMobilization.delete_all
+        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
+
+        expect(TemplateMobilization.first.goal).to eq('World conquest')        
+      end
+
+      it 'should return the template created data' do
+        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
+
+        expect(response.body).to include(@mobilization.slug)
+      end
+
+      it 'should create all block nested data' do
+        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
 
         data = JSON.parse response.body
         expect(TemplateBlock.where("template_mobilization_id = #{data['id']}").count).to eq(2) 
       end
 
-      it "should create all nested widget data" do
-        post :create, {mobilization_id: @mobilization.id}
+      it 'should create all nested widget data' do
+        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
 
         data = JSON.parse response.body
         expect( TemplateWidget.joins(:template_block).where("template_blocks.template_mobilization_id = #{data['id']}").count).to eq(3) 
@@ -119,10 +140,44 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
     end
 
     describe "deal with inexisting mobilization" do
-      it "should return an 404" do
-        post :create, {mobilization_id: 0}
+      it 'should return an 404' do
+        post :create, {mobilization_id: 0, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
 
         expect(response.status).to eq(404)
+      end
+    end
+
+    describe "deal with missing parameters" do
+
+      it 'should return 400 (Bad Request) if there\'s missing the mobilization id param' do
+        post :create , {goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
+
+        expect(response.status).to eq(400)
+      end
+
+      it 'should return the missing field name (mobilization id) if there\'s missing the mobilization id param' do
+        post :create , {goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
+
+        expect(response.body).to include('mobilization_id')
+      end
+
+      it 'should return the missing fields names if there are more the one param missing' do
+        post :create , {name: 'Pinky & Brain\'s world conquest' }
+
+        expect(response.body).to include('mobilization_id')
+        expect(response.body).to include('goal')
+      end
+
+      it 'should return 400 (Bad Request) if there\'s missing the goal param' do
+        post :create , {mobilization_id: 1, name: 'Pinky & Brain\'s world conquest' }
+
+        expect(response.status).to eq(400)
+      end
+
+      it 'should return 400 (Bad Request) if there\'s missing the name param' do
+        post :create , {mobilization_id: 1, goal: 'World conquest'}
+
+        expect(response.status).to eq(400)
       end
     end
   end
