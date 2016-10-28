@@ -30,11 +30,36 @@ class MobilizationsController < ApplicationController
   end
 
   def create
-    @mobilization = Mobilization.new(mobilization_params)
-    @mobilization.user = current_user
-    authorize @mobilization
-    @mobilization.save!
-    render json: @mobilization
+    if params[:template_mobilization_id]
+      template = TemplateMobilization.find_by({id: params[:template_mobilization_id]})
+      if template
+        mobilization = Mobilization.create_from template
+        mobilization.user = current_user
+        authorize mobilization
+        Mobilization.transaction do 
+          mobilization.save!
+
+          template.template_blocks.each do |template_block|
+            block = Block.create_from template_block, mobilization
+            block.save!
+            template_block.template_widgets.each do |template_widget|
+              widget = Widget.create_from template_widget, block
+              widget.save!
+            end
+          end
+        end
+        render json: mobilization
+      else
+        skip_authorization
+        render :status =>404, :nothing => true
+      end
+    else
+      @mobilization = Mobilization.new(mobilization_params)
+      @mobilization.user = current_user
+      authorize @mobilization
+      @mobilization.save!
+      render json: @mobilization
+    end
   end
 
   def update

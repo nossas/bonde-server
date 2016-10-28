@@ -50,18 +50,49 @@ RSpec.describe MobilizationsController, type: :controller do
   end
 
   describe "POST #create" do
-    it "should create with JSON format" do
-      organization = Organization.make!
-      expect(Mobilization.count).to eq(0)
+    context "single creation" do
+      it "should create with JSON format" do
+        organization = Organization.make!
+        expect(Mobilization.count).to eq(0)
 
-      post :create, format: :json, mobilization: {
-        name: 'Foo',
-        goal: 'Bar',
-        organization_id: organization.id
-      }
+        post :create, format: :json, mobilization: {
+          name: 'Foo',
+          goal: 'Bar',
+          organization_id: organization.id
+        }
 
-      expect(Mobilization.count).to eq(1)
-      expect(response.body).to include(Mobilization.first.to_json)
+        expect(Mobilization.count).to eq(1)
+        expect(response.body).to include(Mobilization.first.to_json)
+      end
+    end
+
+    context "creation from an existing template" do
+      before do
+        @template = TemplateMobilization.make!
+        block = TemplateBlock.make! template_mobilization:@template
+        widget = TemplateWidget.make! template_block:block
+      end
+
+      it "should return a 200 status if created" do
+        post :create, { template_mobilization_id: @template.id }
+
+        expect(response.status).to eq(200)
+      end
+
+      it "should create from a template" do
+        post :create, { template_mobilization_id: @template.id }
+
+        expect(Mobilization.count).to eq(1)
+        expect(response.body).to include(@template.name)
+      end
+    end
+
+    context "creation from an inexisting template" do
+      it "should return a 404 status" do
+        post :create, { template_mobilization_id: 0 }
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 end
