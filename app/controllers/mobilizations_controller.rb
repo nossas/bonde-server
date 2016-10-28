@@ -47,6 +47,8 @@ class MobilizationsController < ApplicationController
               widget.save!
             end
           end
+          template.uses_number = (template.uses_number || 0 ) + 1
+          template.save!
         end
         render json: mobilization
       else

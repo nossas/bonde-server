@@ -85,6 +85,13 @@ RSpec.describe MobilizationsController, type: :controller do
         expect(Mobilization.count).to eq(1)
         expect(response.body).to include(@template.name)
       end
+
+      it 'should increment the uses_number for each use' do
+        post :create, { template_mobilization_id: @template.id }
+
+        newTemplate = TemplateMobilization.find @template.id
+        expect(newTemplate.uses_number).to eq((@template.uses_number||0) + 1)
+      end
     end
 
     context "creation from an inexisting template" do
