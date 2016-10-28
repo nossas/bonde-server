@@ -21,9 +21,9 @@ class Block < ActiveRecord::Base
     end
   end
 
-  def self.create_from template, mobilization
+  def self.create_from template, mobilization_instance
     block = Block.new
-    block.mobilization = mobilization
+    block.mobilization = mobilization_instance
     block.bg_class = template.bg_class
     block.position = template.position
     block.hidden = template.hidden

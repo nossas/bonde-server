@@ -30,4 +30,50 @@ RSpec.describe Widget, type: :model do
       end
     end
   end
+
+  context "create Widget from TemplateWidget object" do
+    before do 
+      @template = TemplateWidget.make!
+      @block = Block.make!
+    end
+    subject {
+      Widget.create_from(@template, @block)
+    }
+
+    it "should place the correctly the block instance" do
+      expect(subject.block).to eq(@block)
+    end
+
+    it "should copy the settings value" do
+      expect(subject.settings).to eq(@template.settings)
+    end
+
+    it "should copy the kind value" do
+      expect(subject.kind).to eq(@template.kind)
+    end
+
+    it "should copy the sm_size value" do
+      expect(subject.sm_size).to eq(@template.sm_size)
+    end
+
+    it "should copy the md_size value" do
+      expect(subject.md_size).to eq(@template.md_size)
+    end
+
+    it "should copy the lg_size value" do
+      expect(subject.lg_size).to eq(@template.lg_size)
+    end
+
+    it "should copy the mailchimp_segment_id value" do
+      expect(subject.mailchimp_segment_id).to eq(@template.mailchimp_segment_id)
+    end
+
+    it "should copy the action_community value" do
+      expect(subject.action_community).to eq(@template.action_community)
+    end
+
+    it "should copy the exported_at value" do
+      expect(subject.exported_at).to eq(@template.exported_at)
+    end
+  end
 end
