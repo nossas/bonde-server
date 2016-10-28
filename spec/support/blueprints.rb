@@ -21,6 +21,11 @@ end
 
 Block.blueprint do
   mobilization { Mobilization.make! }
+  bg_class { 'classe 1'}
+  hidden { false }
+  bg_image { 'icon.png' }
+  name { 'test' }
+  menu_hidden { true }
 end
 
 Widget.blueprint do
@@ -80,3 +85,35 @@ PayableTransfer.blueprint do
   organization { Organization.make! }
   amount { 100 }
 end
+
+TemplateMobilization.blueprint do
+  user { User.make! }
+  name { "TemplateMobilization #{sn}" }
+  color_scheme { 'minhasampa-scheme' }
+  header_font { 'Sans Serif' }
+  body_font { 'open-sans' }
+  custom_domain { "mytemplatemobilization" }
+  slug { "#{sn}-templatemobilization" }
+  organization { Organization.make! city: "São Paulo #{sn}"}
+end
+
+TemplateBlock.blueprint do
+  template_mobilization { TemplateMobilization.make! }
+  bg_class { 'classe 2'}
+  position { 1 }
+  hidden { true }
+  bg_image { 'icone.png' }
+  name { 'template_block name' }
+  menu_hidden { false }
+end
+
+TemplateWidget.blueprint do
+  template_block { TemplateBlock.make! }
+  sm_size { 10 }
+  md_size { 15 }
+  lg_size { 20 }
+  kind { "content" }
+  action_community { true }
+  settings { {content: "My 12 columns widget"} }
+end
+
