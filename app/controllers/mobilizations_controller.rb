@@ -30,17 +30,27 @@ class MobilizationsController < ApplicationController
   end
 
   def create
-    if params[:template_mobilization_id]
+    @mobilization = Mobilization.new(mobilization_params)
+    @mobilization.user = current_user
+    authorize @mobilization
+    @mobilization.save!
+    render json: @mobilization
+  end
+
+  def update
+    @mobilization = Mobilization.find_by({id: params[:id]})
+    if not @mobilization
+      return404
+    elsif params[:template_mobilization_id]
       template = TemplateMobilization.find_by({id: params[:template_mobilization_id]})
       if template
-        mobilization = Mobilization.create_from template
-        mobilization.user = current_user
-        authorize mobilization
+        authorize @mobilization
+        @mobilization.copy_from template
         Mobilization.transaction do 
-          mobilization.save!
+          @mobilization.save
 
           template.template_blocks.each do |template_block|
-            block = Block.create_from template_block, mobilization
+            block = Block.create_from template_block, @mobilization
             block.save!
             template_block.template_widgets.each do |template_widget|
               widget = Widget.create_from template_widget, block
@@ -50,25 +60,15 @@ class MobilizationsController < ApplicationController
           template.uses_number = (template.uses_number || 0 ) + 1
           template.save!
         end
-        render json: mobilization
+        render json: @mobilization
       else
-        skip_authorization
-        render :status =>404, :nothing => true
+        return404
       end
     else
-      @mobilization = Mobilization.new(mobilization_params)
-      @mobilization.user = current_user
       authorize @mobilization
-      @mobilization.save!
+      @mobilization.update!(mobilization_params)
       render json: @mobilization
     end
-  end
-
-  def update
-    @mobilization = Mobilization.find(params[:id])
-    authorize @mobilization
-    @mobilization.update!(mobilization_params)
-    render json: @mobilization
   end
 
   def mobilization_params
@@ -77,5 +77,12 @@ class MobilizationsController < ApplicationController
     else
       {}
     end
+  end
+
+  private 
+
+  def return404
+    skip_authorization
+    render :status =>404, :nothing => true
   end
 end

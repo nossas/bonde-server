@@ -35,7 +35,6 @@ class Mobilization < ActiveRecord::Base
     self.slug = template.slug
     self.custom_domain = template.custom_domain
     self.twitter_share_text = template.twitter_share_text
-    self.organization_id = template.organization_id
     self
   end
 
