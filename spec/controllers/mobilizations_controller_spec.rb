@@ -49,12 +49,36 @@ RSpec.describe MobilizationsController, type: :controller do
     end
   end
 
-  describe "PUT #update" do
+  describe 'PATCH #update' do
+    before do
+      @mobilization = Mobilization.make! user: @user1
+    end
+  
+    context 'update an existing Mobilization' do
+      subject {
+        Mobilization.make! user:@user1
+      }
+
+      it 'should change data in database' do
+        patch :update, {format: :json, mobilization: {name: 'super-hiper-marevelous mobilization'}, id: subject.id}
+
+        expect((Mobilization.find subject.id).name).to eq('super-hiper-marevelous mobilization')
+      end
+
+      it 'should return an 200' do
+        patch :update, {format: :json, mobilization: {name: 'super-hiper-marevelous mobilization'}, id: subject.id}
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+  end
+  describe 'PUT #update' do
     before do
       @mobilization = Mobilization.make! user: @user1
     end
 
-    context "update from an existing template" do
+    context "update an existing Mobilization from an existing template" do
       before do
         @template = TemplateMobilization.make!
         block = TemplateBlock.make! template_mobilization:@template
