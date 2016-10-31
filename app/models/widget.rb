@@ -72,7 +72,6 @@ class Widget < ActiveRecord::Base
     widget.sm_size = template.sm_size
     widget.md_size = template.md_size
     widget.lg_size = template.lg_size
-    widget.mailchimp_segment_id = template.mailchimp_segment_id
     widget.action_community = template.action_community
     widget.exported_at = template.exported_at
     widget

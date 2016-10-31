@@ -64,10 +64,6 @@ RSpec.describe Widget, type: :model do
       expect(subject.lg_size).to eq(@template.lg_size)
     end
 
-    it "should copy the mailchimp_segment_id value" do
-      expect(subject.mailchimp_segment_id).to eq(@template.mailchimp_segment_id)
-    end
-
     it "should copy the action_community value" do
       expect(subject.action_community).to eq(@template.action_community)
     end
