@@ -43,4 +43,42 @@ RSpec.describe Block, type: :model do
       expect(block4.reload.position).to eq 2
     end
   end
+
+  context "create block from TemplateBlock object" do
+    before do 
+      @template = TemplateBlock.make!
+      @mobilization = Mobilization.make!
+    end
+    subject {
+      Block.create_from(@template, @mobilization)
+    }
+
+    it "should place the correctly the mobilization instance" do
+      expect(subject.mobilization).to eq(@mobilization)
+    end
+
+    it "should copy the bg_class value" do
+      expect(subject.bg_class).to eq(@template.bg_class)
+    end
+
+    it "should copy the position value" do
+      expect(subject.position).to eq(@template.position)
+    end
+
+    it "should copy the hidden value" do
+      expect(subject.hidden).to eq(@template.hidden)
+    end
+
+    it "should copy the bg_image value" do
+      expect(subject.bg_image).to eq(@template.bg_image)
+    end
+
+    it "should copy the name value" do
+      expect(subject.name).to eq(@template.name)
+    end
+
+    it "should copy the menu_hidden value" do
+      expect(subject.menu_hidden).to eq(@template.menu_hidden)
+    end
+  end
 end

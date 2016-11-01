@@ -25,6 +25,19 @@ class Mobilization < ActiveRecord::Base
     end
   end
 
+  def copy_from template
+    self.color_scheme = template.color_scheme
+    self.facebook_share_title = template.facebook_share_title
+    self.facebook_share_description = template.facebook_share_description
+    self.header_font = template.header_font
+    self.body_font = template.body_font
+    self.facebook_share_image = template.facebook_share_image
+    self.slug = template.slug
+    self.custom_domain = template.custom_domain
+    self.twitter_share_text = template.twitter_share_text
+    self
+  end
+
   private
 
   def slugify
@@ -46,4 +59,5 @@ class Mobilization < ActiveRecord::Base
       self.color_scheme = "#{self.organization.name.gsub(' ', '').parameterize}-scheme"
     end
   end
+
 end

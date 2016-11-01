@@ -20,4 +20,16 @@ class Block < ActiveRecord::Base
       self.mobilization.blocks.where(position: position_change[1]).update_all(position: position_change[0])
     end
   end
+
+  def self.create_from template, mobilization_instance
+    block = Block.new
+    block.mobilization = mobilization_instance
+    block.bg_class = template.bg_class
+    block.position = template.position
+    block.hidden = template.hidden
+    block.bg_image = template.bg_image
+    block.name = template.name
+    block.menu_hidden = template.menu_hidden
+    block
+  end
 end

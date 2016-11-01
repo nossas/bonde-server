@@ -24,6 +24,6 @@ deployment:
     commands:
       - ./bin/deploy.sh
   feature:
-    branch: /(add|fix)-.*/
+    branch: /(add|fix)(-|\/).*/
     commands:
       - ./bin/deploy.sh

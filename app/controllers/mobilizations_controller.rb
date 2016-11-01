@@ -38,10 +38,37 @@ class MobilizationsController < ApplicationController
   end
 
   def update
-    @mobilization = Mobilization.find(params[:id])
-    authorize @mobilization
-    @mobilization.update!(mobilization_params)
-    render json: @mobilization
+    @mobilization = Mobilization.find_by({id: params[:id]})
+    if not @mobilization
+      return404
+    elsif params[:template_mobilization_id]
+      template = TemplateMobilization.find_by({id: params[:template_mobilization_id]})
+      if template
+        authorize @mobilization
+        @mobilization.copy_from template
+        Mobilization.transaction do 
+          @mobilization.save
+
+          template.template_blocks.each do |template_block|
+            block = Block.create_from template_block, @mobilization
+            block.save!
+            template_block.template_widgets.each do |template_widget|
+              widget = Widget.create_from template_widget, block
+              widget.save!
+            end
+          end
+          template.uses_number = (template.uses_number || 0 ) + 1
+          template.save!
+        end
+        render json: @mobilization
+      else
+        return404
+      end
+    else
+      authorize @mobilization
+      @mobilization.update!(mobilization_params)
+      render json: @mobilization
+    end
   end
 
   def mobilization_params
@@ -50,5 +77,12 @@ class MobilizationsController < ApplicationController
     else
       {}
     end
+  end
+
+  private 
+
+  def return404
+    skip_authorization
+    render :status =>404, :nothing => true
   end
 end
