@@ -82,7 +82,7 @@ RSpec.describe MobilizationsController, type: :controller do
       before do
         @template = TemplateMobilization.make!
         block = TemplateBlock.make! template_mobilization:@template
-        widget = TemplateWidget.make! template_block:block
+        TemplateWidget.make! template_block:block
       end
 
       it "should return a 200 status if created" do
