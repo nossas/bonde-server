@@ -40,8 +40,6 @@ class DonationService
     response.try(:[], "hits").try(:[], "hits").try(:[], 0).try(:[], "_source")
   end
 
-  private
-
   def self.new_transaction(donation)
     self.find_or_create_card(donation) unless donation.boleto?
 
