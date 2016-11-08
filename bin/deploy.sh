@@ -5,7 +5,7 @@ git clone https://github.com/dokku/dokku.git ~/.dokku
 
 DOKKU_HOST="reboo-staging.org"
 if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-  DOKKU_HOST="reboo.org"
+  DOKKU_HOST="metabase.reboo.org"
 fi
 
 REPO_SSL="dokku@$DOKKU_HOST:api-ssl"
