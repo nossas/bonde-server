@@ -89,7 +89,8 @@ RSpec.describe Widget, type: :model do
       @widget.async_create_mailchimp_segment
 
       resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job).to be_present    
+      expect(resque_job['args'][1]).to be_eql 'widget'
+      expect(resque_job['args'].size).to be 2
     end
   end
 end
