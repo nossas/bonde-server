@@ -5,7 +5,7 @@ RSpec.describe ActivistPressurePolicy do
 
   context "for a user" do
     subject { described_class.new(User.make!, ActivistPressure.make!) }
-    it { should allow(:create) }
+    it { should allows(:create) }
     it "should have complete scope" do
       expect(subject.scope).to eq ActivistPressure
     end
