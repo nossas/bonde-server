@@ -25,6 +25,44 @@ RSpec.describe MailchimpSync, type: :resque_job do
 		end
 	end
 
+	describe 'method perform is performing :) the correct routing to activist pressure' do
+		before do 
+			@activist_pressure= spy(:activist_pressure)
+			allow(ActivistPressure).to receive(:find).and_return(@activist_pressure)
+		end
+
+		it 'Test routing with activist pressure' do
+			MailchimpSync.perform 1, 'activist_pressure'
+			expect(@activist_pressure).to have_received(:update_mailchimp).once
+		end
+	end
+
+	describe 'if widget is empty put on list again' do
+		before do 
+			@activist_pressure = spy(:activist_pressure, :id =>1, :widget => nil)
+			allow(ActivistPressure).to receive(:find).and_return(@activist_pressure)
+		end
+
+		it 'Test routing with activist pressure' do
+			MailchimpSync.perform 1, 'activist_pressure'
+
+            expect(@activist_pressure).to have_received(:async_update_mailchimp).once
+		end
+	end
+
+	describe 'if widget is not saved put on list again' do
+		before do 
+			@activist_pressure = spy(:activist_pressure, :id =>1, :widget => spy(:widget, :id=>nil))
+			allow(ActivistPressure).to receive(:find).and_return(@activist_pressure)
+		end
+
+		it 'Test routing with activist pressure' do
+			MailchimpSync.perform 1, 'activist_pressure'
+
+            expect(@activist_pressure).to have_received(:async_update_mailchimp).once
+		end
+	end
+
 	describe 'method perform_with_formEntry testing' do
 		context 'widget doesn\'t been setted'  do
 			before do 

@@ -1,12 +1,15 @@
 class MailchimpSync
 	@queue = :mailchimp_synchro
 
-	def self.perform(form_entry_id, queue) 
+	def self.perform(id, queue) 
 		if queue == 'formEntry'
-			self.perform_with_formEntry(form_entry_id)
+			self.perform_with_formEntry(id)
 		elsif queue == 'widget'
-			self.perform_with_widget(form_entry_id)
+			self.perform_with_widget(id)
+		elsif queue == 'activist_pressure'
+			self.perform_with_activist_pressure(id)
 		end
+
 	end
 
 	def self.perform_with_formEntry(form_entry_id)
@@ -23,9 +26,18 @@ class MailchimpSync
 		end
 	end
 
-	def self.perform_with_widget(form_entry_id)
-		widget = Widget.find(form_entry_id)
+	def self.perform_with_widget(widget_id)
+		widget = Widget.find(widget_id)
 
 		widget.create_mailchimp_segment
+	end
+
+	def self.perform_with_activist_pressure(activist_pressure_id)
+		activistPressure = ActivistPressure.find(activist_pressure_id)
+		if ( not activistPressure.widget)  or (not activistPressure.widget.id)
+			activistPressure.async_update_mailchimp
+		else
+			activistPressure.update_mailchimp
+		end
 	end
 end
