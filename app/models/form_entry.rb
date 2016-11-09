@@ -56,7 +56,7 @@ class FormEntry < ActiveRecord::Base
   end
 
   def async_send_to_mailchimp
-    Resque.enqueue(MailchimpSync, self.id)
+    Resque.enqueue(MailchimpSync, self.id, 'formEntry')
   end
 
   def send_to_mailchimp

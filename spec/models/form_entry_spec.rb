@@ -16,6 +16,13 @@ RSpec.describe FormEntry, type: :model do
 			resque_job = Resque.peek(:mailchimp_synchro)
             expect(resque_job).to be_present		
 		end
+
+		it "test the arguments" do
+			@form_entry.async_send_to_mailchimp
+
+			resque_job = Resque.peek(:mailchimp_synchro)
+            expect(resque_job).to be_present		
+		end
 	end
 end
 
