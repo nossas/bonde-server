@@ -8,6 +8,8 @@ class MailchimpSync
 			self.perform_with_widget(id)
 		elsif queue == 'activist_pressure'
 			self.perform_with_activist_pressure(id)
+		elsif queue == 'activist_match'
+			self.perform_with_activist_match(id)
 		end
 
 	end
@@ -38,6 +40,15 @@ class MailchimpSync
 			activistPressure.async_update_mailchimp
 		else
 			activistPressure.update_mailchimp
+		end
+	end
+
+	def self.perform_with_activist_match(activist_pressure_id)
+		activistMatch = ActivistMatch.find(activist_pressure_id)
+		if ( not activistMatch.activist) or (not activistMatch.activist.id) or ( not activistMatch.match) or (not activistMatch.match.id)
+			activistMatch.async_update_mailchimp
+		else
+			activistMatch.update_mailchimp
 		end
 	end
 end
