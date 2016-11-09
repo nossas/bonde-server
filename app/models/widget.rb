@@ -11,7 +11,7 @@ class Widget < ActiveRecord::Base
   has_many :activist_pressures
   store_accessor :settings
 
-  after_create :create_mailchimp_segment, if: :is_mailchimpable?
+  after_create :async_create_mailchimp_segment, if: :is_mailchimpable?
   delegate :user, to: :mobilization
 
   def as_json(*)
@@ -62,6 +62,10 @@ class Widget < ActiveRecord::Base
       segment = create_segment(segment_name)
       self.update_attribute :mailchimp_segment_id, segment["id"]
     end
+  end
+  
+  def async_create_mailchimp_segment
+    Resque.enqueue(MailchimpSync, self.id, 'widget')
   end
 
   def self.create_from template, block_instance

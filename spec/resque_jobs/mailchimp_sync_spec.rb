@@ -1,7 +1,7 @@
 require './app/resque_jobs/mailchimp_sync.rb'
 
 RSpec.describe MailchimpSync, type: :resque_job do
-	describe 'method perform is performing :) the correct routing' do
+	describe 'method perform is performing :) the correct routing to formEntry' do
 		before do 
 			@formEntry = spy(:formEntry, :synchronized => true)
 			allow(FormEntry).to receive(:find).and_return(@formEntry)
@@ -10,6 +10,18 @@ RSpec.describe MailchimpSync, type: :resque_job do
 		it 'test routing with formEntry' do
 			MailchimpSync.perform 1, 'formEntry'
 			expect(@formEntry).to have_received(:synchronized).once
+		end
+	end
+
+	describe 'method perform is performing :) the correct routing to widget' do
+		before do 
+			@widget= spy(:widget)
+			allow(Widget).to receive(:find).and_return(@widget)
+		end
+
+		it 'Test routing with widget' do
+			MailchimpSync.perform 1, 'widget'
+			expect(@widget).to have_received(:create_mailchimp_segment).once
 		end
 	end
 

@@ -72,4 +72,24 @@ RSpec.describe Widget, type: :model do
       expect(subject.exported_at).to eq(@template.exported_at)
     end
   end
+
+  describe "Puts a message in Resque queue" do
+    before do 
+      @widget=Widget.make!
+    end
+
+    it "should save data in redis" do
+      @widget.async_create_mailchimp_segment
+
+      resque_job = Resque.peek(:mailchimp_synchro)
+      expect(resque_job).to be_present
+    end
+
+    it "test the arguments" do
+      @widget.async_create_mailchimp_segment
+
+      resque_job = Resque.peek(:mailchimp_synchro)
+      expect(resque_job).to be_present    
+    end
+  end
 end

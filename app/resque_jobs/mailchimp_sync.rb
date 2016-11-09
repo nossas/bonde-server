@@ -4,6 +4,8 @@ class MailchimpSync
 	def self.perform(form_entry_id, queue) 
 		if queue == 'formEntry'
 			self.perform_with_formEntry(form_entry_id)
+		elsif queue == 'widget'
+			self.perform_with_widget(form_entry_id)
 		end
 	end
 
@@ -19,5 +21,11 @@ class MailchimpSync
 				formEntry.save
 			end
 		end
+	end
+
+	def self.perform_with_widget(form_entry_id)
+		widget = Widget.find(form_entry_id)
+
+		widget.create_mailchimp_segment
 	end
 end
