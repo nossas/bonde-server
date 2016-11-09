@@ -1,3 +1,5 @@
+require './app/resque_jobs/mailchimp_sync.rb'
+
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
@@ -6,7 +8,7 @@ class FormEntry < ActiveRecord::Base
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
-  after_create :update_mailchimp
+  after_create :async_send_to_mailchimp
   after_create :send_email
 
   def fields_as_json
@@ -53,8 +55,11 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
+  def async_send_to_mailchimp
+    Resque.enqueue(MailchimpSync, self.id)
+  end
 
-  def update_mailchimp
+  def send_to_mailchimp
     if(!Rails.env.test?)
       subscribe_attributes =  {
         FNAME: self.first_name,
