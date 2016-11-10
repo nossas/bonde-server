@@ -62,32 +62,8 @@ class TransferService
           operations = recipient.balance_operations(page, 200)
           break if operations.empty?
 
-          operations.each do |operation|
-            movement_object = operation.movement_object
-            if operation["type"] == 'transfer'
-              payable_transfer = @organization.payable_transfers.find_by(transfer_id: movemet_object.id)
+          payable_transfer sync_operations operations, payable_transfer 
 
-              if payable_transfer.nil?
-                payable_transfer = @organization.payable_transfers.create(
-                  transfer_id: movement_object.id,
-                  amount: operation.amount / 100.0
-                )
-              end
-
-              payable_transfer.update_attributes(
-                transfer_data: movement_object.to_json,
-                transfer_status: movement_object.status,
-                amount: operation.amount / 100.0
-              )
-            end
-
-            if payable_transfer.present? && operation["type"] == 'payable'
-              donation = Donation.find_by_transaction_id movement_object.transaction_id
-              puts "donation #{donation.id}"
-              donation.payable_transfer = payable_transfer
-              donation.save
-            end
-          end
           sleep 0.5
           page = page+1
         end
@@ -102,5 +78,37 @@ class TransferService
     else
       Rails.logger.info "[TransferService] Organization #{@organization.id} has not recipient_id"
     end
+  end
+
+  private
+
+  def sync_operations operations, payable_transfer
+    operations.each do |operation|
+      movement_object = operation.movement_object
+      if operation["type"] == 'transfer'
+        payable_transfer = @organization.payable_transfers.find_by(transfer_id: movemet_object.id)
+
+        if payable_transfer.nil?
+          payable_transfer = @organization.payable_transfers.create(
+            transfer_id: movement_object.id,
+            amount: operation.amount / 100.0
+          )
+        end
+
+        payable_transfer.update_attributes(
+          transfer_data: movement_object.to_json,
+          transfer_status: movement_object.status,
+          amount: operation.amount / 100.0
+        )
+      end
+
+      if payable_transfer.present? && operation["type"] == 'payable'
+        donation = Donation.find_by_transaction_id movement_object.transaction_id
+        puts "donation #{donation.id}"
+        donation.payable_transfer = payable_transfer
+        donation.save
+      end
+    end
+    payable_transfer
   end
 end
