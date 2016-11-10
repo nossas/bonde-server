@@ -32,27 +32,33 @@ class SubscriptionSyncService
           gateway_data: transaction.to_json
         )
       else
-        Donation.create(
-          transaction_id: transaction.id,
-          amount: @parent_donation.amount,
-          activist_id: @parent_donation.activist_id,
-          transaction_status: transaction.status,
-          widget_id: @parent_donation.widget_id,
-          subscription_id: @subscription.id,
-          subscription: true,
-          skip: true,
-          period: @parent_donation.period,
-          plan_id: @parent_donation.plan_id,
-          email: @parent_donation.email,
-          payment_method: @parent_donation.payment_method,
-          parent_id: @parent_donation.id,
-          created_at: transaction.date_created,
-          gateway_data: transaction.to_json,
-          payables: payables.to_json
-        )
+        create_donation
       end
 
       sleep 0.5
     end
   end
+
+  private
+
+    def create_donation
+      Donation.create(
+        transaction_id: transaction.id,
+        amount: @parent_donation.amount,
+        activist_id: @parent_donation.activist_id,
+        transaction_status: transaction.status,
+        widget_id: @parent_donation.widget_id,
+        subscription_id: @subscription.id,
+        subscription: true,
+        skip: true,
+        period: @parent_donation.period,
+        plan_id: @parent_donation.plan_id,
+        email: @parent_donation.email,
+        payment_method: @parent_donation.payment_method,
+        parent_id: @parent_donation.id,
+        created_at: transaction.date_created,
+        gateway_data: transaction.to_json,
+        payables: payables.to_json
+      )
+    end
 end
