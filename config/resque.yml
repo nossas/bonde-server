@@ -1,0 +1,5 @@
+development: localhost:6379
+test: localhost:6379
+staging: redis1.se.github.com:6379
+fi: localhost:6379
+production: redis1.ae.github.com:6379

@@ -1,4 +1,4 @@
-RSpec::Matchers.define :allow do |action|
+RSpec::Matchers.define :allows do |action|
   match do |policy|
     policy.public_send("#{action}?")
   end
