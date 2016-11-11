@@ -27,3 +27,7 @@ deployment:
     branch: /(add|fix)(-|\/).*/
     commands:
       - ./bin/deploy.sh
+  develop:
+    branch: develop
+    commands:
+      - ./bin/deploy.sh
