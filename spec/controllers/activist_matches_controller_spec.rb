@@ -16,23 +16,59 @@ RSpec.describe ActivistMatchesController, type: :controller do
     match
   end
 
-  shared_examples "public access" do
-    context "when user is mobilization owner" do
+  shared_examples 'public access' do
+    context 'when user is mobilization owner' do
       it { is_expected.to respond_with 200 }
     end
 
-    context "when user is not mobilization owner" do
+    context 'when user is not mobilization owner' do
       let(:current_user) { User.make! }
       it { is_expected.to respond_with 200 }
     end
   end
 
-  describe "POST #create" do
-    before {
-      post :create,
-      activist_match: { match_id: match, activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
-    }
+  describe 'POST #create' do
+    context 'valid message' do
+      before {
+        post :create,
+        activist_match: { match_id: match, activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
+      }
 
-    it_behaves_like "public access"
+      it_behaves_like 'public access'
+
+      it 'should return a 200 status' do
+        expect(response.status).to be 200
+      end
+
+      it "should put a message on Resque" do
+        resque_job = Resque.peek(:mailchimp_synchro)
+        expect(resque_job).to be
+      end
+
+      it 'should return a json' do
+        expect(response.body).to include('id')
+        expect(response.body).to include('activist_id')
+        expect(response.body).to include('match_id')
+      end
+
+      context 'correctness data' do 
+        before do
+          @dataJSON = JSON.parse(response.body)
+          @dataDB = ActivistMatch.first
+        end
+
+        it "id should be correct" do
+          expect(@dataJSON['id']).to be_eql(@dataDB.id)
+        end
+
+        it "activist_id should be correct" do
+          expect(@dataJSON['activist_id']).to be_eql(@dataDB.activist_id)
+        end
+
+        it "match_id should be correct" do
+          expect(@dataJSON['match_id']).to be_eql(@dataDB.match_id)
+        end
+      end
+    end
   end
 end

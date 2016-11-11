@@ -12,7 +12,11 @@ class ActivistMatch < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :organization, through: :mobilization
 
-  after_create :update_mailchimp
+  after_create :async_update_mailchimp
+
+  def async_update_mailchimp
+    Resque.enqueue(MailchimpSync, self.id, 'activist_match')
+  end
 
   def update_mailchimp
     if(!Rails.env.test?)
