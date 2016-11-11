@@ -3,13 +3,13 @@ require 'rails_helper'
 RSpec.describe MobilizationPolicy do
   context "for a visitor" do
     subject { described_class.new(nil, Mobilization.make!) }
-    it { should allow(:index) }
-    it { should allow(:show) }
-    it { should_not allow(:create) }
-    it { should_not allow(:new) }
-    it { should_not allow(:update) }
-    it { should_not allow(:edit) }
-    it { should_not allow(:destroy) }
+    it { should allows(:index) }
+    it { should allows(:show) }
+    it { should_not allows(:create) }
+    it { should_not allows(:new) }
+    it { should_not allows(:update) }
+    it { should_not allows(:edit) }
+    it { should_not allows(:destroy) }
     it "should have complete scope" do
       expect(subject.scope).to eq Mobilization
     end
@@ -20,13 +20,13 @@ RSpec.describe MobilizationPolicy do
 
   context "for a non-owner user" do
     subject { described_class.new(User.make!, Mobilization.make!) }
-    it { should allow(:index) }
-    it { should allow(:show) }
-    it { should allow(:create) }
-    it { should allow(:new) }
-    it { should_not allow(:update) }
-    it { should_not allow(:edit) }
-    it { should_not allow(:destroy) }
+    it { should allows(:index) }
+    it { should allows(:show) }
+    it { should allows(:create) }
+    it { should allows(:new) }
+    it { should_not allows(:update) }
+    it { should_not allows(:edit) }
+    it { should_not allows(:destroy) }
     it "should have complete scope" do
       expect(subject.scope).to eq Mobilization
     end
@@ -52,13 +52,13 @@ RSpec.describe MobilizationPolicy do
   context "for the owner" do
     let(:user) { User.make! }
     subject { described_class.new(user, Mobilization.make!(user: user)) }
-    it { should allow(:index) }
-    it { should allow(:show) }
-    it { should allow(:create) }
-    it { should allow(:new) }
-    it { should allow(:update) }
-    it { should allow(:edit) }
-    it { should allow(:destroy) }
+    it { should allows(:index) }
+    it { should allows(:show) }
+    it { should allows(:create) }
+    it { should allows(:new) }
+    it { should allows(:update) }
+    it { should allows(:edit) }
+    it { should allows(:destroy) }
     it "should have complete scope" do
       expect(subject.scope).to eq Mobilization
     end

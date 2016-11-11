@@ -10,10 +10,14 @@ class ActivistPressure < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :organization, through: :mobilization
 
-  after_create :update_mailchimp, :send_thank_you_email, :send_pressure_email, unless: :is_test?
+  after_create :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, unless: :is_test?
 
   def as_json(*)
     ActivistPressureSerializer.new(self, {root: false})
+  end
+
+  def async_update_mailchimp
+    Resque.enqueue(MailchimpSync, self.id, 'activist_pressure')
   end
 
   def update_mailchimp
@@ -31,6 +35,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   private
+
   def is_test?
     Rails.env.test?
   end

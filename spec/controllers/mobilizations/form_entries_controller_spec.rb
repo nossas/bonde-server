@@ -34,25 +34,40 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   end
 
   describe "POST #create" do
-    it "should create with JSON format and parameters" do
-      expect(widget.form_entries.count).to eq(0)
-      post(
-        :create,
-        mobilization_id: widget.mobilization.id,
-        format: :json,
-        form_entry: {
-          widget_id: widget.id,
-          fields: [{kind: 'email', value: 'foo@validemail.com'}].to_json
-        }
-      )
-      expect(widget.form_entries.count).to eq(1)
-      form_entry = widget.form_entries.first
-      expect(response.body).to include(form_entry.to_json)
-      expect(form_entry.widget_id).to eq(widget.id)
-      expect(form_entry.fields).to eq([{
-        kind: 'email',
-        value: 'foo@validemail.com'
-      }].to_json)
+    context "valid call" do
+      before do 
+        expect(Resque.peek(:mailchimp_synchro)).not_to be
+        expect(widget.form_entries.count).to eq(0)
+        post(
+          :create,
+          mobilization_id: widget.mobilization.id,
+          format: :json,
+          form_entry: {
+            widget_id: widget.id,
+            fields: [{kind: 'email', value: 'foo@validemail.com'}].to_json
+          }
+        )
+      end
+
+      it "should create with JSON format and parameters" do
+        expect(widget.form_entries.count).to eq(1)
+        form_entry = widget.form_entries.first
+        expect(response.body).to include(form_entry.to_json)
+        expect(form_entry.widget_id).to eq(widget.id)
+        expect(form_entry.fields).to eq([{
+          kind: 'email',
+          value: 'foo@validemail.com'
+        }].to_json)
+      end
+
+      it "message status should be a 200" do
+        expect(response.status).to be 200
+      end
+
+      it "should put a message on Resque" do
+        resque_job = Resque.peek(:mailchimp_synchro)
+        expect(resque_job).to be
+      end
     end
   end
 end

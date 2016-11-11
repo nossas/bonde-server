@@ -39,4 +39,5 @@ end
 
 group :test do
   gem 'webmock'
+  gem "fakeredis", :require => "fakeredis/rspec"
 end

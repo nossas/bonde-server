@@ -26,8 +26,8 @@ class ActivistPressureMailer < ApplicationMailer
     has_first_name = @mobilization.user.first_name
 
     if @settings.present?
-      return "#{@mobilization.user.first_name} <#{@mobilization.user.email}>" if has_first_name
       return "#{@settings['sender_name']} <#{@settings['sender_email']}>" if has_sender
+      return "#{@mobilization.user.first_name} <#{@mobilization.user.email}>" if has_first_name
     end
     @mobilization.user.email
   end

@@ -10,11 +10,19 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
   end
 
   describe "GET #index" do
-    it "should return widgets by mobilization" do
-      get :index, mobilization_id: @widget1.block.mobilization_id
+    context "on valid call" do
+      before do
+        get :index, mobilization_id: @widget1.block.mobilization_id
+      end
 
-      expect(response.body).to include(@widget1.to_json)
-      expect(response.body).to_not include(@widget2.to_json)
+      it "should return widgets by mobilization" do
+        expect(response.body).to include(@widget1.to_json)
+        expect(response.body).to_not include(@widget2.to_json)
+      end
+
+      it "should return a 200 status" do
+        expect(response.status).to be 200
+      end
     end
   end
 
