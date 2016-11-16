@@ -43,7 +43,7 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			it 'Should been put on queue again' do
 				MailchimpSync.perform_with_activist_pressure 1
 
-	            expect(@activist_pressure).to have_received(:async_update_mailchimp).once
+				expect(@activist_pressure).to have_received(:async_update_mailchimp).once
 			end
 		end
 
@@ -56,7 +56,7 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			it 'Should been put on queue again' do
 				MailchimpSync.perform_with_activist_pressure 1
 
-	            expect(@activist_pressure).to have_received(:async_update_mailchimp).once
+				expect(@activist_pressure).to have_received(:async_update_mailchimp).once
 			end
 		end
 	end
@@ -144,15 +144,15 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			it 'should NOT change the synchronized status' do
 				expect(@formEntry).not_to have_received(:synchronized=)
 			end
-			it 'should put it back on queue' do
-				expect(@formEntry).to have_received(:async_send_to_mailchimp)
+			it 'should not put it back on queue' do
+				expect(@formEntry).not_to have_received(:async_send_to_mailchimp)
 			end
 		end
 		
 		context 'widget\'s mailchimp_segment_id doesn\'t been setted'  do
 			before do 
-				fake_widget = double(:widget, :mailchimp_segment_id => nil)
-				@formEntry = spy(:formEntry, :id => 1, :synchronized => false, :widget => fake_widget )
+				@spy_widget = spy(:widget, :mailchimp_segment_id => nil)
+				@formEntry = spy(:formEntry, :id => 1, :synchronized => false, :widget => @spy_widget )
 				allow(FormEntry).to receive(:find).and_return(@formEntry)
 				MailchimpSync.perform_with_formEntry 1
 			end
@@ -160,14 +160,21 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			it 'should NOT save the data' do
 				expect(@formEntry).not_to have_received(:save).with(no_args)
 			end
+			
 			it 'should NOT call send_to_mailchimp method' do
 				expect(@formEntry).not_to have_received(:send_to_mailchimp).with(no_args)
 			end
+			
 			it 'should NOT change the synchronized status' do
 				expect(@formEntry).not_to have_received(:synchronized=)
 			end
+			
 			it 'should put it back on queue' do
 				expect(@formEntry).to have_received(:async_send_to_mailchimp)
+			end
+
+			it 'should call widget\'s async_create_mailchimp_segment' do
+				expect(@spy_widget).to have_received(:async_create_mailchimp_segment)
 			end
 		end
 
