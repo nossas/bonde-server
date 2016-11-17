@@ -1,6 +1,7 @@
-
-rails_root = ENV['RAILS_ROOT'] || File.dirname(__FILE__) + '/../..'
-rails_env = ENV['RAILS_ENV'] || 'development'
+if Rails.env.production? 
+  uri =  URI.parse(ENV["REDIS_URL"])
+  Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+end
 
 Resque.logger.formatter = Resque::VeryVerboseFormatter.new
-Resque.redis = ENV['REDIS_URL']
+
