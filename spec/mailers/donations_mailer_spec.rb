@@ -23,17 +23,17 @@ RSpec.describe DonationsMailer, type: :mailer do
     end
 
     it "should deliver a message from mobilization's creator" do
-      email = DonationsMailer.thank_you_email(@donation).deliver_now
+      email = DonationsMailer.thank_you_email(@donation, true).deliver_now
       expect(email.from).to eq([@mobilization.user.email])
     end
 
     it "should deliver a message to donor" do
-      email = DonationsMailer.thank_you_email(@donation).deliver_now
+      email = DonationsMailer.thank_you_email(@donation, true).deliver_now
       expect(email.to).to eq([@donation.customer['email']])
     end
 
     it "should send an email with the properly subject" do
-      email = DonationsMailer.thank_you_email(@donation).deliver_now
+      email = DonationsMailer.thank_you_email(@donation, true).deliver_now
       expect(email.subject).to include(@mobilization.name)
     end
   end
