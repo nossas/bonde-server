@@ -31,6 +31,32 @@ RSpec.describe Widget, type: :model do
     end
   end
 
+  describe '#segment' do
+    it 'should handle at least 500 emails' do
+      @widget = Widget.make!
+      # Generate emails
+      generated_emails = 'Pression tests from OurCities Gang <meuemail@lutas.sao.nossas.org>'
+      (2..500).each do  |idx|
+        generated_emails += ";Pression tests from OurCities Gang #{idx} <meuemail#{idx}@lutas.sao.nossas.org>"
+      end
+      # Put on widget
+      @widget.settings = %/"{
+        "title_text":"Stopping legal salary increases from judiciary",
+        "main_color":"#757ef1",
+        "button_text":"fighting to an end",
+        "count_text":"pressures made",
+        "show_counter":"true",
+        "reply_email":"foo@bar.com",
+        "pressure_subject":"Teste - Pelo fim do aumento no judiciário",
+        "pressure_body":"Let'a stop with this $@#%! piece of @#%@#@#@ !!!!",
+        "targets": #{generated_emails}
+      }/
+
+      ret = @widget.save
+      expect(ret).to be true
+    end
+  end
+
   context "create Widget from TemplateWidget object" do
     before do 
       @template = TemplateWidget.make!

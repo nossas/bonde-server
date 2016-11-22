@@ -1,5 +1,5 @@
 class CreatePayableDetails < ActiveRecord::Migration
-  def up
+  def up # rubocop:disable Metrics/MethodLength
     execute %Q{
 DROP VIEW IF EXISTS public.payable_details;
 
@@ -55,6 +55,7 @@ CREATE OR REPLACE VIEW public.payable_details AS
                 END AS receive_period) transfer_d ON (true)
   WHERE (((dd.value ->> 'type'::text) = 'credit'::text) AND ((dd.value ->> 'object'::text) = 'payable'::text) AND (dd.value->>'recipient_id'::text = o.pagarme_recipient_id) OR d.subscription);
     }
+    # rubocop:enable Metrics/MethodLength
   end
 
   def down

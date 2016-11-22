@@ -6,8 +6,8 @@ RSpec.describe WidgetsController, type: :controller do
     stub_current_user(@user)
   end
 
-  describe "GET #index" do
-    it "should return widgets by mobilization's custom domain" do
+  describe 'GET #index' do
+    it 'should return widgets by mobilization\'s custom domain' do
       mobilization = Mobilization.make!
       block = Block.make! mobilization: mobilization
       widget = Widget.make! block: block
@@ -17,7 +17,7 @@ RSpec.describe WidgetsController, type: :controller do
       expect(response.body).to include(widget.to_json)
     end
 
-    it "should return widgets by mobilization's slug" do
+    it 'should return widgets by mobilization\'s slug' do
       mobilization = Mobilization.make!
       block = Block.make! mobilization: mobilization
       widget = Widget.make! block: block

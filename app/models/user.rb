@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
 
   validates :provider, :uid, :email, presence: true
 
-  def as_json(options = {})
+  def as_json(_options = {})
     UserSerializer.new(self, {root: false})
   end
 end
