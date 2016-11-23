@@ -1,5 +1,7 @@
 AllCops:
   DisabledByDefault: true
+  Excludes:
+    - bin/*
 
 #################### Lint ################################
 
