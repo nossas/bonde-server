@@ -24,5 +24,8 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index] do
     resources :payable_details, only: [:index], controller: 'organizations/payable_details'
   end
+
+  resources :users, only: [:create, :update]
+  
   mount_devise_token_auth_for 'User', at: '/auth'
 end
