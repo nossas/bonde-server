@@ -83,44 +83,39 @@ RSpec.describe MobilizationsController, type: :controller do
         @template = TemplateMobilization.make!
         block = TemplateBlock.make! template_mobilization:@template
         TemplateWidget.make! template_block:block
+        
+        stub_request(:delete, "https://api.heroku.com/apps//domains/mymobilization").
+          with(:headers => {'Accept'=>'application/vnd.heroku+json; version=3', 'Authorization'=>'Bearer ', 'Host'=>'api.heroku.com:443', 'User-Agent'=>'excon/0.45.4'}).
+          to_return(:status => 200, :body => "", :headers => {})
+
+
+        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
       end
 
       it "should return a 200 status if created" do
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
-
         expect(response.status).to eq(200)
       end
 
       it "should update data from a template" do
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
-
         mob = Mobilization.find @mobilization.id
         expect(mob.header_font).to eq(@template.header_font)
       end
 
       it "should not update name from a mobilization" do
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
-
         mob = Mobilization.find @mobilization.id
         expect(mob.name).to eq(@mobilization.name)
       end
 
       it "should not update goal from a mobilization" do
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
-
         mob = Mobilization.find @mobilization.id
         expect(mob.goal).to eq(@mobilization.goal)
       end
 
       it "should return the new data" do
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
-
         expect(response.body).to include(@template.header_font)
       end
 
       it 'should increment the uses_number for each use' do
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
-
         newTemplate = TemplateMobilization.find @template.id
         expect(newTemplate.uses_number).to eq((@template.uses_number||0) + 1)
       end
