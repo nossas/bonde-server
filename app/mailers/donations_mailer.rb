@@ -6,7 +6,7 @@ class DonationsMailer < ApplicationMailer
 
       ws = @widget.settings
       user = @mobilization.user
-      sender = ws['sender_name'] ? ws['sender_name'] : user.first_name
+      sender = get_sender ws, user
       email_address = ws['sender_email'] ? ws['sender_email'] : user.email
       subject = ws['email_subject'] ? ws['email_subject'] : "[#{@mobilization.name}] Obrigada por doar!"
 
@@ -18,5 +18,9 @@ class DonationsMailer < ApplicationMailer
         from: from_address
       )
     end
+  end
+
+  def get_sender ws, user
+    ws['sender_name'] ? ws['sender_name'] : user.first_name
   end
 end
