@@ -7,24 +7,20 @@ RSpec.describe WidgetsController, type: :controller do
   end
 
   describe 'GET #index' do
-    it 'should return widgets by mobilization\'s custom domain' do
+    before do
       mobilization = Mobilization.make!
       block = Block.make! mobilization: mobilization
-      widget = Widget.make! block: block
+      @widget = Widget.make! block: block
 
       get :index, custom_domain: mobilization.custom_domain
-
-      expect(response.body).to include(widget.to_json)
+    end
+    
+    it 'should return widgets by mobilization\'s custom domain' do
+      expect(response.body).to include(@widget.to_json)
     end
 
-    it 'should return widgets by mobilization\'s slug' do
-      mobilization = Mobilization.make!
-      block = Block.make! mobilization: mobilization
-      widget = Widget.make! block: block
-
-      get :index, slug: mobilization.slug
-
-      expect(response.body).to include(widget.to_json)
+    it 'should return 200 status' do
+      expect(response.status).to be 200
     end
   end
 end
