@@ -1,7 +1,7 @@
 class ActivistPressure < ActiveRecord::Base
   include Mailchimpable
 
-  attr_accessor :firstname, :lastname, :mail
+  attr_accessor :firstname, :lastname, :mail, :city
 
   validates :widget, :activist, :mail, presence: true
   belongs_to :activist

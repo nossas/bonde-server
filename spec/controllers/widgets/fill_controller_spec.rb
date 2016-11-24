@@ -28,7 +28,7 @@ RSpec.describe Widgets::FillController, type: :controller do
     before {
       post :create,
       widget_id: widget,
-      fill: { activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
+      fill: { activist: { name: 'Foo Bar', email: 'foo@bar.org', city: 'Pindamonhangaba/SP' } }
     }
 
     it_behaves_like "public access"
