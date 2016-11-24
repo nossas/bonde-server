@@ -12,7 +12,7 @@ class Mobilizations::FormEntriesController < ApplicationController
 
     if params[:widget_id].present?
       @form_entries = @form_entries.where(widget_id: params[:widget_id])
-      if widget = policy_scope(Widget).find(params[:widget_id])
+      if (widget = policy_scope(Widget).find(params[:widget_id]))
         widget.update_attribute :exported_at, DateTime.now
       end
     end

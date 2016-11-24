@@ -35,8 +35,6 @@ class SubscriptionService < DonationService
     end
   end
 
-  private
-
   def self.new_subscription(donation)
     period = donation.period || "30"
     plan = Plan.find_by(days: period, amount: donation.amount)
