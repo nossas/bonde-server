@@ -1,19 +1,37 @@
 class ActivistPressureMailer < ApplicationMailer
-  def thank_you_email(id)
-    activist_pressure = load_model(id)
-    @activist = activist_pressure.activist
-    @widget = activist_pressure.widget
-    @mobilization = @widget.mobilization
-    @settings = @widget.settings
+  def thank_you_email(id, force_tests = false)
+    if (!Rails.env.test?) or force_tests
+      activist_pressure = load_model(id)
+      @activist = activist_pressure.activist
+      @widget = activist_pressure.widget
+      @mobilization = @widget.mobilization
+      @settings = @widget.settings
 
-    mail to: @activist.email, subject: subject, from: from
+      mail to: @activist.email, subject: subject, from: from
+    end
   end
 
-  def pressure_email(id, recipient)
-    activist_pressure = load_model(id)
-    @activist = activist_pressure.activist
-    @mail = recipient
-    mail to: targets, subject: @mail[:subject], from: activist_email
+  def pressure_email(id, recipient, force_tests = false)
+    if (!Rails.env.test?) or force_tests
+      activist_pressure = load_model(id)
+      @activist = activist_pressure.activist
+      @mail = recipient
+      headers['X-SMTPAPI'] = %#{
+      "filters": {
+        "subscriptiontrack": {
+          "settings": {
+            "enable": 0
+          }
+        },
+        "bypass_list_management" : {
+          "settings" : {
+            "enable" : 1
+          }
+        }
+      }
+    }#
+      mail to: targets, subject: @mail[:subject], from: activist_email
+    end
   end
 
   def load_model(id)
