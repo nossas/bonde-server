@@ -52,7 +52,8 @@ class ActivistPressure < ActiveRecord::Base
     {
       FNAME: self.firstname,
       LNAME: self.lastname,
-      EMAIL: self.activist.email
+      EMAIL: self.activist.email,
+      CITY: self.activist.city
     }
   end
 
