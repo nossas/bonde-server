@@ -21,3 +21,19 @@
 
 en:
   hello: "Hello world"
+pt-BR:
+  errors:
+    messages:
+      blank: "Campo não pode estar vazio."
+      too_short: "Campo muito curto."
+  activerecord:
+    errors:
+      models:
+        organization:
+          attributes:
+            name:
+              blank: "O campo 'Nome' não pode estar em branco"
+        user:
+          attributes:
+            password:
+              too_short: "Senha não pode ser tão curta"
