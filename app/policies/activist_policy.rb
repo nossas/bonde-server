@@ -1,5 +1,5 @@
 class ActivistPolicy < ApplicationPolicy
   def permitted_attributes
-    [:name, :email, :phone, :document_number, :document_type]
+    [:name, :email, :phone, :document_number, :document_type, :city]
   end
 end
