@@ -25,6 +25,7 @@ class WidgetPolicy < ApplicationPolicy
         :pressure_subject,
         :pressure_body,
         :reply_email,
+        :show_city,
 
         # Donation widget
         :default_donation_value,
