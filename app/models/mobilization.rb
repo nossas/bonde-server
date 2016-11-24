@@ -56,7 +56,7 @@ class Mobilization < ActiveRecord::Base
 
   def set_color_scheme
     if self.organization.present?
-      self.color_scheme = "#{self.organization.name.gsub(' ', '').parameterize}-scheme"
+      self.color_scheme = "#{self.organization.name.delete(' ').parameterize}-scheme"
     end
   end
 

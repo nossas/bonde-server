@@ -6,13 +6,7 @@ class FormEntryMailer < ApplicationMailer
       @mobilization = @widget.mobilization
       ws = @widget.settings
 
-      from_address = if ws['sender_name'] and ws['sender_email']
-                       "#{ws['sender_name']} <#{ws['sender_email']}>"
-                     elsif @mobilization.user.first_name
-                       "#{@mobilization.user.first_name} <#{@mobilization.user.email}>"
-                     else
-                       @mobilization.user.email
-                     end
+      from_address = get_from_address(ws)
       subject = if ws['email_subject']
                   ws['email_subject']
                 else
@@ -25,5 +19,17 @@ class FormEntryMailer < ApplicationMailer
         from: from_address
       )
     end
+  end
+
+  private
+
+  def get_from_address ws
+      if ws['sender_name'] and ws['sender_email']
+        "#{ws['sender_name']} <#{ws['sender_email']}>"
+      elsif @mobilization.user.first_name
+        "#{@mobilization.user.first_name} <#{@mobilization.user.email}>"
+      else
+        @mobilization.user.email
+      end    
   end
 end

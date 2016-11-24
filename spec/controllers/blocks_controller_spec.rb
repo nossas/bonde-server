@@ -7,22 +7,19 @@ RSpec.describe BlocksController, type: :controller do
   end
 
   describe "GET #index" do
-    it "should return blocks by mobilization's custom domain" do
+    before do
       mobilization = Mobilization.make!
-      block = Block.make! mobilization: mobilization
+      @block = Block.make! mobilization: mobilization
 
       get :index, custom_domain: mobilization.custom_domain
-
-      expect(response.body).to include(block.to_json)
     end
 
-    it "should return blocks by mobilization's slug" do
-      mobilization = Mobilization.make!
-      block = Block.make! mobilization: mobilization
+    it "should return blocks by mobilization's custom domain" do
+      expect(response.body).to include(@block.to_json)
+    end
 
-      get :index, slug: mobilization.slug
-
-      expect(response.body).to include(block.to_json)
+    it "should return a 200 status" do
+      expect(response.status).to be 200
     end
   end
 end

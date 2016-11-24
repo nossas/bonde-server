@@ -70,13 +70,6 @@ ActivistMatch.blueprint do
   match { Match.make! }
 end
 
-Match.blueprint do
-  widget{ Widget.make! }
-  first_choice { 'a' }
-  second_choice { 'b' }
-  goal_image { 'http://www.mysites.com/no-image-for-ya.gif' }
-end
-
 Donation.blueprint do
   widget { Widget.make!(kind: 'donation', mobilization: Mobilization.make!) }
   card_hash { "fake/card_hash_kefh2309r3hhskjdfh" }
