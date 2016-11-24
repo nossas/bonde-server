@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.3.0'
 
-gem 'rails', '4.2.5.2'
+gem 'rails', '4.2.7.1'
 gem 'rails-api'
 gem 'spring', group: :development
 gem 'pg'
@@ -19,7 +19,7 @@ gem 'redis', '3.3.0'
 gem 'resque', '1.26.0', require: 'resque/server'
 gem 'puma'
 gem 'platform-api'
-gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'codeclimate-test-reporter', '< 1.0.0', group: :test, require: nil
 gem 'pagarme', '2.1.2'
 gem 'sentry-raven'
 gem 'has_scope'
@@ -32,7 +32,7 @@ end
 group :test, :development do
   gem 'rspec-rails'
   gem 'rspec-activemodel-mocks'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '< 3.0.0'
   gem 'byebug'
   gem 'pry'
 end
