@@ -25,7 +25,20 @@ pt-BR:
   errors:
     messages:
       blank: "Campo não pode estar vazio."
-      too_short: "Campo muito curto."
+      wrong_length: "Campo possui tamanho incorreto.(Requer: %{count})"
+      too_short: "Campo é pequeno demais.(Pelo menos %{count})"
+      too_long: "Campo é grande demais.(No máximo %{count})"
+      taken: "O valor '%{value}' já foi utilizado para o campo."
+      
+      not_a_number: "O valor '%{value}' não é um número."
+      greater_than: "O valor deveria ser maior que %{count}"
+      greater_than_or_equal_to: "O valor deveria ser maior ou igual a %{count}"
+      less_than: "O valor deveria ser menor que %{count}"
+      less_than_or_equal_to: "O valor deveria ser menor ou igual a %{count}"
+      equal_to:  "O valor deve ser igual a %{count}"
+      other_than: "O valor deve ser diferente de %{count}"
+      odd: "O valor deve ser impar"
+      even: "O valor deve ser par"
   activerecord:
     errors:
       models:
@@ -36,4 +49,5 @@ pt-BR:
         user:
           attributes:
             password:
-              too_short: "Senha não pode ser tão curta"
+              too_short: "Senha não pode ser tão curta - deve ter pelo menos %{count} caracteres"
+              too_long: "Senha não pode ser tão longa - deve ter no máximo %{count} caracteres"
