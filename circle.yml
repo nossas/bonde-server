@@ -1,3 +1,8 @@
+dependencies:
+  pre:
+    # update locally with:
+    # openssl aes-256-cbc -e -in .flynnrc -out .flynnrc-cipher -k $KEY
+    - openssl aes-256-cbc -d -in .flynnrc-cipher -k $KEY >> ~/.flynnrc
 machine:
   timezone:
     America/Sao_Paulo # Set the timezone
