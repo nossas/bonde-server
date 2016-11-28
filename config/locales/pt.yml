@@ -1,0 +1,51 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+pt:
+  errors:
+    messages:
+      blank: "Campo não pode estar vazio."
+      wrong_length: "Campo possui tamanho incorreto.(Requer: %{count})"
+      too_short: "Campo é pequeno demais.(Pelo menos %{count})"
+      too_long: "Campo é grande demais.(No máximo %{count})"
+      taken: "O valor '%{value}' já foi utilizado para o campo."
+      
+      not_a_number: "O valor '%{value}' não é um número."
+      greater_than: "O valor deveria ser maior que %{count}"
+      greater_than_or_equal_to: "O valor deveria ser maior ou igual a %{count}"
+      less_than: "O valor deveria ser menor que %{count}"
+      less_than_or_equal_to: "O valor deveria ser menor ou igual a %{count}"
+      equal_to:  "O valor deve ser igual a %{count}"
+      other_than: "O valor deve ser diferente de %{count}"
+      odd: "O valor deve ser impar"
+      even: "O valor deve ser par"
+  activerecord:
+    errors:
+      models:
+        organization:
+          attributes:
+            name:
+              blank: "O campo 'Nome' não pode estar em branco"
+        user:
+          attributes:
+            password:
+              too_short: "Senha não pode ser tão curta - deve ter pelo menos %{count} caracteres"
+              too_long: "Senha não pode ser tão longa - deve ter no máximo %{count} caracteres"
