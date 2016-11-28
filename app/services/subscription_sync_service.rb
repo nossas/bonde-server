@@ -32,7 +32,7 @@ class SubscriptionSyncService
           gateway_data: transaction.to_json
         )
       else
-        create_donation
+        create_donation transaction
       end
 
       sleep 0.5
@@ -41,7 +41,7 @@ class SubscriptionSyncService
 
   private
 
-    def create_donation
+    def create_donation transaction
       Donation.create(
         transaction_id: transaction.id,
         amount: @parent_donation.amount,
