@@ -15,6 +15,6 @@ if [[ "$CIRCLE_BRANCH" == "master" ]]; then
   git clone https://github.com/dokku/dokku.git ~/.dokku
   $HOME/.dokku/contrib/dokku_client.sh run "rake db:migrate"
 else
-  L=/usr/local/bin/flynn && curl -sSL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >$L && chmod +x $L
+  L=/home/ubuntu/bin/flynn && curl -sSL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >$L && chmod +x $L
   flynn run rake db:migrate
 fi
