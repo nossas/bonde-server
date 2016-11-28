@@ -17,5 +17,5 @@ else
 	GIT_SSL_NO_VERIFY=true git push -f flynn $CIRCLE_SHA1:refs/heads/master
 
   L=/home/ubuntu/bin/flynn && curl -sSL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >$L && chmod +x $L
-  flynn run rake db:migrate
+  flynn -a ourcities-rebu-server-develop run rake db:migrate
 fi
