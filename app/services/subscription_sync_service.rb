@@ -32,7 +32,7 @@ class SubscriptionSyncService
           gateway_data: transaction.to_json
         )
       else
-        create_donation
+        create_donation transaction
       end
 
       sleep 0.5
