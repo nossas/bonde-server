@@ -4,7 +4,10 @@ class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
   validates :widget, :fields, presence: true
+
   belongs_to :widget
+  belongs_to :activist
+
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
