@@ -8,9 +8,8 @@ class UsersController < ApplicationController
   def create
     skip_authorization
 
-    @user = User.new(params.require(:user).permit(:email, :first_name, :last_name, :password))
-    @user.uid = @user.email
-    @user.provider = 'email'
+    create_user
+
     @user.skip_confirmation!
     if @user.save
       sign_in @user
@@ -20,7 +19,7 @@ class UsersController < ApplicationController
       end
       render json: @user
     else
-      render json: { errors: @user.errors}, status=>500
+      render json: { errors: @user.errors }, status=>500
     end
   end
 
@@ -38,5 +37,20 @@ class UsersController < ApplicationController
     else
       {}
     end
+  end
+
+  private
+
+  def put_token_on_header
+    tok = @user.create_new_auth_token
+    tok.keys.each do |field|
+      response.header[field] = tok[field]
+    end    
+  end
+
+  def create_user
+    @user = User.new(params.require(:user).permit(:email, :first_name, :last_name, :password, :avatar))
+    @user.uid = @user.email
+    @user.provider = 'email'
   end
 end
