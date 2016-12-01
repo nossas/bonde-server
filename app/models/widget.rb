@@ -11,7 +11,7 @@ class Widget < ActiveRecord::Base
   has_many :activist_pressures
   store_accessor :settings
 
-  after_create :async_create_mailchimp_segment, if: :is_mailchimpable?
+  after_create :async_create_mailchimp_segment
   delegate :user, to: :mobilization
 
   def as_json(*)
@@ -25,10 +25,6 @@ class Widget < ActiveRecord::Base
 
     return "M#{mob_id}C#{self.id} - [Comunidade] #{mob_name[0..89]}" if action_community?
     "M#{mob_id}A#{self.id} - #{mob_name[0..89]}"
-  end
-
-  def is_mailchimpable?
-    self.form? || self.match?
   end
 
   def form?
