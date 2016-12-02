@@ -2,7 +2,7 @@ class PayableDetail < ActiveRecord::Base
   self.primary_key = 'payable_id'
   self.table_name = 'public.payable_details'
 
-  belongs_to :organization
+  belongs_to :community
   belongs_to :donation
   default_scope { order('transaction_id desc') }
   scope :by_widget, ->(id) { where(widget_id: id) }

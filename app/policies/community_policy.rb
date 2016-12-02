@@ -1,4 +1,4 @@
-class OrganizationPolicy < ApplicationPolicy
+class CommunityPolicy < ApplicationPolicy
   def can_handle_with_payables?
     is_owned_by?(user)
   end

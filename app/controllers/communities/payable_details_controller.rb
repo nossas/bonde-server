@@ -1,17 +1,17 @@
-class Organizations::PayableDetailsController < ApplicationController
+class Communities::PayableDetailsController < ApplicationController
   before_action :skip_policy_scope
-  has_scope :by_widget, :by_mobilization, :by_block
+  has_scope :by_widgecommunityt, :by_mobilization, :by_block
 
   def index
-    authorize organization, :can_handle_with_payables?
-    render json: apply_scopes(organization.payable_details).to_json
+    authorize community, :can_handle_with_payables?
+    render json: apply_scopes(community.payable_details).to_json
   end
 
-  def organization
-    @organization ||= Organization.find(params[:organization_id])
+  def community
+    @community ||= Community.find(params[:community_id])
   end
 
   def self.policy_class
-    OrganizationPolicy
+    CommunityPolicy
   end
 end
