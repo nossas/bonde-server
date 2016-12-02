@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe Organizations::PayableDetailsController, type: :controller do
-  let(:organization) { Organization.make! pagarme_recipient_id: 'xxx' }
+RSpec.describe Communities::PayableDetailsController, type: :controller do
+  let(:community) { Community.make! pagarme_recipient_id: 'xxx' }
   let(:user) { User.make! }
-  let(:mobilization) { Mobilization.make!(organization: organization, user: user) }
+  let(:mobilization) { Mobilization.make!(community: community, user: user) }
   let(:block) { Block.make! mobilization: mobilization }
   let(:widget) { Widget.make!(kind: 'donation', block: block) }
   let(:donation) do
@@ -25,7 +25,7 @@ RSpec.describe Organizations::PayableDetailsController, type: :controller do
           installment: 1,
           date_created: "2016-09-05T22:29:49.060Z",
           payment_date: "2016-10-06T03:00:00.000Z",
-          recipient_id: organization.pagarme_recipient_id,
+          recipient_id: community.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
           transaction_id: 123,
@@ -42,12 +42,12 @@ RSpec.describe Organizations::PayableDetailsController, type: :controller do
   end
 
   describe 'GET #index' do
-    context 'when user is not on organization' do
+    context 'when user is not on community' do
       let(:other_user) { User.make! }
 
       before do
         stub_current_user(other_user)
-        get :index, organization_id: organization.id
+        get :index, community_id: community.id
       end
 
       it "should be not authorized" do
@@ -57,7 +57,7 @@ RSpec.describe Organizations::PayableDetailsController, type: :controller do
 
     context 'when user is on orgnization' do
       before do
-        get :index, organization_id: organization.id
+        get :index, community_id: community.id
       end
 
       it "should be successful and render payable details" do

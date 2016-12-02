@@ -9,7 +9,7 @@ class FormEntry < ActiveRecord::Base
   belongs_to :activist
 
   has_one :mobilization, through: :widget
-  has_one :organization, through: :mobilization
+  has_one :community, through: :mobilization
 
   before_create :link_activist
 
@@ -76,7 +76,7 @@ class FormEntry < ActiveRecord::Base
         EMAIL: self.email,
         PHONE: self.phone || "",
         CITY: self.city,
-        ORG: self.organization.name
+        ORG: self.community.name
       }
 
       if !self.city.present? || self.city.try(:downcase) == 'outra'
@@ -88,7 +88,7 @@ class FormEntry < ActiveRecord::Base
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
 
       update_member(self.email, {
-        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }]
+        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.community.name] }]
       })
     end
   end

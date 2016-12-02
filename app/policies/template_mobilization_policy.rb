@@ -14,7 +14,7 @@ class TemplateMobilizationPolicy < ApplicationPolicy
   #       :body_font,
   #       :custom_domain,
   #       :slug,
-  #       :organization_id
+  #       :community_id
   #     ]
   #   else
   #     []

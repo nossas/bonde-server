@@ -1,4 +1,4 @@
 class PayableTransfer < ActiveRecord::Base
-  belongs_to :organization
+  belongs_to :community
   has_many :donations
 end

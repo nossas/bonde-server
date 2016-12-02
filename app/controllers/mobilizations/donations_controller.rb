@@ -5,7 +5,7 @@ class Mobilizations::DonationsController < ApplicationController
 
   def index
     @donations = policy_scope(Donation)
-      .by_organization(params[:organization_id])
+      .by_community(params[:community_id])
       .by_widget(params[:widget_id])
 
     authorize @donations

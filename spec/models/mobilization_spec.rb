@@ -10,7 +10,7 @@ RSpec.describe Mobilization, type: :model do
   it { should validate_presence_of :goal }
   it { should validate_length_of :twitter_share_text }
 
-  before { @organization = Organization.make! }
+  before { @community = Community.make! }
 
   context "generate a slug" do
     before do
@@ -18,7 +18,7 @@ RSpec.describe Mobilization, type: :model do
         name: "mobilization",
         goal: "change the world",
         user: User.make!,
-        organization_id: @organization.id
+        community_id: @community.id
       )
     end
 
@@ -33,7 +33,7 @@ RSpec.describe Mobilization, type: :model do
         name: "mobilization",
         goal: "change the world",
         user: User.make!,
-        organization_id: @organization.id
+        community_id: @community.id
       )
     }
 
@@ -86,8 +86,8 @@ RSpec.describe Mobilization, type: :model do
       expect(subject.twitter_share_text).to eq(@template.twitter_share_text)
     end
 
-    it "should not copy the organization_id value" do
-      expect(subject.organization_id).to_not eq(@template.organization_id)
+    it "should not copy the community_id value" do
+      expect(subject.community_id).to_not eq(@template.community_id)
     end
   end
 end

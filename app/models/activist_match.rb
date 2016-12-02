@@ -10,7 +10,7 @@ class ActivistMatch < ActiveRecord::Base
   has_one :widget, through: :match
   has_one :block, through: :widget
   has_one :mobilization, through: :block
-  has_one :organization, through: :mobilization
+  has_one :community, through: :mobilization
 
   after_create :async_update_mailchimp
 
@@ -29,7 +29,7 @@ class ActivistMatch < ActiveRecord::Base
       subscribe_to_list(self.activist.email, subscribe_attributes)
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
       update_member(self.activist.email, {
-        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }]
+        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.community.name] }]
       })
     end
   end

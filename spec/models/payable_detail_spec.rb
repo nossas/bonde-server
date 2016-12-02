@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe PayableDetail, type: :model do
   let(:payment_date) { 1.days.ago }
   let(:waiting_funds_date) { 10.days.from_now }
-  let(:organization) { Organization.make! pagarme_recipient_id: 'xxx' }
+  let(:community) { Community.make! pagarme_recipient_id: 'xxx' }
   let(:user) { User.make! }
-  let(:mobilization) { Mobilization.make!(organization: organization, user: user) }
+  let(:mobilization) { Mobilization.make!(community: community, user: user) }
   let(:block) { Block.make! mobilization: mobilization }
   let(:widget) { Widget.make!(kind: 'donation', block: block) }
   let(:widget_2) { Widget.make!(kind: 'donation', block: block) }
@@ -28,7 +28,7 @@ RSpec.describe PayableDetail, type: :model do
           installment: 1,
           date_created: "2016-09-05T22:29:49.060Z",
           payment_date: waiting_funds_date,
-          recipient_id: organization.pagarme_recipient_id,
+          recipient_id: community.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
           transaction_id: 123,
@@ -57,7 +57,7 @@ RSpec.describe PayableDetail, type: :model do
           installment: 1,
           date_created: "2016-09-05T22:29:49.060Z",
           payment_date: payment_date,
-          recipient_id: organization.pagarme_recipient_id,
+          recipient_id: community.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
           transaction_id: 123,
@@ -67,7 +67,7 @@ RSpec.describe PayableDetail, type: :model do
         }],
     )
   end
-  let(:payable_transfer) { PayableTransfer.make! organization: organization}
+  let(:payable_transfer) { PayableTransfer.make! community: community}
 
   before do
     donation_paid
@@ -106,7 +106,7 @@ RSpec.describe PayableDetail, type: :model do
 
   #  context "when org transfer_day is actual day" do
   #    before do
-  #      organization.update_attribute :transfer_day, DateTime.now.day
+  #      community.update_attribute :transfer_day, DateTime.now.day
   #    end
 
   #    it "should return only payables that payable_date is already passed" do
