@@ -58,7 +58,7 @@ CREATE OR REPLACE VIEW public.payable_details AS
     # rubocop:enable Metrics/MethodLength
   end
 
-  def down
+  def down # rubocop:disable Metrics/MethodLength
     execute %Q{
 DROP VIEW IF EXISTS public.payable_details;
 
