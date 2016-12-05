@@ -7,9 +7,8 @@ class UsersController < ApplicationController
 
   def create
     skip_authorization
-
     create_user
-    @user.skip_confirmation!
+    @user.skip_confirmation!    
     if @user.save
       sign_in @user
       put_token_on_header
@@ -40,11 +39,11 @@ class UsersController < ApplicationController
     tok = @user.create_new_auth_token
     tok.keys.each do |field|
       response.header[field] = tok[field]
-    end
+    end    
   end
 
   def create_user
-    @user = User.new(params.require(:user).permit(:email, :first_name, :last_name, :password, :avatar))
+    @user = User.new(params.require(:user).permit(:email, :first_name, :last_name, :password))
     @user.uid = @user.email
     @user.provider = 'email'
   end
