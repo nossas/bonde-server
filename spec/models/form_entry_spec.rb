@@ -50,7 +50,8 @@ RSpec.describe FormEntry, type: :model do
 
   describe "Puts a message in Resque queue" do
     before do
-      @form_entry=FormEntry.make!
+      Resque.redis.flushall
+      @form_entry=FormEntry.new id:25
     end
 
     it "should save data in redis" do
@@ -64,6 +65,7 @@ RSpec.describe FormEntry, type: :model do
       @form_entry.async_send_to_mailchimp
 
       resque_job = Resque.peek(:mailchimp_synchro)
+      expect(resque_job['args'][0]).to be 25
       expect(resque_job['args'][1]).to be_eql 'formEntry'
       expect(resque_job['args'].size).to be 2
     end
