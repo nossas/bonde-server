@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe MobilizationsController, type: :controller do
   before do
+    stub_request(:delete, "https://api.heroku.com/apps//domains/mymobilization").
+       with(:headers => {'Accept'=>'application/vnd.heroku+json; version=3', 'Authorization'=>'Bearer ', 'Host'=>'api.heroku.com:443', 'User-Agent'=>'excon/0.54.0'}).
+       to_return(:status => 200, :body => "", :headers => {})
+
     @user1 = User.make!
     @user2 = User.make!
     stub_current_user(@user1)

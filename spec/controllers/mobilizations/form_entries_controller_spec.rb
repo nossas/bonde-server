@@ -36,8 +36,7 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   describe "POST #create" do
     context "valid call" do
       before do 
-        expect(Resque.peek(:mailchimp_synchro)).not_to be
-        expect(widget.form_entries.count).to eq(0)
+        Resque.redis.flushall
         post(
           :create,
           mobilization_id: widget.mobilization.id,
