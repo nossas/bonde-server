@@ -4,12 +4,21 @@ class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
   validates :widget, :fields, presence: true
+
   belongs_to :widget
+  belongs_to :activist
+
   has_one :mobilization, through: :widget
   has_one :organization, through: :mobilization
 
+  before_create :link_activist
+
   after_create :async_send_to_mailchimp
   after_create :send_email
+
+  def link_activist
+    self.activist = (Activist.find_by(email: email) || create_activist(name: first_name, email: email)) if email.present?
+  end
 
   def fields_as_json
     JSON.parse(self.fields)

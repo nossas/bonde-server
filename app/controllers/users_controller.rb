@@ -9,17 +9,13 @@ class UsersController < ApplicationController
     skip_authorization
 
     create_user
-
     @user.skip_confirmation!
     if @user.save
       sign_in @user
-      tok = @user.create_new_auth_token
-      tok.keys.each do |field|
-        response.header[field] = tok[field]
-      end
+      put_token_on_header
       render json: @user
     else
-      render json: { errors: @user.errors }, status=>500
+      render json: { errors: @user.errors}, status=>500
     end
   end
 
@@ -29,7 +25,6 @@ class UsersController < ApplicationController
     @user.update!(user_params)
     render json: @user
   end
-
 
   def user_params
     if params[:user]
@@ -45,7 +40,7 @@ class UsersController < ApplicationController
     tok = @user.create_new_auth_token
     tok.keys.each do |field|
       response.header[field] = tok[field]
-    end    
+    end
   end
 
   def create_user

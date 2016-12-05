@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
   describe 'POST #create' do
     context 'valid creation call' do
-      before do 
+      before do
         @data_on_db = User.count
         post :create, { user: {  email: 'my_pesonal@email.com', first_name: 'Paulo', last_name: 'Freire', password: 'learning', avatar: 'http://www.myurl.com/super-ultra-avatar.gif'}, format: 'JSON'  }
       end
@@ -17,7 +17,7 @@ RSpec.describe UsersController, type: :controller do
       end
 
       context 'should return the correct' do
-        before do 
+        before do
           @returned = JSON.parse(response.body)
         end
 
@@ -30,6 +30,7 @@ RSpec.describe UsersController, type: :controller do
         it 'last_name' do
           expect(@returned['last_name']).to eq 'Freire'
         end
+
         it 'avatar_url' do
           expect(@returned['avatar_url']).to eq 'http://www.myurl.com/super-ultra-avatar.gif'
         end
@@ -50,7 +51,6 @@ RSpec.describe UsersController, type: :controller do
       before do
         @user = User.make!
         stub_current_user(@user)
-
         patch :update,  {format: 'json', id: @user.id, user: {first_name: 'Hobin', last_name: 'Hood', avatar: 'http://www.myurl.com/super-ultra-avatar.gif'}}
       end
 
