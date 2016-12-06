@@ -5,6 +5,7 @@ class BlocksController < ApplicationController
 
   def index
     mobilization = policy_scope(Mobilization).filter(params.slice(:custom_domain, :slug))
+    mobilization = mobilization.first if mobilization.kind_of?(Array)
     blocks = mobilization.present? ? mobilization.blocks.order(:position) : []
     render json: blocks
   end
