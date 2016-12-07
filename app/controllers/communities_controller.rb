@@ -10,8 +10,9 @@ class CommunitiesController < ApplicationController
     skip_authorization
     skip_policy_scope
 
-    render json: Community.order(:city)
+    render json: current_user.communities
   end
+
 
   def create
     @community = Community.new(community_params)
@@ -38,6 +39,12 @@ class CommunitiesController < ApplicationController
       render json: @community
     end
   end
+
+
+  def show
+    
+  end
+
 
   private 
 

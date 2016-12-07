@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     resources :payable_details, only: [:index], controller: 'communities/payable_details'
   end
 
-  resources :users, only: [:create, :update]
+  resources :users, only: [:create, :update, :show]
   
   mount_devise_token_auth_for 'User', at: '/auth'
 end
