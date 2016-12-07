@@ -10,6 +10,6 @@ class CommunityPolicy < ApplicationPolicy
 private
 
   def is_owned_by?(user)
-    user.present? # && record.users.include?(user)
+    user.present? && record.users.include?(user)
   end
 end

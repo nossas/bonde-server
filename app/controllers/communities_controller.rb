@@ -19,8 +19,11 @@ class CommunitiesController < ApplicationController
     if not @community.validate
       render json: @community.errors, :status => 400
     else
-      @community.save!
-      render json: @community
+      Community.transaction do 
+        @community.save!
+        create_role
+        render json: @community
+      end
     end
   end
 
@@ -44,6 +47,14 @@ class CommunitiesController < ApplicationController
     else
       {}
     end
+  end
+
+  def create_role
+    community_user = CommunityUser.new
+    community_user.community = @community
+    community_user.user = current_user
+    community_user.role = 1
+    community_user.save!
   end
 
   def return404
