@@ -122,6 +122,8 @@ RSpec.describe CommunitiesController, type: :controller do
 
     context 'valid call' do
       before do
+        (CommunityUser.new user: @user, community: @community, role: 1).save!
+
         @count = Community.count
         put :update, {
           format: :json, 

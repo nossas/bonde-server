@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Communities::PayableDetailsController, type: :controller do
+
+
   let(:community) { Community.make! pagarme_recipient_id: 'xxx' }
   let(:user) { User.make! }
   let(:mobilization) { Mobilization.make!(community: community, user: user) }
@@ -38,11 +40,13 @@ RSpec.describe Communities::PayableDetailsController, type: :controller do
 
   before do
     donation
+    (CommunityUser.new user: user, community: community, role: 1).save!
+
     stub_current_user(user)
   end
 
   describe 'GET #index' do
-    xcontext 'when user is not on community' do
+    context 'when user is not on community' do
       let(:other_user) { User.make! }
 
       before do
