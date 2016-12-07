@@ -9,9 +9,14 @@ RSpec.describe CommunitiesController, type: :controller do
 
   describe "GET #index" do
     it "should return all organizations" do
+      communities = []
       3.times { Community.make! }
+      2.times { communities << Community.make! }
+      communities.each do  |community|
+        CommunityUser.create user: @user, community: community, role: 1
+      end
       get :index
-      expect(response.body).to include(Community.all.to_json)
+      expect(response.body).to include(communities.to_json)
     end
   end
 
@@ -84,7 +89,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
 
 
-  describe 'PUT :update' do
+  describe 'PUT #update' do
     before do
       @community = Community.make!
     end
@@ -149,4 +154,5 @@ RSpec.describe CommunitiesController, type: :controller do
       end
     end
   end
+
 end
