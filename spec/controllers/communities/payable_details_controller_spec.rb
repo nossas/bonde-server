@@ -42,7 +42,7 @@ RSpec.describe Communities::PayableDetailsController, type: :controller do
   end
 
   describe 'GET #index' do
-    context 'when user is not on community' do
+    xcontext 'when user is not on community' do
       let(:other_user) { User.make! }
 
       before do
