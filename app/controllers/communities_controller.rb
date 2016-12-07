@@ -24,6 +24,18 @@ class CommunitiesController < ApplicationController
     end
   end
 
+
+  def update
+    @community = Community.find_by({id: params[:id]})
+    if not @community
+      return404
+    else
+      authorize @community
+      @community.update!(community_params)
+      render json: @community
+    end
+  end
+
   private 
 
   def community_params
@@ -34,4 +46,8 @@ class CommunitiesController < ApplicationController
     end
   end
 
+  def return404
+    skip_authorization
+    render :status =>404, :nothing => true
+  end
 end

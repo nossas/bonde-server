@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   resources :activist_matches, only: [:create]
   resources :uploads, only: [:index]
-  resources :communities, only: [:index, :create] do
+  resources :communities, only: [:index, :create, :update] do
     resources :payable_details, only: [:index], controller: 'communities/payable_details'
   end
 
