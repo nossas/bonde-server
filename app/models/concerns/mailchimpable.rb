@@ -1,7 +1,7 @@
 module Mailchimpable
   def create_segment(segment_name)
-    return api_client.lists.static_segment_add({
-      id: ENV['MAILCHIMP_LIST_ID'],
+    api_client.lists.static_segment_add({
+      id: mailchimp_list_id,
       name: segment_name
     })
   end
@@ -9,7 +9,7 @@ module Mailchimpable
   def subscribe_to_list(email, merge_vars, options = {})
     begin
       api_client.lists.subscribe({
-        id: ENV['MAILCHIMP_LIST_ID'],
+        id: mailchimp_list_id,
         email: {email: email},
         merge_vars: merge_vars,
         double_optin: options[:double_optin] || false,
@@ -23,7 +23,7 @@ module Mailchimpable
   def subscribe_to_segment(segment_id, email)
     begin
       api_client.lists.static_segment_members_add({
-        id: ENV['MAILCHIMP_LIST_ID'],
+        id: mailchimp_list_id,
         seg_id: segment_id,
         batch: [{email: email}]
       })
@@ -35,7 +35,7 @@ module Mailchimpable
   def update_member(email, merge_vars)
     begin
       api_client.lists.update_member({
-        id: ENV['MAILCHIMP_LIST_ID'],
+        id: mailchimp_list_id,
         email: {email: email},
         merge_vars: merge_vars,
         replace_interests: false
@@ -43,6 +43,10 @@ module Mailchimpable
     rescue StandardError => e
       logger.error(e)
     end
+  end
+
+  def mailchimp_list_id
+    community.try(:mailchimp_list_id) || ENV['MAILCHIMP_LIST_ID']
   end
 
   def mailchimp_api_key
