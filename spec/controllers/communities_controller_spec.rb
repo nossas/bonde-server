@@ -155,4 +155,43 @@ RSpec.describe CommunitiesController, type: :controller do
     end
   end
 
+
+
+  describe 'GET #show' do
+    let(:community) { Community.make! }
+
+    context 'user with rights' do
+      before do
+        CommunityUser.create user: @user, community: community, role: 1
+    
+        get :show, {id: community.id}
+      end
+
+      it 'should return a 200 status' do
+        expect(response.status).to be 200
+      end
+
+      it 'should return the expected data' do
+        expect(response.body).to include(community.to_json)
+      end
+    end
+
+    context 'user with rights' do
+      it 'should return a 401 status' do
+        stub_current_user(User.make!)
+        CommunityUser.create user: @user, community: community, role: 1
+        get :show, {id: community.id}
+
+        expect(response.status).to be 401
+      end
+    end
+
+    context 'user with rights' do
+      it 'should return a 404 status' do
+        get :show, {id: 0}
+
+        expect(response.status).to be 404
+      end
+    end
+  end
 end
