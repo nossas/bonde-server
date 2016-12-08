@@ -45,7 +45,11 @@ module Mailchimpable
     end
   end
 
+  def mailchimp_api_key
+    community.try(:mailchimp_api_key) || ENV['MAILCHIMP_API_KEY']
+  end
+
   def api_client
-    return Gibbon::API.new
+    @mailchimp_api_client ||= Gibbon::API.new(mailchimp_api_key)
   end
 end
