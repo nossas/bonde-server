@@ -7,6 +7,10 @@ class CommunityPolicy < ApplicationPolicy
     is_owned_by?(user)
   end
 
+  def show?
+    is_owned_by?(user)
+  end
+
 private
 
   def is_owned_by?(user)

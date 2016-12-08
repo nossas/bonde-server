@@ -21,11 +21,11 @@ Rails.application.routes.draw do
 
   resources :activist_matches, only: [:create]
   resources :uploads, only: [:index]
-  resources :communities, only: [:index, :create, :update] do
+  resources :communities, only: [:index, :create, :update, :show] do
     resources :payable_details, only: [:index], controller: 'communities/payable_details'
   end
 
-  resources :users, only: [:create, :update, :show]
+  resources :users, only: [:create, :update]
   
   mount_devise_token_auth_for 'User', at: '/auth'
 end

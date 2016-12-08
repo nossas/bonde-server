@@ -42,7 +42,13 @@ class CommunitiesController < ApplicationController
 
 
   def show
-    
+    community = Community.find_by({id: params[:id]})
+    if community
+      authorize community
+      render json: community
+    else
+      return404
+    end    
   end
 
 
