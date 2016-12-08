@@ -49,8 +49,18 @@ module Mailchimpable
     community.try(:mailchimp_list_id) || ENV['MAILCHIMP_LIST_ID']
   end
 
+  def mailchimp_group_id
+    community.try(:mailchimp_group_id) || ENV['MAILCHIMP_GROUP_ID']
+  end
+
   def mailchimp_api_key
     community.try(:mailchimp_api_key) || ENV['MAILCHIMP_API_KEY']
+  end
+
+  def groupings
+    [
+      { id: mailchimp_group_id, groups: [community.try(:name)] }
+    ]
   end
 
   def api_client

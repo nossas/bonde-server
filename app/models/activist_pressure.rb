@@ -56,10 +56,4 @@ class ActivistPressure < ActiveRecord::Base
       CITY: self.activist.city
     }
   end
-
-  def groupings
-    [
-      { id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.community.name] }
-    ]
-  end
 end
