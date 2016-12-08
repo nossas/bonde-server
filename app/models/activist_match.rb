@@ -29,7 +29,7 @@ class ActivistMatch < ActiveRecord::Base
       subscribe_to_list(self.activist.email, subscribe_attributes)
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
       update_member(self.activist.email, {
-        groupings: [{ id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.community.name] }]
+        groupings: groupings
       })
     end
   end
