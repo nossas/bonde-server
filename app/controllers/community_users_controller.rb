@@ -26,4 +26,21 @@ class CommunityUsersController < ApplicationController
     end
   end
 
+  def create
+    @communityUser = CommunityUser.new(community_user_params)
+    @communityUser.community_id = params['community_id']
+    authorize @communityUser
+    if @communityUser.validate
+      @communityUser.save!
+      render json: @communityUser
+    else
+      render json: @communityUser.errors, :status => 400
+    end
+  end
+
+  private
+
+  def community_user_params
+     params.require(:communityUser).permit(*policy(@communityUser || CommunityUser.new).permitted_attributes)
+  end
 end
