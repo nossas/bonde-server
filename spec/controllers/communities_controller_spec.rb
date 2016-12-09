@@ -38,7 +38,7 @@ RSpec.describe CommunitiesController, type: :controller do
       end
 
       it 'should have one more register on disk' do
-        expect(Community.count).to be (@count + 1)
+        expect(Community.count).to be(@count + 1)
       end
 
       it 'should return the data saved' do
