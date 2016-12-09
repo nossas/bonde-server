@@ -1,6 +1,8 @@
 require 'machinist/active_record'
 
 User.blueprint do
+  first_name {"Firstname #{sn}"}
+  last_name {"Lastname #{sn}"}
   email { "#{sn}@trashmail.com" }
   uid { object.email }
   provider { "email" }
@@ -123,3 +125,8 @@ TemplateWidget.blueprint do
   settings { {content: "My 12 columns widget"} }
 end
 
+CommunityUser.blueprint do
+  user {User.make!}
+  community {Community.make!}
+  role {1}
+end

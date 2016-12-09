@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :uploads, only: [:index]
   resources :communities, only: [:index, :create, :update, :show] do
     resources :payable_details, only: [:index], controller: 'communities/payable_details'
+    resources :community_users, path: 'users', only: [:index]
   end
 
   resources :users, only: [:create, :update]
