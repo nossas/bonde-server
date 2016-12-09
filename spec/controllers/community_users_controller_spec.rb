@@ -58,9 +58,8 @@ RSpec.describe CommunityUsersController, type: :controller do
   end
 
 
-
   describe 'POST #create' do
-    context 'owner valid call' do
+    context 'role: owner -> valid call' do
       let(:adding_user) { User.make! }
       before do
         CommunityUser.create! community_id: community.id , user: user, role: 1
@@ -206,6 +205,77 @@ RSpec.describe CommunityUsersController, type: :controller do
         it 'should return the saved data' do
           expect(response.body).to include "role"
         end
+      end
+    end
+  end
+
+
+  describe 'PUT :update' do
+    let(:communityUser) {CommunityUser.create! community: community, user: user, role:2}
+    
+    context 'valid call' do
+      before do
+        put :update, {
+          community_id: community.id,
+          id: communityUser.id,
+          communityUser: { role: 3 }
+        }
+      end
+
+      it 'should return a 200 status' do
+        expect(response.status).to be 200
+      end
+
+      it 'should return the saved data' do
+        expect(response.body).to include('"role":3')
+        expect(response.body).to include("\"user_id\":#{user.id}")
+      end
+    end
+
+    context 'nonexistent record' do
+      before do
+        put :update, {
+          community_id: community.id,
+          id: 0,
+          communityUser: { role: 3 }
+        }
+      end
+
+      it 'should return a 404 status' do
+        expect(response.status).to be 404
+      end
+    end
+    
+    context 'nonexistent record' do
+      before do
+        stub_current_user User.make!
+        put :update, {
+          community_id: community.id,
+          id: communityUser.id,
+          communityUser: { role: 3 }
+        }
+      end
+
+      it 'should return a 401 status' do
+        expect(response.status).to be 401
+      end
+    end
+    
+    context 'invalid role' do
+      before do
+        put :update, {
+          community_id: community.id,
+          id: communityUser.id,
+          communityUser: { role: 300 }
+        }
+      end
+
+      it 'should return a 400 status' do
+        expect(response.status).to be 400
+      end
+
+      it 'should return a 400 status' do
+        expect(response.body).not_to eq('[]')
       end
     end
   end

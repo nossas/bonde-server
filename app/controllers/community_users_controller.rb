@@ -27,20 +27,41 @@ class CommunityUsersController < ApplicationController
   end
 
   def create
-    @communityUser = CommunityUser.new(community_user_params)
-    @communityUser.community_id = params['community_id']
-    authorize @communityUser
-    if @communityUser.validate
-      @communityUser.save!
-      render json: @communityUser
+    @community_user = CommunityUser.new(community_user_params)
+    @community_user.community_id = params['community_id']
+    authorize @community_user
+    if @community_user.validate
+      @community_user.save!
+      render json: @community_user
     else
-      render json: @communityUser.errors, :status => 400
+      render json: @community_user.errors, :status => 400
+    end
+  end
+
+  def update
+    community_user = CommunityUser.find_by({id: params[:id]})
+    if community_user
+      community_user.role = params[:communityUser][:role]
+      authorize community_user
+      if community_user.validate
+        community_user.save!
+        render json: community_user
+      else
+        render json: community_user.errors, status: 400
+      end
+    else
+      return404
     end
   end
 
   private
 
+  def return404
+    skip_authorization
+    render nothing: true, status: 404
+  end
+
   def community_user_params
-     params.require(:communityUser).permit(*policy(@communityUser || CommunityUser.new).permitted_attributes)
+     params.require(:communityUser).permit(*policy(@community_user || CommunityUser.new).permitted_attributes)
   end
 end
