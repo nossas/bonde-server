@@ -63,8 +63,8 @@ RSpec.describe TemplateMobilization, type: :model do
 	  		expect(@template.twitter_share_text).to eq(@mobilization.twitter_share_text)
 	  	end
 	  	
-	  	it "should have the same organization_id as original mobilization" do 
-	  		expect(@template.organization_id).to eq(@mobilization.organization_id)
+	  	it "should have the same community_id as original mobilization" do 
+	  		expect(@template.community_id).to eq(@mobilization.community_id)
 	  	end
   	end
   end

@@ -4,14 +4,14 @@ RSpec.describe DonationsMailer, type: :mailer do
   describe "#thank_you_email" do
     before do
       @user = stub_model(User, email: "fooz@barz.com")
-      @organization = stub_model(Organization, name: "Meu Rio")
+      @community = stub_model(Community, name: "Meu Rio")
       @mobilization = stub_model(
         Mobilization, name: "My Mobilization Name",
         facebook_share_url: "http://facebook.com/share",
         twitter_share_url: "http://twitter.com/share",
         user: @user,
         custom_domain: 'localhost.dev',
-        organization: @organization
+        community: @community
       )
       @widget = stub_model(
         Widget, mobilization: @mobilization,

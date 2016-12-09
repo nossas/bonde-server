@@ -3,7 +3,7 @@ class Donation < ActiveRecord::Base
   belongs_to :widget
   belongs_to :activist
   has_one :mobilization, through: :widget
-  has_one :organization, through: :mobilization
+  has_one :community, through: :mobilization
   belongs_to :parent, class_name: 'Donation'
   belongs_to :payable_transfer
   has_many :payments
@@ -15,7 +15,7 @@ class Donation < ActiveRecord::Base
 
   default_scope { joins(:mobilization) }
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
-  scope :by_organization, -> (organization_id) { where("organization_id = ?", organization_id) if organization_id }
+  scope :by_community, -> (community_id) { where("community_id = ?", community_id) if community_id }
 
   def boleto?
     self.payment_method == 'boleto'

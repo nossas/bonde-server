@@ -7,7 +7,7 @@ class Mobilization < ActiveRecord::Base
   validates :name, :user_id, :goal, :slug, presence: true
   validates :slug, uniqueness: true
   belongs_to :user
-  belongs_to :organization
+  belongs_to :community
   has_many :blocks
   has_many :widgets, through: :blocks
   has_many :form_entries, through: :widgets
@@ -55,8 +55,8 @@ class Mobilization < ActiveRecord::Base
   end
 
   def set_color_scheme
-    if self.organization.present?
-      self.color_scheme = "#{self.organization.name.delete(' ').parameterize}-scheme"
+    if self.community.present?
+      self.color_scheme = "#{self.community.name.delete(' ').parameterize}-scheme"
     end
   end
 

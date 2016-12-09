@@ -38,6 +38,6 @@ group :test, :development do
 end
 
 group :test do
-  gem 'webmock'
+  gem 'webmock', '2.3.1'
   gem "fakeredis", :require => "fakeredis/rspec"
 end
