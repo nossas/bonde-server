@@ -196,12 +196,13 @@ RSpec.describe CommunitiesController, type: :controller do
   end
 
 
-  xdescribe 'GET #list_mobilizations' do
+  describe 'GET #list_mobilizations' do
     let(:community) {Community.make!}
     let(:user2) {User.make!}
 
+
     before do
-      CommunityUser.create! user: user, community: community, role: 3
+      CommunityUser.create! user: @user, community: community, role: 3
 
       @mob1 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "1.1-foo", community: community
       @mob2 = Mobilization.make! user: user2, community: community
@@ -210,44 +211,88 @@ RSpec.describe CommunitiesController, type: :controller do
       @mob5 = Mobilization.make! user: user2
     end
 
-    it "should return all mobilizations" do
-      get :list_mobilizations, {community_id: community.id}
+    context "inexistent community" do
+      before do
+        get :list_mobilizations, {community_id: 0}    
+      end
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).to include(@mob3.name)
-      expect(response.body).not_to include(@mob2.name)
-      expect(response.body).not_to include(@mob4.name)
-      expect(response.body).not_to include(@mob5.name)
+      it 'should return a 404 status' do
+        expect(response.status).to be 404
+      end
     end
 
-    it "should return mobilizations by custom_domain" do
-      get :list_mobilizations, {custom_domain: "foobar", community_id: community.id}
+    context "valid call" do
+      context 'no filters' do
+        before do
+          get :list_mobilizations, {community_id: community.id}
+        end
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).not_to include(@mob2.name)
-      expect(response.body).not_to include(@mob3.name)
-      expect(response.body).not_to include(@mob4.name)
-      expect(response.body).not_to include(@mob5.name)
-    end
+        it 'should return a 200 status' do
+          expect(response.status).to be 200
+        end
 
-    it "should return mobilizations by slug" do
-      get :list_mobilizations, {slug: "1.1-foo", community_id: community.id}
+        it "should return all mobilizations related to the community" do
+          expect(response.body).to include(@mob1.name)
+          expect(response.body).to include(@mob2.name)
+          expect(response.body).to include(@mob3.name)
+          expect(response.body).not_to include(@mob4.name)
+          expect(response.body).not_to include(@mob5.name)
+        end
+      end
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).not_to include(@mob2.name)
-      expect(response.body).not_to include(@mob3.name)
-      expect(response.body).not_to include(@mob4.name)
-      expect(response.body).not_to include(@mob5.name)
-    end
+      context 'mobilizations by custom_domain' do
+        before do
+          get :list_mobilizations, {custom_domain: "foobar", community_id: community.id}
+        end
 
-    it "should return mobilizations by id" do
-      get :list_mobilizations, {ids: [@mob3.id], community_id: community.id}
+        it 'should return a 200 status' do
+          expect(response.status).to be 200
+        end
 
-      expect(response.body).to include(@mob3.name)
-      expect(response.body).not_to include(@mob1.name)
-      expect(response.body).not_to include(@mob2.name)
-      expect(response.body).not_to include(@mob4.name)
-      expect(response.body).not_to include(@mob5.name)
+        it "should return all mobilizations related to the community" do
+          expect(response.body).to include(@mob1.name)
+          expect(response.body).not_to include(@mob2.name)
+          expect(response.body).not_to include(@mob3.name)
+          expect(response.body).not_to include(@mob4.name)
+          expect(response.body).not_to include(@mob5.name)
+        end
+      end
+
+      context 'mobilizations by slug' do
+        before do
+          get :list_mobilizations, {slug: "1.1-foo", community_id: community.id}
+        end
+
+        it 'should return a 200 status' do
+          expect(response.status).to be 200
+        end
+
+        it "should return all mobilizations related to the community" do
+          expect(response.body).to include(@mob1.name)
+          expect(response.body).not_to include(@mob2.name)
+          expect(response.body).not_to include(@mob3.name)
+          expect(response.body).not_to include(@mob4.name)
+          expect(response.body).not_to include(@mob5.name)
+        end
+      end
+
+      context 'mobilizations by id' do
+        before do
+          get :list_mobilizations, {ids: [@mob3.id], community_id: community.id}
+        end
+
+        it 'should return a 200 status' do
+          expect(response.status).to be 200
+        end
+
+        it "should return all mobilizations related to the community" do
+          expect(response.body).to include(@mob3.name)
+          expect(response.body).not_to include(@mob1.name)
+          expect(response.body).not_to include(@mob2.name)
+          expect(response.body).not_to include(@mob4.name)
+          expect(response.body).not_to include(@mob5.name)
+        end
+      end
     end
   end
 end

@@ -52,15 +52,20 @@ class CommunitiesController < ApplicationController
   end
 
   def list_mobilizations
-    begin
-      @mobilizations = policy_scope(Mobilization).order('updated_at DESC').where(community_id: params[:community_id])
-      @mobilizations = @mobilizations.where(user_id: current_user.id) if params[:user_id].present?
-      @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
-      @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
-      @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
-      render json: @mobilizations
-    rescue StandardError => e
-      Rails.logger.error e
+    community = Community.find_by({id: params['community_id']})
+
+    if community
+      begin
+        @mobilizations = policy_scope(community.mobilizations).order('updated_at DESC')
+        @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
+        @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
+        @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
+        render json: @mobilizations
+      rescue StandardError => e
+        Rails.logger.error e
+      end
+    else
+      return404
     end    
   end
 
@@ -84,6 +89,7 @@ class CommunitiesController < ApplicationController
 
   def return404
     skip_authorization
+    skip_policy_scope
     render :status =>404, :nothing => true
   end
 end
