@@ -194,4 +194,60 @@ RSpec.describe CommunitiesController, type: :controller do
       end
     end
   end
+
+
+  xdescribe 'GET #list_mobilizations' do
+    let(:community) {Community.make!}
+    let(:user2) {User.make!}
+
+    before do
+      CommunityUser.create! user: user, community: community, role: 3
+
+      @mob1 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "1.1-foo", community: community
+      @mob2 = Mobilization.make! user: user2, community: community
+      @mob3 = Mobilization.make! user: @user, custom_domain: "foobar2", slug: "1.2-foo", community: community
+      @mob4 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "2-foo"
+      @mob5 = Mobilization.make! user: user2
+    end
+
+    it "should return all mobilizations" do
+      get :list_mobilizations, {community_id: community.id}
+
+      expect(response.body).to include(@mob1.name)
+      expect(response.body).to include(@mob3.name)
+      expect(response.body).not_to include(@mob2.name)
+      expect(response.body).not_to include(@mob4.name)
+      expect(response.body).not_to include(@mob5.name)
+    end
+
+    it "should return mobilizations by custom_domain" do
+      get :list_mobilizations, {custom_domain: "foobar", community_id: community.id}
+
+      expect(response.body).to include(@mob1.name)
+      expect(response.body).not_to include(@mob2.name)
+      expect(response.body).not_to include(@mob3.name)
+      expect(response.body).not_to include(@mob4.name)
+      expect(response.body).not_to include(@mob5.name)
+    end
+
+    it "should return mobilizations by slug" do
+      get :list_mobilizations, {slug: "1.1-foo", community_id: community.id}
+
+      expect(response.body).to include(@mob1.name)
+      expect(response.body).not_to include(@mob2.name)
+      expect(response.body).not_to include(@mob3.name)
+      expect(response.body).not_to include(@mob4.name)
+      expect(response.body).not_to include(@mob5.name)
+    end
+
+    it "should return mobilizations by id" do
+      get :list_mobilizations, {ids: [@mob3.id], community_id: community.id}
+
+      expect(response.body).to include(@mob3.name)
+      expect(response.body).not_to include(@mob1.name)
+      expect(response.body).not_to include(@mob2.name)
+      expect(response.body).not_to include(@mob4.name)
+      expect(response.body).not_to include(@mob5.name)
+    end
+  end
 end
