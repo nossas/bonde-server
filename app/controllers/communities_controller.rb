@@ -3,8 +3,8 @@ class CommunitiesController < ApplicationController
 
   include Pundit
   
-  after_action :verify_authorized, except: :index
-  after_action :verify_policy_scoped, only: :index
+  after_action :verify_authorized, except: [:index, :list_mobilizations]
+  after_action :verify_policy_scoped, only: [:index, :list_mobilizations]
 
   def index
     skip_authorization
@@ -51,6 +51,18 @@ class CommunitiesController < ApplicationController
     end    
   end
 
+  def list_mobilizations
+    begin
+      @mobilizations = policy_scope(Mobilization).order('updated_at DESC').where(community_id: params[:community_id])
+      @mobilizations = @mobilizations.where(user_id: current_user.id) if params[:user_id].present?
+      @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
+      @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
+      @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
+      render json: @mobilizations
+    rescue StandardError => e
+      Rails.logger.error e
+    end    
+  end
 
   private 
 

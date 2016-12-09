@@ -6,8 +6,10 @@ class Mobilization < ActiveRecord::Base
 
   validates :name, :user_id, :goal, :slug, presence: true
   validates :slug, uniqueness: true
+
   belongs_to :user
   belongs_to :community
+
   has_many :blocks
   has_many :widgets, through: :blocks
   has_many :form_entries, through: :widgets
