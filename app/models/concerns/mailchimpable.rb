@@ -1,7 +1,7 @@
 module Mailchimpable
   def create_segment(segment_name)
-    return api_client.lists.static_segment_add({
-      id: ENV['MAILCHIMP_LIST_ID'],
+    api_client.lists.static_segment_add({
+      id: mailchimp_list_id,
       name: segment_name
     })
   end
@@ -9,7 +9,7 @@ module Mailchimpable
   def subscribe_to_list(email, merge_vars, options = {})
     begin
       api_client.lists.subscribe({
-        id: ENV['MAILCHIMP_LIST_ID'],
+        id: mailchimp_list_id,
         email: {email: email},
         merge_vars: merge_vars,
         double_optin: options[:double_optin] || false,
@@ -23,7 +23,7 @@ module Mailchimpable
   def subscribe_to_segment(segment_id, email)
     begin
       api_client.lists.static_segment_members_add({
-        id: ENV['MAILCHIMP_LIST_ID'],
+        id: mailchimp_list_id,
         seg_id: segment_id,
         batch: [{email: email}]
       })
@@ -35,7 +35,7 @@ module Mailchimpable
   def update_member(email, merge_vars)
     begin
       api_client.lists.update_member({
-        id: ENV['MAILCHIMP_LIST_ID'],
+        id: mailchimp_list_id,
         email: {email: email},
         merge_vars: merge_vars,
         replace_interests: false
@@ -45,7 +45,25 @@ module Mailchimpable
     end
   end
 
+  def mailchimp_list_id
+    community.try(:mailchimp_list_id) || ENV['MAILCHIMP_LIST_ID']
+  end
+
+  def mailchimp_group_id
+    community.try(:mailchimp_group_id) || ENV['MAILCHIMP_GROUP_ID']
+  end
+
+  def mailchimp_api_key
+    community.try(:mailchimp_api_key) || ENV['MAILCHIMP_API_KEY']
+  end
+
+  def groupings
+    [
+      { id: mailchimp_group_id, groups: [community.try(:name)] }
+    ]
+  end
+
   def api_client
-    return Gibbon::API.new
+    @mailchimp_api_client ||= Gibbon::API.new(mailchimp_api_key)
   end
 end

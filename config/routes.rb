@@ -21,8 +21,10 @@ Rails.application.routes.draw do
 
   resources :activist_matches, only: [:create]
   resources :uploads, only: [:index]
-  resources :organizations, only: [:index] do
-    resources :payable_details, only: [:index], controller: 'organizations/payable_details'
+  resources :communities, only: [:index, :create, :update, :show] do
+    resources :payable_details, only: [:index], controller: 'communities/payable_details'
+    resources :community_users, path: 'users'
+    get 'mobilizations', to: 'communities#list_mobilizations'
   end
 
   resources :users, only: [:create, :update]

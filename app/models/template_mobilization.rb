@@ -5,7 +5,7 @@ class TemplateMobilization < ActiveRecord::Base
 
   validates :name, :user_id, :slug, presence: true
   belongs_to :user
-  belongs_to :organization
+  belongs_to :community
 
   has_many :template_blocks
   has_many :template_widgets, through: :template_blocks
@@ -22,7 +22,7 @@ class TemplateMobilization < ActiveRecord::Base
   	template.slug = mobilization.slug
   	template.custom_domain = mobilization.custom_domain
   	template.twitter_share_text = mobilization.twitter_share_text
-  	template.organization_id = mobilization.organization_id
+  	template.community_id = mobilization.community_id
   	template
   end
 

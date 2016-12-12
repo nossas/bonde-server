@@ -8,7 +8,7 @@ class ActivistPressure < ActiveRecord::Base
   belongs_to :widget
   has_one :block, through: :widget
   has_one :mobilization, through: :block
-  has_one :organization, through: :mobilization
+  has_one :community, through: :mobilization
 
   after_create :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, unless: :is_test?
 
@@ -55,11 +55,5 @@ class ActivistPressure < ActiveRecord::Base
       EMAIL: self.activist.email,
       CITY: self.activist.city
     }
-  end
-
-  def groupings
-    [
-      { id: ENV['MAILCHIMP_GROUP_ID'], groups: [self.organization.name] }
-    ]
   end
 end

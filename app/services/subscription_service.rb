@@ -48,8 +48,8 @@ class SubscriptionService < DonationService
       metadata: {
         widget_id: donation.widget.id,
         mobilization_id: donation.mobilization.id,
-        organization_id: donation.organization.id,
-        city: donation.organization.city,
+        community_id: donation.community.id,
+        city: donation.community.city,
         email: donation.activist.email,
         donation_id: donation.id
       }
