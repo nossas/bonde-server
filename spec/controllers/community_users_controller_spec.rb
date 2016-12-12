@@ -279,4 +279,59 @@ RSpec.describe CommunityUsersController, type: :controller do
       end
     end
   end
+
+
+
+  describe 'DELETE :delete' do
+    
+    context 'valid call' do
+      let(:communityUser) {CommunityUser.create! community: community, user: user, role:2}
+      before do
+        delete :destroy, {
+          community_id: community.id,
+          id: communityUser.id
+        }
+      end
+
+      it 'should return a 200 status' do
+        expect(response.status).to be 200
+      end
+
+      it 'should delete the record' do
+        expect(CommunityUser.find_by({id:communityUser.id})).not_to be
+      end
+    end
+    
+    context 'user without rights' do
+      let(:communityUser) {CommunityUser.create! community: community, user: User.make!, role:3}
+      before do
+        delete :destroy, {
+          community_id: community.id,
+          id: communityUser.id
+        }
+      end
+
+      it 'should return a 401 status' do
+        expect(response.status).to be 401
+      end
+
+      it 'should not delete the record' do
+        expect(CommunityUser.find_by({id:communityUser.id})).to be
+      end
+    end
+    
+    context 'nonexistent record' do
+      let(:communityUser) {CommunityUser.create! community: community, user: User.make!, role:3}
+      before do
+        delete :destroy, {
+          community_id: community.id,
+          id: 0
+        }
+      end
+
+      it 'should return a 404 status' do
+        expect(response.status).to be 404
+      end
+    end
+  end
 end

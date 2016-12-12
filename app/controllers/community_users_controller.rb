@@ -54,6 +54,17 @@ class CommunityUsersController < ApplicationController
     end
   end
 
+  def destroy
+    community_user = CommunityUser.find_by({id: params['id']})
+    if community_user
+      authorize community_user
+      community_user.delete
+      render nothing: true
+    else
+      return404
+    end
+  end
+
   private
 
   def return404
