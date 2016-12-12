@@ -65,6 +65,16 @@ class CommunityUsersController < ApplicationController
     end
   end
 
+  def show
+    community_user = CommunityUser.find_by({id: params['id']})
+    if community_user
+      authorize community_user
+      render json: community_user
+    else
+      return404
+    end    
+  end
+
   private
 
   def return404
