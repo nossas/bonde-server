@@ -84,6 +84,8 @@ Community.blueprint do
   name { "Nossas Cidades #{sn}" }
   city { "Rio de Janeiro #{sn}" }
   pagarme_recipient_id { "re_fakerecipient" }
+  description {"Description #{sn}"}
+  image {'http://images.reboo.org/nossas.png'}
 end
 
 PayableTransfer.blueprint do

@@ -28,7 +28,8 @@ RSpec.describe CommunitiesController, type: :controller do
           format: :json, 
           community: {
             name: 'José Marculino Silva',
-            city: 'Pindamonhangaba, SP'
+            city: 'Pindamonhangaba, SP',
+            description: 'A community to solve ours problems'
           }
         }
       end
@@ -134,7 +135,8 @@ RSpec.describe CommunitiesController, type: :controller do
           format: :json, 
           id: @community.id,
           community: {
-            city: 'Tremembé, SP'
+            city: 'Tremembé, SP',
+            image: 'http://images.reboo.org/our_fight.png'
           }
         }
       end
@@ -151,6 +153,7 @@ RSpec.describe CommunitiesController, type: :controller do
         saved = Community.find @community.id
 
         expect(saved.city).to eq 'Tremembé, SP'
+        expect(saved.image).to eq 'http://images.reboo.org/our_fight.png'
       end
     end
   end

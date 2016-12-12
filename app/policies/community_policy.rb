@@ -1,6 +1,6 @@
 class CommunityPolicy < ApplicationPolicy
   def permitted_attributes
-    [:name, :city, :pagarme, :transfer_day, :transfer_enabled]
+    [:name, :city, :pagarme, :transfer_day, :transfer_enabled, :image, :description]
   end
 
   def can_handle_with_payables?
