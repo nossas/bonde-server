@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Community, type: :model do
   it { should validate_presence_of :name }
-  it { should validate_presence_of :city }
   
   it { should have_many :payable_transfers }
   it { should have_many :payable_details }
@@ -11,5 +10,4 @@ RSpec.describe Community, type: :model do
   it { should have_many :users }
 
   it { should validate_uniqueness_of :name }
-  it { should validate_uniqueness_of :city }
 end

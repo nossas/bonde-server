@@ -1,5 +1,5 @@
 class Community < ActiveRecord::Base
-  validates :name, :city, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true
   
   has_many :payable_transfers
   has_many :payable_details
