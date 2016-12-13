@@ -29,7 +29,10 @@ RSpec.describe CommunitiesController, type: :controller do
           community: {
             name: 'José Marculino Silva',
             city: 'Pindamonhangaba, SP',
-            description: 'A community to solve ours problems'
+            description: 'A community to solve ours problems',
+            mailchimp_api_key: 'abc56',
+            mailchimp_list_id: '1234',
+            mailchimp_group_id: '7890'
           }
         }
       end
@@ -44,6 +47,18 @@ RSpec.describe CommunitiesController, type: :controller do
 
       it 'should return the data saved' do
         expect(response.body).to include(Community.last.to_json)
+      end
+
+      it 'should correctly save the data' do
+        dt = JSON.parse response.body
+        saved = Community.find dt['id']
+
+        expect(saved.mailchimp_api_key).to eq('abc56')
+        expect(saved.mailchimp_list_id).to eq('1234')
+        expect(saved.mailchimp_group_id).to eq('7890')
+        expect(saved.description).to eq('A community to solve ours problems')
+        expect(saved.city).to eq('Pindamonhangaba, SP')
+        expect(saved.name).to eq('José Marculino Silva')
       end
     end
 
@@ -136,7 +151,11 @@ RSpec.describe CommunitiesController, type: :controller do
           id: @community.id,
           community: {
             city: 'Tremembé, SP',
-            image: 'http://images.reboo.org/our_fight.png'
+            image: 'http://images.reboo.org/our_fight.png',
+            description: 'The strongest community',
+            mailchimp_api_key: 'ab12cd',
+            mailchimp_list_id: '34ef56',
+            mailchimp_group_id: '78gh90'
           }
         }
       end
@@ -154,6 +173,18 @@ RSpec.describe CommunitiesController, type: :controller do
 
         expect(saved.city).to eq 'Tremembé, SP'
         expect(saved.image).to eq 'http://images.reboo.org/our_fight.png'
+      end
+
+
+      it 'should correctly save the data' do
+        saved = Community.find @community.id
+
+        expect(saved.mailchimp_api_key).to eq('ab12cd')
+        expect(saved.mailchimp_list_id).to eq('34ef56')
+        expect(saved.mailchimp_group_id).to eq('78gh90')
+        expect(saved.description).to eq('The strongest community')
+        expect(saved.city).to eq('Tremembé, SP')
+        expect(saved.image).to eq('http://images.reboo.org/our_fight.png')
       end
     end
   end
