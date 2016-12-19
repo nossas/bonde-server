@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [:create, :update]
-  
+
+  get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
+
   mount_devise_token_auth_for 'User', at: '/auth'
 end
