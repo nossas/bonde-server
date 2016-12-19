@@ -51,8 +51,8 @@ class DonationService
       metadata: {
         widget_id: donation.widget.id,
         mobilization_id: donation.mobilization.id,
-        organization_id: donation.organization.id,
-        city: donation.organization.city,
+        community_id: donation.community.id,
+        city: donation.community.city,
         email: donation.activist.email,
         donation_id: donation.id
       }
@@ -103,10 +103,10 @@ class DonationService
   def self.rules(donation)
     city = self.city_rule(donation)
 
-    if self.organization_rule[:recipient_id] != city[:recipient_id]
-      organization_sr = self.split_rules(self.organization_rule)
+    if self.community_rule[:recipient_id] != city[:recipient_id]
+      community_sr = self.split_rules(self.community_rule)
       city_sr = self.split_rules(city)
-      [organization_sr, city_sr]
+      [community_sr, city_sr]
     else
       city.merge!(percentage: 100)
       [self.split_rules(city)]
@@ -118,11 +118,11 @@ class DonationService
   end
 
   def self.city_rule(donation)
-    recipient = donation.organization.pagarme_recipient_id
+    recipient = donation.community.pagarme_recipient_id
     { charge_processing_fee: true, liable: true, percentage: 85, recipient_id: recipient }
   end
 
-  def self.organization_rule
+  def self.community_rule
     { charge_processing_fee: false, liable: false, percentage: 15, recipient_id: ENV['ORG_RECIPIENT_ID'] }
   end
 

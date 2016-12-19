@@ -1,6 +1,8 @@
 require 'machinist/active_record'
 
 User.blueprint do
+  first_name {"Firstname #{sn}"}
+  last_name {"Lastname #{sn}"}
   email { "#{sn}@trashmail.com" }
   uid { object.email }
   provider { "email" }
@@ -16,7 +18,7 @@ Mobilization.blueprint do
   body_font { 'open-sans' }
   custom_domain { "mymobilization" }
   slug { "#{sn}-mobilization" }
-  organization { Organization.make! }
+  community { Community.make! }
 end
 
 Block.blueprint do
@@ -78,16 +80,18 @@ Donation.blueprint do
   email { "#{sn}@trashmail.com" }
 end
 
-Organization.blueprint do
+Community.blueprint do
   name { "Nossas Cidades #{sn}" }
   city { "Rio de Janeiro #{sn}" }
   pagarme_recipient_id { "re_fakerecipient" }
+  description {"Description #{sn}"}
+  image {'http://images.reboo.org/nossas.png'}
 end
 
 PayableTransfer.blueprint do
   transfer_id { 12345 }
   transfer_status { 'transferred' }
-  organization { Organization.make! }
+  community { Community.make! }
   amount { 100 }
 end
 
@@ -100,7 +104,7 @@ TemplateMobilization.blueprint do
   body_font { 'open-sans' }
   custom_domain { "mytemplatemobilization" }
   slug { "#{sn}-templatemobilization" }
-  organization { Organization.make! city: "São Paulo #{sn}"}
+  community { Community.make! city: "São Paulo #{sn}"}
 end
 
 TemplateBlock.blueprint do
@@ -123,3 +127,8 @@ TemplateWidget.blueprint do
   settings { {content: "My 12 columns widget"} }
 end
 
+CommunityUser.blueprint do
+  user {User.make!}
+  community {Community.make!}
+  role {1}
+end

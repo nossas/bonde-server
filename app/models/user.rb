@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
   has_many :mobilizations
+  has_many :community_users
+  has_many :communities, through: :community_users 
 
   # Include default devise modules.
   devise :database_authenticatable, :registerable,

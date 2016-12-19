@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 
 RSpec.describe Widget, type: :model do
@@ -7,8 +8,12 @@ RSpec.describe Widget, type: :model do
   it { should validate_presence_of :lg_size }
   it { should validate_presence_of :kind }
   it { should validate_uniqueness_of :mailchimp_segment_id }
+  it { should have_one :mobilization }
+  it { should have_one :community }
   it { should have_many :form_entries }
   it { should have_many :donations }
+  it { should have_many :matches }
+  it { should have_many :activist_pressures }
 
   describe "#segment_name" do
     subject { @widget.segment_name }

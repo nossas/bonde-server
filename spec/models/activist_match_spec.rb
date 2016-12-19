@@ -8,7 +8,7 @@ RSpec.describe ActivistMatch, type: :model do
   it { should have_one :widget }
   it { should have_one :block }
   it { should have_one :mobilization }
-  it { should have_one :organization }
+  it { should have_one :community }
 
   describe "Puts a message in Resque queue" do
     before do 
@@ -19,7 +19,7 @@ RSpec.describe ActivistMatch, type: :model do
     end
 
     it "should save data in redis" do
-      expect(@resque_job).to be_present		
+      expect(@resque_job).to be_present   
     end
 
     it "test the arguments" do

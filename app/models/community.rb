@@ -1,9 +1,12 @@
-class Organization < ActiveRecord::Base
-  validates :name, :city, presence: true, uniqueness: true
+class Community < ActiveRecord::Base
+  validates :name, presence: true, uniqueness: true
+  
   has_many :payable_transfers
   has_many :payable_details
   has_many :mobilizations
-  has_many :users, through: :mobilizations
+  has_many :community_users
+  has_many :users, through: :community_users
+
 
   def total_to_receive_from_subscriptions
     @total_to_receive_from_subscriptions ||= subscription_payables_to_transfer.sum(:value_without_fee)

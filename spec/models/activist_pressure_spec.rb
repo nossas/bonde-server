@@ -5,10 +5,9 @@ RSpec.describe ActivistPressure, type: :model do
   it { should belong_to :activist }
   it { should validate_presence_of :widget }
   it { should validate_presence_of :activist }
-  it { should validate_presence_of :activist }
   it { should have_one :block }
   it { should have_one :mobilization }
-  it { should have_one :organization }
+  it { should have_one :community }
 
   describe "Puts a message in Resque queue" do
     before do 
