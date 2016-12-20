@@ -124,4 +124,69 @@ RSpec.describe Widget, type: :model do
       expect(resque_job['args'].size).to be 2
     end
   end
+
+  describe '#pressure?' do
+    it 'should return true' do
+      expect((Widget.new kind: 'pressure').pressure?).to be true
+    end
+    it 'should return false' do
+      expect((Widget.new kind: 'match').pressure?).to be false
+      expect((Widget.new kind: 'donation').pressure?).to be false
+      expect((Widget.new kind: 'form').pressure?).to be false 
+      expect((Widget.new kind: 'draft').pressure?).to be false 
+      expect((Widget.new kind: 'content').synchro_to_mailchimp?).to be false
+    end
+  end
+
+  describe '#match?' do
+    it 'should return true' do
+      expect((Widget.new kind: 'match').match?).to be true
+    end
+    it 'should return false' do
+      expect((Widget.new kind: 'donation').match?).to be false
+      expect((Widget.new kind: 'form').match?).to be false 
+      expect((Widget.new kind: 'draft').match?).to be false 
+      expect((Widget.new kind: 'content').synchro_to_mailchimp?).to be false
+      expect((Widget.new kind: 'pressure').match?).to be false
+    end
+  end
+
+  describe '#donation?' do
+    it 'should return true' do
+      expect((Widget.new kind: 'donation').donation?).to be true
+    end
+    it 'should return false' do
+      expect((Widget.new kind: 'form').donation?).to be false 
+      expect((Widget.new kind: 'draft').donation?).to be false 
+      expect((Widget.new kind: 'content').synchro_to_mailchimp?).to be false
+      expect((Widget.new kind: 'pressure').donation?).to be false
+      expect((Widget.new kind: 'match').donation?).to be false
+    end
+  end
+
+  describe '#form?' do
+    it 'should return true' do
+      expect((Widget.new kind: 'form').form?).to be true
+    end
+    it 'should return false' do
+      expect((Widget.new kind: 'draft').form?).to be false 
+      expect((Widget.new kind: 'content').synchro_to_mailchimp?).to be false
+      expect((Widget.new kind: 'pressure').form?).to be false
+      expect((Widget.new kind: 'match').form?).to be false
+      expect((Widget.new kind: 'donation').form?).to be false 
+    end
+  end
+
+  describe '#synchro_to_mailchimp?' do
+    it 'should return true' do
+      expect((Widget.new kind: 'form').synchro_to_mailchimp?).to be true
+      expect((Widget.new kind: 'pressure').synchro_to_mailchimp?).to be true
+      expect((Widget.new kind: 'match').synchro_to_mailchimp?).to be true
+      expect((Widget.new kind: 'donation').synchro_to_mailchimp?).to be true
+    end
+    it 'should return false' do
+      expect((Widget.new kind: 'content').synchro_to_mailchimp?).to be false
+      expect((Widget.new kind: 'draft').synchro_to_mailchimp?).to be false
+    end
+  end
 end
