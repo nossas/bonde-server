@@ -71,6 +71,19 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
         expect(response).to be_unauthorized
       end
 
+      it "should return 404 widget does not exist" do
+        stub_current_user(User.make!)
+        put :update,  { mobilization_id: @widget1.block.mobilization_id, id: 0,
+            widget: {
+              settings: {
+                content: "Widget new content"
+              }
+            }
+          }
+
+        expect(response).to be_not_found
+      end
+
       context "with huge emails(500) for target pressure" do
         before do
           stub_current_user(@admin)
