@@ -2,9 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Block, type: :model do
   it { should belong_to :mobilization }
+
+  it { should have_one :community }
+  
   it { should have_many :widgets }
+  
   it { should validate_presence_of :mobilization_id }
   it { should validate_presence_of :position }
+  
   it { should accept_nested_attributes_for :widgets }
 
   describe "#set_position" do
