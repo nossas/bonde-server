@@ -26,6 +26,8 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
     end
   end
 
+
+
   describe "PUT #update" do
     context 'with valid payload' do
       it "should update widget when current user is admin" do
@@ -37,6 +39,16 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
 
       it "should update widget when current user is the mobilization's owner" do
         stub_current_user(@widget1.mobilization.user)
+
+        put :update, update_widget_1_params
+
+        expect(response.body).to include("Widget new content")
+      end
+
+      it "should update widget when current user is part of the community" do
+        stub_current_user(@user)
+        CommunityUser.create! user_id: @user.id, community_id: @widget1.community.id, role:1
+
         put :update, update_widget_1_params
 
         expect(response.body).to include("Widget new content")
@@ -52,7 +64,7 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
         expect(saved.settings['finish_message_background']).to eq('finish_message_background string')
       end
 
-      it "should return 401 if user is not an admin or mobilization's owner" do
+      it "should return 401 if user is not an admin, mobilization's owner or in the mobilization's users list" do
         stub_current_user(User.make!)
         put :update, update_widget_1_params
 
