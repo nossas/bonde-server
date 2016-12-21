@@ -40,8 +40,16 @@ class Widget < ActiveRecord::Base
     self.kind == "donation"
   end
 
+  def pressure?
+    self.kind == "pressure"
+  end
+
   def recurring?
     self.settings["payment_type"] != "unique" if self.settings
+  end
+
+  def synchro_to_mailchimp?
+    self.form? or self.match? or self.donation?  or self.pressure?
   end
 
   def donation_values
@@ -55,7 +63,7 @@ class Widget < ActiveRecord::Base
   end
 
   def create_mailchimp_segment
-    if !Rails.env.test?
+    if !Rails.env.test? and self.synchro_to_mailchimp?
       segment = create_segment(segment_name)
       self.update_attribute :mailchimp_segment_id, segment["id"]
     end
