@@ -2,28 +2,76 @@
 require 'rails_helper'
 
 RSpec.describe CommunitiesController, type: :controller do
-  before do 
-    @user = User.make!
+  let(:user) { User.make! }
 
-    stub_current_user(@user)
+  before do 
+    stub_current_user(user)
   end
 
   describe "GET #index" do
-    it "should return all communities" do
-      communities = []
-      3.times { Community.make! }
-      2.times { communities << Community.make! }
-      communities.each do  |community|
-        CommunityUser.create user: @user, community: community, role: 1
-      end
-      get :index
+    let(:user_communities) { [] }
+    let(:other_communities) { [] }
 
-      communities.each do |c|
-        expect(response.body).to include(c.name)
+    before do
+      3.times { other_communities << Community.make! }
+      2.times { user_communities << Community.make! }
+
+      user_communities.each do  |community|
+        CommunityUser.create user: user, community: community, role: 1
       end
-      expect(response.body).to include('account_dig')
-      expect(response.body).to include('agency_dig')
-      expect(JSON.parse(response.body).count).to be 2
+    end
+
+    context 'user in community\'s list' do
+      before do
+        get :index
+
+        @return_body = JSON.parse(response.body)
+      end
+
+      it "should return all organizations - and only those - related to him" do
+        user_communities.each { |c|
+          expect(response.body).to include("\"id\":#{c.id}")
+        }
+        expect(@return_body.count).to be 2
+      end
+
+      it "should return 200 status" do
+        expect(response).to be_ok
+      end
+    end
+
+    context 'user is an adminstrator' do
+      before do
+        user.update_attributes admin: true
+
+        get :index
+      end
+
+      it "should return all organizations" do
+        (other_communities | user_communities).each { |c|
+          expect(response.body).to include("\"id\":#{c.id}")
+        }
+      end
+
+      it "should return 200 status" do
+        expect(response).to be_ok
+      end
+    end
+
+    context 'no user logged' do
+      before do
+        stub_current_user(nil)
+
+        get :index
+      end
+
+      it "should return all organizations" do
+        expect(response.body).to eq '[]'
+      end
+
+      it "should return 200 status" do
+        expect(response).to be_ok
+      end
     end
   end
 
@@ -649,7 +697,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
     context 'user with rights' do
       before do
-        CommunityUser.create user: @user, community: community, role: 1
+        CommunityUser.create user: user, community: community, role: 1
     
         get :show, {id: community.id}
       end
@@ -669,7 +717,7 @@ RSpec.describe CommunitiesController, type: :controller do
     context 'user with rights' do
       it 'should return a 401 status' do
         stub_current_user(User.make!)
-        CommunityUser.create user: @user, community: community, role: 1
+        CommunityUser.create user: user, community: community, role: 1
         get :show, {id: community.id}
 
         expect(response.status).to be 401
@@ -691,11 +739,10 @@ RSpec.describe CommunitiesController, type: :controller do
     let(:user2) {User.make!}
     let(:user3) {User.make!}
 
-
     before do
-      CommunityUser.create! user: @user, community: community, role: 3
+      CommunityUser.create! user: user, community: community, role: 3
 
-      @mob1 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "1.1-foo", community: community
+      @mob1 = Mobilization.make! user: user, custom_domain: "foobar", slug: "1.1-foo", community: community
       @mob2 = Mobilization.make! user: user2, community: community
       @mob3 = Mobilization.make! user: @user, custom_domain: "foobar2", slug: "1.2-foo", community: community
       @mob4 = Mobilization.make! user: @user, custom_domain: "foobar3", slug: "2-foo"
@@ -729,18 +776,18 @@ RSpec.describe CommunitiesController, type: :controller do
       end
 
       it 'should return a 404 status' do
-        expect(response.status).to be 404
+        expect(response).to be_not_found
       end
     end
 
-    context "valid call" do
+    context "happy path" do
       context 'no filters' do
         before do
           get :list_mobilizations, {community_id: community.id}
         end
 
         it 'should return a 200 status' do
-          expect(response.status).to be 200
+          expect(response).to be_ok
         end
 
         it "should return all mobilizations related to the community" do
@@ -758,7 +805,7 @@ RSpec.describe CommunitiesController, type: :controller do
         end
 
         it 'should return a 200 status' do
-          expect(response.status).to be 200
+          expect(response).to be_ok
         end
 
         it "should return all mobilizations related to the community" do
@@ -776,7 +823,7 @@ RSpec.describe CommunitiesController, type: :controller do
         end
 
         it 'should return a 200 status' do
-          expect(response.status).to be 200
+          expect(response).to be_ok
         end
 
         it "should return all mobilizations related to the community" do
@@ -794,7 +841,7 @@ RSpec.describe CommunitiesController, type: :controller do
         end
 
         it 'should return a 200 status' do
-          expect(response.status).to be 200
+          expect(response).to be_ok
         end
 
         it "should return all mobilizations related to the community" do
