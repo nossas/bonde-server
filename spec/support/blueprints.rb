@@ -27,7 +27,7 @@ Block.blueprint do
   bg_class { 'classe 1'}
   hidden { false }
   bg_image { 'icon.png' }
-  name { 'test' }
+  name { 'test - block #{sn}' }
   menu_hidden { true }
 end
 
@@ -38,7 +38,7 @@ Widget.blueprint do
   lg_size { 12 }
   kind { "content" }
   action_community { false }
-  settings { {content: "My 12 columns widget"} }
+  settings { {content: "My 12 columns widget", other: "#{sn}"} }
 end
 
 Match.blueprint do
