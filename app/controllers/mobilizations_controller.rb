@@ -1,4 +1,6 @@
 class MobilizationsController < ApplicationController
+  include ControllerHelper
+
   respond_to :json
   after_action :verify_authorized, except: %i[index published]
   after_action :verify_policy_scoped, only: %i[index published]
@@ -37,6 +39,9 @@ class MobilizationsController < ApplicationController
   end
 
   def create
+    community = Community.find params[:mobilization][:community_id]
+    authorize community, :update?
+
     @mobilization = Mobilization.new(mobilization_params)
     @mobilization.user = current_user
     authorize @mobilization
@@ -74,7 +79,7 @@ class MobilizationsController < ApplicationController
         end
         render json: @mobilization
       else
-        return404
+        render_404
       end
     else
       authorize @mobilization
