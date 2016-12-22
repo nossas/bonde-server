@@ -80,6 +80,31 @@ class TransferService
     end
   end
 
+  def self.register_bank_account data
+    pagarme_bank_account = PagarMe::BankAccount.new({
+      :bank_code => data[:bank_code],
+      :agencia => data[:agencia],
+      :agencia_dv => data[:agencia_dv],
+      :conta => data[:conta],
+      :conta_dv => data[:conta_dv],
+      :type => data[:type],
+      :legal_name => data[:legal_name],
+      :document_number => data[:document_number]
+    })
+
+    pagarme_bank_account.create
+    BankAccount.create!(pagarme_bank_account_id: pagarme_bank_account.id, data: pagarme_bank_account.to_json)
+  end
+
+  def self.register_recipient recipient_data
+    pagarme_recipient = PagarMe::Recipient.create( recipient_data )
+  end
+
+  def self.update_recipient pagarme_recipient_id, recipient_data
+    pagarme_recipient = PagarMe::Recipient.new(recipient_data.merge!({id: pagarme_recipient_id}))
+    pagarme_recipient.save
+  end
+
   private
 
   def sync_operations operations, payable_transfer

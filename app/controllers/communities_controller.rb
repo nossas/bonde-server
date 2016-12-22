@@ -30,13 +30,16 @@ class CommunitiesController < ApplicationController
 
 
   def update
-    @community = Community.find_by({id: params[:id]})
-    if not @community
+    community = Community.find_by({id: params[:id]})
+    if not community
       return404
     else
-      authorize @community
-      @community.update!(community_params)
-      render json: @community
+      authorize community
+      if (recipient_data = params[:community][:recipient])
+        recipients community, recipient_data
+      end
+      community.update!(community_params)
+      render json: community
     end
   end
 
@@ -86,6 +89,20 @@ class CommunitiesController < ApplicationController
   end
 
   private 
+
+  def recipients community, recipient_data
+    recipient = nil
+    if community.pagarme_recipient_id
+      recipient = (TransferService.update_recipient community.pagarme_recipient_id, recipient_data)
+    else
+      recipient = (TransferService.register_recipient recipient_data)
+    end
+    community.recipient = recipient.to_json
+    community.pagarme_recipient_id = recipient.id
+    community.transfer_day = recipient.transfer_day
+    community.transfer_enabled = recipient.transfer_enabled
+    community.save
+  end
 
   def community_params
     if params[:community]
