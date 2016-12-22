@@ -85,7 +85,7 @@ end
 Community.blueprint do
   name { "Nossas Cidades #{sn}" }
   city { "Rio de Janeiro #{sn}" }
-  pagarme_recipient_id { "re_fakerecipient" }
+  pagarme_recipient_id { "re_ci9bucss300h1zt6dvywufeqc" }
   description {"Description #{sn}"}
   image {'http://images.reboo.org/nossas.png'}
   recipient {

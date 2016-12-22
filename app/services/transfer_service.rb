@@ -101,7 +101,15 @@ class TransferService
   end
 
   def self.update_recipient pagarme_recipient_id, recipient_data
-    pagarme_recipient = PagarMe::Recipient.new(recipient_data.merge!({id: pagarme_recipient_id}))
+    pagarme_recipient = PagarMe::Recipient.new id: pagarme_recipient_id
+    pagarme_recipient.transfer_interval = recipient_data['transfer_interval']
+    pagarme_recipient.transfer_day = recipient_data['transfer_day']
+    pagarme_recipient.transfer_enabled = recipient_data['transfer_enabled']
+    if recipient_data['bank_account']
+      pagarme_recipient.bank_account = recipient_data['bank_account']
+    else
+      pagarme_recipient.bank_account_id = recipient_data['bank_account_id']
+    end
     pagarme_recipient.save
   end
 

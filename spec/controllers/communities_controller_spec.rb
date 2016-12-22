@@ -252,6 +252,7 @@ RSpec.describe CommunitiesController, type: :controller do
         before do 
           @community.update_attributes recipient: nil, pagarme_recipient_id: nil
           stub_request(:post, "https://api.pagar.me/1/recipients").
+            with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
             to_return(:status => 200, :body => recipient_return.to_json, :headers => {})
 
           put :update, {
@@ -284,7 +285,8 @@ RSpec.describe CommunitiesController, type: :controller do
 
       context 'update recipient' do
         before do 
-          stub_request(:put, "https://api.pagar.me/1/recipients/re_fakerecipient").
+          stub_request(:put, "https://api.pagar.me/1/recipients/re_ci9bucss300h1zt6dvywufeqc").
+            with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
             to_return(:status => 200, :body => recipient_return.to_json, :headers => {})
           put :update, {
             format: :json, 
