@@ -5,8 +5,7 @@ class Widgets::FillController < ApplicationController
   after_action :verify_policy_scoped, only: %i[]
 
   def create
-    @activist = Activist.new(activist_params)
-    @activist.save!
+    @activist = find_or_create_activist
 
     result = {}
     if @widget.kind == 'pressure'
@@ -21,20 +20,27 @@ class Widgets::FillController < ApplicationController
     render json: result
   end
 
+  def find_or_create_activist
+    if activist = Activist.where(email: activist_params[:email]).order(id: :asc).first
+      activist
+    else
+      Activist.create!(activist_params.merge(:name => activist_name))
+    end
+  end
+
   private
   def load_widget
     @widget ||= policy_scope(Widget).find(params[:widget_id])
   end
 
   def activist_name
-    "#{firstname} #{lastname}"
+    "#{firstname} #{lastname}".presence || activist_params[:name]
   end
 
   def activist_params
     if params[:fill][:activist]
       params[:fill].require(:activist)
         .permit(*policy(@activist || Activist.new).permitted_attributes)
-        .merge(:name => activist_name)
     end
   end
 
