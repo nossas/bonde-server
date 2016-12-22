@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'machinist/active_record'
 
 User.blueprint do
@@ -74,6 +75,7 @@ end
 
 Donation.blueprint do
   widget { Widget.make!(kind: 'donation', mobilization: Mobilization.make!) }
+  activist { Activist.make! }
   card_hash { "fake/card_hash_kefh2309r3hhskjdfh" }
   amount { 3000 }
   payment_method { "credit_card" }
