@@ -14,11 +14,11 @@ class ActivistMatchesController < ApplicationController
   end
 
   def activist_name
-    "#{params[:activist_match][:activist][:firstname]} #{params[:activist_match][:activist][:lastname]}"
+    "#{params[:activist_match][:activist][:firstname]} #{params[:activist_match][:activist][:lastname]}".presence || activist_params[:name]
   end
 
   def find_or_create_activist
-    if activist = Activist.where(email: activist_params[:email]).first
+    if activist = Activist.where(email: activist_params[:email]).order(id: :asc).first
       activist
     else
       Activist.create!(activist_params.merge(:name => activist_name))
