@@ -23,6 +23,7 @@ gem 'codeclimate-test-reporter', '< 1.0.0', group: :test, require: nil
 gem 'pagarme', '2.1.2'
 gem 'sentry-raven'
 gem 'has_scope'
+gem 'postgres-copy'
 
 group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'
