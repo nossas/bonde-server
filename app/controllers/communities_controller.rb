@@ -2,7 +2,7 @@ class CommunitiesController < ApplicationController
   respond_to :json
 
   include Pundit
-  
+
   after_action :verify_authorized, except: [:index, :list_mobilizations]
   after_action :verify_policy_scoped, only: [:index, :list_mobilizations]
 
@@ -48,7 +48,23 @@ class CommunitiesController < ApplicationController
       render json: community
     else
       return404
-    end    
+    end
+  end
+
+  def list_activists
+    skip_authorization
+    skip_policy_scope
+
+    community = current_user.communities.find params[:community_id]
+
+    respond_with do |format|
+      format.json do
+        render json: community.agg_activists
+      end
+      format.csv do
+        send_data community.agg_activists.copy_to_string, type: Mime::CSV, disposition: "attachment; filename=activists_#{community.name.parameterize}.csv"
+      end
+    end
   end
 
   def list_mobilizations

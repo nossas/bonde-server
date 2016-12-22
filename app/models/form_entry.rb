@@ -26,7 +26,7 @@ class FormEntry < ActiveRecord::Base
 
   def first_name
     fields_as_json.each do |field|
-      if field['label'] && ['nome'].include?(field['label'].downcase)
+      if field['label'] && ['nome', 'nombre'].include?(field['label'].downcase)
         return field['value']
       end
     end

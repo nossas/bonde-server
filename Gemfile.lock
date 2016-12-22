@@ -263,6 +263,11 @@ GEM
     pg (0.19.0)
     platform-api (0.8.0)
       heroics (~> 0.0.17)
+    postgres-copy (1.1.0)
+      activerecord (>= 4.0)
+      pg (>= 0.17)
+      rails (>= 4.0)
+      responders
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -410,6 +415,7 @@ DEPENDENCIES
   pagarme (= 2.1.2)
   pg
   platform-api
+  postgres-copy
   pry
   puma
   pundit
