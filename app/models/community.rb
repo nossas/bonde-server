@@ -6,6 +6,7 @@ class Community < ActiveRecord::Base
   has_many :mobilizations
   has_many :community_users
   has_many :users, through: :community_users
+  has_many :agg_activists
 
 
   def total_to_receive_from_subscriptions
