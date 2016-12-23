@@ -245,8 +245,278 @@ RSpec.describe CommunitiesController, type: :controller do
       before do
         PagarMe.api_key = 'MyFakeKey'
         CommunityUser.create! user: @user, community: @community, role: 1
-
       end
+
+      # BANK CODE
+
+      context 'bank_code less than 3 digits' do
+        before do
+          recipient_request[:bank_account][:bank_code] = '12'
+
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Código bancário inválido')
+        end
+      end
+
+      context 'bank_code more than 3 digits' do
+        before do
+          recipient_request[:bank_account][:bank_code] = '1212'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Código bancário inválido')
+        end
+      end
+
+      context 'bank_code with alfa values' do
+        before do
+          recipient_request[:bank_account][:bank_code] = '2A2'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Código bancário inválido')
+        end
+      end
+
+      # Agencia
+
+      context 'agencia more than 5 digits' do
+        before do
+          recipient_request[:bank_account][:agencia] = '121212'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Código de agência inválido')
+        end
+      end
+
+      context 'agencia with alfa values' do
+        before do
+          recipient_request[:bank_account][:agencia] = '1A212'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Código de agência inválido')
+        end
+      end
+
+      # Agencia DV
+
+      context 'agencia_dv less than 1 digit' do
+        before do
+          recipient_request[:bank_account][:agencia_dv] = ''
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Dígito verificador da agência inválido')
+        end
+      end
+
+
+      context 'agencia_dv more than 1 digit' do
+        before do
+          recipient_request[:bank_account][:agencia_dv] = '121212'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Dígito verificador da agência inválido')
+        end
+      end
+
+      context 'agencia_dv with alfa value' do
+        before do
+          recipient_request[:bank_account][:agencia_dv] = 'B'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Dígito verificador da agência inválido')
+        end
+      end
+
+      # CONTA
+
+      context 'conta more than 13 digit' do
+        before do
+          recipient_request[:bank_account][:conta] = '12345678901234'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Número da conta bancária inválida')
+        end
+      end
+
+      context 'conta with alfa values' do
+        before do
+          recipient_request[:bank_account][:conta] = 'a123B'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Número da conta bancária inválida')
+        end
+      end
+
+      # CONTA_DV
+
+      context 'conta_dv more than 2 alfanumeric' do
+        before do
+          recipient_request[:bank_account][:conta_dv] = '12S'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Dígito verificador da conta bancária inválido')
+        end
+      end
+
+      # Bank Account type
+
+      context 'conta_dv more than 2 alfanumeric' do
+        before do
+          recipient_request[:bank_account][:type] = 'conta conjunta'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Tipo de conta inválido')
+        end
+      end 
+
+      # document_number
+
+      context 'document_number less than 11 alfanumeric' do
+        before do
+          recipient_request[:bank_account][:document_number] = '1234567890'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Número de documento inválido')
+        end
+      end 
+
+      context 'document_number more than 11 and less than 14 alfanumeric' do
+        before do
+          recipient_request[:bank_account][:document_number] = '123456789012'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Número de documento inválido')
+        end
+      end 
+
+      context 'document_number more than 14 alfanumeric' do
+        before do
+          recipient_request[:bank_account][:document_number] = '123456789012345'
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it {should respond_with 400}
+
+        it 'should return error message' do
+          expect(response.body).to include('Número de documento inválido')
+        end
+      end 
 
       context 'create recipient' do
         before do 

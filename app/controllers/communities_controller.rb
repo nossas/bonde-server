@@ -34,12 +34,16 @@ class CommunitiesController < ApplicationController
     if not community
       return404
     else
-      authorize community
-      if (recipient_data = params[:community][:recipient])
-        recipients community, recipient_data
+      begin
+        authorize community
+        if (recipient_data = params[:community][:recipient])
+          recipients community, recipient_data 
+        end
+        community.update!(community_params)
+        render json: community
+      rescue ArgumentError => e
+        render json:e.message, status: 400
       end
-      community.update!(community_params)
-      render json: community
     end
   end
 
@@ -91,6 +95,8 @@ class CommunitiesController < ApplicationController
   private 
 
   def recipients community, recipient_data
+    validate_recipient recipient_data
+    
     recipient = nil
     if community.pagarme_recipient_id
       recipient = (TransferService.update_recipient community.pagarme_recipient_id, recipient_data)
@@ -102,6 +108,21 @@ class CommunitiesController < ApplicationController
     community.transfer_day = recipient.transfer_day
     community.transfer_enabled = recipient.transfer_enabled
     community.save
+  end
+
+  def validate_recipient recipient_data
+    bank_account = recipient_data['bank_account']
+    errors = []
+    errors << "Código bancário inválido. Deve ter extamente 3 dígitos." if (bank_account['bank_code'] =~ /^\d{3}$/).nil?
+    errors << "Código de agência inválido. Deve ter até 5 dígitos." if (bank_account['agencia'] =~ /^\d{1,5}$/).nil?
+    errors << "Dígito verificador da agência inválido. Deve ter apenas um dígito." if (bank_account['agencia_dv'] =~ /^\d$/).nil?
+    errors << "Número da conta bancária inválida. Deve ter até 13 dígitos." if (bank_account['conta'] =~ /^\d{1,13}$/).nil?
+    errors << "Dígito verificador da conta bancária inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['conta_dv'] =~ /^[A-Z0-9]{1,2}$/).nil?
+    errors << "Tipo de conta inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['type'] =~ /^(conta_corrente)|(conta_poupanca)|(conta_corrente_conjunta)|(conta_poupanca_conjunta)$/).nil?
+    errors << "Número de documento inválido. Deve ter 11 ou 14 dígitos" if (bank_account['document_number'] =~ /^\d{11}(\d{3})?$/).nil?
+    if errors.count > 0
+      raise ArgumentError.new errors 
+    end
   end
 
   def community_params
