@@ -115,7 +115,7 @@ TemplateBlock.blueprint do
   position { 1 }
   hidden { true }
   bg_image { 'icone.png' }
-  name { 'template_block name' }
+  name { "template_block #{sn}" }
   menu_hidden { false }
 end
 
@@ -126,7 +126,7 @@ TemplateWidget.blueprint do
   lg_size { 20 }
   kind { "content" }
   action_community { true }
-  settings { {content: "My 12 columns widget"} }
+  settings { {content: "My 12 columns widget", other: "any #{sn}"} }
 end
 
 CommunityUser.blueprint do
