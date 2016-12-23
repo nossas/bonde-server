@@ -113,6 +113,14 @@ class TransferService
     pagarme_recipient.save
   end
 
+  def self.update_recipient_info community
+    recipient = PagarMe::Recipient.find_by_id community.pagarme_recipient_id
+    community.transfer_day = recipient.transfer_day
+    community.transfer_enabled = recipient.transfer_enabled
+    community.recipient = recipient.as_json
+    community.save
+  end
+
   private
 
   def sync_operations operations, payable_transfer
