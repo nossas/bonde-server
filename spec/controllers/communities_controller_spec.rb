@@ -8,7 +8,7 @@ RSpec.describe CommunitiesController, type: :controller do
   end
 
   describe "GET #index" do
-    it "should return all organizations" do
+    it "should return all communities" do
       communities = []
       3.times { Community.make! }
       2.times { communities << Community.make! }
@@ -16,24 +16,31 @@ RSpec.describe CommunitiesController, type: :controller do
         CommunityUser.create user: @user, community: community, role: 1
       end
       get :index
-      expect(response.body).to include(communities.to_json)
+
+      communities.each do |c|
+        expect(response.body).to include(c.name)
+      end
+      expect(response.body).to include('account_dig')
+      expect(response.body).to include('agency_dig')
+      expect(JSON.parse(response.body).count).to be 2
     end
   end
 
   describe 'POST #create' do
     context 'valid call' do
-      before do
-        @count = Community.count
-        post :create, {
-          format: :json, 
-          community: {
+      let(:vals) {{
             name: 'José Marculino Silva',
             city: 'Pindamonhangaba, SP',
             description: 'A community to solve ours problems',
             mailchimp_api_key: 'abc56',
             mailchimp_list_id: '1234',
             mailchimp_group_id: '7890'
-          }
+          }}
+      before do
+        @count = Community.count
+        post :create, {
+          format: :json, 
+          community: vals
         }
       end
 
@@ -46,7 +53,10 @@ RSpec.describe CommunitiesController, type: :controller do
       end
 
       it 'should return the data saved' do
-        expect(response.body).to include(Community.last.to_json)
+        vals.each do |f, v|
+          expect(response.body).to include(f.to_s)
+          expect(response.body).to include(v)
+        end
       end
 
       it 'should correctly save the data' do
@@ -197,7 +207,7 @@ RSpec.describe CommunitiesController, type: :controller do
     end
 
     context 'recipient' do 
-      let(:recipient_return) {{
+      let(:recipient_response) {{
         object: "recipient",
         id: "re_ci9bucss300h1zt6dvywufeqc",
         bank_account: {
@@ -224,6 +234,33 @@ RSpec.describe CommunitiesController, type: :controller do
         date_updated: "2015-05-05T21:41:48.000Z"
       }}
 
+      let(:recipient_return) {{
+        object: "recipient",
+        id: "re_ci9bucss300h1zt6dvywufeqc",
+        bank_account: {
+          object: "bank_account",
+          id: 4851,
+          bank_code: "237",
+          agency: "1935",
+          agency_dig: "9",
+          account: "23398",
+          account_dig: "9",
+          document_type: "cpf",
+          document_number: "26268738888",
+          legal_name: "API BANK ACCOUNT",
+          charge_transfer_fees: false,
+          date_created: "2015-03-19T15:40:51.000Z"
+        },
+        transfer_enabled: true,
+        last_transfer: nil,
+        transfer_interval: "monthly",
+        transfer_day: 15,
+        automatic_anticipation_enabled: true,
+        anticipatable_volume_percentage: 85,
+        date_created: "2015-05-05T21:41:48.000Z",
+        date_updated: "2015-05-05T21:41:48.000Z"
+      }}
+
       let(:recipient_request) {
         {
           transfer_interval: "monthly",
@@ -231,10 +268,10 @@ RSpec.describe CommunitiesController, type: :controller do
           transfer_enabled: true,
           bank_account: {
             bank_code: '237',
-            agencia: '1935',
-            agencia_dv: '9',
-            conta: '23398',
-            conta_dv: '9',
+            agency: '1935',
+            agency_dig: '9',
+            account: '23398',
+            account_dig: '9',
             type: 'conta_corrente',
             legal_name: 'API BANK ACCOUNT',
             document_number: '26268738888'
@@ -523,7 +560,7 @@ RSpec.describe CommunitiesController, type: :controller do
           @community.update_attributes recipient: nil, pagarme_recipient_id: nil
           stub_request(:post, "https://api.pagar.me/1/recipients").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
-            to_return(:status => 200, :body => recipient_return.to_json, :headers => {})
+            to_return(:status => 200, :body => recipient_response.to_json, :headers => {})
 
           put :update, {
             format: :json, 
@@ -538,7 +575,7 @@ RSpec.describe CommunitiesController, type: :controller do
           let(:saved) {Community.find @community.id}
 
           it 'should save recipient data' do
-            expect(saved.recipient).to eq(JSON.parse(recipient_return.to_json))
+            expect(saved.recipient).to eq(JSON.parse(recipient_response.to_json))
           end
 
           it 'should update pagarme_recipient_id' do
@@ -557,7 +594,7 @@ RSpec.describe CommunitiesController, type: :controller do
         before do 
           stub_request(:put, "https://api.pagar.me/1/recipients/re_ci9bucss300h1zt6dvywufeqc").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
-            to_return(:status => 200, :body => recipient_return.to_json, :headers => {})
+            to_return(:status => 200, :body => recipient_response.to_json, :headers => {})
           put :update, {
             format: :json, 
             id: @community.id,
@@ -571,7 +608,7 @@ RSpec.describe CommunitiesController, type: :controller do
           let(:saved) {Community.find @community.id}
 
           it 'should save recipient data' do
-            expect(saved.recipient).to eq(JSON.parse(recipient_return.to_json))
+            expect(saved.recipient).to eq(JSON.parse(recipient_response.to_json))
           end
 
           it 'should update pagarme_recipient_id' do
@@ -605,7 +642,10 @@ RSpec.describe CommunitiesController, type: :controller do
       end
 
       it 'should return the expected data' do
-        expect(response.body).to include(community.to_json)
+        expect(response.body).to include(community.name)
+        expect(response.body).to include("#{community.id}")
+        expect(response.body).to include("agency")
+        expect(response.body).to include("account")
       end
     end
 

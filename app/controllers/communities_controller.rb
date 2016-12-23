@@ -2,7 +2,8 @@ class CommunitiesController < ApplicationController
   respond_to :json
 
   include Pundit
-
+  include PagarmeHelper
+  
   after_action :verify_authorized, except: [:index, :list_mobilizations]
   after_action :verify_policy_scoped, only: [:index, :list_mobilizations]
 
@@ -23,7 +24,7 @@ class CommunitiesController < ApplicationController
       Community.transaction do 
         @community.save!
         create_role
-        render json: @community
+        render json: @community, serializer: CommunitySerializer
       end
     end
   end
@@ -94,9 +95,9 @@ class CommunitiesController < ApplicationController
 
   private 
 
-  def recipients community, recipient_data
+  def recipients community, recipient_dt
+    recipient_data = to_pagarme_recipient recipient_dt
     validate_recipient recipient_data
-    
     recipient = nil
     if community.pagarme_recipient_id
       recipient = (TransferService.update_recipient community.pagarme_recipient_id, recipient_data)
