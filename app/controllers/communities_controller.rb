@@ -55,7 +55,7 @@ class CommunitiesController < ApplicationController
     skip_authorization
     skip_policy_scope
 
-    community = current_user.communities.find params[:community_id]
+    community = Community.find params[:community_id]
 
     respond_with do |format|
       format.json do
