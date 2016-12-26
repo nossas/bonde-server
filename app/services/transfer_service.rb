@@ -80,6 +80,47 @@ class TransferService
     end
   end
 
+  def self.register_bank_account data
+    pagarme_bank_account = PagarMe::BankAccount.new({
+      :bank_code => data[:bank_code],
+      :agencia => data[:agencia],
+      :agencia_dv => data[:agencia_dv],
+      :conta => data[:conta],
+      :conta_dv => data[:conta_dv],
+      :type => data[:type],
+      :legal_name => data[:legal_name],
+      :document_number => data[:document_number]
+    })
+
+    pagarme_bank_account.create
+    BankAccount.create!(pagarme_bank_account_id: pagarme_bank_account.id, data: pagarme_bank_account.to_json)
+  end
+
+  def self.register_recipient recipient_data
+    pagarme_recipient = PagarMe::Recipient.create( recipient_data )
+  end
+
+  def self.update_recipient pagarme_recipient_id, recipient_data
+    pagarme_recipient = PagarMe::Recipient.new id: pagarme_recipient_id
+    pagarme_recipient.transfer_interval = recipient_data['transfer_interval']
+    pagarme_recipient.transfer_day = recipient_data['transfer_day']
+    pagarme_recipient.transfer_enabled = recipient_data['transfer_enabled']
+    if recipient_data['bank_account']
+      pagarme_recipient.bank_account = recipient_data['bank_account']
+    else
+      pagarme_recipient.bank_account_id = recipient_data['bank_account_id']
+    end
+    pagarme_recipient.save
+  end
+
+  def self.update_recipient_info community
+    recipient = PagarMe::Recipient.find_by_id community.pagarme_recipient_id
+    community.transfer_day = recipient.transfer_day
+    community.transfer_enabled = recipient.transfer_enabled
+    community.recipient = recipient.as_json
+    community.save
+  end
+
   private
 
   def sync_operations operations, payable_transfer
