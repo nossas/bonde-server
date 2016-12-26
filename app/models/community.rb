@@ -6,6 +6,7 @@ class Community < ActiveRecord::Base
   has_many :mobilizations
   has_many :community_users
   has_many :users, through: :community_users
+  has_many :agg_activists
 
 
   def total_to_receive_from_subscriptions
@@ -14,5 +15,13 @@ class Community < ActiveRecord::Base
 
   def subscription_payables_to_transfer
     @subscription_payables_to_transfer ||= payable_details.is_paid.from_subscription.over_limit_to_transfer
+  end
+
+  def update_from_pagarme
+    recipient_info = PagarMe::Recipient.find_by_id self.pagarme_recipient_id
+
+    self.transfer_day = recipient_info.transfer_day
+    self.transfer_enabled = recipient_info.transfer_enabled
+    self.recipient = recipient_info.as_json
   end
 end

@@ -49,10 +49,10 @@ class MobilizationsController < ApplicationController
         Mobilization.transaction do 
           @mobilization.save
 
-          template.template_blocks.each do |template_block|
+          template.template_blocks.order(:id).each do |template_block|
             block = Block.create_from template_block, @mobilization
             block.save!
-            template_block.template_widgets.each do |template_widget|
+            template_block.template_widgets.order(:id).each do |template_widget|
               widget = Widget.create_from template_widget, block
               widget.save!
             end

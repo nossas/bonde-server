@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'machinist/active_record'
 
 User.blueprint do
@@ -26,7 +27,7 @@ Block.blueprint do
   bg_class { 'classe 1'}
   hidden { false }
   bg_image { 'icon.png' }
-  name { 'test' }
+  name { 'test - block #{sn}' }
   menu_hidden { true }
 end
 
@@ -37,7 +38,7 @@ Widget.blueprint do
   lg_size { 12 }
   kind { "content" }
   action_community { false }
-  settings { {content: "My 12 columns widget"} }
+  settings { {content: "My 12 columns widget", other: "#{sn}"} }
 end
 
 Match.blueprint do
@@ -74,6 +75,7 @@ end
 
 Donation.blueprint do
   widget { Widget.make!(kind: 'donation', mobilization: Mobilization.make!) }
+  activist { Activist.make! }
   card_hash { "fake/card_hash_kefh2309r3hhskjdfh" }
   amount { 3000 }
   payment_method { "credit_card" }
@@ -83,9 +85,37 @@ end
 Community.blueprint do
   name { "Nossas Cidades #{sn}" }
   city { "Rio de Janeiro #{sn}" }
-  pagarme_recipient_id { "re_fakerecipient" }
+  pagarme_recipient_id { "re_ci9bucss300h1zt6dvywufeqc" }
   description {"Description #{sn}"}
   image {'http://images.reboo.org/nossas.png'}
+  recipient {
+    {
+        object: "recipient",
+        id: "re_ci9bucss300h1zt6dvywufeqc",
+        bank_account: {
+            object: "bank_account",
+            id: 4841,
+            bank_code: "341",
+            agencia: "0932",
+            agencia_dv: "5",
+            conta: "58054",
+            conta_dv: "1",
+            document_type: "cpf",
+            document_number: "26268738888",
+            legal_name: "API BANK ACCOUNT",
+            charge_transfer_fees: false,
+            date_created: "2015-03-19T15:40:51.000Z"
+        },
+        transfer_enabled: true,
+        last_transfer: nil,
+        transfer_interval: "weekly",
+        transfer_day: 5,
+        automatic_anticipation_enabled: true,
+        anticipatable_volume_percentage: 85,
+        date_created: "2015-05-05T21:41:48.000Z",
+        date_updated: "2015-05-05T21:41:48.000Z"
+    }
+  }
 end
 
 PayableTransfer.blueprint do
@@ -113,7 +143,7 @@ TemplateBlock.blueprint do
   position { 1 }
   hidden { true }
   bg_image { 'icone.png' }
-  name { 'template_block name' }
+  name { "template_block #{sn}" }
   menu_hidden { false }
 end
 
@@ -124,7 +154,7 @@ TemplateWidget.blueprint do
   lg_size { 20 }
   kind { "content" }
   action_community { true }
-  settings { {content: "My 12 columns widget"} }
+  settings { {content: "My 12 columns widget", other: "any #{sn}"} }
 end
 
 CommunityUser.blueprint do

@@ -78,59 +78,73 @@ RSpec.describe MobilizationsController, type: :controller do
 
   end
   describe 'PUT #update' do
-    before do
-      @mobilization = Mobilization.make! user: @user1
-    end
+    let(:template) { TemplateMobilization.make! }
+    let(:mobilization) { Mobilization.make! user: @user1 }
+    let(:saved_mobilization) { Mobilization.find mobilization.id }
 
     context "update an existing Mobilization from an existing template" do
+      let(:template_block_1) { TemplateBlock.make! template_mobilization:template }
+      let(:tempalte_widget_1_1) { TemplateWidget.make! template_block:template_block_1 }
+      let(:tempalte_widget_1_2) { TemplateWidget.make! template_block:template_block_1 }
+      let(:template_block_2) { TemplateBlock.make! template_mobilization:template }
+      let(:tempalte_widget_2_1) { TemplateWidget.make! template_block:template_block_2 }
+      let(:tempalte_widget_2_2) { TemplateWidget.make! template_block:template_block_2 }
+
       before do
-        @template = TemplateMobilization.make!
-        block = TemplateBlock.make! template_mobilization:@template
-        TemplateWidget.make! template_block:block
-        
+        @template_blocks  = [template_block_1, template_block_2]
+        @template_widgets = [tempalte_widget_1_1, tempalte_widget_1_2, tempalte_widget_2_1, tempalte_widget_2_2]
         stub_request(:delete, "https://api.heroku.com/apps//domains/mymobilization").
           with(:headers => {'Accept'=>'application/vnd.heroku+json; version=3', 'Authorization'=>'Bearer ', 'Host'=>'api.heroku.com:443', 'User-Agent'=>'excon/0.45.4'}).
           to_return(:status => 200, :body => "", :headers => {})
 
-
-        put :update, { template_mobilization_id: @template.id, id: @mobilization.id }
+        put :update, { template_mobilization_id: template.id, id: mobilization.id }
       end
 
-      it "should return a 200 status if created" do
-        expect(response.status).to eq(200)
-      end
+      it { should respond_with 200 }
+
 
       it "should update data from a template" do
-        mob = Mobilization.find @mobilization.id
-        expect(mob.header_font).to eq(@template.header_font)
+        expect(saved_mobilization.header_font).to eq(template.header_font)
       end
 
       it "should not update name from a mobilization" do
-        mob = Mobilization.find @mobilization.id
-        expect(mob.name).to eq(@mobilization.name)
+        expect(saved_mobilization.name).to eq(mobilization.name)
       end
 
       it "should not update goal from a mobilization" do
-        mob = Mobilization.find @mobilization.id
-        expect(mob.goal).to eq(@mobilization.goal)
+        expect(saved_mobilization.goal).to eq(mobilization.goal)
       end
 
       it "should return the new data" do
-        expect(response.body).to include(@template.header_font)
+        expect(response.body).to include(template.header_font)
       end
 
       it 'should increment the uses_number for each use' do
-        newTemplate = TemplateMobilization.find @template.id
-        expect(newTemplate.uses_number).to eq((@template.uses_number||0) + 1)
+        newTemplate = TemplateMobilization.find template.id
+        expect(newTemplate.uses_number).to eq((template.uses_number||0) + 1)
+      end
+
+      it 'should save the blocks in the right sequence' do 
+        template_blocs_names = @template_blocks.map{|template_block| template_block.name }
+
+        blocks_names = saved_mobilization.blocks.order(:id).map{|block| block.name}
+
+        expect(blocks_names).to eq(template_blocs_names)
+      end
+
+      it 'should save the blocks in the right sequence' do 
+        template_widgets_settings = @template_widgets.map{|template_widget| template_widget.settings['other'] }
+
+        blocks_widgets_settings = (saved_mobilization.blocks.order(:id).map{|block| block.widgets.order(:id)}).flatten.map {|w| w.settings['other']}
+
+        expect(blocks_widgets_settings).to eq(template_widgets_settings)
       end
     end
 
     context "update from an inexisting template" do
-      it "should return a 404 status" do
-        put :update, { template_mobilization_id: 0, id: @mobilization.id }
+      before { put :update, { template_mobilization_id: 0, id: mobilization.id } }
 
-        expect(response.status).to eq(404)
-      end
+      it { should respond_with 404 }
     end
   end
   
