@@ -66,7 +66,7 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
       it "should return a 200 status" do
         delete :destroy, id: @template.id
 
-        expect(response.status).to eq(200)
+        expect(response).to be_ok
       end
     end
 
@@ -74,76 +74,91 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
       it "should return a 404 status" do
         delete :destroy, id: 0
 
-        expect(response.status).to eq(404)
+        expect(response).to be_not_found
       end
     end
   end
 
   context 'POST #create' do 
     describe 'create a template from existing mobilization' do
+      let(:mobilization) { Mobilization.make! user:@user1 }
+      let(:block1) { Block.make! mobilization: mobilization }
+      let(:block2) { Block.make! mobilization: mobilization }
+      let(:widget1_1) {Widget.make! block:block1}
+      let(:widget2_1) {Widget.make! block:block2}
+      let(:widget2_2) {Widget.make! block:block2}
+      let(:block_sequence) { [] }      
+      let(:widget_sequence) { [] }
+
       before do
-        @mobilization = Mobilization.make! user:@user1
-        block = Block.make! mobilization: @mobilization
-        Widget.make! block:block
-        block = Block.make! mobilization: @mobilization
-        Widget.make! block:block
-        Widget.make! block:block
+        block_sequence << block1 << block2
+        widget_sequence << widget1_1 << widget2_1 << widget2_2
+        @count_mobilization = TemplateMobilization.count
+        @count_blocks = TemplateBlock.count
+        @count_widgets = TemplateWidget.count
+
+        post :create, {mobilization_id: mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
       end
 
       it 'should return 200 status response' do
-        post :create, {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
-
-        expect(response.status).to eq(200)
+        expect(response).to be_ok
       end
 
-      it 'should save the new template in the database' do
-        TemplateMobilization.all.delete_all
-        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
+      it 'should create one TemplateMobilization' do
+        expect(TemplateMobilization.count).to eq(@count_mobilization + 1)        
+      end
 
-        expect(TemplateMobilization.count).to eq(1)        
+      it 'should create two blocks' do
+        expect(TemplateBlock.count).to eq(@count_blocks + 2)        
+      end
+
+      it 'should create three widgets' do
+        expect(TemplateWidget.count).to eq(@count_widgets + 3)        
       end
 
       it 'should save use the name parameter as template\'s name' do
-        TemplateMobilization.delete_all
-        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
-
-        expect(TemplateMobilization.first.name).to eq('Pinky & Brain\'s world conquest')        
+        expect(TemplateMobilization.last.name).to eq('Pinky & Brain\'s world conquest')        
       end
 
       it 'should save use the goal parameter as template\'s goal' do
-        TemplateMobilization.delete_all
-        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
-
-        expect(TemplateMobilization.first.goal).to eq('World conquest')        
+        expect(TemplateMobilization.last.goal).to eq('World conquest')        
       end
 
       it 'should return the template created data' do
-        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
-
-        expect(response.body).to include(@mobilization.slug)
+        expect(response.body).to include(mobilization.slug)
       end
 
       it 'should create all block nested data' do
-        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
-
         data = JSON.parse response.body
         expect(TemplateBlock.where("template_mobilization_id = #{data['id']}").count).to eq(2) 
       end
 
       it 'should create all nested widget data' do
-        post :create , {mobilization_id: @mobilization.id, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
-
         data = JSON.parse response.body
         expect( TemplateWidget.joins(:template_block).where("template_blocks.template_mobilization_id = #{data['id']}").count).to eq(3) 
       end
 
+      it 'should save template_blocks on the same order than blocks' do
+        blocks = TemplateMobilization.last.template_blocks.order(:id).map{|b| b.name}
+
+        expect(block_sequence.map{|b| b.name}).to eq(blocks)
+      end
+
+      it 'should save template_widgets on the same order than widgets' do
+        widgets = TemplateMobilization.last.
+            template_blocks.order(:id).map{|b| b.template_widgets.order(:id)}.
+            flatten.map{|w| w.settings}
+
+
+        expect(widget_sequence.map{|w| w.settings}).to eq(widgets)
+      end
     end
 
     describe "deal with inexisting mobilization" do
       it 'should return an 404' do
         post :create, {mobilization_id: 0, goal: 'World conquest', name: 'Pinky & Brain\'s world conquest' }
 
-        expect(response.status).to eq(404)
+        expect(response).to be_not_found
       end
     end
 
