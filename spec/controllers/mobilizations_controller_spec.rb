@@ -93,7 +93,6 @@ RSpec.describe MobilizationsController, type: :controller do
   describe 'PATCH #update' do
     let(:template) { TemplateMobilization.make! }
     let(:mobilization) { Mobilization.make!  user: user2 }
->>>>>>> [#136390875] Mobilization revised
     let(:saved_mobilization) { Mobilization.find mobilization.id }
 
 
@@ -108,14 +107,7 @@ RSpec.describe MobilizationsController, type: :controller do
       before do
         stub_current_user user2
         @template_blocks  = [template_block_1, template_block_2]
-<<<<<<< HEAD
         @template_widgets = [tempalte_widget_1_1, tempalte_widget_1_2, tempalte_widget_2_1, tempalte_widget_2_2]
-=======
-        @template_widgets = [template_widget_1_1, tempalte_widget_1_2, tempalte_widget_2_1, tempalte_widget_2_2]
-        stub_request(:delete, "https://api.heroku.com/apps//domains/mymobilization").
-          with(:headers => {'Accept'=>'application/vnd.heroku+json; version=3', 'Authorization'=>'Bearer ', 'Host'=>'api.heroku.com:443', 'User-Agent'=>'excon/0.45.4'}).
-          to_return(:status => 200, :body => "", :headers => {})
->>>>>>> [#136390875] Mobilization revised
 
         put :update, { mobilization: { template_mobilization_id: template.id } , id: mobilization.id }
       end
