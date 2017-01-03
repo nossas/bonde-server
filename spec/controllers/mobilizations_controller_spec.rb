@@ -386,6 +386,12 @@ RSpec.describe MobilizationsController, type: :controller do
       it 'should return a 200 status' do
         expect(response).to be_ok
       end
+
+      it "should return the values saved" do
+          expect(response.body).to include("\"name\":\"Foo\"")
+          expect(response.body).to include("\"goal\":\"Bar\"")
+          expect(response.body).to include("\"community_id\":#{community.id}")
+      end
     end
 
     context "user is admin - single creation" do
@@ -407,6 +413,12 @@ RSpec.describe MobilizationsController, type: :controller do
 
       it 'should return a 200 status' do
         expect(response).to be_ok
+      end
+
+      it "should return the values saved" do
+          expect(response.body).to include("\"name\":\"Foo\"")
+          expect(response.body).to include("\"goal\":\"Bar\"")
+          expect(response.body).to include("\"community_id\":#{community.id}")
       end
     end
 
