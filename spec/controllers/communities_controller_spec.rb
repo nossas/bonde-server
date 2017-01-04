@@ -622,6 +622,29 @@ RSpec.describe CommunitiesController, type: :controller do
           end
         end
       end
+
+      context 'update recipient' do
+        before do 
+          stub_request(:put, "https://api.pagar.me/1/recipients/re_ci9bucss300h1zt6dvywufeqc").
+            with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
+            to_return(:status => 503, :body => 'Service unavailable', :headers => {})
+
+          put :update, {
+            format: :json, 
+            id: @community.id,
+            community: { recipient: recipient_request }
+          }
+        end
+
+        it { should respond_with :internal_server_error }
+
+        context 'error message' do
+          it 'should update transfer_enabled' do
+            expect(response.body).to include("pagarme")
+            expect(response.body).to include("503")
+          end
+        end
+      end
     end
   end
 

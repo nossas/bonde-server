@@ -49,3 +49,8 @@ pt:
             password:
               too_short: "Senha não pode ser tão curta - deve ter pelo menos %{count} caracteres"
               too_long: "Senha não pode ser tão longa - deve ter no máximo %{count} caracteres"
+  http:
+    client:
+      error:
+        status_500: "Erro interno no servidor"
+        status_503: "Serviço tempoerariamente indisponível"

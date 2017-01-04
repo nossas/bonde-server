@@ -13,6 +13,11 @@ RSpec.describe Community, type: :model do
 
   describe '#update_from_pagarme' do
     context 'empty recipient' do
+      it "raise an error if pagarme_recipient_id is empty" do
+        community = Community.new
+
+        expect { community.update_from_pagarme }.to raise_error(PagarMe::PagarMeError)
+      end
     end
 
     context 'recipient with data' do
