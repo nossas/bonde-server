@@ -1,0 +1,380 @@
+swagger: '2.0'
+
+info:
+  version: "0.1.0"
+  title: HUB API
+
+# Configurações Globais
+host: localhost:3000
+consumes: [application/json]
+produces: [application/json]
+
+
+# AUTENTICAÇÂO
+paths:
+  /communities:
+    post:
+      description: Cria nova comunidade
+
+      parameters:
+        - in: header
+          name: Token-Type
+          type: string
+          description: Tipo do Token - retornado pela validação (através do header)
+        - in: header
+          name: Access-Token
+          type: string
+          description: Token - retornado pela validação (através do header)
+        - in: header
+          name: Uid
+          type: string
+          description: Identificador de usuário - retornado pela validação (através do header)
+        - in: header
+          name: Client
+          type: string
+          description: Identificador de client - retornado pela validação (através do header)
+        - in: body
+          name: body
+          description: Dados da comunidade
+          required: true
+          schema:
+            type: object
+            properties:
+              community:
+                type: object
+                description: Dados da comunidade
+                required: [name]
+                properties:
+                  name:
+                    type: string
+                    description: Nome da comunidade. Deve ser única no sistema
+                  city:
+                    type: string
+                    description: Nome da cidade
+                  mailchimp_api_key:
+                    type: string
+                    description: Código da api do mailchimp
+                  mailchimp_list_id:
+                    type: string
+                    description: Identificador da lista do mailchimp
+                  mailchimp_group_id:
+                    type: string
+                    description: Identificador do grupo do mailchimp
+                  image character:
+                    type: string
+                    description: URL da imagem da comunidade
+                  description:
+                    type: string
+                    description: Descrição da comunidade
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: "#/definitions/Community"
+        401:
+          description: Sem autorização
+          schema:
+            $ref: "#/definitions/Erros"
+        400:
+          description: Malformação da mensagem
+          schema:
+            $ref: "#/definitions/Erros"
+            
+    get:
+      description: Listagem de comunidades do usuario
+      parameters:
+        - in: header
+          name: Token-Type
+          type: string
+          description: Tipo do Token - retornado pela validação (através do header)
+        - in: header
+          name: Access-Token
+          type: string
+          description: Token - retornado pela validação (através do header)
+        - in: header
+          name: Uid
+          type: string
+          description: Identificador de usuário - retornado pela validação (através do header)
+        - in: header
+          name: Client
+          type: string
+          description: Identificador de client - retornado pela validação (através do header)
+      responses:
+        200:
+          description: Listagem ok
+          schema:
+            description: Lista de comunidades ao qual o usuário possui acesso
+            type: array
+            items:
+              $ref: "#/definitions/Community"
+        401:
+          description: Sem autorização
+          schema:
+            $ref: "#/definitions/Erros"
+
+  /communities/{community_id}:
+    get:
+      description: Pesquisa dados da comunidade
+
+      parameters:
+        - in: header
+          name: Token-Type
+          type: string
+          description: Tipo do Token - retornado pela validação (através do header)
+        - in: header
+          name: Access-Token
+          type: string
+          description: Token - retornado pela validação (através do header)
+        - in: header
+          name: Uid
+          type: string
+          description: Identificador de usuário - retornado pela validação (através do header)
+        - in: header
+          name: Client
+          type: string
+          description: Identificador de client - retornado pela validação (através do header)
+        - in: path
+          name: community_id
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: "#/definitions/Community"
+        401:
+          description: Sem autorização
+          schema:
+            $ref: "#/definitions/Erros"
+        400:
+          description: Malformação da mensagem
+          schema:
+            $ref: "#/definitions/Erros"
+    
+    put:
+      description: Cria nova comunidade
+
+      parameters:
+        - in: header
+          name: Token-Type
+          type: string
+          description: Tipo do Token - retornado pela validação (através do header)
+        - in: header
+          name: Access-Token
+          type: string
+          description: Token - retornado pela validação (através do header)
+        - in: header
+          name: Uid
+          type: string
+          description: Identificador de usuário - retornado pela validação (através do header)
+        - in: header
+          name: Client
+          type: string
+          description: Identificador de client - retornado pela validação (através do header)
+        - in: path
+          name: community_id
+          type: integer
+          format: int64
+          required: true
+        - in: body
+          name: body
+          description: Dados da comunidade
+          required: true
+          schema:
+            type: object
+            properties:
+              community:
+                type: object
+                description: Dados da comunidade
+                required: [name]
+                properties:
+                  name:
+                    type: string
+                    description: Nome da comunidade. Deve ser única no sistema
+                  city:
+                    type: string
+                    description: Nome da cidade
+                  mailchimp_api_key:
+                    type: string
+                    description: Código da api do mailchimp
+                  mailchimp_list_id:
+                    type: string
+                    description: Identificador da lista do mailchimp
+                  mailchimp_group_id:
+                    type: string
+                    description: Identificador do grupo do mailchimp
+                  image character:
+                    type: string
+                    description: URL da imagem da comunidade
+                  description:
+                    type: string
+                    description: Descrição da comunidade
+                  recipient:
+                    description: Dados de recebedor do PagarMe
+                    type: object
+                    properties:
+                      transfer_interval:
+                        type: string
+                        description: Frequência na qual o recebedor irá ser pago. 
+                      transfer_day:
+                        type: integer
+                        format: int32
+                        description: Dia no qual o recebedor vai ser pago.
+                      transfer_enabled:
+                        type: boolean
+                        description: Variável que indica se o recebedor pode receber os pagamentos 
+                      bank_account_id:
+                        type: string
+                        description: Identificador de uma conta bancária previamente criada. Caso você não tenha essa informação, use a propriedade bank_account.
+                      bank_account:
+                        type: object
+                        description: Objeto contendo os dados bancários do recebedor. Este objeto, e as suas respectivas propriedades, serão obrigatórios caso não seja informado um bank_account_id.
+                        properties:
+                          bank_code:
+                            type: string
+                            description: Código do banco do recebedor
+                          agencia:
+                            type: string
+                            description: Agência da conta do recebedor
+                          conta:
+                            type: string
+                            description: Número da conta bancária do recebedor
+                          conta_dv:
+                            type: string
+                            description: Dígito verificador da conta do recebedor
+                          document_number:
+                            type: string
+                            description: CPF ou CNPJ do recebedor
+                          legal_name:
+                            type: string
+                            description: Nome completo ou razão social do recebedor
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: "#/definitions/Community"
+        401:
+          description: Sem autorização
+          schema:
+            $ref: "#/definitions/Erros"
+        400:
+          description: Malformação da mensagem
+          schema:
+            $ref: "#/definitions/Erros"
+
+definitions:
+  Erros:
+    type: object
+    properties:
+      erros:
+        type: array
+        items:
+          type: string
+  Community:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Identificador do registro
+      name:
+        type: string
+        description: Nome da comunidade
+      city:
+        type: string
+        description: Nome da cidade
+      mailchimp_api_key:
+        type: string
+        description: Chave de acesso - Mailchimp
+      mailchimp_list_id:
+        type: string
+        description: ID da lista do mailchimp
+      mailchimp_group_id:
+        type: string
+        description: ID do grupo - Mailchimp
+      image:
+        type: string
+        description: URL da imagem
+      description:
+        type: string
+        description: Descrição da comunidade
+      recipient:
+        type: object
+        description: Dados do recebedor
+        properties:
+          object:
+            type: string
+            description: Tipo do objeto
+          id:
+            type: string
+            description: Identificador no pagarme
+          bank_account:
+            type: object
+            description: Dados bancários
+            properties:
+              object:
+                type: string
+                description: Tipo do objeto
+              id:
+                type: string
+                description: Identificador dos dados bancários
+              bank_code:
+                type: string
+                description: Código do banco do recebedor
+              agencia:
+                type: string
+                description: Agência da conta do recebedor
+              agencia_dv:
+                type: string
+                description: Dígito verificado da agência
+              conta:
+                type: string
+                description: Número da conta bancária do recebedor
+              conta_dv:
+                type: string
+                description: Dígito verificador da conta do recebedor
+              document_type:
+                type: string
+                description: CPF/CNPJ
+              document_number:
+                type: string
+                description: CPF ou CNPJ do recebedor
+              legal_name:
+                type: string
+                description: Nome completo ou razão social do recebedor
+              charge_transfer_fees:
+                type: boolean
+              date_created:
+                type: string
+                format: date-time
+                description: Data de criação do registro
+          transfer_enabled:
+            type: boolean
+            description: Variável que indica se o recebedor pode receber os pagamentos 
+          last_transfer:
+            type: string
+            format: date-time
+            description: Data da última transferência
+          transfer_interval:
+            type: string
+            description: Frequência na qual o recebedor irá ser pago. 
+          transfer_day:
+            type: integer
+            format: int32
+            description: Dia no qual o recebedor vai ser pago.
+          automatic_anticipation_enabled:
+            type: boolean
+            description: Se antecipação de pagamento está habilitada
+          anticipatable_volume_percentage:
+            type: integer
+            format: int32
+            description:  Porcentagem sobre o volume antecipado
+          date_created:
+            type: string
+            format: date-time
+            description: Data de criação do registro
+          date_updated:
+            type: string
+            format: date-time
+            description: Data da última atualização do registro

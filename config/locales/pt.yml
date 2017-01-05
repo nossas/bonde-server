@@ -54,3 +54,6 @@ pt:
       error:
         status_500: "Erro interno no servidor"
         status_503: "Serviço tempoerariamente indisponível"
+  return:
+    status:
+      unauthorized: Sem autorização

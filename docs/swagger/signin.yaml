@@ -1,0 +1,121 @@
+swagger: '2.0'
+
+info:
+  version: "0.1.0"
+  title: HUB API
+
+# Configurações Globais
+host: localhost:3000
+consumes: [application/json]
+produces: [application/json]
+
+
+# AUTENTICAÇÂO
+paths:
+  /auth/sign_in:
+    post:
+      description: "Sign in"
+
+      parameters:
+        - in: body
+          name: body
+          description: Dados de login
+          required: true
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                description: email de login
+              password:
+                type: string
+                format: password
+                description: senha
+
+      responses:
+        200:
+          description: Successful response
+          schema:
+            # title: User data
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id: 
+                    type: integer
+                    format: int64
+                    description: Identificador do registro
+                  email:
+                    type: string
+                    description: Email
+                  first_name:
+                    type: string
+                    description: Primeiro nome
+                  last_name:
+                    type: string
+                    description: Sobrenome
+                  uid:
+                    type: string
+                    description: identificador de usuário
+                  provider:
+                    type: string
+                    description: provedor de autenticação
+                  avatar_url:
+                    type: string
+                    description: URL da imagem do avatar
+                  thumb_url:
+                    type: string
+                    description: URL do thumbnail do avatar
+          headers:
+            access-token:
+              type: string
+              description: Token de acesso a ser usado nas futuras requisições
+            client:
+              type: string
+              description: Código do client
+            expiry:
+              type: string
+              description: Exppiração do token
+            uid:
+              type: string
+              description: Identificador único do usuário
+            token-type:
+              type: string
+              description: Tipo do token. Normalmente 'Bearer'
+        401:
+          description: Autorização negada
+          schema:
+            type: object
+            properties:
+              erros:
+                type: array
+                items:
+                  type: string
+
+
+  /communities:
+    post:
+      description: Cria nova comunidade
+
+      parameters:
+        - in: body
+          name: body
+          description: Dados da comunidade
+          required: true
+          schema:
+            type: object
+            properties:
+              comunidade:
+              
+      responses:
+        200:
+          description: Successful response
+# definitions:
+#   Community:
+#     type: object
+#     properties:
+      
