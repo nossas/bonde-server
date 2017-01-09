@@ -21,11 +21,7 @@ class Widgets::FillController < ApplicationController
   end
 
   def find_or_create_activist
-    if activist = Activist.where(email: activist_params[:email]).order(id: :asc).first
-      activist
-    else
-      Activist.create!(activist_params.merge(:name => activist_name))
-    end
+    Activist.by_email(activist_params[:email]) || Activist.create!(activist_params.merge(:name => activist_name))
   end
 
   private
