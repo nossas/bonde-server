@@ -22,7 +22,7 @@ RSpec.describe FormEntry, type: :model do
 
     context 'when activist exists' do
       it 'should link with found activist' do
-        expect(Activist).to receive(:find_by).with(email: activist.email).and_call_original
+        expect(Activist).to receive(:by_email).with(activist.email).and_call_original
         subject
         expect(build_form_entry.activist).to eq(activist)
       end
