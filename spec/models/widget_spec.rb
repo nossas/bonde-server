@@ -104,27 +104,6 @@ RSpec.describe Widget, type: :model do
     end
   end
 
-  describe "Puts a message in Resque queue" do
-    before do 
-      @widget=Widget.make!
-    end
-
-    it "should save data in redis" do
-      @widget.async_create_mailchimp_segment
-
-      resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job).to be_present
-    end
-
-    it "test the arguments" do
-      @widget.async_create_mailchimp_segment
-
-      resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job['args'][1]).to be_eql 'widget'
-      expect(resque_job['args'].size).to be 2
-    end
-  end
-
   describe '#pressure?' do
     it 'should return true' do
       expect((Widget.new kind: 'pressure').pressure?).to be true
