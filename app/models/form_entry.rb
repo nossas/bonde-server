@@ -17,7 +17,7 @@ class FormEntry < ActiveRecord::Base
   after_create :send_email
 
   def link_activist
-    self.activist = (Activist.find_by(email: email) || create_activist(name: first_name, email: email)) if email.present?
+    self.activist = (Activist.by_email(email) || create_activist(name: first_name, email: email)) if email.present?
   end
 
   def fields_as_json
