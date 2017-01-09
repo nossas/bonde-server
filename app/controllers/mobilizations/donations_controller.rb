@@ -39,7 +39,7 @@ class Mobilizations::DonationsController < ApplicationController
   private
 
   def find_or_create_activist(activist_params)
-    if (activist = Activist.where(email: activist_params[:email]).first)
+    if activist = Activist.by_email(activist_params[:email])
       @donation.activist_id = activist.id
     else
       @donation.create_activist(activist_params)

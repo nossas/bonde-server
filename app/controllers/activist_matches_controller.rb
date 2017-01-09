@@ -18,7 +18,7 @@ class ActivistMatchesController < ApplicationController
   end
 
   def find_or_create_activist
-    if activist = Activist.where(email: activist_params[:email]).order(id: :asc).first
+    if activist = Activist.by_email(activist_params[:email])
       activist
     else
       Activist.create!(activist_params.merge(:name => activist_name))
