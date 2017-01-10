@@ -20,9 +20,9 @@ trap unlock_setup HUP INT QUIT KILL TERM EXIT
 
 # 3: Specify a default command, in case it wasn't issued:
 if [ -z "$1" ]; then set -- rails server -p 3000 -b 0.0.0.0 "$@"; fi
-
+echo "$3"
 # 4: Run the app setup only if the requested command requires it:
-if [[ "$1" = "rails" || "$1" = "sidekiq" ]]
+if [[ "$3" = "puma" || "$3" = "rake" || "$3" = "rspec" ]]
 then
   # 5: Wait until the setup 'lock' file no longer exists:
   while [ -f $APP_SETUP_LOCK ]; do wait_setup; done
@@ -38,10 +38,8 @@ then
   # instead of running `rake db:version  || rake db:setup`, as running that command
   # (at least on rails 4.2.4) will leave a couple of small ruby zombie processes
   # running in the container:
-  ./bin/check_or_setup_db
 
-  puts "\n== Preparing database =="
-  system "bin/rake db:setup"
+   bundle exec check_or_setup_db
 
   # 8: 'Unlock' the setup process:
   unlock_setup
@@ -54,6 +52,8 @@ then
     rm -rf "${APP_TEMP_PATH}/pids/server.pid";
   fi
 fi
+
+su -c "psql -c 'create database reboo; create database reboo_test;' -U hub postgres" postgres
 
 # 10: Execute the given or default command:
 exec "$@"
