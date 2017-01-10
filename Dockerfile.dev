@@ -1,7 +1,11 @@
 # 1: Use ruby 2.2.6 as base:
 FROM ruby:2.3.0
 
-ENV BUILD_PACKAGES bash postgresql-client
+RUN /bin/bash -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+ENV BUILD_PACKAGES wget ca-certificates postgresql-client-9.6
 RUN apt-get update && \
     apt-get -y dist-upgrade
 RUN apt-get -y install $BUILD_PACKAGES
