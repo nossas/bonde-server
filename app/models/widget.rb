@@ -3,13 +3,17 @@ class Widget < ActiveRecord::Base
 
   validates :sm_size, :md_size, :lg_size, :kind, presence: true
   validates :mailchimp_segment_id, uniqueness: true, allow_nil: true
+
   belongs_to :block
+
   has_one :community, through: :mobilization
   has_one :mobilization, through: :block
+
   has_many :form_entries
   has_many :donations
   has_many :matches
   has_many :activist_pressures
+
   store_accessor :settings
 
   delegate :user, to: :mobilization
@@ -19,12 +23,14 @@ class Widget < ActiveRecord::Base
   end
 
   def segment_name
+    kinds_correlation = {'pressure' => 'P', 'form' => 'F', 'match' => 'M'}
+
     mob = self.mobilization
     mob_id = mob.id
     mob_name = mob.name
 
     return "M#{mob_id}C#{self.id} - [Comunidade] #{mob_name[0..89]}" if action_community?
-    "M#{mob_id}A#{self.id} - #{mob_name[0..89]}"
+    "M#{mob_id}#{kinds_correlation[self.kind]}#{self.id} - #{mob_name[0..89]}"
   end
 
   def form?
