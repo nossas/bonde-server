@@ -32,6 +32,8 @@ end
 
 group :test, :development do
   gem 'rspec-rails'
+  gem 'guard'
+  gem 'guard-rspec'
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers', '< 3.0.0'
   gem 'byebug'
