@@ -6,27 +6,25 @@ RSpec.describe MailchimpSync, type: :resque_job do
 
 
 	describe '#perform' do
-		context 'routing' do
-			it 'Should correctly route to formEntry' do
-				formEntry = spy(:formEntry, :synchronized => true)
-				allow(FormEntry).to receive(:find).and_return(formEntry)
-				MailchimpSync.perform 1, 'formEntry'
-				expect(formEntry).to have_received(:synchronized).once
-			end
-			
-			it 'Should correctly route to activist pressure' do
-				activist_pressure = spy(:activist_pressure)
-				allow(ActivistPressure).to receive(:find).and_return(activist_pressure)
-				MailchimpSync.perform 1, 'activist_pressure'
-				expect(activist_pressure).to have_received(:update_mailchimp).once
-			end
+		it 'Should correctly route to formEntry' do
+			formEntry = spy(:formEntry, :synchronized => true)
+			allow(FormEntry).to receive(:find).and_return(formEntry)
+			MailchimpSync.perform 1, 'formEntry'
+			expect(formEntry).to have_received(:synchronized).once
+		end
+		
+		it 'Should correctly route to activist pressure' do
+			activist_pressure = spy(:activist_pressure, :synchronized => true)
+			allow(ActivistPressure).to receive(:find).and_return(activist_pressure)
+			MailchimpSync.perform 1, 'activist_pressure'
+			expect(activist_pressure).to have_received(:synchronized).once
+		end
 
-			it 'Should correctly route to activist match' do
-				activist_matcher = spy(:activist_matcher)
-				allow(ActivistMatch).to receive(:find).and_return(activist_matcher)
-				MailchimpSync.perform 1, 'activist_match'
-				expect(activist_matcher).to have_received(:update_mailchimp).once
-			end
+		it 'Should correctly route to activist match' do
+			activist_matcher = spy(:activist_matcher, :synchronized => true)
+			allow(ActivistMatch).to receive(:find).and_return(activist_matcher)
+			MailchimpSync.perform 1, 'activist_match'
+			expect(activist_matcher).to have_received(:synchronized).once
 		end
 	end
 
@@ -42,8 +40,18 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			expect(activist_pressure).not_to have_received(:update_mailchimp)
 		end
 
+		it 'should not synchronize if activist_pressure already synchronized' do
+			activist_pressure = spy(:activist_pressure, :id =>1, :widget => widget_with_segment_id, :synchronized => true)
+			allow(ActivistPressure).to receive(:find).and_return(activist_pressure)
+
+			MailchimpSync.perform_with_activist_pressure 1
+
+			expect(activist_pressure).not_to have_received(:update_mailchimp)
+			expect(widget_with_segment_id).not_to have_received(:create_mailchimp_segment)
+		end
+
 		it 'should synchronize widget and activist_pressure if widget not synchronized' do
-			activist_pressure = spy(:activist_pressure, :id =>1, :widget => widget_without_segment_id)
+			activist_pressure = spy(:activist_pressure, :id =>1, :widget => widget_without_segment_id, :synchronized => false)
 			allow(ActivistPressure).to receive(:find).and_return(activist_pressure)
 
 			MailchimpSync.perform_with_activist_pressure 1
@@ -52,8 +60,8 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			expect(widget_without_segment_id).to have_received(:create_mailchimp_segment).once
 		end
 
-		it 'should synchronize only activist_pressure if widget synchronized' do
-			activist_pressure = spy(:activist_pressure, :id =>1, :widget => widget_with_segment_id)
+		it 'should synchronize only activist_pressure if already widget synchronized' do
+			activist_pressure = spy(:activist_pressure, :id =>1, :widget => widget_with_segment_id, :synchronized => false)
 			allow(ActivistPressure).to receive(:find).and_return(activist_pressure)
 
 			MailchimpSync.perform_with_activist_pressure 1
@@ -75,8 +83,18 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			expect(activist_match).not_to have_received(:update_mailchimp)
 		end
 
+		it 'should not synchronize if activist_pressure alread synchronized' do
+			activist_match = spy(:activist_match, :id =>1, :widget => widget_with_segment_id, :synchronized => true)
+			allow(ActivistMatch).to receive(:find).and_return(activist_match)
+
+			MailchimpSync.perform_with_activist_match 1
+
+			expect(activist_match).not_to have_received(:update_mailchimp)
+			expect(widget_with_segment_id).not_to have_received(:create_mailchimp_segment)
+		end
+
 		it 'should synchronize widget and activist_match if widget not synchronized' do
-			activist_match = spy(:activist_match, :id =>1, :widget => widget_without_segment_id)
+			activist_match = spy(:activist_match, :id =>1, :widget => widget_without_segment_id, :synchronized => false)
 			allow(ActivistMatch).to receive(:find).and_return(activist_match)
 
 			MailchimpSync.perform_with_activist_match 1
@@ -86,7 +104,7 @@ RSpec.describe MailchimpSync, type: :resque_job do
 		end
 
 		it 'should synchronize only activist_pressure if widget synchronized' do
-			activist_match = spy(:activist_match, :id =>1, :widget => widget_with_segment_id)
+			activist_match = spy(:activist_match, :id =>1, :widget => widget_with_segment_id, :synchronized => false)
 			allow(ActivistMatch).to receive(:find).and_return(activist_match)
 
 			MailchimpSync.perform_with_activist_match 1

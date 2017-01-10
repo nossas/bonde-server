@@ -19,32 +19,32 @@ class MailchimpSync
 
 
 	def self.perform_with_formEntry(form_entry_id)
-		formEntry = FormEntry.find(form_entry_id)
+		form_entry = FormEntry.find(form_entry_id)
 
-		widget = formEntry.widget 
-		if (widget) and ( not formEntry.synchronized )
-			self.create_segment_if_necessary(formEntry.widget)
-			formEntry.send_to_mailchimp
-			formEntry.synchronized = true
-			formEntry.save
+		widget = form_entry.widget 
+		if (widget) and ( not form_entry.synchronized )
+			self.create_segment_if_necessary(form_entry.widget)
+			form_entry.send_to_mailchimp
+			form_entry.synchronized = true
+			form_entry.save
 		end
 	end
 
 	def self.perform_with_activist_pressure(activist_pressure_id)
-		activistPressure = ActivistPressure.find(activist_pressure_id)
-		widget = activistPressure.widget 
-		if ( widget ) and ( widget.id )
-			self.create_segment_if_necessary(activistPressure.widget)
-			activistPressure.update_mailchimp
+		activist_pressure = ActivistPressure.find(activist_pressure_id)
+		widget = activist_pressure.widget 
+		if ( widget ) and ( widget.id ) and ( not activist_pressure.synchronized )
+			self.create_segment_if_necessary(activist_pressure.widget)
+			activist_pressure.update_mailchimp
 		end
 	end
 
-	def self.perform_with_activist_match(activist_pressure_id)
-		activistMatch = ActivistMatch.find(activist_pressure_id)
-		widget = activistMatch.widget 
-		if ( widget )
+	def self.perform_with_activist_match(activist_match_id)
+		activist_match = ActivistMatch.find(activist_match_id)
+		widget = activist_match.widget 
+		if ( widget ) and ( widget.id ) and ( not activist_match.synchronized )
 			self.create_segment_if_necessary(widget)
-			activistMatch.update_mailchimp
+			activist_match.update_mailchimp
 		end
 	end
 end
