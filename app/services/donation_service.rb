@@ -48,6 +48,7 @@ class DonationService
       amount: donation.amount,
       payment_method: donation.payment_method,
       split_rules: self.rules(donation),
+      postback_url: Rails.application.routes.url_helpers.create_postback_url,
       metadata: {
         widget_id: donation.widget.id,
         mobilization_id: donation.mobilization.id,
