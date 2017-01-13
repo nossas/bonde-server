@@ -34,12 +34,7 @@ class ApplicationController < ActionController::API
       message = error.message
     end
 
-    render json: { error: {
-        origin: 'pagarme',
-        message: message,
-        original_message: error.error
-      }
-    }, status: :internal_server_error
+    render json: { errors: [ error.error ] }, status: :internal_server_error
   end
 
   def get_error status

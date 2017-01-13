@@ -640,7 +640,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
         context 'error message' do
           it 'should update transfer_enabled' do
-            expect(response.body).to include("pagarme")
+            expect(response.body).to include("Service unavailable")
             expect(response.body).to include("503")
           end
         end
