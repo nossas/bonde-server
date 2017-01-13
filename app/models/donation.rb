@@ -51,4 +51,16 @@ class Donation < ActiveRecord::Base
       logger.error("\n==> ERROR SENDING DONATION EMAIL: #{e.inspect}\n")
     end
   end
+
+  def pagarme_transaction
+    @pagarme_transaction ||= PagarMe::Transaction.find_by_id transaction_id
+  end
+
+  def update_pagarme_data
+    self.update_attributes(
+      transaction_status: pagarme_transaction.status,
+      gateway_data: pagarme_transaction.to_json,
+      payables: pagarme_transaction.try(:payables)
+    )
+  end
 end
