@@ -22,10 +22,6 @@ class PostbacksController < ApplicationController
     end
   end
 
-  def subscription
-    @subscription ||= PagarMe::Subscription.find_by_id params[:id]
-  end
-
   def donation
     @donation ||= Donation.find_by(transaction_id: params[:id])
   end
