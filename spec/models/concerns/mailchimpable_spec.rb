@@ -4,16 +4,17 @@ class MailchimpableFake
   include Mailchimpable
 
   class FakeCommunity
+    attr_accessor :mailchimp_group_id
     def mailchimp_list_id
       9989
     end
 
-    def mailchimp_group_id
-      99899
-    end
-
     def mailchimp_api_key
       '6846486qwer234w234ela12s124789sd-us4'
+    end
+  
+    def initialize mailchimp_group_id
+      self.mailchimp_group_id = mailchimp_group_id
     end
   end
 
@@ -22,8 +23,8 @@ class MailchimpableFake
     end
   end
 
-  def initialize
-    @community = FakeCommunity.new
+  def initialize mailchimp_group_id: 99899
+    @community = FakeCommunity.new mailchimp_group_id
     @logger = Logger.new
   end
 end
@@ -31,6 +32,16 @@ end
 
 RSpec.describe Mailchimpable do
   let(:fake) { MailchimpableFake.new }
+
+  describe '#groupings' do
+    it 'mailchimp_group_id = 99899' do
+      expect(fake.groupings['99899']).to be true
+    end
+
+    it 'null mailchimp_group_id' do
+      expect(( MailchimpableFake.new mailchimp_group_id: nil ).groupings).not_to be
+    end
+  end
 
   describe '#create_segment' do
     def valid_response

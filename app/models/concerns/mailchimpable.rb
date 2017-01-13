@@ -40,13 +40,9 @@ module Mailchimpable
   end
 
   def groupings
-    (
-      (
-        activist.activist_pressures.map{|ap| ap.community.mailchimp_group_id if ap.community } | 
-        activist.activist_matches.map{|am| am.community.mailchimp_group_id if am.community} | 
-        activist.form_entries.map{|en| en.community.mailchimp_group_id if en.community}
-      ) - [nil]
-    ).map {|key| [key, true]}.to_h
+    if community and community.mailchimp_group_id
+      { "#{community.mailchimp_group_id}" => true }
+    end
   end
 
   private
