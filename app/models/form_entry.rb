@@ -25,43 +25,23 @@ class FormEntry < ActiveRecord::Base
   end
 
   def first_name
-    fields_as_json.each do |field|
-      if field['label'] && ['nome', 'nombre'].include?(field['label'].downcase)
-        return field['value']
-      end
-    end
+    field_decode ['nome', 'nombre']
   end
 
   def last_name
-    fields_as_json.each do |field|
-      if field['label'] && ['sobrenome', 'sobre-nome', 'sobre nome'].include?(field['label'].downcase)
-        return field['value']
-      end
-    end
+    field_decode ['sobrenome', 'sobre-nome', 'sobre nome']
   end
 
   def email
-    fields_as_json.each do |field|
-      if field['kind'] == 'email'
-        return field['value']
-      end
-    end
+    field_decode ['email']
   end
 
   def phone
-    fields_as_json.each do |field|
-      if field['label'] && ['celular'].include?(field['label'].downcase)
-        return field['value']
-      end
-    end
+    field_decode ['celular']
   end
 
   def city
-    fields_as_json.each do |field|
-      if field['label'] && field['label'].downcase == 'cidade'
-        return field['value']
-      end
-    end
+    field_decode ['cidade']
   end
 
   def async_send_to_mailchimp
@@ -78,15 +58,12 @@ class FormEntry < ActiveRecord::Base
         CITY: self.city,
         ORG: self.community.name
       }
-
-      if !self.city.present? || self.city.try(:downcase) == 'outra'
+      if !city.present? || city.try(:downcase) == 'outra'
         subscribe_attributes.delete(:CITY)
       end
 
       subscribe_to_list(self.email, subscribe_attributes)
-
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
-
       update_member(self.email, {
         groupings: groupings
       })
@@ -97,5 +74,16 @@ class FormEntry < ActiveRecord::Base
     if self.email.present?
       FormEntryMailer.thank_you_email(self).deliver_later
     end
+  end
+
+  private
+
+  def field_decode list_field_names
+    fields_as_json.each do |field|
+      if field['label'] && list_field_names.include?(field['label'].downcase)
+        return field['value']
+      end
+    end if fields
+    nil
   end
 end
