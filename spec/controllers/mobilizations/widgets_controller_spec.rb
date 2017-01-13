@@ -42,6 +42,16 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
         expect(response.body).to include("Widget new content")
       end
 
+      it 'should save correctly settings data' do
+        stub_current_user(@admin)
+        put :update, update_widget_1_params
+
+        saved = Widget.find @widget1.id        
+        expect(saved.settings['finish_message']).to eq('finish_message string')
+        expect(saved.settings['finish_message_type']).to eq('finish_message_type string')
+        expect(saved.settings['finish_message_background']).to eq('finish_message_background string')
+      end
+
       it "should return 401 if user is not an admin or mobilization's owner" do
         stub_current_user(User.make!)
         put :update, update_widget_1_params
@@ -49,57 +59,58 @@ RSpec.describe Mobilizations::WidgetsController, type: :controller do
         expect(response).to be_unauthorized
       end
 
-      context "with huge emails(500) for target pressure"
-      before do
-        stub_current_user(@admin)
-        widget_smpl = Widget.make!
-        widget = Widget.find widget_smpl.id
-        @generated_emails = 'Pression tests from OurCities Gang <meuemail@lutas.sao.nossas.org>'
-        (2..500).each do  |idx|
-          @generated_emails += ";Pression tests from OurCities Gang #{idx} <meuemail#{idx}@lutas.sao.nossas.org>"
+      context "with huge emails(500) for target pressure" do
+        before do
+          stub_current_user(@admin)
+          widget_smpl = Widget.make!
+          widget = Widget.find widget_smpl.id
+          @generated_emails = 'Pression tests from OurCities Gang <meuemail@lutas.sao.nossas.org>'
+          (2..500).each do  |idx|
+            @generated_emails += ";Pression tests from OurCities Gang #{idx} <meuemail#{idx}@lutas.sao.nossas.org>"
+          end
+
+          put :update, {
+            mobilization_id: widget.block.mobilization.id,
+            id: widget.id,
+            widget: {
+              id: widget.id,
+              block_id: widget.block.id,
+              kind: "pressure",
+              settings: {
+                title_text: "Stopping legal salary increases from judiciary",
+                main_color: "#757ef1",
+                button_text: "ighting to an end",
+                count_text: "pressures made",
+                show_counter: "true",
+                reply_email: "foo@bar.com",
+                pressure_subject: "Stopping legal salary increases from judiciary",
+                pressure_body: "Let'a stop with this $@#%! piece of @#%@#@#@ !!!!",
+                targets: @generated_emails
+              },
+              sm_size: 12,
+              md_size: 12,
+              lg_size: 12,
+              form_entries_count: 0,
+              donations_count: 0,
+              created_at: widget.created_at,
+              updated_at: widget.updated_at,
+              action_community: false,
+              action_opportunity: false,
+              exported_at: nil,
+              match_list: [],
+              count: 0        
+            },
+            format: 'json'
+          }
         end
 
-        put :update, {
-          mobilization_id: widget.block.mobilization.id,
-          id: widget.id,
-          widget: {
-            id: widget.id,
-            block_id: widget.block.id,
-            kind: "pressure",
-            settings: {
-              title_text: "Stopping legal salary increases from judiciary",
-              main_color: "#757ef1",
-              button_text: "ighting to an end",
-              count_text: "pressures made",
-              show_counter: "true",
-              reply_email: "foo@bar.com",
-              pressure_subject: "Stopping legal salary increases from judiciary",
-              pressure_body: "Let'a stop with this $@#%! piece of @#%@#@#@ !!!!",
-              targets: @generated_emails
-            },
-            sm_size: 12,
-            md_size: 12,
-            lg_size: 12,
-            form_entries_count: 0,
-            donations_count: 0,
-            created_at: widget.created_at,
-            updated_at: widget.updated_at,
-            action_community: false,
-            action_opportunity: false,
-            exported_at: nil,
-            match_list: [],
-            count: 0        
-          },
-          format: 'json'
-        }
-      end
+        it 'should return 200 status' do
+          expect(response.status).to be 200
+        end
 
-      it 'should return 200 status' do
-        expect(response.status).to be 200
-      end
-
-      it 'should return the emails saved data' do
-        expect(response.body).to include('meuemail@lutas.sao.nossas.org')
+        it 'should return the emails saved data' do
+          expect(response.body).to include('meuemail@lutas.sao.nossas.org')
+        end
       end
     end
   end
@@ -111,6 +122,9 @@ def update_widget_1_params
     id: @widget1.id,
     widget: {
       settings: {
+        finish_message: "finish_message string",
+        finish_message_type: "finish_message_type string",
+        finish_message_background: "finish_message_background string",
         content: "Widget new content"
       }
     }
