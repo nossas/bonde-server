@@ -1,3 +1,5 @@
+require 'csv'
+
 class Donation < ActiveRecord::Base
   store_accessor :customer
   belongs_to :widget

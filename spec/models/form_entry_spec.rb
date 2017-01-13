@@ -70,4 +70,124 @@ RSpec.describe FormEntry, type: :model do
       expect(resque_job['args'].size).to be 2
     end
   end
+
+  describe 'fields translating' do
+    context 'with data' do 
+      def campos
+        [
+          {
+            'uid': 'field-1448381355384-46', 
+            'kind': 'text',
+            'label': 'Nome',
+            'placeholder': 'Insira aqui seu primeiro nome',
+            'required': 'true',
+            'value': 'José'
+          },
+          {
+            'uid': 'field-1448381377063-15',
+            'kind': 'text',
+            'label': 'Sobrenome',
+            'placeholder': 'Insira aqui seu último sobrenome',
+            'required': 'true',
+            'value': 'Manuel'
+          },
+          {
+            'uid': 'field-1448381397174-71',
+            'kind': 'email',
+            'label': 'Email',
+            'placeholder': 'Insira aqui o seu email',
+            'required': 'true',
+            'value': 'zemane@naoexiste.com'
+          },
+          {
+            'uid': 'field-2313463424234-41',
+            'kind': 'text',
+            'label': 'Celular',
+            'placeholder': 'Insira aqui o seu telefone',
+            'required': 'true',
+            'value': '(12) 36121-1234'
+          },
+          {
+            'uid': 'field-2346134634541-76',
+            'kind': 'text',
+            'label': 'Cidade',
+            'placeholder': 'Insira aqui o seu cidade',
+            'required': 'true',
+            'value': 'Pindallas'
+          }
+        ]      
+      end
+
+      let(:form_entry) { FormEntry.new fields: campos.to_json }
+
+      it '#first_name' do 
+        expect(form_entry.first_name).to eq('José')
+      end
+
+      it '#last_name' do 
+        expect(form_entry.last_name).to eq('Manuel')
+      end
+
+      it '#email' do 
+        expect(form_entry.email).to eq('zemane@naoexiste.com')
+      end
+
+      it '#phone' do 
+        expect(form_entry.phone).to eq('(12) 36121-1234')
+      end
+
+      it '#city' do 
+        expect(form_entry.city).to eq('Pindallas')
+      end
+    end
+
+    context 'with data without fields' do 
+      let(:form_entry) { FormEntry.new fields: '[ ]' }
+
+      it '#first_name' do 
+        expect(form_entry.first_name).not_to be
+      end
+
+      it '#last_name' do 
+        expect(form_entry.last_name).not_to be
+      end
+
+      it '#email' do 
+        expect(form_entry.email).not_to be
+      end
+
+      it '#phne' do 
+        expect(form_entry.phone).not_to be
+      end
+
+      it '#city' do 
+        expect(form_entry.city).not_to be
+      end
+    end
+
+    context 'empty fields' do 
+      let(:form_entry) { FormEntry.new }
+
+      it '#first_name' do 
+        expect(form_entry.first_name).not_to be
+      end
+
+      it '#last_name' do 
+        expect(form_entry.last_name).not_to be
+      end
+
+      it '#email' do 
+        expect(form_entry.email).not_to be
+      end
+
+      it '#phne' do 
+        expect(form_entry.phone).not_to be
+      end
+
+      it '#city' do 
+        expect(form_entry.city).not_to be
+      end
+    end
+  end
 end
+
