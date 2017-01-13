@@ -11,8 +11,8 @@ class SubscriptionSyncService
     @parent_donation = Donation.unscoped.find @subscription.metadata['donation_id']
   end
 
-  def sync
-    # TODO: thie unless, fixes weird missing transaction_id and status on donation
+  def sync flag = :all #can use :all / :last
+    # TODO: this unless, fixes weird missing transaction_id and status on donation
     unless @parent_donation.transaction_id.present?
       first_d = @subscription.transactions.last
       @parent_donation.update_attributes(
@@ -21,7 +21,11 @@ class SubscriptionSyncService
       )
     end
 
-    @subscription.transactions.each do |transaction|
+    sync_over_collection (flag == :all ? @subscription.transactions : [@subscription.current_transaction])
+  end
+
+  def sync_over_collection transactions
+    transactions.each do |transaction|
       payables = transaction.payables
       donation = Donation.unscoped.find_by_transaction_id(transaction.id)
 
@@ -35,7 +39,7 @@ class SubscriptionSyncService
         create_donation transaction, payables
       end
 
-      sleep 0.5
+      sleep 0.5 if transactions.size > 1
     end
   end
 
