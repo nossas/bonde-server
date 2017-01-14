@@ -8,6 +8,8 @@ class MailchimpSync
 			self.perform_with_activist_pressure(id)
 		elsif queue == 'activist_match'
 			self.perform_with_activist_match(id)
+		elsif queue == 'donation'
+			self.perform_with_donation(id)
 		end
 	end
 
@@ -49,7 +51,15 @@ class MailchimpSync
 		end
 	end
 
-	private
+	def self.perform_with_donation(donation_id)
+		donation = Donation.find(donation_id)
+		widget = donation.widget 
+		if ( widget ) and ( not donation.synchronized )
+			self.create_segment_if_necessary(widget)
+			donation.update_mailchimp
+			self.update_status donation
+		end
+	end
 
 	def self.update_status record
 		record.synchronized = true

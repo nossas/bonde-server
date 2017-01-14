@@ -35,6 +35,16 @@ RSpec.describe Widget, type: :model do
         widget = Widget.make! kind: 'match'
         expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}M#{widget.id} - #{widget.block.mobilization.name[0..89]}"
       end
+
+      it "should set a segment name" do
+        widget = Widget.make! kind: 'donation'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}D#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      end
+
+      it "should set a segment name" do
+        widget = Widget.make! kind: 'draft'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}A#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      end
     end
 
     context "Action Community form" do

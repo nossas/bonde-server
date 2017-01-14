@@ -26,6 +26,13 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			MailchimpSync.perform 1, 'activist_match'
 			expect(activist_matcher).to have_received(:synchronized).once
 		end
+
+		it 'Should correctly route to donation' do
+			donation = spy(:donation, :synchronized => true)
+			allow(Donation).to receive(:find).and_return(donation)
+			MailchimpSync.perform 1, 'donation'
+			expect(donation).to have_received(:synchronized).once
+		end
 	end
 
 
@@ -153,6 +160,49 @@ RSpec.describe MailchimpSync, type: :resque_job do
 			MailchimpSync.perform_with_formEntry 1
 
 			expect(formEntry).to have_received(:send_to_mailchimp).once
+			expect(widget_with_segment_id).not_to have_received(:create_mailchimp_segment)
+		end
+	end
+
+
+
+	describe '#perform_with_donation' do
+		it 'should not synchronize if don\'t have donation' do
+			donation = spy(:donation, :id =>1, :widget => nil)
+			allow(Donation).to receive(:find).and_return(donation)
+
+			MailchimpSync.perform_with_donation 1
+
+			expect(donation).not_to have_received(:update_mailchimp)
+		end
+
+		it 'should not synchronize if already synchronized' do
+			donation = spy(:donation, :id =>1, :widget => widget_without_segment_id, :synchronized => true)
+			allow(Donation).to receive(:find).and_return(donation)
+
+			MailchimpSync.perform_with_donation 1
+
+			expect(donation).not_to have_received(:create_mailchimp_segment)
+			expect(widget_without_segment_id).not_to have_received(:update_mailchimp)
+		end
+
+		it 'should synchronize widget and donation if widget not synchronized' do
+			donation = spy(:donation, :id =>1, :widget => widget_without_segment_id, :synchronized => false)
+			allow(Donation).to receive(:find).and_return(donation)
+
+			MailchimpSync.perform_with_donation 1
+
+			expect(donation).to have_received(:update_mailchimp).once
+			expect(widget_without_segment_id).to have_received(:create_mailchimp_segment).once
+		end
+
+		it 'should synchronize only donation if widget already synchronized' do
+			donation = spy(:donation, :id =>1, :widget => widget_with_segment_id, :synchronized => false)
+			allow(Donation).to receive(:find).and_return(donation)
+
+			MailchimpSync.perform_with_donation 1
+
+			expect(donation).to have_received(:update_mailchimp).once
 			expect(widget_with_segment_id).not_to have_received(:create_mailchimp_segment)
 		end
 	end

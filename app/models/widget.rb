@@ -23,34 +23,34 @@ class Widget < ActiveRecord::Base
   end
 
   def segment_name
-    kinds_correlation = {'pressure' => 'P', 'form' => 'F', 'match' => 'M'}
+    kinds_correlation = {'pressure' => 'P', 'form' => 'F', 'match' => 'M', 'donation' => 'D'}
 
     mob = self.mobilization
     mob_id = mob.id
     mob_name = mob.name
 
     return "M#{mob_id}C#{self.id} - [Comunidade] #{mob_name[0..89]}" if action_community?
-    "M#{mob_id}#{kinds_correlation[self.kind]}#{self.id} - #{mob_name[0..89]}"
+    "M#{mob_id}#{kinds_correlation[self.kind] || 'A'}#{self.id} - #{mob_name[0..89]}"
   end
 
   def form?
-    self.kind == "form"
+    self.kind == 'form'
   end
 
   def match?
-    self.kind == "match"
+    self.kind == 'match'
   end
 
   def donation?
-    self.kind == "donation"
+    self.kind == 'donation'
   end
 
   def pressure?
-    self.kind == "pressure"
+    self.kind == 'pressure'
   end
 
   def recurring?
-    self.settings["payment_type"] != "unique" if self.settings
+    self.settings['payment_type'] != 'unique' if self.settings
   end
 
   def synchro_to_mailchimp?
