@@ -12,7 +12,7 @@ class CommunityPolicy < ApplicationPolicy
         if user.admin
           scope.all
         else
-          scope.where("id in (select cu.community_id from community_users cu where cu.user_id = #{@user.id})")
+          scope.where("id in (select cu.community_id from community_users cu where cu.user_id = ?)", @user.id)
         end
       else
         scope.where("0 = 1")
