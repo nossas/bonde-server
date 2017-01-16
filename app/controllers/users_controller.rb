@@ -45,6 +45,7 @@ class UsersController < ApplicationController
 
   def create_user
     @user = User.new(params.require(:user).permit(:email, :first_name, :last_name, :password, :avatar))
+    @user.admin = true
     @user.uid = @user.email
     @user.provider = 'email'
   end

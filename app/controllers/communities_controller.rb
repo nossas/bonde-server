@@ -43,7 +43,7 @@ class CommunitiesController < ApplicationController
         community.update!(community_params)
         render json: community
       rescue ArgumentError => e
-        render json:e.message, status: 400
+        render json:{argument_error: e.message}, status: 400
       end
     end
   end

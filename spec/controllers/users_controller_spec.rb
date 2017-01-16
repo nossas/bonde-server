@@ -34,6 +34,10 @@ RSpec.describe UsersController, type: :controller do
         it 'avatar_url' do
           expect(@returned['avatar_url']).to eq 'http://www.myurl.com/super-ultra-avatar.gif'
         end
+
+        it 'should be an admin' do
+          expect((User.find @returned['id']).admin).to be true
+        end
       end
 
       it 'should return the sign_in information' do

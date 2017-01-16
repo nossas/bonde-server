@@ -21,3 +21,8 @@
 
 en:
   hello: "Hello world"
+  http:
+    client:
+      error:
+        status_500: "Internal Server Error"
+        status_503: "Service unavailable"

@@ -18,6 +18,8 @@ class Community < ActiveRecord::Base
   end
 
   def update_from_pagarme
+    raise PagarMe::PagarMeError.new "pagarme_recipient_id is empty" if not self.pagarme_recipient_id 
+    
     recipient_info = PagarMe::Recipient.find_by_id self.pagarme_recipient_id
 
     self.transfer_day = recipient_info.transfer_day
