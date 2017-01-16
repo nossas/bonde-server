@@ -3,7 +3,8 @@ class PostbacksController < ApplicationController
 
   def create
     if valid_postback?
-      process_postback_for (params[:event] == 'subscription_status_changed' ? :subscription : :transaction)
+      resource_name = (params[:event] == 'subscription_status_changed' ? :subscription : :transaction)
+      process_postback_for resource_name
       return render nothing: true, status: 200
     end
 
