@@ -97,7 +97,7 @@ class TransferService
   end
 
   def self.register_recipient recipient_data
-    pagarme_recipient = PagarMe::Recipient.create( recipient_data )
+    PagarMe::Recipient.create( recipient_data )
   end
 
   def self.update_recipient pagarme_recipient_id, recipient_data
