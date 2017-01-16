@@ -13,4 +13,12 @@ class Activist < ActiveRecord::Base
   def self.by_email email
     self.where("lower(email) = lower(?)", email).order(id: :asc).first
   end
+
+  def first_name
+    name.split(' ')[0] if name
+  end
+
+  def last_name
+    (name.split(' ')[1..-1]).join(' ') if name
+  end
 end
