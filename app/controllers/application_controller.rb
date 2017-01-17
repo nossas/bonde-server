@@ -14,11 +14,10 @@ class ApplicationController < ActionController::API
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:first_name, :last_name) }
-
   end
 
   def user_not_authorized
-    render json: {error: 'Unauthorized'}, status: :unauthorized
+    render json: {errors: [ ( I18n.t 'return.status.unauthorized', default: 'Unauthorized') ]}, status: :unauthorized
   end
 
   private
