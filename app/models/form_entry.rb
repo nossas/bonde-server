@@ -52,12 +52,13 @@ class FormEntry < ActiveRecord::Base
     if(!Rails.env.test?)
       subscribe_attributes =  {
         FNAME: self.first_name,
-        LNAME: self.last_name,
+        LNAME: self.last_name || "",
         EMAIL: self.email,
         PHONE: self.phone || "",
         CITY: self.city,
         ORG: self.community.name
       }
+
       if !city.present? || city.try(:downcase) == 'outra'
         subscribe_attributes.delete(:CITY)
       end
