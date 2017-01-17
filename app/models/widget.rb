@@ -3,16 +3,19 @@ class Widget < ActiveRecord::Base
 
   validates :sm_size, :md_size, :lg_size, :kind, presence: true
   validates :mailchimp_segment_id, uniqueness: true, allow_nil: true
+
   belongs_to :block
+
   has_one :community, through: :mobilization
   has_one :mobilization, through: :block
+
   has_many :form_entries
   has_many :donations
   has_many :matches
   has_many :activist_pressures
+
   store_accessor :settings
 
-  after_create :async_create_mailchimp_segment
   delegate :user, to: :mobilization
 
   def as_json(*)
@@ -20,32 +23,34 @@ class Widget < ActiveRecord::Base
   end
 
   def segment_name
+    kinds_correlation = {'pressure' => 'P', 'form' => 'F', 'match' => 'M', 'donation' => 'D'}
+
     mob = self.mobilization
     mob_id = mob.id
     mob_name = mob.name
 
     return "M#{mob_id}C#{self.id} - [Comunidade] #{mob_name[0..89]}" if action_community?
-    "M#{mob_id}A#{self.id} - #{mob_name[0..89]}"
+    "M#{mob_id}#{kinds_correlation[self.kind] || 'A'}#{self.id} - #{mob_name[0..89]}"
   end
 
   def form?
-    self.kind == "form"
+    self.kind == 'form'
   end
 
   def match?
-    self.kind == "match"
+    self.kind == 'match'
   end
 
   def donation?
-    self.kind == "donation"
+    self.kind == 'donation'
   end
 
   def pressure?
-    self.kind == "pressure"
+    self.kind == 'pressure'
   end
 
   def recurring?
-    self.settings["payment_type"] != "unique" if self.settings
+    self.settings['payment_type'] != 'unique' if self.settings
   end
 
   def synchro_to_mailchimp?
@@ -63,16 +68,12 @@ class Widget < ActiveRecord::Base
   end
 
   def create_mailchimp_segment
-    if !Rails.env.test? and self.synchro_to_mailchimp?
+    if self.synchro_to_mailchimp?
       segment = create_segment(segment_name)
       self.update_attribute :mailchimp_segment_id, segment["id"]
     end
   end
   
-  def async_create_mailchimp_segment
-    Resque.enqueue(MailchimpSync, self.id, 'widget')
-  end
-
   def self.create_from template, block_instance
     widget = Widget.new
     widget.block = block_instance

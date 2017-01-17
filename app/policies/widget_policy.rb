@@ -46,7 +46,12 @@ class WidgetPolicy < ApplicationPolicy
         :labelChoicesA,
 
         :call_to_action,
-        :action_community
+        :action_community,
+
+        #finish messages
+        :finish_message,
+        :finish_message_type,
+        :finish_message_background
         ]
       ]
     else

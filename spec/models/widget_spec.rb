@@ -3,35 +3,54 @@ require 'rails_helper'
 
 RSpec.describe Widget, type: :model do
   it { should belong_to :block }
+
   it { should validate_presence_of :sm_size }
   it { should validate_presence_of :md_size }
   it { should validate_presence_of :lg_size }
+
   it { should validate_presence_of :kind }
   it { should validate_uniqueness_of :mailchimp_segment_id }
+
   it { should have_one :mobilization }
   it { should have_one :community }
+
   it { should have_many :form_entries }
   it { should have_many :donations }
   it { should have_many :matches }
   it { should have_many :activist_pressures }
 
   describe "#segment_name" do
-    subject { @widget.segment_name }
-    before do
-      @widget = Widget.make! kind: 'form'
-      @mobilization = @widget.block.mobilization
-    end
-
     context "Regular form" do
       it "should set a segment name" do
-        expect(subject).to eq "M#{@mobilization.id}A#{@widget.id} - #{@mobilization.name[0..89]}"
+        widget = Widget.make! kind: 'form'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}F#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      end
+
+      it "should set a segment name" do
+        widget = Widget.make! kind: 'pressure'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}P#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      end
+
+      it "should set a segment name" do
+        widget = Widget.make! kind: 'match'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}M#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      end
+
+      it "should set a segment name" do
+        widget = Widget.make! kind: 'donation'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}D#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      end
+
+      it "should set a segment name" do
+        widget = Widget.make! kind: 'draft'
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}A#{widget.id} - #{widget.block.mobilization.name[0..89]}"
       end
     end
 
     context "Action Community form" do
       it "should set a different segment name from a regular widget" do
-        @widget.update_attribute(:action_community, true)
-        expect(subject).not_to eq "M#{@mobilization.id}A#{@widget.id} - #{@mobilization.name[0..89]}"
+        widget = Widget.make! kind: 'form', action_community: true
+        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}C#{widget.id} - [Comunidade] #{widget.block.mobilization.name[0..89]}"
       end
     end
   end
@@ -101,27 +120,6 @@ RSpec.describe Widget, type: :model do
 
     it "should copy the exported_at value" do
       expect(subject.exported_at).to eq(@template.exported_at)
-    end
-  end
-
-  describe "Puts a message in Resque queue" do
-    before do 
-      @widget=Widget.make!
-    end
-
-    it "should save data in redis" do
-      @widget.async_create_mailchimp_segment
-
-      resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job).to be_present
-    end
-
-    it "test the arguments" do
-      @widget.async_create_mailchimp_segment
-
-      resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job['args'][1]).to be_eql 'widget'
-      expect(resque_job['args'].size).to be 2
     end
   end
 

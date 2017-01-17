@@ -1,0 +1,30 @@
+# 1: Use ruby 2.2.6 as base:
+FROM ruby:2.3.0
+
+RUN /bin/bash -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+ENV BUILD_PACKAGES wget ca-certificates postgresql-client-9.6
+RUN apt-get update && \
+    apt-get -y dist-upgrade
+RUN apt-get -y install $BUILD_PACKAGES
+
+# 2: We'll set the application path as the working directory
+WORKDIR /usr/src/app
+
+# 3: We'll set the working dir as HOME and add the app's binaries path to $PATH:
+ENV HOME=/usr/src/app PATH=/usr/src/app/bin:$PATH
+
+# 4: Expose the app web port:
+EXPOSE 3000
+
+# 5: Set the default command:
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+
+# 6: Install node as a javascript runtime for asset compilation:
+
+# 7: Install the current project gems - they can be safely changed later during
+# development via `bundle install` or `bundle update`:
+ADD Gemfile* /usr/src/app/
+RUN set -ex && bundle --retry 3

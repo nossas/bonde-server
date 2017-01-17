@@ -1,49 +1,51 @@
 module Mailchimpable
   def create_segment(segment_name)
-    api_client.lists.static_segment_add({
-      id: mailchimp_list_id,
-      name: segment_name
+    api_client.lists(mailchimp_list_id).segments.create(body: {
+      name: segment_name,
+      static_segment: []
     })
   end
 
+
   def subscribe_to_list(email, merge_vars, options = {})
     begin
-      api_client.lists.subscribe({
-        id: mailchimp_list_id,
-        email: {email: email},
-        merge_vars: merge_vars,
-        double_optin: options[:double_optin] || false,
-        update_existing: options[:update_existing] || false
-      })
+      if options[:update_existing]
+        api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).upsert(body: create_body(email, merge_vars: merge_vars, options: options))
+      else
+        api_client.lists(mailchimp_list_id).members.create(body: create_body(email, merge_vars: merge_vars, options: options))
+      end
     rescue StandardError => e
       logger.error(e)
     end
   end
+
 
   def subscribe_to_segment(segment_id, email)
     begin
-      api_client.lists.static_segment_members_add({
-        id: mailchimp_list_id,
-        seg_id: segment_id,
-        batch: [{email: email}]
+      api_client.lists(mailchimp_list_id).segments(segment_id).members.create(body: {
+        email_address: email
       })
     rescue StandardError => e
       logger.error(e)
     end
   end
 
-  def update_member(email, merge_vars)
+
+  def update_member(email, options)
     begin
-      api_client.lists.update_member({
-        id: mailchimp_list_id,
-        email: {email: email},
-        merge_vars: merge_vars,
-        replace_interests: false
-      })
+      api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).update(body: create_body(email, options: options))
     rescue StandardError => e
       logger.error(e)
     end
   end
+
+  def groupings
+    if community and community.mailchimp_group_id
+      { "#{community.mailchimp_group_id}" => true }
+    end
+  end
+
+  private
 
   def mailchimp_list_id
     community.try(:mailchimp_list_id) || ENV['MAILCHIMP_LIST_ID']
@@ -57,13 +59,20 @@ module Mailchimpable
     community.try(:mailchimp_api_key) || ENV['MAILCHIMP_API_KEY']
   end
 
-  def groupings
-    [
-      { id: mailchimp_group_id, groups: [community.try(:name)] }
-    ]
+  def api_client
+    Gibbon::Request.new(api_key: mailchimp_api_key)
   end
 
-  def api_client
-    @mailchimp_api_client ||= Gibbon::API.new(mailchimp_api_key)
+  def create_body email, merge_vars: nil, options: {}    
+    body = { }
+    if merge_vars
+      body = {
+        email_address: email,
+        status: :subscribed,
+      }
+      body[:merge_fields] = merge_vars if merge_vars
+    end
+    body[:interests] = options[:groupings] if options[:groupings]
+    body
   end
 end
