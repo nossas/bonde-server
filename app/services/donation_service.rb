@@ -128,14 +128,10 @@ class DonationService
   end
 
   def self.customer_params(donation, address)
-    {
+    _customer_params = {
       name: donation.activist.name,
       email: donation.activist.email,
       document_number: donation.activist.document_number,
-      phone: {
-        ddd: self.phone(donation.activist.phone)[:ddd],
-        number: self.phone(donation.activist.phone)[:number]
-      },
       address: {
         street: address.street,
         street_number: address.street_number,
@@ -144,10 +140,19 @@ class DonationService
         neighborhood: address.neighborhood
       }
     }
+    _customer_params[:phone] = {
+      ddd: self.phone(donation.activist.phone)[:ddd],
+      number: self.phone(donation.activist.phone)[:number]
+    } if self.phone(donation.activist.phone)
+    _customer_params
   end
 
   def self.phone(number)
-    phone_number = number.gsub(/\D/, ' ').split(' ')
-    { ddd: phone_number[0], number: phone_number[1] }
+    if number
+      phone_number = number.gsub(/\D/, ' ').split(' ')
+      { ddd: phone_number[0], number: phone_number[1] }
+    else
+      nil
+    end
   end
 end
