@@ -58,6 +58,7 @@ class FormEntry < ActiveRecord::Base
         CITY: self.city,
         ORG: self.community.name
       }
+
       if !city.present? || city.try(:downcase) == 'outra'
         subscribe_attributes.delete(:CITY)
       end

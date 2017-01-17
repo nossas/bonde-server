@@ -40,7 +40,7 @@ module Mailchimpable
   end
 
   def groupings
-    if community and community.mailchimp_group_id
+    if community and community.mailchimp_group_id  and (not community.mailchimp_group_id.empty?)
       { "#{community.mailchimp_group_id}" => true }
     end
   end
@@ -48,15 +48,18 @@ module Mailchimpable
   private
 
   def mailchimp_list_id
-    community.try(:mailchimp_list_id) || ENV['MAILCHIMP_LIST_ID']
+    _mailchimp_list_id = community.try(:mailchimp_list_id)
+    _mailchimp_list_id = ENV['MAILCHIMP_LIST_ID'] if ( not _mailchimp_list_id ) or ( _mailchimp_list_id.empty? )
   end
 
   def mailchimp_group_id
-    community.try(:mailchimp_group_id) || ENV['MAILCHIMP_GROUP_ID']
+    _mailchimp_group_id = community.try(:mailchimp_group_id)
+    _mailchimp_group_id = ENV['MAILCHIMP_GROUP_ID'] if  ( not _mailchimp_group_id ) or ( _mailchimp_group_id.empty? )
   end
 
   def mailchimp_api_key
-    community.try(:mailchimp_api_key) || ENV['MAILCHIMP_API_KEY']
+    _mailchimp_api_key = community.try(:mailchimp_api_key)
+    _mailchimp_api_key = ENV['MAILCHIMP_API_KEY'] if ( not _mailchimp_api_key ) or ( _mailchimp_api_key.empty? )
   end
 
   def api_client
