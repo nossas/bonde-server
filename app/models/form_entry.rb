@@ -52,7 +52,7 @@ class FormEntry < ActiveRecord::Base
     if(!Rails.env.test?)
       subscribe_attributes =  {
         FNAME: self.first_name,
-        LNAME: self.last_name,
+        LNAME: self.last_name || "",
         EMAIL: self.email,
         PHONE: self.phone || "",
         CITY: self.city,
