@@ -15,7 +15,7 @@ module Mailchimpable
         api_client.lists(mailchimp_list_id).members.create(body: create_body(email, merge_vars: merge_vars, options: options))
       end
     rescue StandardError => e
-      logger.error(e)
+      logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}") if not  e.message =~ /.*title="Member Exists".*/
     end
   end
 
@@ -24,9 +24,9 @@ module Mailchimpable
     begin
       api_client.lists(mailchimp_list_id).segments(segment_id).members.create(body: {
         email_address: email
-      })
+      }) if segment_id
     rescue StandardError => e
-      logger.error(e)
+      logger.error("Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', email: '#{email}')\nError:#{e}")
     end
   end
 
@@ -35,7 +35,7 @@ module Mailchimpable
     begin
       api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).update(body: create_body(email, options: options))
     rescue StandardError => e
-      logger.error(e)
+      logger.error("Subscribe_to_segment error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
     end
   end
 
@@ -50,16 +50,19 @@ module Mailchimpable
   def mailchimp_list_id
     _mailchimp_list_id = community.try(:mailchimp_list_id)
     _mailchimp_list_id = ENV['MAILCHIMP_LIST_ID'] if ( not _mailchimp_list_id ) or ( _mailchimp_list_id.empty? )
+    _mailchimp_list_id
   end
 
   def mailchimp_group_id
     _mailchimp_group_id = community.try(:mailchimp_group_id)
     _mailchimp_group_id = ENV['MAILCHIMP_GROUP_ID'] if  ( not _mailchimp_group_id ) or ( _mailchimp_group_id.empty? )
+    _mailchimp_group_id
   end
 
   def mailchimp_api_key
     _mailchimp_api_key = community.try(:mailchimp_api_key)
     _mailchimp_api_key = ENV['MAILCHIMP_API_KEY'] if ( not _mailchimp_api_key ) or ( _mailchimp_api_key.empty? )
+    _mailchimp_api_key
   end
 
   def api_client
