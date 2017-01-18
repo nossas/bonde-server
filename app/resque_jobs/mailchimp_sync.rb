@@ -63,6 +63,6 @@ class MailchimpSync
 
 	def self.update_status record
 		record.synchronized = true
-		record.save
+		record.save! validate: false
 	end
 end

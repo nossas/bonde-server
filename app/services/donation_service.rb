@@ -128,7 +128,7 @@ class DonationService
   end
 
   def self.customer_params(donation, address)
-    _customer_params = {
+    return_customer_params = {
       name: donation.activist.name,
       email: donation.activist.email,
       document_number: donation.activist.document_number,
@@ -140,11 +140,11 @@ class DonationService
         neighborhood: address.neighborhood
       }
     }
-    _customer_params[:phone] = {
+    return_customer_params[:phone] = {
       ddd: self.phone(donation.activist.phone)[:ddd],
       number: self.phone(donation.activist.phone)[:number]
     } if self.phone(donation.activist.phone)
-    _customer_params
+    return_customer_params
   end
 
   def self.phone(number)
