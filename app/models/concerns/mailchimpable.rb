@@ -48,21 +48,21 @@ module Mailchimpable
   private
 
   def mailchimp_list_id
-    _mailchimp_list_id = community.try(:mailchimp_list_id)
-    _mailchimp_list_id = ENV['MAILCHIMP_LIST_ID'] if ( not _mailchimp_list_id ) or ( _mailchimp_list_id.empty? )
-    _mailchimp_list_id
+    return_mailchimp_list_id = community.try(:mailchimp_list_id)
+    return_mailchimp_list_id = ENV['MAILCHIMP_LIST_ID'] if ( not return_mailchimp_list_id ) or ( return_mailchimp_list_id.empty? )
+    return_mailchimp_list_id
   end
 
   def mailchimp_group_id
-    _mailchimp_group_id = community.try(:mailchimp_group_id)
-    _mailchimp_group_id = ENV['MAILCHIMP_GROUP_ID'] if  ( not _mailchimp_group_id ) or ( _mailchimp_group_id.empty? )
-    _mailchimp_group_id
+    return_mailchimp_group_id = community.try(:mailchimp_group_id)
+    return_mailchimp_group_id = ENV['MAILCHIMP_GROUP_ID'] if  ( not return_mailchimp_group_id ) or ( return_mailchimp_group_id.empty? )
+    return_mailchimp_group_id
   end
 
   def mailchimp_api_key
-    _mailchimp_api_key = community.try(:mailchimp_api_key)
-    _mailchimp_api_key = ENV['MAILCHIMP_API_KEY'] if ( not _mailchimp_api_key ) or ( _mailchimp_api_key.empty? )
-    _mailchimp_api_key
+    return_mailchimp_api_key = community.try(:mailchimp_api_key)
+    return_mailchimp_api_key = ENV['MAILCHIMP_API_KEY'] if ( not return_mailchimp_api_key ) or ( return_mailchimp_api_key.empty? )
+    return_mailchimp_api_key
   end
 
   def api_client

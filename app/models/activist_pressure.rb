@@ -49,13 +49,12 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def subscribe_attributes
-
-    _subscribe_attributes = {
+    return_subscribe_attributes = {
       FNAME: self.firstname || self.activist.first_name,
       LNAME: self.lastname || self.activist.last_name,
       EMAIL: self.activist.email,
     }
-    _subscribe_attributes[:CITY] = self.activist.city if self.activist and self.activist.city
-    _subscribe_attributes
+    return_subscribe_attributes[:CITY] = self.activist.city if self.activist and self.activist.city
+    return_subscribe_attributes
   end
 end
