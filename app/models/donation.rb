@@ -87,12 +87,12 @@ class Donation < ActiveRecord::Base
   private
 
   def subscribe_attributes
-    _attributes = {
+    return_attributes = {
       FNAME: self.activist.first_name,
       LNAME: self.activist.last_name,
       EMAIL: self.activist.email,
     }
-    _attributes[:CITY] = self.activist.city if self.activist and self.activist.city
-    _attributes
+    return_attributes[:CITY] = self.activist.city if self.activist and self.activist.city
+    return_attributes
   end
 end
