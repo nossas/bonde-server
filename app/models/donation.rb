@@ -58,6 +58,7 @@ class Donation < ActiveRecord::Base
     begin
       DonationsMailer.thank_you_email(self).deliver_later!
     rescue StandardError => e
+      Raven.capture_exception(e)
       logger.error("\n==> ERROR SENDING DONATION EMAIL: #{e.inspect}\n")
     end
   end

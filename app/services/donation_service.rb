@@ -80,6 +80,7 @@ class DonationService
           @transaction.collect_payment({email: donation.email})
         end
       rescue PagarMe::PagarMeError => e
+        Raven.capture_exception(e)
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
     end

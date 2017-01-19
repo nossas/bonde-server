@@ -15,7 +15,10 @@ module Mailchimpable
         api_client.lists(mailchimp_list_id).members.create(body: create_body(email, merge_vars: merge_vars, options: options))
       end
     rescue StandardError => e
-      logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}") unless e.message =~ /.*title="Member Exists".*/
+      unless e.message =~ /.*title="Member Exists".*/
+        Raven.capture_exception(e)
+        logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}") 
+      end
     end
   end
 
@@ -26,6 +29,7 @@ module Mailchimpable
         email_address: email
       }) if segment_id
     rescue StandardError => e
+      Raven.capture_exception(e)
       logger.error("Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', email: '#{email}')\nError:#{e}")
     end
   end
@@ -35,6 +39,7 @@ module Mailchimpable
     begin
       api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).update(body: create_body(email, options: options))
     rescue StandardError => e
+      Raven.capture_exception(e)
       logger.error("Subscribe_to_segment error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
     end
   end

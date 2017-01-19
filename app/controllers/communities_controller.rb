@@ -86,6 +86,7 @@ class CommunitiesController < ApplicationController
         @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
         render json: @mobilizations
       rescue StandardError => e
+        Raven.capture_exception(e)
         Rails.logger.error e
       end
     else
