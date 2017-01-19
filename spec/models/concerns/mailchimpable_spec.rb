@@ -23,7 +23,7 @@ class MailchimpableFake
     end
   end
 
-  def initialize mailchimp_group_id: 99899
+  def initialize mailchimp_group_id: '99899'
     @community = FakeCommunity.new mailchimp_group_id
     @logger = Logger.new
   end
@@ -33,7 +33,7 @@ end
 RSpec.describe Mailchimpable do
   let(:fake) { MailchimpableFake.new }
 
-  xdescribe '#groupings' do
+  describe '#groupings' do
     it 'mailchimp_group_id = 99899' do
       expect(fake.groupings['99899']).to be true
     end
@@ -43,7 +43,7 @@ RSpec.describe Mailchimpable do
     end
   end
 
-  xdescribe '#create_segment' do
+  describe '#create_segment' do
     def valid_response
       %(
       {
@@ -123,7 +123,7 @@ RSpec.describe Mailchimpable do
 
 
 
-  xdescribe '#subscribe_to_list' do
+  describe '#subscribe_to_list' do
     def valid_response
       %({
         "id": "852aaa9532cb36adfb5e9fef7a4206a9",
@@ -243,7 +243,7 @@ RSpec.describe Mailchimpable do
   end
 
 
-  xdescribe '#subscribe_to_segment' do
+  describe '#subscribe_to_segment' do
     def valid_response
       %( {
         "id": "06f12badc3b5fffc57576822131ded7c",
@@ -352,7 +352,7 @@ RSpec.describe Mailchimpable do
     end
   end
 
-  xdescribe '#update_member' do
+  describe '#update_member' do
     def valid_response
       %({
         "id": "20dbbf20d91106a9377bb671ba83f381",
