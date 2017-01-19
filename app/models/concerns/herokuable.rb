@@ -5,6 +5,7 @@ module Herokuable
     begin
       api_client.domain.create(ENV["CLIENT_APP_NAME"], custom_domain)
     rescue StandardError => e
+      Raven.capture_exception(e)
       logger.error(e.message)
     end
   end
@@ -13,6 +14,7 @@ module Herokuable
     begin
       api_client.domain.delete(ENV["CLIENT_APP_NAME"], old_domain)
     rescue StandardError => e
+      Raven.capture_exception(e)
       logger.error(e.message)
     end
   end

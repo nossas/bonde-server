@@ -23,6 +23,7 @@ class ApplicationController < ActionController::API
   private
 
   def pagarme_error(error)
+    Raven.capture_exception(error)
     match = error.message.match(/^(\d{3})\s(.*)$/)
     message = nil
     if match
