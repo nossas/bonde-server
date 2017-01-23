@@ -100,9 +100,10 @@ class CommunitiesController < ApplicationController
     recipient_data = to_pagarme_recipient recipient_dt
     validate_recipient recipient_data
     recipient = nil
-    if community.pagarme_recipient_id
+    if community.pagarme_recipient_id && community.recipient['bank_account']['document_number'] == recipient_dt['bank_account']['document_number']
       recipient = (TransferService.update_recipient community.pagarme_recipient_id, recipient_data)
     else
+      TransferService.remove_recipient community.pagarme_recipient_id if community.pagarme_recipient_id
       recipient = (TransferService.register_recipient recipient_data)
     end
     community.recipient = recipient.to_json

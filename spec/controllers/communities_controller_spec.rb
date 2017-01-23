@@ -116,9 +116,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
 
   describe 'PUT #update' do
-    before do
-      @community = Community.make!
-    end
+    let!(:community) { Community.make! }
 
     context 'should return 404 if community not exists' do
       before {
@@ -140,7 +138,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
         put :update, {
           format: :json, 
-          id: @community.id,
+          id: community.id,
           community: {
             name: 'José Joselito',
             city: 'Taubaté, SP'
@@ -154,12 +152,12 @@ RSpec.describe CommunitiesController, type: :controller do
     context 'only data' do
       context 'on happy path' do
         before do
-          (CommunityUser.new user: @user, community: @community, role: 1).save!
+          (CommunityUser.new user: @user, community: community, role: 1).save!
 
           @count = Community.count
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: {
               city: 'Tremembé, SP',
               image: 'http://images.reboo.org/our_fight.png',
@@ -186,7 +184,7 @@ RSpec.describe CommunitiesController, type: :controller do
         end
 
         it 'should change the data' do
-          saved = Community.find @community.id
+          saved = Community.find community.id
 
           expect(saved.city).to eq 'Tremembé, SP'
           expect(saved.image).to eq 'http://images.reboo.org/our_fight.png'
@@ -194,7 +192,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
 
         it 'should correctly save the data' do
-          saved = Community.find @community.id
+          saved = Community.find community.id
 
           expect(saved.mailchimp_api_key).to eq('ab12cd')
           expect(saved.mailchimp_list_id).to eq('34ef56')
@@ -205,6 +203,7 @@ RSpec.describe CommunitiesController, type: :controller do
         end
       end
     end
+
 
     context 'recipient' do 
       let(:recipient_response) {{
@@ -281,7 +280,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
       before do
         PagarMe.api_key = 'MyFakeKey'
-        CommunityUser.create! user: @user, community: @community, role: 1
+        CommunityUser.create! user: @user, community: community, role: 1
       end
 
       # BANK CODE
@@ -292,7 +291,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -309,7 +308,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:bank_code] = '1212'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -326,7 +325,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:bank_code] = '2A2'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -345,7 +344,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:agencia] = '121212'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -362,7 +361,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:agencia] = '1A212'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -381,7 +380,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:agencia_dv] = ''
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -399,7 +398,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:agencia_dv] = '121212'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -416,7 +415,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:agencia_dv] = 'B'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -435,7 +434,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:conta] = '12345678901234'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -452,7 +451,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:conta] = 'a123B'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -471,7 +470,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:conta_dv] = '12S'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -490,7 +489,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:type] = 'conta conjunta'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -509,7 +508,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:document_number] = '1234567890'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -526,7 +525,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:document_number] = '123456789012'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -543,7 +542,7 @@ RSpec.describe CommunitiesController, type: :controller do
           recipient_request[:bank_account][:document_number] = '123456789012345'
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -557,14 +556,14 @@ RSpec.describe CommunitiesController, type: :controller do
 
       context 'create recipient' do
         before do 
-          @community.update_attributes recipient: nil, pagarme_recipient_id: nil
+          community.update_attributes recipient: nil, pagarme_recipient_id: nil
           stub_request(:post, "https://api.pagar.me/1/recipients").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
             to_return(:status => 200, :body => recipient_response.to_json, :headers => {})
 
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -572,7 +571,7 @@ RSpec.describe CommunitiesController, type: :controller do
         it { should respond_with 200 }
 
         context 'data' do
-          let(:saved) {Community.find @community.id}
+          let(:saved) {Community.find community.id}
 
           it 'should save recipient data' do
             expect(saved.recipient).to eq(JSON.parse(recipient_response.to_json))
@@ -595,9 +594,10 @@ RSpec.describe CommunitiesController, type: :controller do
           stub_request(:put, "https://api.pagar.me/1/recipients/re_ci9bucss300h1zt6dvywufeqc").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
             to_return(:status => 200, :body => recipient_response.to_json, :headers => {})
+
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -605,7 +605,7 @@ RSpec.describe CommunitiesController, type: :controller do
         it { should respond_with 200 }
 
         context 'data' do
-          let(:saved) {Community.find @community.id}
+          let(:saved) {Community.find community.id}
 
           it 'should save recipient data' do
             expect(saved.recipient).to eq(JSON.parse(recipient_response.to_json))
@@ -631,7 +631,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
           put :update, {
             format: :json, 
-            id: @community.id,
+            id: community.id,
             community: { recipient: recipient_request }
           }
         end
@@ -640,8 +640,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
         context 'error message' do
           it 'should update transfer_enabled' do
-            expect(response.body).to include("Service unavailable")
-            expect(response.body).to include("503")
+            expect(response.body).to include("Serviço temporariamente indisponível")
           end
         end
       end
