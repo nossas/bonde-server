@@ -53,7 +53,7 @@ pt:
     client:
       error:
         status_500: "Erro interno no servidor"
-        status_503: "Serviço tempoerariamente indisponível"
+        status_503: "Serviço temporariamente indisponível"
   return:
     status:
       unauthorized: Sem autorização
