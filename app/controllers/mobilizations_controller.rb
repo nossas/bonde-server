@@ -13,7 +13,7 @@ class MobilizationsController < ApplicationController
       @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
       render json: @mobilizations
     rescue StandardError => e
-      Raven.capture_exception(e)
+      Raven.capture_exception(e) unless Rails.env.test?
       Rails.logger.error e
     end
   end
@@ -25,7 +25,7 @@ class MobilizationsController < ApplicationController
         where.not(custom_domain: 'null')
       render json: @mobilizations
     rescue StandardError => e
-      Raven.capture_exception(e)
+      Raven.capture_exception(e) unless Rails.env.test?
       Rails.logger.error e
     end
 

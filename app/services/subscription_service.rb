@@ -77,7 +77,7 @@ class SubscriptionService < DonationService
         )
         self.create_payment(donation)
       rescue PagarMe::PagarMeError => e
-        Raven.capture_exception(e)
+        Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error("\n==> SUBSCRIPTION ERROR: #{e.inspect}\n")
       end
     end
