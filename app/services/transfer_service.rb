@@ -121,6 +121,11 @@ class TransferService
     community.save
   end
 
+  def self.remove_recipient recipient_id
+    recipient = PagarMe::Recipient.new id: recipient_id
+    recipient.destroy
+  end
+
   private
 
   def sync_operations operations, payable_transfer

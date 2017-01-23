@@ -25,16 +25,19 @@ class ApplicationController < ActionController::API
   def pagarme_error(error)
     Raven.capture_exception(error) unless Rails.env.test?
     match = error.message.match(/^(\d{3})\s(.*)$/)
-    message = nil
+    error_messages = nil
+
     if match
-      message = get_error match[1].to_i
-    elsif error.response
-      message = error.response
+      error_messages = [get_error(match[1].to_i)]
+    elsif error.try(:errors)
+      error_messages = error.errors.map{|e| e.message}
+    elsif error.try(:error)
+      error_messages = error.error.message
     else
-      message = error.message
+      error_messages = error.message
     end
 
-    render json: { errors: [ ( error.try(:errors) || error.error ) ] }, status: :internal_server_error
+    render json: { errors: [ error_messages ] }, status: :internal_server_error
   end
 
   def get_error status
