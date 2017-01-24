@@ -8,6 +8,7 @@ RSpec.describe Community, type: :model do
   it { should have_many :mobilizations }
   it { should have_many :community_users }
   it { should have_many :users }
+  it { should have_many :recipients }
 
   it { should validate_uniqueness_of :name }
 
