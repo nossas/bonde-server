@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Communities::PayableDetailsController, type: :controller do
 
 
-  let(:community) { Community.make! pagarme_recipient_id: 'xxx' }
+  let(:community) { Community.make! }
   let(:user) { User.make! }
   let(:mobilization) { Mobilization.make!(community: community, user: user) }
   let(:block) { Block.make! mobilization: mobilization }

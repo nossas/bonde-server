@@ -4,7 +4,9 @@ class PayableDetail < ActiveRecord::Base
 
   belongs_to :community
   belongs_to :donation
+
   default_scope { order('transaction_id desc') }
+
   scope :by_widget, ->(id) { where(widget_id: id) }
   scope :by_mobilization, ->(id) { where(mobilization_id: id) }
   scope :by_block, ->(id) { where(block_id: id) }

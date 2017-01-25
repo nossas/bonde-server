@@ -5,8 +5,8 @@ class CommunitySerializer < ActiveModel::Serializer
 
   def recipient
     if object.recipient
-      return from_pagarme_recipient object.recipient 
+      return from_pagarme_recipient(object.recipient.recipient)
     end
-    object.recipient
+    nil
   end
 end

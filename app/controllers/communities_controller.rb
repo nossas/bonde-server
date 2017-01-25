@@ -36,11 +36,13 @@ class CommunitiesController < ApplicationController
       return404
     else
       begin
-        authorize community
-        if (recipient_data = params[:community][:recipient])
-          recipients community, recipient_data 
+        Community.transaction do
+          authorize community
+          if (recipient_data = params[:community][:recipient])
+            recipients community, recipient_data 
+          end
+          community.update!(community_params)
         end
-        community.update!(community_params)
         render json: community
       rescue ArgumentError => e
         render json:{argument_error: e.message}, status: 400
@@ -99,17 +101,18 @@ class CommunitiesController < ApplicationController
   def recipients community, recipient_dt
     recipient_data = to_pagarme_recipient recipient_dt
     validate_recipient recipient_data
-    recipient = nil
-    if community.pagarme_recipient_id && community.recipient['bank_account']['document_number'] == recipient_dt['bank_account']['document_number']
-      recipient = (TransferService.update_recipient community.pagarme_recipient_id, recipient_data)
+    if community.recipient && community.recipient.pagarme_recipient_id && community.recipient.recipient['bank_account']['document_number'] == recipient_dt['bank_account']['document_number']
+      recipient = (TransferService.update_recipient community.recipient.pagarme_recipient_id, recipient_data)
+      community.recipient.recipient = recipient.to_json
+      community.recipient.pagarme_recipient_id = recipient.id
+      community.recipient.transfer_day = recipient.transfer_day
+      community.recipient.transfer_enabled = recipient.transfer_enabled
+      community.recipient.save!
     else
-      TransferService.remove_recipient community.pagarme_recipient_id if community.pagarme_recipient_id
       recipient = (TransferService.register_recipient recipient_data)
+      community.recipient = Recipient.create community: community, recipient: recipient.to_json, pagarme_recipient_id: recipient.id, transfer_day: recipient.transfer_day,
+          transfer_enabled: recipient.transfer_enabled
     end
-    community.recipient = recipient.to_json
-    community.pagarme_recipient_id = recipient.id
-    community.transfer_day = recipient.transfer_day
-    community.transfer_enabled = recipient.transfer_enabled
     community.save
   end
 
