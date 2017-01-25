@@ -556,7 +556,7 @@ RSpec.describe CommunitiesController, type: :controller do
 
       context 'create recipient' do
         before do 
-          community.update_attributes recipient: nil, pagarme_recipient_id: nil
+          community.update_attributes recipient: nil
           stub_request(:post, "https://api.pagar.me/1/recipients").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
             to_return(:status => 200, :body => recipient_response.to_json, :headers => {})
@@ -574,7 +574,7 @@ RSpec.describe CommunitiesController, type: :controller do
           let(:saved) {Community.find community.id}
 
           it 'should save recipient data' do
-            expect(saved.recipient).to eq(JSON.parse(recipient_response.to_json))
+            expect(saved.recipient.recipient).to eq(JSON.parse(recipient_response.to_json))
           end
 
           it 'should update pagarme_recipient_id' do
@@ -590,6 +590,8 @@ RSpec.describe CommunitiesController, type: :controller do
       end
 
       context 'update recipient' do
+        let(:saved) {Community.find community.id}
+        
         before do 
           stub_request(:put, "https://api.pagar.me/1/recipients/re_ci9bucss300h1zt6dvywufeqc").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
@@ -604,22 +606,20 @@ RSpec.describe CommunitiesController, type: :controller do
 
         it { should respond_with 200 }
 
-        context 'data' do
-          let(:saved) {Community.find community.id}
+        it 'should save recipient data' do
+          expect(saved.recipient.recipient).to eq(JSON.parse(recipient_response.to_json))
+        end
 
-          it 'should save recipient data' do
-            expect(saved.recipient).to eq(JSON.parse(recipient_response.to_json))
-          end
+        it 'should update pagarme_recipient_id' do
+          expect(saved.pagarme_recipient_id).to eq('re_ci9bucss300h1zt6dvywufeqc')
+        end
 
-          it 'should update pagarme_recipient_id' do
-            expect(saved.pagarme_recipient_id).to eq('re_ci9bucss300h1zt6dvywufeqc')
-          end
-          it 'should update transfer_day' do
-            expect(saved.transfer_day).to be 15
-          end
-          it 'should update transfer_enabled' do
-            expect(saved.transfer_enabled).to eq(true)
-          end
+        it 'should update transfer_day' do
+          expect(saved.transfer_day).to be 15
+        end
+        
+        it 'should update transfer_enabled' do
+          expect(saved.transfer_enabled).to eq(true)
         end
       end
 

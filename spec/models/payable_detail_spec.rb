@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe PayableDetail, type: :model do
   let(:payment_date) { 1.days.ago }
   let(:waiting_funds_date) { 10.days.from_now }
-  let(:community) { Community.make! pagarme_recipient_id: 'xxx' }
+  let(:community) { Community.make! }
   let(:user) { User.make! }
   let(:mobilization) { Mobilization.make!(community: community, user: user) }
   let(:block) { Block.make! mobilization: mobilization }
@@ -28,7 +28,7 @@ RSpec.describe PayableDetail, type: :model do
           installment: 1,
           date_created: "2016-09-05T22:29:49.060Z",
           payment_date: waiting_funds_date,
-          recipient_id: community.pagarme_recipient_id,
+          recipient_id: community.recipient.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
           transaction_id: 123,
@@ -57,7 +57,7 @@ RSpec.describe PayableDetail, type: :model do
           installment: 1,
           date_created: "2016-09-05T22:29:49.060Z",
           payment_date: payment_date,
-          recipient_id: community.pagarme_recipient_id,
+          recipient_id: community.recipient.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
           transaction_id: 123,
