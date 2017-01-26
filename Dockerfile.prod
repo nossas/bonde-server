@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 ENV PATH=/usr/src/app/bin:$PATH RAILS_ENV=production RACK_ENV=production
 
 # 4: Set the default command:
-CMD [ "bundle", "exec", "puma", "--bind", "tcp://0.0.0.0:3000" ]
+CMD [ "bundle", "exec", "puma", "-C", "config/puma.rb" ]
 
 # 5: Expose the web port:
 EXPOSE 3000
@@ -27,7 +27,7 @@ ADD ./Gemfile* /usr/src/app/
 
 # 6.3: Install build dependencies AND install/build the app gems:
 RUN set -ex \
-  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev \
+  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev imagemagick-dev \
   && bundle install --without development test \
   && apk del .app-builddeps
 
