@@ -18,7 +18,8 @@ EXPOSE 3000
 # 6:  Install dependencies:
 
 # 6.1: Install the common runtime dependencies:
-RUN set -ex && apk add --no-cache libpq ca-certificates openssl
+RUN set -ex && apk add --no-cache libpq ca-certificates openssl tzdata
+RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && echo "America/Sao_Paulo" >  /etc/timezone
 
 # 6.2: Copy just the Gemfile & Gemfile.lock, to avoid the build cache failing whenever any other
 # file changed and installing dependencies all over again - a must if your'e developing this
@@ -27,9 +28,8 @@ ADD ./Gemfile* /usr/src/app/
 
 # 6.3: Install build dependencies AND install/build the app gems:
 RUN set -ex \
-  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev imagemagick-dev \
-  && bundle install --without development test \
-  && apk del .app-builddeps
+  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev imagemagick imagemagick-dev\
+  && bundle install --without development test 
 
 # ==================================================================================================
 # 7: Copy the rest of the application code, install nodejs as a build dependency, then compile the
