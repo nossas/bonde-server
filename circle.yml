@@ -1,8 +1,3 @@
-dependencies:
-  pre:
-    # update locally with:
-    # openssl aes-256-cbc -e -in .flynnrc -out .flynnrc-cipher -k $KEY
-    - openssl aes-256-cbc -d -in .flynnrc-cipher -k $KEY >> ~/.flynnrc
 machine:
   timezone:
     America/Sao_Paulo # Set the timezone
@@ -24,15 +19,12 @@ test:
     - bundle exec rake db:migrate
 
 deployment:
-  production:
-    branch: master
+  staging:
+    branch: /(hotfix|release)(-|\/).*/
     commands:
       - ./bin/deploy.sh
-  feature:
-    branch: /(add|fix)(-|\/).*/
-    commands:
-      - ./bin/deploy.sh
-  develop:
-    branch: develop
+  release:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: nossas 
     commands:
       - ./bin/deploy.sh
