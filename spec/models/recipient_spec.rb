@@ -7,9 +7,6 @@ RSpec.describe Recipient, type: :model do
   it { should validate_presence_of :recipient }
   it { should validate_presence_of :community }
 
-  # !!! The test below is commented because cause an error, as it tries to save a null value on recipient field !!!
-  # it { should validate_uniqueness_of :pagarme_recipient_id }
-
 
   describe '#update_from_pagarme' do
     context 'empty recipient' do

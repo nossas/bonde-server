@@ -37,7 +37,7 @@ class ApplicationController < ActionController::API
       error_messages = error.message
     end
 
-    render json: { errors: [ error_messages ] }, status: :internal_server_error
+    render json: { errors: [ "Pagarme: #{error_messages} #{ENV['PAGARME_API_KEY']}" ] }, status: :internal_server_error
   end
 
   def get_error status

@@ -8,12 +8,6 @@ class ImportFromCommunityToRecipient < ActiveRecord::Migration
         recipient.recipient = community.pagarme_recipient
         recipient.transfer_day = community.pagarme_transfer_day
         recipient.transfer_enabled = community.pagarme_transfer_enabled
-        unless recipient.validate
-          p '-----------------------------------'
-          p community
-          p recipient.errors 
-          p '-----------------------------------'
-        end
         recipient.save!
         community.recipient = recipient
         community.save!

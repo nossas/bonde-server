@@ -556,7 +556,9 @@ RSpec.describe CommunitiesController, type: :controller do
 
       context 'create recipient' do
         before do 
+          rec = community.recipient
           community.update_attributes recipient: nil
+          rec.delete
           stub_request(:post, "https://api.pagar.me/1/recipients").
             with(:body => "{\"transfer_interval\":\"monthly\",\"transfer_day\":15,\"transfer_enabled\":true,\"bank_account\":{\"bank_code\":\"237\",\"agencia\":\"1935\",\"agencia_dv\":\"9\",\"conta\":\"23398\",\"conta_dv\":\"9\",\"type\":\"conta_corrente\",\"legal_name\":\"API BANK ACCOUNT\",\"document_number\":\"26268738888\"}}").
             to_return(:status => 200, :body => recipient_response.to_json, :headers => {})
@@ -585,6 +587,9 @@ RSpec.describe CommunitiesController, type: :controller do
           end
           it 'should update transfer_enabled' do
             expect(saved.transfer_enabled).to eq(true)
+          end
+          it 'should have one register on recipients' do
+            expect(saved.recipients.count).to be 1
           end
         end
       end
@@ -620,6 +625,10 @@ RSpec.describe CommunitiesController, type: :controller do
         
         it 'should update transfer_enabled' do
           expect(saved.transfer_enabled).to eq(true)
+        end
+
+        it 'should have one register on recipients' do
+          expect(saved.recipients.count).to be 1
         end
       end
 
