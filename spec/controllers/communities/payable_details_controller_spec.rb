@@ -68,9 +68,8 @@ RSpec.describe Communities::PayableDetailsController, type: :controller do
         json_details = ActiveSupport::JSON.decode(response.body)[0]
 
         expect(response).to be_successful
-        expect(json_details["value_without_fee"]).to eq(8.7)
-        expect(json_details["payable_pagarme_fee"]).to eq(1.14)
-        expect(json_details["nossas_fee"]).to eq(1.3)
+        expect(json_details["value_without_fee"]).to eq(8.86)
+        expect(json_details["fee"]).to eq(1.14)
         expect(json_details["payable_value"]).to eq(10.0)
         expect(json_details["donation_value"]).to eq(10.0)
         expect(json_details["pagarme_status"]).to eq('paid')
