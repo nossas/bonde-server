@@ -3,6 +3,7 @@ class Community < ActiveRecord::Base
   
   has_many :payable_transfers
   has_many :payable_details
+  has_many :donation_reports
   has_many :mobilizations
   has_many :community_users
   has_many :users, through: :community_users

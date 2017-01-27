@@ -121,11 +121,11 @@ class DonationService
 
   def self.city_rule(donation)
     recipient = donation.community.pagarme_recipient_id
-    { charge_processing_fee: true, liable: true, percentage: 85, recipient_id: recipient }
+    { charge_processing_fee: false, liable: true, percentage: 87, recipient_id: recipient }
   end
 
   def self.community_rule
-    { charge_processing_fee: false, liable: false, percentage: 15, recipient_id: ENV['ORG_RECIPIENT_ID'] }
+    { charge_processing_fee: true, liable: false, percentage: 13, recipient_id: ENV['ORG_RECIPIENT_ID'] }
   end
 
   def self.customer_params(donation, address)

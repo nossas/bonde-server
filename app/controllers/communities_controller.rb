@@ -60,9 +60,6 @@ class CommunitiesController < ApplicationController
   end
 
   def list_activists
-    skip_authorization
-    skip_policy_scope
-
     community = Community.find params[:community_id]
 
     respond_with do |format|
