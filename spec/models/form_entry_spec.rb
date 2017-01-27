@@ -151,6 +151,43 @@ RSpec.describe FormEntry, type: :model do
       end
     end
 
+
+    { 
+      'english' => ['name', 'ignorable', 'email', 'mobile', 'city'],
+      'english v.2' => ['complete name', 'ignorable', 'email', 'mobile', 'city'],
+      'portuguese' => ['Nome', 'ignoravel', 'Email', 'Celular', 'Cidade'],
+      'portuguese v.2' => ['nome completo', 'ignoravel', 'email', 'celular', 'cidade'],
+      'portuguese v.3' => ['Nome e sobrenome', 'ignoravel', 'email(*)', 'CeLuLar', 'Cidade*'],
+      'spanish' => ['nombre', 'ignorable', 'Correo electrónico', 'Portable', 'Ciudad'],
+      'spanish v.2' => ['nombre completo', 'ignorable', 'Correo electrónico', 'Portable', 'Ciudad'],
+      'spanish v.3' => ['nombre y apellido', 'ignorable', 'Correo electrónico', 'Portable', 'Ciudad']
+    }. each do |language, labels|
+      context "with name and surname on same field in #{language}" do 
+        let(:form_entry) { FormEntry.new fields: create_data(labels[0], labels[1], labels[2], labels[3], labels[4],
+            name: 'José Manuel', surname: nil).to_json }
+
+        it '#first_name' do 
+          expect(form_entry.first_name).to eq('José')
+        end
+
+        it '#last_name' do 
+          expect(form_entry.last_name).to eq('Manuel')
+        end
+
+        it '#email' do 
+          expect(form_entry.email).to eq('zemane@naoexiste.com')
+        end
+
+        it '#phone' do 
+          expect(form_entry.phone).to eq('(12) 36121-1234')
+        end
+
+        it '#city' do 
+          expect(form_entry.city).to eq('Pindallas')
+        end
+      end
+    end
+
     context 'with data without fields' do 
       let(:form_entry) { FormEntry.new fields: '[ ]' }
 
