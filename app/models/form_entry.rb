@@ -25,12 +25,21 @@ class FormEntry < ActiveRecord::Base
   end
 
   def first_name
-    # if (field_complete_name = field_decode )
-    field_decode ['nome', 'nombre', 'name', 'first name', 'first-name']
+    if decode_last_name == nil
+      complete = decode_complete_name
+      complete.split(' ')[0] if complete
+    else
+      field_decode ['nome', 'nombre', 'name', 'first name', 'first-name']
+    end
   end
 
   def last_name
-    field_decode ['sobrenome', 'sobre-nome', 'sobre nome', 'surname', 'last name', 'last-name', 'apellido']
+    if decode_last_name == nil
+      complete = decode_complete_name
+      (complete.split(' ')[1..-1]).join(' ') if complete
+    else
+      decode_last_name
+    end
   end
 
   def email
@@ -79,6 +88,14 @@ class FormEntry < ActiveRecord::Base
   end
 
   private
+
+  def decode_last_name
+    field_decode ['sobrenome', 'sobre-nome', 'sobre nome', 'surname', 'last name', 'last-name', 'apellido']
+  end
+
+  def decode_complete_name
+    field_decode ['nome', 'nome completo', 'nome e sobrenome', 'nombre', 'nombre completo', 'nombre y apellido', 'name', 'complete name', 'name and surname']
+  end
 
   def field_decode list_field_names
     return_value = nil
