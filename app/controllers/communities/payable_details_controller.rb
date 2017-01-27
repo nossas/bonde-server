@@ -1,6 +1,6 @@
 class Communities::PayableDetailsController < ApplicationController
   before_action :skip_policy_scope
-  has_scope :by_widgecommunityt, :by_mobilization, :by_block
+  has_scope :by_widget, :by_mobilization, :by_block
 
   def index
     authorize community, :can_handle_with_payables?
