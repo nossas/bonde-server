@@ -25,23 +25,24 @@ class FormEntry < ActiveRecord::Base
   end
 
   def first_name
-    field_decode ['nome', 'nombre']
+    # if (field_complete_name = field_decode )
+    field_decode ['nome', 'nombre', 'name', 'first name', 'first-name']
   end
 
   def last_name
-    field_decode ['sobrenome', 'sobre-nome', 'sobre nome']
+    field_decode ['sobrenome', 'sobre-nome', 'sobre nome', 'surname', 'last name', 'last-name', 'apellido']
   end
 
   def email
-    field_decode ['email']
+    field_decode ['email', 'correo electronico']
   end
 
   def phone
-    field_decode ['celular']
+    field_decode ['celular', 'mobile', 'portable']
   end
 
   def city
-    field_decode ['cidade']
+    field_decode ['cidade', 'city', 'ciudad']
   end
 
   def async_send_to_mailchimp
@@ -80,11 +81,15 @@ class FormEntry < ActiveRecord::Base
   private
 
   def field_decode list_field_names
+    return_value = nil
     fields_as_json.each do |field|
-      if field['label'] && list_field_names.include?(field['label'].downcase)
-        return field['value']
+      if field['label'] 
+        label_content = I18n.transliterate(field['label'].downcase).scan(/([\w\d\s\-]+)(\s*\(?\s*\*\s*\)?)?$/)[0][0].strip
+        if list_field_names.include?(label_content)
+          return_value = field['value'] 
+        end
       end
     end if fields
-    nil
+    return_value
   end
 end
