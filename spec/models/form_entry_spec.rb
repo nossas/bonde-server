@@ -72,72 +72,82 @@ RSpec.describe FormEntry, type: :model do
   end
 
   describe 'fields translating' do
-    context 'with data' do 
-      def campos
-        [
-          {
-            'uid': 'field-1448381355384-46', 
-            'kind': 'text',
-            'label': 'Nome',
-            'placeholder': 'Insira aqui seu primeiro nome',
-            'required': 'true',
-            'value': 'José'
-          },
-          {
-            'uid': 'field-1448381377063-15',
-            'kind': 'text',
-            'label': 'Sobrenome',
-            'placeholder': 'Insira aqui seu último sobrenome',
-            'required': 'true',
-            'value': 'Manuel'
-          },
-          {
-            'uid': 'field-1448381397174-71',
-            'kind': 'email',
-            'label': 'Email',
-            'placeholder': 'Insira aqui o seu email',
-            'required': 'true',
-            'value': 'zemane@naoexiste.com'
-          },
-          {
-            'uid': 'field-2313463424234-41',
-            'kind': 'text',
-            'label': 'Celular',
-            'placeholder': 'Insira aqui o seu telefone',
-            'required': 'true',
-            'value': '(12) 36121-1234'
-          },
-          {
-            'uid': 'field-2346134634541-76',
-            'kind': 'text',
-            'label': 'Cidade',
-            'placeholder': 'Insira aqui o seu cidade',
-            'required': 'true',
-            'value': 'Pindallas'
-          }
-        ]      
-      end
+    def create_data c_name, c_surname, c_email, c_mobile, c_city, name: 'José', surname: 'Manuel'
+      [
+        {
+          'uid': 'field-1448381355384-46', 
+          'kind': 'text',
+          'label': c_name,
+          'placeholder': 'Insira aqui seu primeiro nome',
+          'required': 'true',
+          'value': name
+        },
+        {
+          'uid': 'field-1448381377063-15',
+          'kind': 'text',
+          'label': c_surname,
+          'placeholder': 'Insira aqui seu último sobrenome',
+          'required': 'true',
+          'value': surname
+        },
+        {
+          'uid': 'field-1448381397174-71',
+          'kind': 'email',
+          'label': c_email,
+          'placeholder': 'Insira aqui o seu email',
+          'required': 'true',
+          'value': 'zemane@naoexiste.com'
+        },
+        {
+          'uid': 'field-2313463424234-41',
+          'kind': 'text',
+          'label': c_mobile,
+          'placeholder': 'Insira aqui o seu telefone',
+          'required': 'true',
+          'value': '(12) 36121-1234'
+        },
+        {
+          'uid': 'field-2346134634541-76',
+          'kind': 'text',
+          'label': c_city,
+          'placeholder': 'Insira aqui o seu cidade',
+          'required': 'true',
+          'value': 'Pindallas'
+        }
+      ]      
+    end
 
-      let(:form_entry) { FormEntry.new fields: campos.to_json }
+    { 
+      'english' => ['name', 'surname', 'email', 'mobile', 'city'],
+      'english v.2' => ['first name', 'last name', 'email', 'mobile', 'city'],
+      'english v.3' => ['first-name', 'last-name', 'email', 'mobile', 'city'],
+      'portuguese' => ['Nome', 'Sobrenome', 'Email', 'Celular', 'Cidade'],
+      'portuguese v.2' => ['nome', 'Sobre nome', 'email', 'celular', 'cidade'],
+      'portuguese v.3' => ['Nome*', 'Sobre-nome', 'email(*)', 'CeLuLar', 'Cidade*'],
+      'spanish' => ['nombre', 'apellido', 'Correo electrónico', 'Portable', 'Ciudad']
+    }. each do |language, labels|
+      context "with data in #{language}" do 
+        let(:form_entry) { FormEntry.new fields: create_data(labels[0], labels[1], labels[2], labels[3], labels[4]).to_json }
 
-      it '#first_name' do 
-        expect(form_entry.first_name).to eq('José')
-      end
+        it '#first_name' do 
+          expect(form_entry.first_name).to eq('José')
+        end
 
-      it '#last_name' do 
-        expect(form_entry.last_name).to eq('Manuel')
-      end
+        it '#last_name' do 
+          expect(form_entry.last_name).to eq('Manuel')
+        end
 
-      it '#email' do 
-        expect(form_entry.email).to eq('zemane@naoexiste.com')
-      end
+        it '#email' do 
+          expect(form_entry.email).to eq('zemane@naoexiste.com')
+        end
 
-      it '#phone' do 
-        expect(form_entry.phone).to eq('(12) 36121-1234')
-      end
+        it '#phone' do 
+          expect(form_entry.phone).to eq('(12) 36121-1234')
+        end
 
-      it '#city' do 
-        expect(form_entry.city).to eq('Pindallas')
+        it '#city' do 
+          expect(form_entry.city).to eq('Pindallas')
+        end
       end
     end
 
