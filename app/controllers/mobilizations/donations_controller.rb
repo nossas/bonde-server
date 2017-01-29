@@ -24,6 +24,7 @@ class Mobilizations::DonationsController < ApplicationController
     authorize @donation
 
     if @donation.save!
+      Raven.capture_message "Erro com os dados ! Donation: #{@donation.to_json} \nParametros: #{params.to_json}" unless @donation.try(:email)
       find_or_create_activist(activist_params)
       address = find_or_create_address(address_params)
 
