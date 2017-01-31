@@ -40,7 +40,7 @@ module PagarmeHelper
     }
     return_values = {}
 
-    conta.each { |field_name, value| return_values[field_names[field_name]] = value }
+    conta.each { |field_name, value| return_values[field_names[field_name]] = value  unless value.empty?  }
 
     return_values
   end

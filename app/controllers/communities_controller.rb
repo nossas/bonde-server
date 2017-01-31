@@ -118,7 +118,7 @@ class CommunitiesController < ApplicationController
     errors = []
     errors << "Código bancário inválido. Deve ter extamente 3 dígitos." if (bank_account['bank_code'] =~ /^\d{3}$/).nil?
     errors << "Código de agência inválido. Deve ter até 5 dígitos." if (bank_account['agencia'] =~ /^\d{1,5}$/).nil?
-    errors << "Dígito verificador da agência inválido. Deve ter apenas um dígito." if (bank_account['agencia_dv'] =~ /^\d$/).nil?
+    errors << "Dígito verificador da agência inválido. Deve ter apenas um dígito." if (bank_account['agencia_dv'])&&((bank_account['agencia_dv'] =~ /^[\d\w]$/).nil?)
     errors << "Número da conta bancária inválida. Deve ter até 13 dígitos." if (bank_account['conta'] =~ /^\d{1,13}$/).nil?
     errors << "Dígito verificador da conta bancária inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['conta_dv'] =~ /^[A-Z0-9]{1,2}$/).nil?
     errors << "Tipo de conta inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['type'] =~ /^(conta_corrente)|(conta_poupanca)|(conta_corrente_conjunta)|(conta_poupanca_conjunta)$/).nil?
