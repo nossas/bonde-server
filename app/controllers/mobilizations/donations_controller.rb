@@ -24,7 +24,6 @@ class Mobilizations::DonationsController < ApplicationController
     authorize @donation
 
     if @donation.save!
-      Raven.capture_message "Erro com os dados ! Donation: #{@donation.to_json} \nParametros: #{params.to_json}" unless @donation.try(:email)
       find_or_create_activist(activist_params)
       address = find_or_create_address(address_params)
 
@@ -44,6 +43,7 @@ class Mobilizations::DonationsController < ApplicationController
       @donation.activist_id = activist.id
     else
       @donation.create_activist(activist_params)
+      Raven.capture_message "Ativista não gravado ! Donation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
     end
   end
 
