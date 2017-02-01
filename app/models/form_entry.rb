@@ -101,12 +101,18 @@ class FormEntry < ActiveRecord::Base
     return_value = nil
     fields_as_json.each do |field|
       if field['label'] 
-        label_content = I18n.transliterate(field['label'].downcase).scan(/([\w\d\s\-]+)(\s*\(?\s*\*\s*\)?)?$/)[0][0].strip
-        if list_field_names.include?(label_content)
-          return_value = field['value'] 
-        end
+          return_value = field['value']  if in_list?(list_field_names, field['label'] )
       end
     end if fields
     return_value
+  end
+
+  def in_list? list_field_names, field_label
+    in_list = false
+    scanned = I18n.transliterate(field_label.downcase).scan(/([\w\d\s\-]+)(\s*\(?\s*\*\s*\)?)?$/)
+    if scanned
+      in_list = (list_field_names.include?(scanned[0][0].strip)) if scanned[0]
+    end
+    in_list
   end
 end
