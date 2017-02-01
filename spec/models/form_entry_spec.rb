@@ -113,8 +113,16 @@ RSpec.describe FormEntry, type: :model do
           'placeholder': 'Insira aqui o seu cidade',
           'required': 'true',
           'value': 'Pindallas'
+        },
+        {
+          "uid":"field-1478566803367-66",
+          "kind":"text",
+          "label":"Quero prévias para/porque…",
+          "placeholder":"Complete a frase!",
+          "required":"false",
+          "value":"É importante para o Brasil"
         }
-      ]      
+            ]      
     end
 
     { 
