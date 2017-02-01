@@ -45,7 +45,7 @@ class SubscriptionService < DonationService
       payment_method: donation.payment_method,
       card_id: donation.credit_card,
       plan_id: plan.plan_id,
-      postback_url: Rails.application.routes.url_helpers.create_postback_url,
+      postback_url: Rails.application.routes.url_helpers.create_postback_url(protocol: 'https'),
       metadata: {
         widget_id: donation.widget.id,
         mobilization_id: donation.mobilization.id,
