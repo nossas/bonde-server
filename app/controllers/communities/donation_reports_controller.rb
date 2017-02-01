@@ -5,7 +5,7 @@ class Communities::DonationReportsController < ApplicationController
 
   def index
     authorize community, :can_handle_with_payables?
-    collection = apply_scopes(community.donation_reports)
+    collection = apply_scopes(community.donation_reports.order(id: :desc))
 
     respond_with do |format|
       format.json do
