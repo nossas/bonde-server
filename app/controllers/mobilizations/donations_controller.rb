@@ -43,6 +43,7 @@ class Mobilizations::DonationsController < ApplicationController
       @donation.activist_id = activist.id
     else
       @donation.create_activist(activist_params)
+      Raven.capture_message "Ativista não gravado ! Donation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
     end
   end
 

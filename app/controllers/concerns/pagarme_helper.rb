@@ -40,25 +40,21 @@ module PagarmeHelper
     }
     return_values = {}
 
-    conta.each { |field_name, value| return_values[field_names[field_name]] = value }
+    conta.each { |field_name, value| return_values[field_names[field_name]] = value  unless value.empty?  }
 
     return_values
   end
 
   def from_pagarme_bank_account conta
     field_names = {
-       'bank_code' => 'bank_code',
        'agencia' => 'agency',
        'agencia_dv' => 'agency_dig',
        'conta' => 'account',
-       'conta_dv' => 'account_dig',
-       'type' => 'type',
-       'legal_name' => 'legal_name',
-       'document_number' => 'document_number'
+       'conta_dv' => 'account_dig'
     }
     return_values = {}
 
-    conta.each { |field_name, value| return_values[field_names[field_name]] = value }
+    conta.each { |field_name, value| return_values[field_names[field_name]||field_name] = value }
 
     return_values
   end

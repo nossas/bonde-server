@@ -36,11 +36,13 @@ class CommunitiesController < ApplicationController
       return404
     else
       begin
-        authorize community
-        if (recipient_data = params[:community][:recipient])
-          recipients community, recipient_data 
+        Community.transaction do
+          authorize community
+          if (recipient_data = params[:community][:recipient])
+            recipients community, recipient_data 
+          end
+          community.update!(community_params)
         end
-        community.update!(community_params)
         render json: community
       rescue ArgumentError => e
         render json:{argument_error: e.message}, status: 400
@@ -60,9 +62,6 @@ class CommunitiesController < ApplicationController
   end
 
   def list_activists
-    skip_authorization
-    skip_policy_scope
-
     community = Community.find params[:community_id]
 
     respond_with do |format|
@@ -86,7 +85,7 @@ class CommunitiesController < ApplicationController
         @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
         render json: @mobilizations
       rescue StandardError => e
-        Raven.capture_exception(e)
+        Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error e
       end
     else
@@ -99,16 +98,18 @@ class CommunitiesController < ApplicationController
   def recipients community, recipient_dt
     recipient_data = to_pagarme_recipient recipient_dt
     validate_recipient recipient_data
-    recipient = nil
-    if community.pagarme_recipient_id
-      recipient = (TransferService.update_recipient community.pagarme_recipient_id, recipient_data)
+    if community.recipient && community.recipient.pagarme_recipient_id && community.recipient.recipient['bank_account']['document_number'] == recipient_dt['bank_account']['document_number']
+      recipient = (TransferService.update_recipient community.recipient.pagarme_recipient_id, recipient_data)
+      community.recipient.recipient = recipient.to_json
+      community.recipient.pagarme_recipient_id = recipient.id
+      community.recipient.transfer_day = recipient.transfer_day
+      community.recipient.transfer_enabled = recipient.transfer_enabled
+      community.recipient.save!
     else
       recipient = (TransferService.register_recipient recipient_data)
+      community.recipient = Recipient.create community: community, recipient: recipient.to_json, pagarme_recipient_id: recipient.id, transfer_day: recipient.transfer_day,
+          transfer_enabled: recipient.transfer_enabled
     end
-    community.recipient = recipient.to_json
-    community.pagarme_recipient_id = recipient.id
-    community.transfer_day = recipient.transfer_day
-    community.transfer_enabled = recipient.transfer_enabled
     community.save
   end
 
@@ -117,7 +118,7 @@ class CommunitiesController < ApplicationController
     errors = []
     errors << "Código bancário inválido. Deve ter extamente 3 dígitos." if (bank_account['bank_code'] =~ /^\d{3}$/).nil?
     errors << "Código de agência inválido. Deve ter até 5 dígitos." if (bank_account['agencia'] =~ /^\d{1,5}$/).nil?
-    errors << "Dígito verificador da agência inválido. Deve ter apenas um dígito." if (bank_account['agencia_dv'] =~ /^\d$/).nil?
+    errors << "Dígito verificador da agência inválido. Deve ter apenas um dígito." if (bank_account['agencia_dv'])&&((bank_account['agencia_dv'] =~ /^[\d\w]$/).nil?)
     errors << "Número da conta bancária inválida. Deve ter até 13 dígitos." if (bank_account['conta'] =~ /^\d{1,13}$/).nil?
     errors << "Dígito verificador da conta bancária inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['conta_dv'] =~ /^[A-Z0-9]{1,2}$/).nil?
     errors << "Tipo de conta inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['type'] =~ /^(conta_corrente)|(conta_poupanca)|(conta_corrente_conjunta)|(conta_poupanca_conjunta)$/).nil?
