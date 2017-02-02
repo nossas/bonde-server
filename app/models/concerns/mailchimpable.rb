@@ -16,7 +16,7 @@ module Mailchimpable
       end
     rescue StandardError => e
       unless e.message =~ /.*title="Member Exists".*/
-        Raven.capture_exception(e) unless Rails.env.test?
+        Raven.capture_message("Erro ao gravar usuário na lista:\nEmail: #{email}\nMergeVars: #{merge_vars.to_json unless merge_vars.nil?}\nOptions: #{options.to_json}\n#{e}") unless Rails.env.test?
         logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}") 
       end
     end
@@ -39,7 +39,7 @@ module Mailchimpable
     begin
       api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).update(body: create_body(email, options: options))
     rescue StandardError => e
-      Raven.capture_exception(e) unless Rails.env.test?
+      Raven.capture_message("Erro ao realizar o update de membro: list_id: #{mailchimp_list_id}\nEmail: #{email}\nOptions: #{options.to_json unless options.nil?}\nException: #{e}") unless Rails.env.test?
       logger.error("Subscribe_to_segment error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
     end
   end
