@@ -64,6 +64,8 @@ class CommunitiesController < ApplicationController
   def list_activists
     community = Community.find params[:community_id]
 
+    authorize community
+
     respond_with do |format|
       format.json do
         render json: community.agg_activists
