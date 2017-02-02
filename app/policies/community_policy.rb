@@ -11,6 +11,10 @@ class CommunityPolicy < ApplicationPolicy
     is_owned_by?(user)
   end
 
+  def list_activists?
+    is_owned_by?(user)
+  end
+
 private
 
   def is_owned_by?(user)
