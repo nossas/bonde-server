@@ -85,7 +85,40 @@ class Donation < ActiveRecord::Base
     update_member(self.activist.email, { groupings: groupings })
   end
 
+  def generate_activist
+    if activistable?
+      activist_email = self.customer['email']
+      activist_found = Activist.order(:id).find_by_email activist_email
+      if activist_found
+        self.activist = activist_found 
+      else
+        activist_name = self.customer['name']
+        doc_number = self.customer['document_number']
+        dov_type = doc_number.size == 11 ? 'cpf' : 'cnpj'
+        self.create_activist name: activist_name, email: activist_email, phone: self.customer['phone'], document_number: doc_number, 
+          document_type: doc_type(doc_number), city: self.customer['city']
+      end
+      self.save
+    end
+  end
+
   private
+
+  def activistable?
+    cus = try(:customer) || { } 
+    return ( cus['name'] && cus['email'] )
+  end
+
+  def doc_type doc
+    case doc.size
+    when 11
+      return 'cpf'
+    when 14
+      return 'cnpj'
+    else 
+      return nil
+    end
+  end
 
   def subscribe_attributes
     return_attributes = {
