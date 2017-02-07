@@ -10,7 +10,7 @@ module Mailchimpable
   def subscribe_to_list(email, merge_vars, options = {})
     begin
       if options[:update_existing]
-        api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).upsert(body: create_body(email, merge_vars: merge_vars, options: options))
+        api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email.downcase)).upsert(body: create_body(email, merge_vars: merge_vars, options: options))
       else
         api_client.lists(mailchimp_list_id).members.create(body: create_body(email, merge_vars: merge_vars, options: options))
       end
@@ -29,7 +29,7 @@ module Mailchimpable
         email_address: email
       }) if segment_id
     rescue StandardError => e
-      Raven.capture_exception(e) unless Rails.env.test?
+      Raven.capture_message("Erro ao subscrever usuário no segmento: \nEmail: #{email}\nSegment_id: #{segment_id}\nException: #{e}") unless Rails.env.test?
       logger.error("Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', email: '#{email}')\nError:#{e}")
     end
   end
@@ -37,7 +37,7 @@ module Mailchimpable
 
   def update_member(email, options)
     begin
-      api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email)).update(body: create_body(email, options: options))
+      api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email.downcase)).update(body: create_body(email, options: options))
     rescue StandardError => e
       Raven.capture_message("Erro ao realizar o update de membro: list_id: #{mailchimp_list_id}\nEmail: #{email}\nOptions: #{options.to_json unless options.nil?}\nException: #{e}") unless Rails.env.test?
       logger.error("Subscribe_to_segment error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
