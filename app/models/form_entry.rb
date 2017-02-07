@@ -43,7 +43,8 @@ class FormEntry < ActiveRecord::Base
   end
 
   def email
-    field_decode ['email', 'correo electronico']
+    value = field_decode ['email', 'correo electronico']
+    value.strip unless value.nil?
   end
 
   def phone
@@ -87,7 +88,29 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
+  def generate_activist
+    if activistable?
+      activist_found = Activist.order(:id).find_by_email(self.email)
+      unless activist_found
+        activist_found = Activist.new(name: "#{self.first_name.strip} #{self.last_name}".strip, email: self.email, city: self.city, phone: self.phone) 
+        if ! activist_found.validate
+          p activist_found.errors
+        end
+        activist_found.save!
+      end
+      self.activist = activist_found
+      p 'tentando gravar registro'
+      self.save!(validate: false)
+    end
+  end
+
   private
+
+  def activistable?
+    return false if first_name.nil? or email.nil?
+    return ! (self.email =~ Devise.email_regexp).nil? unless  self.first_name.empty? 
+    false
+  end
 
   def decode_last_name
     field_decode ['sobrenome', 'sobre-nome', 'sobre nome', 'surname', 'last name', 'last-name', 'apellido']
