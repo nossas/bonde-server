@@ -3,7 +3,9 @@ require './app/resque_jobs/mailchimp_sync.rb'
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
-  validates :widget, :fields, presence: true
+  validates :widget, :fields, :email, :first_name, presence: true
+  validates :complete_name, length: { in: 3..70 }
+  validates_format_of :email, with: Devise.email_regexp
 
   belongs_to :widget
   belongs_to :activist
@@ -40,6 +42,10 @@ class FormEntry < ActiveRecord::Base
     else
       decode_last_name
     end
+  end
+
+  def complete_name
+    "#{(first_name || '').strip} #{last_name || ''}".strip
   end
 
   def email
@@ -124,7 +130,7 @@ class FormEntry < ActiveRecord::Base
     return_value = nil
     fields_as_json.each do |field|
       if field['label'] 
-          return_value = field['value']  if in_list?(list_field_names, field['label'] )
+          return_value = field['value'].strip  if in_list?(list_field_names, field['label'] )
       end
     end if fields
     return_value

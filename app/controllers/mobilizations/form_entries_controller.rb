@@ -23,8 +23,9 @@ class Mobilizations::FormEntriesController < ApplicationController
   def create
     @form_entry = FormEntry.new(form_entry_params)
     authorize @form_entry
+    (render json: @form_entry.errors, status: 400 and return) unless @form_entry.validate
     @form_entry.save!
-    render json: @form_entry
+    render json: {errors: @form_entry}
   end
 
   private
