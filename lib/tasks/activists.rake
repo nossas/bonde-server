@@ -1,5 +1,4 @@
 namespace :activists_from do
-
   desc 'Create or identify activists on donations with blank activist_id'
   task donations: [:environment] do
     donations = Donation.where('activist_id is null')
@@ -19,5 +18,5 @@ namespace :activists_from do
   end
 
   desc 'Create or identify activists on form_entries and donations with blank activist_id'
-  task all: ['activists_from:donations', 'activists_from:form_entries']
+  task all: ['donations:load_donation_customers', 'activists_from:donations', 'activists_from:form_entries']
 end

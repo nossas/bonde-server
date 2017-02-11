@@ -102,6 +102,34 @@ class Donation < ActiveRecord::Base
     end
   end
 
+  def reload_transaction_data
+    trans = DonationService.load_transaction self.transaction_id
+    if trans
+      obj = { }
+      address = trans['address'].to_json only: ['zipcode', 'street', 'street_number', 'complementary', 'neighborhood', 'city', 'state']
+      phone = (trans['phone'].to_json only: ['ddd', 'number'])
+
+      obj['address'] = address if address and address != '{}' and address != 'null'
+      obj['phone'] = phone if phone and phone != '{}' and phone != 'null'
+      
+      if trans['customer']
+        obj['name'] = trans['customer']['name'] if trans['customer']['name'] 
+        obj['email'] = trans['customer']['email'] if trans['customer']['email'] 
+        obj['document_number'] = trans['customer']['document_number'] if trans['customer']['document_number'] 
+        obj['document_type'] = trans['customer']['document_type'] if trans['customer']['doc_type'] 
+      else
+        if trans.try(:card)
+          obj['name'] = trans.card.holder_name  if trans.card.holder_name
+        end
+        if trans.try(:metadata)
+          obj['email'] = trans.metadata.email if trans.metadata.email
+        end
+      end
+      self.email = obj['email'] if  (! self.try :email) && (obj['email'])
+      self.customer = obj if obj.size > 0
+    end
+  end
+
   private
 
   def activistable?
