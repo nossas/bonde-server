@@ -1,3 +1,17 @@
+namespace :activists do
+  desc 'Delete activists no used'
+  task free_not_used: [:environment] do
+    Activist.all.order(:id).each do |activist| 
+      if (Donation.where("activist_id = #{activist.id}").count == 0) && (FormEntry.where("activist_id = #{activist.id}").count == 0) && 
+         (ActivistPressure.where("activist_id = #{activist.id}").count == 0) && (ActivistMatch.where("activist_id = #{activist.id}").count == 0) && 
+         (CreditCard.where("activist_id = #{activist.id}").count == 0) && (Payment.where("activist_id = #{activist.id}").count == 0)
+          activist.addresses.each{|addr| addr.delete}
+          activist.delete
+      end
+    end
+  end
+end
+
 namespace :activists_from do
   desc 'Create or identify activists on donations with blank activist_id'
   task donations: [:environment] do
