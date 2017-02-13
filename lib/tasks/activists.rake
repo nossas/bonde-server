@@ -10,6 +10,28 @@ namespace :activists do
       end
     end
   end
+
+  desc 'Correct hash data on email field'
+  task hash_on_email_field: [:environment] do
+    Activist.where("email like '[{%}]'").each do |activist|
+      begin
+        data = eval(activist.email)
+        registros = data.select{|dt| dt['label'].downcase == 'email' || dt['label'].downcase =='correo electrónico' || dt['label'].downcase == 'e-mail' }
+        if registros.size
+          activist.email = registros[0]['value']
+          activist.save! validate: false
+        end
+      rescue StandardError => e
+        p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+        p "Registro: #{activist.id}"
+        p "Email: #{activist.email}"
+        p activist.errors
+        p e
+        p '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+      end
+    end
+  end
+
 end
 
 namespace :activists_from do
