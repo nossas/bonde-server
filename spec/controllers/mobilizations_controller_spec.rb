@@ -53,20 +53,20 @@ RSpec.describe MobilizationsController, type: :controller do
     end
   end
 
-  describe 'PATCH #update' do
-    before do
-      @mobilization = Mobilization.make! user: @user1
-    end
-  
+  describe 'PATCH #update' do 
     context 'update an existing Mobilization' do
       subject {
         Mobilization.make! user:@user1
       }
 
-      it 'should change data in database' do
-        patch :update, {format: :json, mobilization: {name: 'super-hiper-marevelous mobilization'}, id: subject.id}
+      let(:mob) { Mobilization.find subject.id }
 
-        expect((Mobilization.find subject.id).name).to eq('super-hiper-marevelous mobilization')
+      it 'should change data in database' do
+        patch :update, {format: :json, mobilization: {name: 'super-hiper-marevelous mobilization', tag_list: "corrupto, político"}, id: subject.id}
+
+        expect(mob.name).to eq('super-hiper-marevelous mobilization')
+        expect(mob.tag_list).to include('corrupto')
+        expect(mob.tag_list).to include('politico')
       end
 
       it 'should return an 200' do
@@ -158,11 +158,16 @@ RSpec.describe MobilizationsController, type: :controller do
         post :create, format: :json, mobilization: {
           name: 'Foo',
           goal: 'Bar',
-          community_id: community.id
+          community_id: community.id,
+          tag_list: "luta, corrupção"
         }
 
         expect(Mobilization.count).to eq(1)
-        expect(response.body).to include(Mobilization.first.to_json)
+        expect(response.body).to include('tag_list')
+        expect(response.body).to include('luta')
+        expect(response.body).to include('corrupcao')
+        expect(response.body).to include('Foo')
+        expect(response.body).to include('Bar')
       end
     end
   end
