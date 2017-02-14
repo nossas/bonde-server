@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 class Mobilization < ActiveRecord::Base
+  acts_as_taggable
+  
   include Shareable
   include Herokuable
   include Filterable
