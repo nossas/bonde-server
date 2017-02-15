@@ -76,7 +76,7 @@ namespace :activists_from do
     
     no_activists = donations.select{|d| d.activist_id == nil }
     no_activists.each do |don|
-      don.activist = Activist.order(:id).find_by_email(don.email)
+      don.activist = Activist.by_email don.email
       don.save
     end
   end

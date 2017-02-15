@@ -96,16 +96,12 @@ class FormEntry < ActiveRecord::Base
 
   def generate_activist
     if activistable?
-      activist_found = Activist.order(:id).find_by_email(self.email)
+      activist_found = Activist.by_email self.email
       unless activist_found
         activist_found = Activist.new(name: "#{self.first_name.strip} #{self.last_name}".strip, email: self.email, city: self.city, phone: self.phone) 
-        if ! activist_found.validate
-          p activist_found.errors
-        end
         activist_found.save!
       end
       self.activist = activist_found
-      p 'tentando gravar registro'
       self.save!(validate: false)
     end
   end

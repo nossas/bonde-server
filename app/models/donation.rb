@@ -88,7 +88,7 @@ class Donation < ActiveRecord::Base
   def generate_activist
     if activistable?
       activist_email = self.customer['email']
-      activist_found = Activist.order(:id).find_by_email activist_email
+      activist_found = Activist.by_email activist_email
       if activist_found
         self.activist = activist_found 
       else
