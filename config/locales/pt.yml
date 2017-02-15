@@ -37,9 +37,14 @@ pt:
       other_than: "O valor deve ser diferente de %{count}"
       odd: "O valor deve ser impar"
       even: "O valor deve ser par"
+      record_invalid: Registro inválido
   activerecord:
     errors:
       models:
+        form_entry:
+          attributes:
+            email:
+              invalid: Email inválido
         organization:
           attributes:
             name:

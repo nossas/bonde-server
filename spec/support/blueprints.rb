@@ -50,7 +50,33 @@ end
 
 FormEntry.blueprint do
   widget { Widget.make! }
-  fields { [].to_json }
+  fields { [
+      {
+        'uid': 'field-1448381355384-46', 
+        'kind': 'text',
+        'label': 'first name',
+        'placeholder': 'Insira aqui seu primeiro nome',
+        'required': 'true',
+        'value': 'José'
+      },
+      {
+        'uid': 'field-1448381377063-15',
+        'kind': 'text',
+        'label': 'last name',
+        'placeholder': 'Insira aqui seu último sobrenome',
+        'required': 'true',
+        'value': 'manuel'
+      },
+      {
+        'uid': 'field-1448381397174-71',
+        'kind': 'email',
+        'label': 'email',
+        'placeholder': 'Insira aqui o seu email',
+        'required': 'true',
+        'value': 'zemane@naoexiste.com'
+      }    
+    ].to_json 
+  }
 end
 
 Activist.blueprint do

@@ -3,7 +3,9 @@ require './app/resque_jobs/mailchimp_sync.rb'
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
-  validates :widget, :fields, presence: true
+  validates :widget, :fields, :email, :first_name, presence: true
+  validates :complete_name, length: { in: 3..70 }
+  validates_format_of :email, with: Devise.email_regexp
 
   belongs_to :widget
   belongs_to :activist
@@ -42,8 +44,13 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
+  def complete_name
+    "#{(first_name || '').strip} #{last_name || ''}".strip
+  end
+
   def email
-    field_decode ['email', 'correo electronico']
+    value = field_decode ['email', 'correo electronico']
+    value.strip unless value.nil?
   end
 
   def phone
@@ -87,7 +94,25 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
+  def generate_activist
+    if activistable?
+      activist_found = Activist.by_email self.email
+      unless activist_found
+        activist_found = Activist.new(name: "#{self.first_name.strip} #{self.last_name}".strip, email: self.email, city: self.city, phone: self.phone) 
+        activist_found.save!
+      end
+      self.activist = activist_found
+      self.save!(validate: false)
+    end
+  end
+
   private
+
+  def activistable?
+    return false if first_name.nil? or email.nil?
+    return ! (self.email =~ Devise.email_regexp).nil? unless  self.first_name.empty? 
+    false
+  end
 
   def decode_last_name
     field_decode ['sobrenome', 'sobre-nome', 'sobre nome', 'surname', 'last name', 'last-name', 'apellido']
@@ -101,7 +126,7 @@ class FormEntry < ActiveRecord::Base
     return_value = nil
     fields_as_json.each do |field|
       if field['label'] 
-          return_value = field['value']  if in_list?(list_field_names, field['label'] )
+          return_value = field['value'].strip  if in_list?(list_field_names, field['label'] )
       end
     end if fields
     return_value
