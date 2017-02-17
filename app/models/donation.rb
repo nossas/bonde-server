@@ -94,7 +94,6 @@ class Donation < ActiveRecord::Base
       else
         activist_name = self.customer['name']
         doc_number = self.customer['document_number']
-        dov_type = doc_number.size == 11 ? 'cpf' : 'cnpj'
         self.create_activist name: activist_name, email: activist_email, phone: self.customer['phone'], document_number: doc_number, 
           document_type: doc_type(doc_number), city: self.customer['city']
       end
@@ -105,32 +104,49 @@ class Donation < ActiveRecord::Base
   def reload_transaction_data
     trans = DonationService.load_transaction self.transaction_id
     if trans
-      obj = { }
-      address = trans['address'].to_json only: ['zipcode', 'street', 'street_number', 'complementary', 'neighborhood', 'city', 'state']
-      phone = (trans['phone'].to_json only: ['ddd', 'number'])
-
-      obj['address'] = address if address and address != '{}' and address != 'null'
-      obj['phone'] = phone if phone and phone != '{}' and phone != 'null'
-      
-      if trans['customer']
-        obj['name'] = trans['customer']['name'] if trans['customer']['name'] 
-        obj['email'] = trans['customer']['email'] if trans['customer']['email'] 
-        obj['document_number'] = trans['customer']['document_number'] if trans['customer']['document_number'] 
-        obj['document_type'] = trans['customer']['document_type'] if trans['customer']['doc_type'] 
-      else
-        if trans.try(:card)
-          obj['name'] = trans.card.holder_name  if trans.card.holder_name
-        end
-        if trans.try(:metadata)
-          obj['email'] = trans.metadata.email if trans.metadata.email
-        end
-      end
+      obj = fill_customer trans
       self.email = obj['email'] if  (! self.try :email) && (obj['email'])
       self.customer = obj if obj.size > 0
     end
   end
 
   private
+
+  def fill_customer trans
+    obj = { }
+    address = trans['address'].to_json only: ['zipcode', 'street', 'street_number', 'complementary', 'neighborhood', 'city', 'state']
+    phone = (trans['phone'].to_json only: ['ddd', 'number'])
+
+    obj['address'] = address if not_empty_val(address)
+    obj['phone'] = phone if not_empty_val(phone)
+    
+    if trans['customer']
+      fill_customer_in_transaction trans, obj
+    else
+      fill_no_customer_in_transaction trans, obj
+    end
+    return obj    
+  end
+
+  def not_empty_val var
+    var and var != '{}' and var != 'null'
+  end
+
+  def fill_customer_in_transaction trans, customer_obj
+    customer_obj['name'] = trans['customer']['name'] if trans['customer']['name'] 
+    customer_obj['email'] = trans['customer']['email'] if trans['customer']['email'] 
+    customer_obj['document_number'] = trans['customer']['document_number'] if trans['customer']['document_number'] 
+    customer_obj['document_type'] = trans['customer']['document_type'] if trans['customer']['doc_type'] 
+  end
+  
+  def fill_no_customer_in_transaction trans, customer_obj
+    if trans.try(:card)
+      customer_obj['name'] = trans.card.holder_name  if trans.card.holder_name
+    end
+    if trans.try(:metadata)
+      customer_obj['email'] = trans.metadata.email if trans.metadata.email
+    end
+  end
 
   def activistable?
     cus = try(:customer) || { } 
