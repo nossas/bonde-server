@@ -14,32 +14,6 @@ class DonationService
     self.create_transaction(donation, address)
   end
 
-  # Helper method to find a transaction by metadata
-  # github.com/catarse/catarse_pagarme
-  def self.find_by_metadata(key, value)
-    request = PagarMe::Request.new('/search', 'GET')
-    query = {
-      type: 'transaction',
-      query: {
-        from: 0,
-        size: 1,
-        query: {
-          bool: {
-            must: {
-              match: {
-                "metadata.#{key}" => value
-              }
-            }
-          }
-        }
-      }.to_json
-    }
-
-    request.parameters.merge!(query)
-    response = request.run
-    response.try(:[], "hits").try(:[], "hits").try(:[], 0).try(:[], "_source")
-  end
-
   def self.new_transaction(donation)
     self.find_or_create_card(donation) unless donation.boleto?
 
