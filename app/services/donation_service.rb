@@ -86,6 +86,10 @@ class DonationService
     end
   end
 
+  def self.load_transaction transaction_id
+    PagarMe::Transaction.find_by_id transaction_id
+  end
+
   def self.find_or_create_card(donation)
     return PagarMe::Card.find(donation.credit_card) if donation.credit_card
     card = PagarMe::Card.new(card_hash: donation.card_hash)

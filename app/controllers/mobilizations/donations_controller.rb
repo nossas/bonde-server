@@ -1,5 +1,6 @@
 class Mobilizations::DonationsController < ApplicationController
   respond_to :json
+
   after_action :verify_authorized
   after_action :verify_policy_scoped, only: %i[index]
 
@@ -43,7 +44,7 @@ class Mobilizations::DonationsController < ApplicationController
       @donation.activist_id = activist.id
     else
       @donation.create_activist(activist_params)
-      Raven.capture_message "Ativista não gravado ! Donation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
+      Raven.capture_message "Ativista não gravado !\nDonation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
     end
   end
 
