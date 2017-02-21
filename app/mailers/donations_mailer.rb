@@ -12,6 +12,21 @@ class DonationsMailer < ApplicationMailer
 
       from_address = sender ? "#{sender} <#{email_address}>" : email_address
 
+      headers['X-SMTPAPI'] = %#{
+        "filters": {
+          "subscriptiontrack": {
+            "settings": {
+              "enable": 0
+            }
+          },
+          "bypass_list_management" : {
+            "settings" : {
+              "enable" : 1
+            }
+          }
+        }
+      }#
+
       mail(
         to: donation.customer['email'],
         subject: subject,
