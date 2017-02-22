@@ -27,4 +27,34 @@ class Subscription < ActiveRecord::Base
     donations.where("gateway_data is not null").last.gateway_data["customer"]
   end
 
+  def base_rules
+    if global_rule.recipient_id != community_rule.recipient_id
+      [global_rule, community_rule]
+    else
+      [global_rule(percentage: 100)]
+    end
+  end
+
+  def community_rule(options = {})
+    recipient ||= community.recipient.pagarme_recipient_id
+    PagarMe::SplitRule.new(
+      {
+        charge_processing_fee: false,
+        liable: true,
+        percentage: 87,
+        recipient_id: recipient
+      }.merge!(options)
+    )
+  end
+
+  def global_rule(options = {})
+    PagarMe::SplitRule.new(
+      {
+        charge_processing_fee: true,
+        liable: false,
+        percentage: 13,
+        recipient_id: ENV['ORG_RECIPIENT_ID']
+      }.merge!(options)
+    )
+  end
 end

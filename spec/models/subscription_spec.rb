@@ -75,4 +75,68 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+
+  describe "base_rules" do
+    before do
+      ENV['ORG_RECIPIENT_ID'] = '1234'
+    end
+
+    subject { subscription.base_rules }
+
+    context "when global recipient is not the same of community" do
+      before do
+        pagarme_recipient = double({pagarme_recipient_id: '123'})
+        allow(subscription.community).to receive(:recipient).and_return(pagarme_recipient)
+      end
+
+      it "should return the global and community rules in array" do
+        is_expected.to eq([subscription.global_rule, subscription.community_rule])
+      end
+    end
+
+    context "when global recipient is the same of community" do
+      before do
+        pagarme_recipient = double({pagarme_recipient_id: '1234'})
+        allow(subscription.community).to receive(:recipient).and_return(pagarme_recipient)
+      end
+
+      it "should return only the global rule on array with 100 on percentage" do
+        is_expected.to eq([subscription.global_rule({percentage: 100})])
+      end
+    end
+  end
+
+  describe "global_rule" do
+    before do
+      ENV['ORG_RECIPIENT_ID'] = '1234'
+    end
+
+    subject { subscription.global_rule }
+
+    it "should return the global split rule" do
+      expect(subject.charge_processing_fee).to eq(true)
+      expect(subject.liable).to eq(false)
+      expect(subject.percentage).to eq(13)
+      expect(subject.recipient_id).to eq("1234")
+    end
+  end
+
+  describe "community_rule" do
+    before do
+      allow(subscription.community).to receive(:recipient).and_return(double(
+                                                                         {
+                                                                           pagarme_recipient_id: '123'
+                                                                         }
+                                                                       ))
+    end
+
+    subject { subscription.community_rule }
+
+    it "should return the community split rule" do
+      expect(subject.charge_processing_fee).to eq(false)
+      expect(subject.liable).to eq(true)
+      expect(subject.percentage).to eq(87)
+      expect(subject.recipient_id).to eq("123")
+    end
+  end
 end
