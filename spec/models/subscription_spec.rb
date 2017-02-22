@@ -29,4 +29,21 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "next_transaction_charge_date" do
+    context "when subscriptions is new without donations" do
+      subject { subscription.next_transaction_charge_date.to_date }
+      it { is_expected.to eq(DateTime.now.to_date) }
+    end
+
+    context "when subscription already have charged donations" do
+      subject { subscription.next_transaction_charge_date.to_date }
+      let!(:paid_donation_1) { Donation.make!(
+                                transaction_status: 'paid',
+                                created_at: '01/01/2017',
+                                local_subscription_id: subscription.id ) }
+
+      it { is_expected.to eq('01/02/2017'.to_date) }
+    end
+  end
+
 end

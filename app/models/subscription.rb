@@ -7,6 +7,14 @@ class Subscription < ActiveRecord::Base
 
   validates :widget, :activist, :community, :amount, presence: true
 
+  def next_transaction_charge_date
+    if last_charge
+      return (last_charge.created_at + 1.month)
+    end
+
+    DateTime.now
+  end
+
   def last_charge
     @last_charge ||= donations.paid.ordered.first
   end
