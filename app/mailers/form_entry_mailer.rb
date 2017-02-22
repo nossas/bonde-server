@@ -13,6 +13,16 @@ class FormEntryMailer < ApplicationMailer
                   @mobilization.name
                 end
 
+      headers['X-SMTPAPI'] = %#{
+        "filters": {
+          "subscriptiontrack": {
+            "settings": {
+              "enable": 0
+            }
+          }
+        }
+      }#
+
       mail(
         to: form_entry.email,
         subject: subject,
