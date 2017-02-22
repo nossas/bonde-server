@@ -7,4 +7,8 @@ class Subscription < ActiveRecord::Base
 
   validates :widget, :activist, :community, :amount, presence: true
 
+  def last_charge
+    @last_charge ||= donations.paid.ordered.first
+  end
+
 end
