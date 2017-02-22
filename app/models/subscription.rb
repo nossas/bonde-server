@@ -19,4 +19,12 @@ class Subscription < ActiveRecord::Base
     @last_charge ||= donations.paid.ordered.first
   end
 
+  def customer
+    if last_charge
+      return last_charge.gateway_data["customer"]
+    end
+
+    donations.where("gateway_data is not null").last.gateway_data["customer"]
+  end
+
 end

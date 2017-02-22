@@ -46,4 +46,33 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "customer" do
+    subject { subscription.customer }
+    context "when have a last charged donation" do
+      let!(:paid_donation_1) do
+        Donation.make!(
+          transaction_status: 'paid',
+          created_at: '01/01/2017',
+          local_subscription_id: subscription.id,
+          gateway_data: { customer: { id: '12345' } }.to_json
+        )
+      end
+
+      it { is_expected.to eq({"id" => "12345"}) }
+    end
+
+    context "when not have chaged but some pendings" do
+      let!(:pending_donation_1) do
+        Donation.make!(
+          transaction_status: 'pending',
+          created_at: '01/02/2017',
+          local_subscription_id: subscription.id ,
+          gateway_data: { customer: { id: '12345' } }.to_json
+        )
+      end
+
+      it { is_expected.to eq({"id" => "12345"}) }
+    end
+  end
+
 end
