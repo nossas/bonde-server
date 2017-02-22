@@ -27,8 +27,8 @@ class Mobilizations::DonationsController < ApplicationController
       find_or_create_activist(activist_params)
       address = find_or_create_address(address_params)
 
-      DonationService.run(@donation, address) unless @donation.subscription?
-      SubscriptionService.run(@donation, address) if @donation.subscription?
+      DonationService.run(@donation, address)# unless @donation.subscription?
+      #SubscriptionService.run(@donation, address) if @donation.subscription?
 
       render json: @donation
     else

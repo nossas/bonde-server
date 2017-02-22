@@ -39,6 +39,13 @@ class DonationService
       @transaction = self.new_transaction(donation)
       @transaction.customer = self.customer_params(donation, address)
       donation.email = donation.activist.email
+      donation.subscription_relation = Subscription.create(
+        widget_id: donation.widget_id,
+        activist_id: donation.activist_id,
+        community: donation.community.id,
+        status: 'pending',
+        amount: donation.amount
+      ) if donation.subscription?
       donation.save
 
       begin
@@ -49,6 +56,10 @@ class DonationService
           gateway_data: @transaction.try(:to_json),
           payables: @transaction.try(:payables)
         )
+
+        donation.subscription_relation.update_attribtutes(
+          card_data: @transaction.card.try(:to_json)
+        ) if @transaction.card && donation.subscription?
 
         if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
