@@ -4,7 +4,9 @@ RSpec.describe DnsHostedZone, type: :model do
   subject { build :dns_hosted_zone, community: (create :community) }
 
   it { should belong_to :community }
+  
   it { should have_many :users }
+  it { should have_many :dns_records }
 
   it { should validate_presence_of :community_id }
   it { should validate_presence_of :domain_name }
