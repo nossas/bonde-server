@@ -75,6 +75,72 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "charge_next_payment" do
+    subject { subscription.charge_next_payment }
+
+    context "when is not in the time to charge new payments" do
+      let!(:paid_donation_1) do
+        Donation.make!(
+          transaction_status: 'paid',
+          created_at: DateTime.now,
+          local_subscription_id: subscription.id,
+          gateway_data: { customer: { id: '12345' } }.to_json
+        )
+      end
+
+      it "should return nil" do
+        is_expected.to eq(nil)
+      end
+    end
+
+    context "when last payment failed" do
+    end
+
+    context "when is in time to next charge" do
+      let!(:paid_donation_1) do
+        Donation.make!(
+          transaction_status: 'paid',
+          created_at: 31.days.ago,
+          local_subscription_id: subscription.id,
+          gateway_data: { customer: { id: '12345' } }.to_json
+        )
+      end
+
+      before do
+        with_attrs = {
+          card_id: 'card_xpto_id',
+          customer: { id: '12345' },
+          postback_url: Rails.application.routes.url_helpers.create_postback_url(protocol: 'https'),
+          amount: subscription.amount,
+          split_rules: subscription.base_rules,
+          metadata: {
+            widget_id: subscription.widget.id,
+            mobilization_id: subscription.widget.mobilization.id,
+            community_id: subscription.community.id,
+            city: subscription.community.city,
+            email: subscription.activist.email,
+            donation_id: (subscription.donations.last.id + 1),
+            local_subscription_id: subscription.id
+          }
+        }
+        transaction_double = double(
+          {
+            id: '1235',
+            status: 'paid',
+            payables: [{id: 'x'}, {id: 'y'}],
+            charge: true
+          }
+        )
+        expect(PagarMe::Transaction).to receive(:new).with(with_attrs).and_return(transaction_double)
+      end
+
+      it 'should charge and update generated donation' do
+        charged = subject
+        expect(charged.transaction_id).to eq("1235")
+        expect(charged.transaction_status).to eq('paid')
+      end
+    end
+  end
 
   describe "base_rules" do
     before do
