@@ -236,7 +236,7 @@ RSpec.describe Mailchimpable do
           :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
         to_timeout
 
-      expect { fake.subscribe_to_list('fake@nossas.org', {FNAME: 'my fake', LNAME: 'email'}, {update_existing: true}) }.to raise_error
+      expect { fake.subscribe_to_list('fake@nossas.org', {FNAME: 'my fake', LNAME: 'email'}, {update_existing: true}) }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
 
