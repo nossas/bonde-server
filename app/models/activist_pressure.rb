@@ -21,9 +21,9 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def update_mailchimp
-    subscribe_to_list(self.activist.email, subscribe_attributes)
-    subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
-    update_member(self.activist.email, { groupings: groupings })
+    subscribe_to_list( self.activist.email, subscribe_attributes )
+    subscribe_to_segment( self.widget.mailchimp_segment_id, self.activist.email )
+    update_member( self.activist.email, { groupings: groupings } )
   end
 
   def send_thank_you_email

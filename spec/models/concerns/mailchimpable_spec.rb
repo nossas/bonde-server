@@ -236,9 +236,7 @@ RSpec.describe Mailchimpable do
           :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
         to_timeout
 
-      ret = fake.subscribe_to_list 'fake@nossas.org', {FNAME: 'my fake', LNAME: 'email'}, {update_existing: true}
-
-      expect(ret).not_to be 
+      expect { fake.subscribe_to_list('fake@nossas.org', {FNAME: 'my fake', LNAME: 'email'}, {update_existing: true}) }.to raise_error
     end
   end
 
@@ -341,14 +339,12 @@ RSpec.describe Mailchimpable do
     end
 
     it 'Some error' do
-      stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq/members").
+      stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq1/members").
         with(:body => "{\"email_address\":\"fake@nossas.org\"}",
           :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
           to_timeout
 
-      ret = fake.subscribe_to_segment '123123eq', "fake@nossas.org"
-
-      expect(ret).not_to be 
+      expect { fake.subscribe_to_segment '123123eq1', "fake@nossas.org" }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
 
@@ -462,9 +458,7 @@ RSpec.describe Mailchimpable do
         with(:body => "{\"interests\":{\"1234212\":true,\"12312\":true}}").
         to_timeout
 
-      ret = fake.update_member 'fake@nossas.org', {groupings: {'1234212': true, '12312': true}}
-
-      expect(ret).not_to be 
+      expect { fake.update_member 'fake@nossas.org', {groupings: {'1234212': true, '12312': true}} }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
 end

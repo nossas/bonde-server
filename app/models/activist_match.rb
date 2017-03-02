@@ -18,8 +18,8 @@ class ActivistMatch < ActiveRecord::Base
     MailchimpSyncWorker.perform_async(self.id, 'activist_match')
   end
 
-  def update_mailchimp
-    if(!Rails.env.test?)
+  def update_mailchimp force_in_test: false
+    if(!Rails.env.test?) || force_in_test
       subscribe_attributes =  {
         FNAME: self.firstname,
         LNAME: self.lastname,
@@ -28,6 +28,7 @@ class ActivistMatch < ActiveRecord::Base
 
       subscribe_to_list(self.activist.email, subscribe_attributes)
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
+
       update_member(self.activist.email, {
         groupings: groupings
       })

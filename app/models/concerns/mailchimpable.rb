@@ -1,4 +1,14 @@
 module Mailchimpable
+  class MailchimpableException < StandardError
+    def initialize standard_error, message
+      @message = "#{message} +\r\n#{standard_error.message}"
+    end
+
+    def to_s
+      @message
+    end
+  end
+
   def create_segment(segment_name)
     api_client.lists(mailchimp_list_id).segments.create(body: {
       name: segment_name,
@@ -15,10 +25,8 @@ module Mailchimpable
         api_client.lists(mailchimp_list_id).members.create(body: create_body(email, merge_vars: merge_vars, options: options))
       end
     rescue StandardError => e
-      unless e.message =~ /.*title="Member Exists".*/
-        Raven.capture_message("Erro ao gravar usuário na lista:\nEmail: #{email}\nMergeVars: #{merge_vars.to_json unless merge_vars.nil?}\nOptions: #{options.to_json}\n#{e}") unless Rails.env.test?
-        logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}") 
-      end
+      raise Mailchimpable::MailchimpableException.new(e, 
+        "List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}" ) unless e.message =~ /.*title="Member Exists".*/
     end
   end
 
@@ -29,8 +37,7 @@ module Mailchimpable
         email_address: email
       }) if segment_id
     rescue StandardError => e
-      Raven.capture_message("Erro ao subscrever usuário no segmento: \nEmail: #{email}\nSegment_id: #{segment_id}\nException: #{e}") unless Rails.env.test?
-      logger.error("Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', email: '#{email}')\nError:#{e}")
+      raise MailchimpableException.new( e, "Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')\nError:#{e}" )
     end
   end
 
@@ -39,8 +46,7 @@ module Mailchimpable
     begin
       api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email.downcase)).update(body: create_body(email, options: options))
     rescue StandardError => e
-      Raven.capture_message("Erro ao realizar o update de membro: list_id: #{mailchimp_list_id}\nEmail: #{email}\nOptions: #{options.to_json unless options.nil?}\nException: #{e}") unless Rails.env.test?
-      logger.error("Subscribe_to_segment error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
+      raise MailchimpableException.new(e, "update_member error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
     end
   end
 
@@ -79,7 +85,7 @@ module Mailchimpable
     if merge_vars
       body = {
         email_address: email,
-        status: :subscribed,
+        status: :subscribed
       }
       body[:merge_fields] = merge_vars if merge_vars
     end
