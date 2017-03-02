@@ -139,7 +139,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
       worker = MailchimpSyncWorker.new
       worker.perform_with_formEntry 1
 
-			expect(formEntry).not_to have_received(:send_to_mailchimp)
+			expect(formEntry).not_to have_received(:update_mailchimp)
 		end
 
 		it 'should not synchronize if already synchronized' do
@@ -150,7 +150,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
       worker.perform_with_formEntry 1
 
 			expect(formEntry).not_to have_received(:create_mailchimp_segment)
-			expect(widget_without_segment_id).not_to have_received(:send_to_mailchimp)
+			expect(widget_without_segment_id).not_to have_received(:update_mailchimp)
 		end
 
 		it 'should synchronize widget and formEntry if widget not synchronized' do
@@ -160,7 +160,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
       worker = MailchimpSyncWorker.new
       worker.perform_with_formEntry 1
 
-			expect(formEntry).to have_received(:send_to_mailchimp).once
+			expect(formEntry).to have_received(:update_mailchimp).once
 			expect(widget_without_segment_id).to have_received(:create_mailchimp_segment).once
 		end
 
@@ -171,7 +171,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
       worker = MailchimpSyncWorker.new
       worker.perform_with_formEntry 1
 
-			expect(formEntry).to have_received(:send_to_mailchimp).once
+			expect(formEntry).to have_received(:update_mailchimp).once
 			expect(widget_with_segment_id).not_to have_received(:create_mailchimp_segment)
 		end
 	end
