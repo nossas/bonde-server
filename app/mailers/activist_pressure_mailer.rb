@@ -17,19 +17,19 @@ class ActivistPressureMailer < ApplicationMailer
       @activist = activist_pressure.activist
       @mail = recipient
       headers['X-SMTPAPI'] = %#{
-      "filters": {
-        "subscriptiontrack": {
-          "settings": {
-            "enable": 0
-          }
-        },
-        "bypass_list_management" : {
-          "settings" : {
-            "enable" : 1
+        "filters": {
+          "subscriptiontrack": {
+            "settings": {
+              "enable": 0
+            }
+          },
+          "bypass_list_management" : {
+            "settings" : {
+              "enable" : 1
+            }
           }
         }
-      }
-    }#
+      }#
       mail to: targets, subject: @mail[:subject], from: activist_email
     end
   end

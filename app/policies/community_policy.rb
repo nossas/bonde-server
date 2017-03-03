@@ -7,6 +7,10 @@ class CommunityPolicy < ApplicationPolicy
     is_owned_by?(user)
   end
 
+  def can_handle_with_activist_actions?
+    is_owned_by?(user)
+  end
+
   def show?
     is_owned_by?(user)
   end

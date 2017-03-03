@@ -19,7 +19,7 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
       let!(:form_entry) { FormEntry.make! widget: widget }
       let!(:form_entry2) { FormEntry.make! widget: widget2 }
 
-      it "should return form_entries by mobilization" do
+        it "should return form_entries by mobilization" do
         get(:index, mobilization_id: mobilization.id)
         expect(response.body).to eq([form_entry, form_entry2].to_json)
       end
@@ -43,7 +43,11 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
           format: :json,
           form_entry: {
             widget_id: widget.id,
-            fields: [{kind: 'email', value: 'foo@validemail.com'}].to_json
+            fields: [
+              { kind: 'email', label: 'email', value: 'foo@validemail.com' },
+              { kind: 'text', label: 'first name', value: 'foo' },
+              { kind: 'text', label: 'last name', value: 'bar' }
+            ].to_json
           }
         )
       end
@@ -53,10 +57,11 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
         form_entry = widget.form_entries.first
         expect(response.body).to include(form_entry.to_json)
         expect(form_entry.widget_id).to eq(widget.id)
-        expect(form_entry.fields).to eq([{
-          kind: 'email',
-          value: 'foo@validemail.com'
-        }].to_json)
+        expect(form_entry.fields).to eq([
+          { kind: 'email', label: 'email', value: 'foo@validemail.com' },
+          { kind: 'text', label: 'first name', value: 'foo' },
+          { kind: 'text', label: 'last name', value: 'bar' }
+        ].to_json)
       end
 
       it "message status should be a 200" do
@@ -68,5 +73,89 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
         expect(resque_job).to be
       end
     end
-  end
+
+    context "invalid email" do
+      before do 
+        Resque.redis.flushall
+        post(
+          :create,
+          mobilization_id: widget.mobilization.id,
+          format: :json,
+          form_entry: {
+            widget_id: widget.id,
+            fields: [
+              {kind: 'email', label: 'email', value: 'foovalidemail.com'},
+              { kind: 'text', label: 'name', value: 'Foo Bar' }
+            ].to_json
+          }
+        )
+      end
+
+      it {should respond_with 400}
+
+      it "should post an email validation error" do
+        expect(response.body).to include('Email inválido')
+      end
+    end
+
+    context "invalid nome" do
+      before do 
+        Resque.redis.flushall
+        post(
+          :create,
+          mobilization_id: widget.mobilization.id,
+          format: :json,
+          form_entry: {
+            widget_id: widget.id,
+            fields: [
+              { kind: 'email', label: 'email', value: 'foo@validemail.com' },
+              { kind: 'text', label: 'name', value: 'Lu' }
+            ].to_json
+          }
+        )
+      end
+
+      it {should respond_with 400}
+
+      it "should post an email validation error" do
+        expect(response.body).to include('Campo é pequeno demais.')
+      end
+    end
+
+
+    [
+      {
+        field_name: 'email',
+        field_type: 'email',
+        field_value: 'foo@validemail.com',
+        message_retrieved: 'Campo não pode estar vazio'
+      },
+      {
+        field_name: 'first name',
+        field_type: 'text',
+        field_value: 'Jão',
+        message_retrieved: 'Email inválido'
+      }
+    ].each do |dados|
+      context "missing #{dados[:field_name]}" do
+        before do 
+          Resque.redis.flushall
+          post(
+            :create,
+            mobilization_id: widget.mobilization.id,
+            format: :json,
+            form_entry: {
+              widget_id: widget.id,
+              fields: [{kind: dados[:field_type], label: dados[:field_name], value: dados[:field_value]}].to_json
+            }
+          )
+        end
+
+        it {should respond_with 400}
+
+        it "should post a(an) #{dados[:field_name]} validation error" do
+          expect(response.body).to include(dados[:message_retrieved])
+        end
+      end
+    end  end
 end

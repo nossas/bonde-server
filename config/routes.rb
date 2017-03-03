@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :activist_matches, only: [:create]
   resources :uploads, only: [:index]
   resources :communities, only: [:index, :create, :update, :show] do
+    resources :activist_actions, only: [:index], controller: 'communities/activist_actions'
     resources :payable_details, only: [:index], controller: 'communities/payable_details'
     resources :donation_reports, only: [:index], controller: 'communities/donation_reports'
     resources :community_users, path: 'users', only: [:index, :create, :update]

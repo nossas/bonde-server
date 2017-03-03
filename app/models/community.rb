@@ -9,6 +9,7 @@ class Community < ActiveRecord::Base
   has_many :users, through: :community_users
   has_many :agg_activists
   has_many :recipients
+  has_many :activist_actions
 
   belongs_to :recipient
 
