@@ -11,7 +11,7 @@ class Mobilizations::BlocksController < ApplicationController
     @block = Block.new(block_params.merge(mobilization_id: params[:mobilization_id]))
     authorize @block
     @block.save!
-    render json: @block
+    render json: @block , serializer: BlockSerializer::CompleteBlockSerializer
   end
 
   def update
