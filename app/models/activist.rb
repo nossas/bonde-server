@@ -21,4 +21,30 @@ class Activist < ActiveRecord::Base
   def last_name
     (name.split(' ')[1..-1]).join(' ') if name
   end
+
+  def self.update_from_csv_content csv_content
+    update_from_csv CsvReader.new(content: csv_content)
+  end
+
+  def self.update_from_csv_file csv_filename
+    update_from_csv CsvReader.new(file_name: csv_filename)
+  end
+
+  private
+
+  def self.update_from_csv csv_reader
+    list = []
+    (1 .. csv_reader.max_records).each do
+      activist = (Activist.find_by_email csv_reader.email) || Activist.new
+      activist.name = csv_reader.name
+      activist.email = csv_reader.email
+      activist.phone = csv_reader.phone
+      activist.document_number = csv_reader.document_number
+      activist.document_type = csv_reader.document_type
+      activist.save!
+      csv_reader.next_record
+      list << activist
+    end
+    list
+  end
 end
