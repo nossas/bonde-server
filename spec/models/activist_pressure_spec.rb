@@ -8,7 +8,7 @@ RSpec.describe ActivistPressure, type: :model do
   it { should have_one :mobilization }
   it { should have_one :community }
 
-  describe "Puts a message in Resque queue" do
+  describe "Puts a message in sidekiq queue" do
     before do 
       activistPressure=ActivistPressure.new id:15
       activistPressure.async_update_mailchimp

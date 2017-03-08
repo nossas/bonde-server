@@ -1,5 +1,3 @@
-require './app/resque_jobs/mailchimp_sync.rb'
-
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 

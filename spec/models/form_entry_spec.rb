@@ -48,7 +48,7 @@ RSpec.describe FormEntry, type: :model do
     end
   end
 
-  describe "Puts a message in Resque queue" do
+  describe "Puts a message in sidekiq queue" do
     before do
       @form_entry=FormEntry.new id:25
       @form_entry.async_send_to_mailchimp

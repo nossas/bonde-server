@@ -15,7 +15,6 @@ RSpec.describe Donation, type: :model do
 
   describe '#async_update_mailchimp' do
     let(:donation) { Donation.new id: 52 }
-    let(:resque_job) { Resque.peek(:mailchimp_synchro) }
 
     before do 
       donation.async_update_mailchimp

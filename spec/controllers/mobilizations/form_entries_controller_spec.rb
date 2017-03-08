@@ -68,7 +68,7 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
         expect(response.status).to be 200
       end
 
-      it "should put a message on Resque" do
+      it "should put a message on Sidekiq" do
         form_entry = widget.form_entries.first
         sidekiq_jobs = MailchimpSyncWorker.jobs
         expect(sidekiq_jobs.size).to eq(1)
@@ -78,7 +78,6 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
 
     context "invalid email" do
       before do 
-        Resque.redis.flushall
         post(
           :create,
           mobilization_id: widget.mobilization.id,
@@ -102,7 +101,6 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
 
     context "invalid nome" do
       before do 
-        Resque.redis.flushall
         post(
           :create,
           mobilization_id: widget.mobilization.id,
@@ -141,7 +139,6 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
     ].each do |dados|
       context "missing #{dados[:field_name]}" do
         before do 
-          Resque.redis.flushall
           post(
             :create,
             mobilization_id: widget.mobilization.id,
