@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'webmock/rspec'
 require 'pundit/rspec'
 require 'support/factory_girl'
+require 'sidekiq/testing'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
