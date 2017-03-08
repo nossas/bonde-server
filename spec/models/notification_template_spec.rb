@@ -12,6 +12,15 @@ RSpec.describe NotificationTemplate, type: :model do
   let(:template_vars) { {name: 'name2'} }
   let(:notification) { create(:notification_template, template_vars: {name:'name1'}) }
 
+  describe "before_save" do
+    context "should downcase label before save" do
+      it do
+        n = create(:notification_template, label: 'Label_ToDowncase')
+        expect(n.label).to eq('label_todowncase')
+      end
+    end
+  end
+
   describe "generate_subject" do
     subject { notification.generate_subject(template_vars) }
 
