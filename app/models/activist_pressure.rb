@@ -3,7 +3,7 @@ class ActivistPressure < ActiveRecord::Base
 
   attr_accessor :firstname, :lastname, :mail
 
-  validates :widget, :activist, :mail, presence: true
+  validates :widget, presence: true
   belongs_to :activist
   belongs_to :widget
   has_one :block, through: :widget

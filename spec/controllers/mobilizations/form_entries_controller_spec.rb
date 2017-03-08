@@ -151,11 +151,12 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
           )
         end
 
-        it {should respond_with 400}
+        it {should respond_with 200}
 
-        it "should post a(an) #{dados[:field_name]} validation error" do
-          expect(response.body).to include(dados[:message_retrieved])
+        it "should not return a(an) #{dados[:field_name]} validation error" do
+          expect(response.body).not_to include(dados[:message_retrieved])
         end
       end
-    end  end
+    end  
+  end
 end

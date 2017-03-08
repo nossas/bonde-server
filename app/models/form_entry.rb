@@ -3,9 +3,11 @@ require './app/resque_jobs/mailchimp_sync.rb'
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
-  validates :widget, :fields, :email, :first_name, presence: true
-  validates :complete_name, length: { in: 3..70 }
-  validates_format_of :email, with: Devise.email_regexp
+  validates :widget, :fields, presence: true
+  validates :complete_name, length: { in: 3..70 }, allow_blank: true
+  validates :email, allow_blank: true, presence: false
+  validates_format_of :email, with: Devise.email_regexp , if: "! ( self.email.nil? || self.email.blank? )"
+
 
   belongs_to :widget
   belongs_to :activist
