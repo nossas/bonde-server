@@ -29,10 +29,9 @@ RSpec.describe ActivistMatchesController, type: :controller do
 
   describe 'POST #create' do
     context 'valid message' do
-      before {
-        post :create,
-        activist_match: { match_id: match, activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
-      }
+      before do
+        post :create, activist_match: { match_id: match, activist: { name: 'Foo Bar', email: 'foo@bar.org' } }
+      end
 
       it_behaves_like 'public access'
 
@@ -40,9 +39,11 @@ RSpec.describe ActivistMatchesController, type: :controller do
         expect(response.status).to be 200
       end
 
-      it "should put a message on Resque" do
-        resque_job = Resque.peek(:mailchimp_synchro)
-        expect(resque_job).to be
+      it "should put a message on Sidekiq" do
+        json_parsed = JSON.parse(response.body)
+        sidekiq_jobs = MailchimpSyncWorker.jobs
+        expect(sidekiq_jobs.size).to eq(1)
+        expect(sidekiq_jobs.last['args']).to eq([json_parsed['id'], 'activist_match'])
       end
 
       it 'should return a json' do
