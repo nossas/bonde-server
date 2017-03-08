@@ -6,6 +6,9 @@ RSpec.describe NotificationTemplate, type: :model do
   it { should validate_presence_of :subject_template }
   it { should validate_presence_of :body_template }
 
+  it { should allow_value('label_valido_123').for(:label) }
+  it { should allow_value('label invalido').for(:label) }
+
   let(:template_vars) { {name: 'name2'} }
   let(:notification) { create(:notification_template, template_vars: {name:'name1'}) }
 
