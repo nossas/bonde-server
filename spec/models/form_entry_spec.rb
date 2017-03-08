@@ -34,7 +34,6 @@ RSpec.describe FormEntry, type: :model do
       it 'should build a new activist' do
         expect(build_form_entry).to receive(:create_activist).with(name: 'Foo bar', email: email).and_call_original
         subject
-        expect(build_form_entry.activist).to_not be_nil
         expect(build_form_entry.activist).to_not eq(activist)
       end
     end
@@ -128,10 +127,10 @@ RSpec.describe FormEntry, type: :model do
     { 
       'english' => ['name', 'surname', 'email', 'mobile', 'city'],
       'english v.2' => ['first name', 'last name', 'email', 'mobile', 'city'],
-      'english v.3' => ['first-name', 'last-name', 'email', 'mobile', 'city'],
-      'portuguese' => ['Nome', 'Sobrenome', 'Email', 'Celular', 'Cidade'],
+      'english v.3' => ['first-name', 'last-name', 'E-mail', 'mobile', 'city'],
+      'portuguese' => ['Nome', 'Sobrenome', 'Email predileto', 'Celular', 'Cidade'],
       'portuguese v.2' => ['nome', 'Sobre nome', 'email', 'celular', 'cidade'],
-      'portuguese v.3' => ['Nome*', 'Sobre-nome', 'email(*)', 'CeLuLar', 'Cidade*'],
+      'portuguese v.3' => ['Nome*', 'Sobre-nome', 'email(*)', 'CeLuLar predileto', 'Cidade*'],
       'spanish' => ['nombre', 'apellido', 'Correo electrónico', 'Portable', 'Ciudad']
     }. each do |language, labels|
       context "with data in #{language}" do 
