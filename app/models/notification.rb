@@ -12,4 +12,8 @@ class Notification < ActiveRecord::Base
       template_vars: template_vars.to_json
     )
   end
+
+  def deliver_without_queue
+    NotificationMailer.notify(self).deliver_now!
+  end
 end
