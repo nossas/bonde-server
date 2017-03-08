@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 
 RSpec.describe Mobilizations::FormEntriesController, type: :controller do
@@ -36,7 +37,6 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   describe "POST #create" do
     context "valid call" do
       before do 
-        Resque.redis.flushall
         post(
           :create,
           mobilization_id: widget.mobilization.id,
@@ -69,8 +69,10 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
       end
 
       it "should put a message on Resque" do
-        resque_job = Resque.peek(:mailchimp_synchro)
-        expect(resque_job).to be
+        form_entry = widget.form_entries.first
+        sidekiq_jobs = MailchimpSyncWorker.jobs
+        expect(sidekiq_jobs.size).to eq(1)
+        expect(sidekiq_jobs.last['args']).to eq([form_entry.id, 'formEntry'])
       end
     end
 
