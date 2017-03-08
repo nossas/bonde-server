@@ -24,6 +24,7 @@ gem 'pagarme', '2.1.2'
 gem 'sentry-raven'
 gem 'has_scope'
 gem 'postgres-copy'
+gem "liquid"
 
 group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'

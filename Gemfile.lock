@@ -235,6 +235,7 @@ GEM
     json (1.8.3)
     jsonapi (0.1.1.beta2)
       json (~> 1.8)
+    liquid (4.0.0)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     machinist (2.0)
@@ -412,6 +413,7 @@ DEPENDENCIES
   fog
   gibbon (>= 2)
   has_scope
+  liquid
   machinist (>= 2.0.0.beta2)
   newrelic_rpm (= 3.15.0.314)
   omniauth
