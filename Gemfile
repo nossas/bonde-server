@@ -17,6 +17,7 @@ gem 'pundit'
 gem 'gibbon', '>= 2'
 gem 'redis', '3.3.0'
 gem 'resque', '1.26.0', require: 'resque/server'
+gem 'sidekiq'
 gem 'puma'
 gem 'platform-api'
 gem 'codeclimate-test-reporter', '< 1.0.0', group: :test, require: nil

@@ -57,6 +57,7 @@ GEM
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
+    connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     devise (4.2.0)
@@ -360,6 +361,11 @@ GEM
       faraday (>= 0.7.6, < 1.0)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
+    sidekiq (4.2.9)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      rack-protection (>= 1.5.0)
+      redis (~> 3.2, >= 3.2.1)
     simplecov (0.12.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -433,6 +439,7 @@ DEPENDENCIES
   rspec-rails
   sentry-raven
   shoulda-matchers (< 3.0.0)
+  sidekiq
   spring
   webmock (= 2.3.1)
 
