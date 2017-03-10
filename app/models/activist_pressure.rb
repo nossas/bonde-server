@@ -17,7 +17,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def async_update_mailchimp
-    Resque.enqueue(MailchimpSync, self.id, 'activist_pressure')
+    MailchimpSyncWorker.perform_async(self.id, 'activist_pressure')
   end
 
   def update_mailchimp

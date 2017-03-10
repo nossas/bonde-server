@@ -1,5 +1,3 @@
-require './app/resque_jobs/mailchimp_sync.rb'
-
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
@@ -64,7 +62,7 @@ class FormEntry < ActiveRecord::Base
   end
 
   def async_send_to_mailchimp
-    Resque.enqueue(MailchimpSync, self.id, 'formEntry')
+    MailchimpSyncWorker.perform_async(self.id, 'formEntry')
   end
 
   def send_to_mailchimp

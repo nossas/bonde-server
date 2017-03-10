@@ -15,7 +15,7 @@ class ActivistMatch < ActiveRecord::Base
   after_create :async_update_mailchimp
 
   def async_update_mailchimp
-    Resque.enqueue(MailchimpSync, self.id, 'activist_match')
+    MailchimpSyncWorker.perform_async(self.id, 'activist_match')
   end
 
   def update_mailchimp

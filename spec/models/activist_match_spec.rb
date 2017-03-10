@@ -10,22 +10,16 @@ RSpec.describe ActivistMatch, type: :model do
   it { should have_one :mobilization }
   it { should have_one :community }
 
-  describe "Puts a message in Resque queue" do
+  describe "Puts a message in sidekiq queue" do
     before do 
-      Resque.redis.flushall
       activistMatch=ActivistMatch.new id: 12
       activistMatch.async_update_mailchimp
-      @resque_job = Resque.peek(:mailchimp_synchro)
     end
 
     it "should save data in redis" do
-      expect(@resque_job).to be_present   
-    end
-
-    it "test the arguments" do
-      expect(@resque_job['args'][0]).to be_eql 12
-      expect(@resque_job['args'][1]).to be_eql 'activist_match'
-      expect(@resque_job['args'].size).to be 2
+      sidekiq_jobs = MailchimpSyncWorker.jobs
+      expect(sidekiq_jobs.size).to eq(1)
+      expect(sidekiq_jobs.last['args']).to eq([12, 'activist_match'])
     end
   end
 end

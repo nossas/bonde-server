@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'webmock/rspec'
 require 'pundit/rspec'
 require 'support/factory_girl'
+require 'sidekiq/testing'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -52,4 +53,7 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
 end

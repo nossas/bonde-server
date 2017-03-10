@@ -10,7 +10,7 @@ module HubApi
   class Application < Rails::Application
     config.time_zone = 'Brasilia'
     config.i18n.default_locale = :pt
-    config.active_job.queue_adapter = :resque
+    config.active_job.queue_adapter = :sidekiq
     config.active_record.schema_format = :sql
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
