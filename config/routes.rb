@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     resources :community_users, path: 'users', only: [:index, :create, :update]
     get 'mobilizations', to: 'communities#list_mobilizations'
     get 'activists', to: 'communities#list_activists'
+    post 'activists', to: 'activists#add_activists'
   end
 
   resources :users, only: [:create, :update]
