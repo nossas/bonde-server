@@ -10,6 +10,7 @@ class Community < ActiveRecord::Base
   has_many :agg_activists
   has_many :recipients
   has_many :activist_actions
+  has_many :dns_hosted_zones
 
   belongs_to :recipient
 
