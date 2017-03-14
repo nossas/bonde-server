@@ -25,6 +25,13 @@ class SubscriptionSyncService
   end
 
   def sync_over_collection transactions
+    begin
+      gateway_subscription = GatewaySubscription.find_or_create_by(subscription_id: @subscription.id)
+      gateway_subscription.update_attributes(gateway_data: @subscription.to_json)
+    rescue Exception => e
+      Raven.capture_exception(e)
+    end
+
     transactions.each do |transaction|
       payables = transaction.payables
       donation = Donation.unscoped.find_by_transaction_id(transaction.id)

@@ -1,11 +1,11 @@
-require './app/resque_jobs/mailchimp_sync.rb'
-
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
 
-  validates :widget, :fields, :email, :first_name, presence: true
-  validates :complete_name, length: { in: 3..70 }
-  validates_format_of :email, with: Devise.email_regexp
+  validates :widget, :fields, presence: true
+  validates :complete_name, length: { in: 3..70 }, allow_blank: true
+  validates :email, allow_blank: true, presence: false
+  validates_format_of :email, with: Devise.email_regexp , if: "! ( self.email.nil? || self.email.blank? )"
+
 
   belongs_to :widget
   belongs_to :activist
@@ -31,7 +31,7 @@ class FormEntry < ActiveRecord::Base
       complete = decode_complete_name
       complete.split(' ')[0] if complete
     else
-      field_decode ['nome', 'nombre', 'name', 'first name', 'first-name']
+      field_decode ['nome', 'name', /^(nombre|first[\-\s]?name)/]
     end
   end
 
@@ -49,20 +49,20 @@ class FormEntry < ActiveRecord::Base
   end
 
   def email
-    value = field_decode ['email', 'correo electronico']
+    value = field_decode [/e\-?mail/, /correo electronico/]
     value.strip unless value.nil?
   end
 
   def phone
-    field_decode ['celular', 'mobile', 'portable']
+    field_decode [/^(celular|mobile|portable)/ ]
   end
 
   def city
-    field_decode ['cidade', 'city', 'ciudad']
+    field_decode [/^(cidade|city|ciudad)/]
   end
 
   def async_send_to_mailchimp
-    Resque.enqueue(MailchimpSync, self.id, 'formEntry')
+    MailchimpSyncWorker.perform_async(self.id, 'formEntry')
   end
 
   def send_to_mailchimp
@@ -115,7 +115,7 @@ class FormEntry < ActiveRecord::Base
   end
 
   def decode_last_name
-    field_decode ['sobrenome', 'sobre-nome', 'sobre nome', 'surname', 'last name', 'last-name', 'apellido']
+    field_decode [/^(sobre[\s\-]?nome|surname|last[\s\-]?name|apellido)/]
   end
 
   def decode_complete_name
@@ -126,7 +126,7 @@ class FormEntry < ActiveRecord::Base
     return_value = nil
     fields_as_json.each do |field|
       if field['label'] 
-          return_value = field['value'].strip  if in_list?(list_field_names, field['label'] )
+          return_value = (field['value']||'').strip  if in_list?(list_field_names, field['label'] )
       end
     end if fields
     return_value
@@ -136,8 +136,19 @@ class FormEntry < ActiveRecord::Base
     in_list = false
     scanned = I18n.transliterate(field_label.downcase).scan(/([\w\d\s\-]+)(\s*\(?\s*\*\s*\)?)?$/)
     if scanned
-      in_list = (list_field_names.include?(scanned[0][0].strip)) if scanned[0]
+      in_list = le_campo(list_field_names, scanned[0][0].strip) if scanned[0]
     end
     in_list
+  end
+
+  def le_campo list_field_names, scanned
+    list_field_names.each do |field_name|
+      if field_name.class == Regexp
+        return true if scanned =~ field_name
+      else
+        return true if scanned.eql? field_name
+      end
+    end
+    false
   end
 end

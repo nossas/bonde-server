@@ -9,6 +9,7 @@ RSpec.describe Community, type: :model do
   it { should have_many :community_users }
   it { should have_many :users }
   it { should have_many :recipients }
+  it { should have_many :dns_hosted_zones }
 
   it { should belong_to :recipient }
 

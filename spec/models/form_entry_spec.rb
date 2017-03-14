@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 
 RSpec.describe FormEntry, type: :model do
@@ -34,7 +35,6 @@ RSpec.describe FormEntry, type: :model do
       it 'should build a new activist' do
         expect(build_form_entry).to receive(:create_activist).with(name: 'Foo bar', email: email).and_call_original
         subject
-        expect(build_form_entry.activist).to_not be_nil
         expect(build_form_entry.activist).to_not eq(activist)
       end
     end
@@ -48,26 +48,15 @@ RSpec.describe FormEntry, type: :model do
     end
   end
 
-  describe "Puts a message in Resque queue" do
+  describe "Puts a message in sidekiq queue" do
     before do
-      Resque.redis.flushall
       @form_entry=FormEntry.new id:25
-    end
-
-    it "should save data in redis" do
       @form_entry.async_send_to_mailchimp
-
-      resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job).to be_present
     end
-
-    it "test the arguments" do
-      @form_entry.async_send_to_mailchimp
-
-      resque_job = Resque.peek(:mailchimp_synchro)
-      expect(resque_job['args'][0]).to be 25
-      expect(resque_job['args'][1]).to be_eql 'formEntry'
-      expect(resque_job['args'].size).to be 2
+    it "should save data in sidekiq" do
+      sidekiq_jobs = MailchimpSyncWorker.jobs
+      expect(sidekiq_jobs.size).to eq(1)
+      expect(sidekiq_jobs.last['args']).to eq([@form_entry.id, 'formEntry'])
     end
   end
 
@@ -128,10 +117,10 @@ RSpec.describe FormEntry, type: :model do
     { 
       'english' => ['name', 'surname', 'email', 'mobile', 'city'],
       'english v.2' => ['first name', 'last name', 'email', 'mobile', 'city'],
-      'english v.3' => ['first-name', 'last-name', 'email', 'mobile', 'city'],
-      'portuguese' => ['Nome', 'Sobrenome', 'Email', 'Celular', 'Cidade'],
+      'english v.3' => ['first-name', 'last-name', 'E-mail', 'mobile', 'city'],
+      'portuguese' => ['Nome', 'Sobrenome', 'Email predileto', 'Celular', 'Cidade'],
       'portuguese v.2' => ['nome', 'Sobre nome', 'email', 'celular', 'cidade'],
-      'portuguese v.3' => ['Nome*', 'Sobre-nome', 'email(*)', 'CeLuLar', 'Cidade*'],
+      'portuguese v.3' => ['Nome*', 'Sobre-nome', 'email(*)', 'CeLuLar predileto', 'Cidade*'],
       'spanish' => ['nombre', 'apellido', 'Correo electrónico', 'Portable', 'Ciudad']
     }. each do |language, labels|
       context "with data in #{language}" do 

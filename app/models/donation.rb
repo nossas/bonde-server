@@ -80,7 +80,7 @@ class Donation < ActiveRecord::Base
   end
 
   def async_update_mailchimp
-    Resque.enqueue(MailchimpSync, self.id, 'donation')
+    MailchimpSyncWorker.perform_async(self.id, 'donation')
   end
 
   def update_mailchimp

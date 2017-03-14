@@ -64,4 +64,51 @@ RSpec.describe Activist, type: :model do
       end
     end
   end
+
+  describe '#update_from_' do
+    {
+      'csv_file' => './spec/models/activist.csv',
+      'csv_content' => %(name,email,phone,document_number,document_type
+joe montana,joe.montana@nfl.com,12312312312,cpf
+hanna montana,hanna.montana@disney.com,12312312413,cpf)
+      }.each do |type, value|
+
+      subject{ eval "Activist.update_from_#{type} '#{value}'"  }
+
+      it 'sould return the records' do
+        expect(subject.size).to eq 2
+      end
+
+      it 'sould all been saved' do
+        expect(subject.map{|s| s.id}.select{|id| id != nil }.uniq.count).to eq(2)
+      end
+    end
+  end
+
+  describe '#update_from_' do
+
+    let!(:activist) { Activist.create name: 'Joe Mon', email:'joe.montana@nfl.com' }
+
+    {
+      'csv_file' => './spec/models/activist.csv',
+      'csv_content' => %(name,email,phone,document_number,document_type
+joe montana,joe.montana@nfl.com,12312312312,cpf
+hanna montana,hanna.montana@disney.com,12312312413,cpf)
+      }.each do |type, value|
+
+      subject{ eval "Activist.update_from_#{type} '#{value}'"  }
+
+      it 'sould return the records' do
+        expect(subject.size).to eq 2
+      end
+
+      it 'pre-existent sould had been user' do
+        expect(subject.map{|s| s.id}.select{|id| id != nil }.uniq).to include(activist.id)
+      end
+
+      it 'should update data' do
+        expect(subject.map{|s| s.name}.uniq).to include('joe montana')
+      end
+    end
+  end
 end

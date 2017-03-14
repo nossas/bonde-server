@@ -3,7 +3,7 @@ class ActivistPressure < ActiveRecord::Base
 
   attr_accessor :firstname, :lastname, :mail
 
-  validates :widget, :activist, :mail, presence: true
+  validates :widget, presence: true
   belongs_to :activist
   belongs_to :widget
   has_one :block, through: :widget
@@ -17,7 +17,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def async_update_mailchimp
-    Resque.enqueue(MailchimpSync, self.id, 'activist_pressure')
+    MailchimpSyncWorker.perform_async(self.id, 'activist_pressure')
   end
 
   def update_mailchimp
