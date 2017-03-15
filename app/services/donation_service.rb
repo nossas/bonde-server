@@ -39,13 +39,6 @@ class DonationService
       @transaction = self.new_transaction(donation)
       @transaction.customer = self.customer_params(donation, address)
       donation.email = donation.activist.email
-      donation.subscription_relation = Subscription.create(
-        widget_id: donation.widget_id,
-        activist_id: donation.activist_id,
-        community: donation.community.id,
-        status: 'pending',
-        amount: donation.amount
-      ) if donation.subscription?
       donation.save
 
       begin
@@ -56,10 +49,8 @@ class DonationService
           gateway_data: @transaction.try(:to_json),
           payables: @transaction.try(:payables)
         )
-
-        donation.subscription_relation.update_attribtutes(
-          card_data: @transaction.card.try(:to_json)
-        ) if @transaction.card && donation.subscription?
+        process_subscription(donation)
+        end
 
         if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
@@ -68,6 +59,20 @@ class DonationService
         Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
+    end
+  end
+
+  def self.process_subscription(donation)
+    if donation.subscription? && !donation.subscription_relation.present?
+      subscription = Subscription.create(
+        widget_id: donation.widget_id,
+        activist_id: donation.activist_id,
+        community: donation.community.id,
+        status: 'pending',
+        amount: donation.amount,
+        card_data: @transaction.card.try(:to_json),
+        payment_method: donation.payment_method)
+      donation.update_attribute(:subscription_relation_id, subscription.id)
     end
   end
 
