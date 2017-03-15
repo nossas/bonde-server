@@ -73,6 +73,7 @@ class DonationService
         card_data: @transaction.card.try(:to_json),
         payment_method: donation.payment_method)
       donation.update_attribute(:subscription_relation_id, subscription.id)
+      subscription.notify_activist(:new_subscription)
     end
   end
 
