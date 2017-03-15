@@ -96,4 +96,18 @@ class Subscription < ActiveRecord::Base
       }.merge!(options)
     )
   end
+
+  def notify_activist(template_name, template_vars = {})
+    Notification.notify!(
+      activist_id,
+      template_name,
+      {
+        subscription_id: id,
+        activist_id: activist_id,
+        amount: ( amount / 100)
+        customer: {
+          name: activist.name
+        }
+      }.merge(template_vars))
+  end
 end
