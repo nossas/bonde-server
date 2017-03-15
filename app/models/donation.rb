@@ -35,6 +35,10 @@ class Donation < ActiveRecord::Base
     self.payment_method == 'boleto'
   end
 
+  def subscription?
+    self.subscription || subscription_relation.present?
+  end
+
   def self.to_txt
     attributes = %w{
     id email amount_formatted payment_method mobilization_name widget_id
