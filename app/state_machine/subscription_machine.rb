@@ -8,6 +8,9 @@ class SubscriptionMachine
 
   after_transition(to: :paid) do |subscription|
     subscription.notify_activist(:paid_subscription)
+    SubscriptionWorker.perform_at(
+      subscription.next_transaction_charge_date,
+      subscription.id)
   end
 
   after_transition(to: :unpaid) do |subscription|
