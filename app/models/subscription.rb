@@ -4,6 +4,7 @@ class Subscription < ActiveRecord::Base
   belongs_to :community
 
   has_many :donations, foreign_key: :local_subscription_id
+  has_many :transitions, class_name: "SubscriptionTransition", autosave: false
 
   validates :widget, :activist, :community, :amount, presence: true
 
