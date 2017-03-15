@@ -74,6 +74,12 @@ class DonationService
         payment_method: donation.payment_method)
       donation.update_attribute(:subscription_relation_id, subscription.id)
       subscription.notify_activist(:new_subscription)
+
+      if @transaction.status == 'paid'
+        donation.subscription_relation.transition_to(:paid, donation_data: @transaction.try(:to_json))
+      elsif @transaction.status == 'refused'
+        donation.subscription_relation.transition_to(:unpaid, donation_data: @transaction.try(:to_json))
+      end
     end
   end
 
