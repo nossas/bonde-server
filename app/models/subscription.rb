@@ -8,6 +8,16 @@ class Subscription < ActiveRecord::Base
 
   validates :widget, :activist, :community, :amount, presence: true
 
+  delegate :can_transition_to?, :transition_to!, :transition_to, :current_state,
+           to: :state_machine
+
+  def state_machine
+    @state_machine ||= SubscriptionMachine.new(
+      self,
+      transition_class: SubscriptionTransition,
+      association_name: :transitions)
+  end
+
   def next_transaction_charge_date
     if last_charge
       return (last_charge.created_at + 1.month)
