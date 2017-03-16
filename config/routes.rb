@@ -36,6 +36,9 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [:create, :update]
+  resources :subscriptions do
+    post :recharge, on: :member
+  end
 
   get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
 
