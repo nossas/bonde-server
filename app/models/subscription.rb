@@ -38,18 +38,23 @@ class Subscription < ActiveRecord::Base
     donations.where("gateway_data is not null").last.gateway_data["customer"]
   end
 
-  def charge_next_payment
-    if next_transaction_charge_date <= DateTime.now && customer
-      Subscription.transaction do
-        donation = donations.create(
-          widget_id: widget.id,
-          payment_method: 'credit_card',
-          amount: amount,
-          email: activist.email
-        )
+  def has_pending_payments?
+    %w(processing pending waiting_payment).include?(donations.last.try(:transaction_status))
+  end
 
-        transaction = PagarMe::Transaction.new(
-          card_id: card_data["id"],
+  def charge_next_payment card_hash = nil
+    if !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
+      donation = donations.create(
+        widget_id: widget.id,
+        payment_method: payment_method,
+        amount: amount,
+        email: activist.email,
+        transaction_status: 'processing'
+      )
+
+      card_to_use = (card_hash.present? ? { card_hash: card_hash } : { card_id: card_data["id"]})
+      transaction = PagarMe::Transaction.new(
+        {
           customer: { id: customer["id"] },
           postback_url: Rails.application.routes.url_helpers.create_postback_url(protocol: 'https'),
           amount: amount,
@@ -63,17 +68,25 @@ class Subscription < ActiveRecord::Base
             donation_id: donation.id,
             local_subscription_id: self.id
           }
-        )
-        transaction.charge
+        }.merge(card_to_use))
+      transaction.charge
 
-        donation.update_attributes(
-          transaction_id: transaction.id,
-          transaction_status: transaction.status,
-          gateway_data: transaction.to_json,
-          payables: transaction.payables.to_json
-        )
-        donation
+      donation.update_attributes(
+        transaction_id: transaction.id,
+        transaction_status: transaction.status,
+        gateway_data: transaction.to_json,
+        payables: transaction.payables.to_json
+      )
+      self.update_attributes(card_data: transaction.card.to_json) if transaction.card.present?
+
+      case transaction.status
+      when 'paid'
+        transition_to(:paid, donation_data: transaction.to_json)
+      when 'refused'
+        transition_to(:unpaid, donation_data: transaction.to_json)
       end
+
+      donation
     end
   end
 
