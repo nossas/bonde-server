@@ -1,3 +1,4 @@
+# coding: utf-8
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
@@ -86,4 +87,45 @@ mobilizations = Mobilization.create([
 mobilizations.each do |mob|
   block = Block.create mobilization: mob, bg_class: 'bg-1', position:1, name: 'Tô nessa'
   Widget.create block: block, kind: ['pressure', 'form'][mob.id % 2], sm_size: 1, md_size: 2, lg_size: 4
+end
+
+# basic notification templates
+unless NotificationTemplate.find_by_label 'new_subscription'
+  NotificationTemplate.create!(
+    label: 'new_subscription',
+    subject_template: 'Assinatura criada',
+    body_template: %{
+    <p>Ola {{activist.name}}</p>
+    <p>Sua assinatura no valor de {{subscription.amount}} foi criada</p>}
+  )
+end
+
+unless NotificationTemplate.find_by_label 'paid_subscription'
+  NotificationTemplate.create!(
+    label: 'paid_subscription',
+    subject_template: 'Cobrança para assinatura efetuada',
+    body_template: %{
+    <p>Ola {{activist.name}}</p>
+    <p>Sua assinatura no valor de {{subscription.amount}} foi paga com sucesso</p>}
+  )
+end
+
+unless NotificationTemplate.find_by_label 'unpaid_subscription'
+  NotificationTemplate.create!(
+    label: 'unpaid_subscription',
+    subject_template: 'Cobrança para assinatura negada',
+    body_template: %{
+    <p>Ola {{activist.name}}</p>
+    <p>Sua assinatura no valor de Não foi possível efetuar a cobrança da assinatura no valor {{subscription.amount}}</p>}
+  )
+end
+
+unless NotificationTemplate.find_by_label 'canceled_subscription'
+  NotificationTemplate.create!(
+    label: 'canceled_subscription',
+    subject_template: 'Assinatura cancelada',
+    body_template: %{
+    <p>Ola {{activist.name}}</p>
+    <p>Sua assinatura no valor de {{subscription.amount}} foi cancelada</p>}
+  )
 end
