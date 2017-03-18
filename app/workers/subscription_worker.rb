@@ -10,6 +10,6 @@ class SubscriptionWorker
     SubscriptionWorker.perform_at(
       subscription.next_transaction_charge_date,
       subscription.id
-    )
+    ) unless subscription.has_pending_payments?
   end
 end
