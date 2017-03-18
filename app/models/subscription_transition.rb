@@ -1,8 +1,5 @@
 class SubscriptionTransition < ActiveRecord::Base
-  include Statesman::Adapters::ActiveRecordTransition
-
-
-  belongs_to :subscription, inverse_of: :subscription_transitions
+  belongs_to :subscription, inverse_of: :transitions
 
   after_destroy :update_most_recent, if: :most_recent?
 
