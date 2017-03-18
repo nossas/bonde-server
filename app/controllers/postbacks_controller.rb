@@ -31,9 +31,9 @@ class PostbacksController < ApplicationController
     donation.reload
     if donation_state_was != donation.state
       if donation.state == 'paid'
-        donation.subscription_relation.transition_to(:paid, donation_data: donation.gateway_data.try(:to_json))
+        donation.subscription_relation.transition_to(:paid, donation_data: donation.gateway_data)
       elsif donation.state == 'refused'
-        donation.subscription_relation.transition_to(:unpaid, donation_data: donation.gateway_data.try(:to_json))
+        donation.subscription_relation.transition_to(:unpaid, donation_data: donation.gateway_data)
       end
     end
   end

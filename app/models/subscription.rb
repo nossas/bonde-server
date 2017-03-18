@@ -81,9 +81,9 @@ class Subscription < ActiveRecord::Base
 
       case transaction.status
       when 'paid'
-        transition_to(:paid, donation_data: transaction.to_json)
+        transition_to(:paid, donation_data: transaction.try(:to_h))
       when 'refused'
-        transition_to(:unpaid, donation_data: transaction.to_json)
+        transition_to(:unpaid, donation_data: transaction.try(:to_h))
       end
 
       donation

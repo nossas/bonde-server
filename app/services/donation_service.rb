@@ -76,9 +76,9 @@ class DonationService
       subscription.notify_activist(:new_subscription)
 
       if @transaction.status == 'paid'
-        donation.subscription_relation.transition_to(:paid, donation_data: @transaction.try(:to_json))
+        donation.subscription_relation.transition_to(:paid, donation_data: @transaction.try(:to_h))
       elsif @transaction.status == 'refused'
-        donation.subscription_relation.transition_to(:unpaid, donation_data: @transaction.try(:to_json))
+        donation.subscription_relation.transition_to(:unpaid, donation_data: @transaction.try(:to_h))
       end
     end
   end
