@@ -167,6 +167,7 @@ Subscription.blueprint do
   community { Community.make! }
   activist { Activist.make! }
   amount { 1000 }
+  payment_method { 'credit_card' }
 end
 
 Recipient.blueprint do
