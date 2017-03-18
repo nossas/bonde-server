@@ -50,7 +50,6 @@ class DonationService
           payables: @transaction.try(:payables)
         )
         process_subscription(donation)
-        end
 
         if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
@@ -64,7 +63,7 @@ class DonationService
 
   def self.process_subscription(donation)
     if donation.subscription? && !donation.subscription_relation.present?
-      subscription = Subscription.create(
+      subscription = Subscription.create!(
         widget_id: donation.widget_id,
         activist_id: donation.activist_id,
         community: donation.community.id,
