@@ -14,6 +14,6 @@ class SubscriptionsController < ApplicationController
   protected
 
   def subscription
-    subscription ||= Subscription.find params[:id]
+    subscription ||= Subscription.find_by id: params[:id], token: params[:token]
   end
 end
