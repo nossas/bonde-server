@@ -30,6 +30,11 @@ class Subscription < ActiveRecord::Base
     @last_charge ||= donations.paid.ordered.first
   end
 
+  def last_donation
+    last_donation ||= donations.ordered.first
+  end
+
+
   def customer
     if last_charge
       return last_charge.gateway_data["customer"]
@@ -131,13 +136,35 @@ class Subscription < ActiveRecord::Base
     Notification.notify!(
       activist_id,
       template_name,
-      {
-        subscription_id: id,
-        activist_id: activist_id,
-        amount: ( amount / 100)
-        customer: {
-          name: activist.name
+      default_template_vars.merge(template_vars))
+  end
+
+  def default_template_vars
+    global = {
+      subscription_id: id,
+      activist_id: activist_id,
+      amount: ( amount / 100),
+      community: {
+        id: community_id,
+        name: community.name
+      },
+      customer: {
+        name: activist.name
+      }
+    }
+
+    if last_donation.present?
+      global.merge!(
+        last_donation: {
+          payment_method: payment_method,
+          widget_id: last_donation.widget_id,
+          mobilization_id: last_donation.mobilization.try(:id),
+          mobilization_name: last_donation.mobilization.try(:name),
+          boleto_expiration_date: last_donation.gateway_data.try(:[], 'boleto_expiration_date'),
+          boleto_barcode: last_donation.gateway_data.try(:[], 'boleto_barcode'),
+          boleto_url: last_donation.gateway_data.try(:[], 'boleto_url'),
         }
-      }.merge(template_vars))
+      )
+    end
   end
 end
