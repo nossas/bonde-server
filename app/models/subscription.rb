@@ -42,6 +42,14 @@ class Subscription < ActiveRecord::Base
     %w(processing pending waiting_payment).include?(donations.last.try(:transaction_status))
   end
 
+  def payment_options_to_use card_hash = nil
+    if payment_method == 'credit_card'
+      (card_hash.present? ? { card_hash: card_hash } : { card_id: card_data["id"]})
+    else
+      {}
+    end
+  end
+
   def charge_next_payment card_hash = nil
     if !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
       donation = donations.create(
@@ -51,8 +59,6 @@ class Subscription < ActiveRecord::Base
         email: activist.email,
         transaction_status: 'processing'
       )
-
-      card_to_use = (card_hash.present? ? { card_hash: card_hash } : { card_id: card_data["id"]})
       transaction = PagarMe::Transaction.new(
         {
           customer: { id: customer["id"] },
@@ -68,7 +74,7 @@ class Subscription < ActiveRecord::Base
             donation_id: donation.id,
             local_subscription_id: self.id
           }
-        }.merge(card_to_use))
+        }.merge(payment_options_to_use(card_hash)))
       transaction.charge
 
       donation.update_attributes(

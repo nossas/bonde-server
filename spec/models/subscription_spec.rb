@@ -29,6 +29,30 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "payment_options_to_use" do
+    let(:card_hash) { nil }
+    subject { subscription.payment_options_to_use(card_hash) }
+    context "when subscription payment method is" do
+      context "boleto" do
+        before do
+          subscription.payment_method = 'boleto'
+          subscription.save
+        end
+        it { is_expected.to eq({}) }
+      end
+
+      context "credit card" do
+        it { is_expected.to eq({card_id: 'card_xpto_id'}) }
+      end
+
+      context "with card hash" do
+        let(:card_hash) { 'xpto' }
+        it { is_expected.to eq({card_hash: 'xpto'}) }
+      end
+    end
+  end
+
+
   describe "next_transaction_charge_date" do
     context "when subscriptions is new without donations" do
       subject { subscription.next_transaction_charge_date.to_date }
