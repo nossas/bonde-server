@@ -70,13 +70,6 @@ FactoryGirl.define do
     }
   end
 
-  factory :activist, class: Activist do
-    name { "Foo Bar" }
-    email { "foo@bar.org" }
-    phone { { ddd: "11", number: "999999999" }.to_s }
-    document_number { "12345678909" }
-  end
-
   factory :activist_pressure, class: ActivistPressure do
     widget
     activist
