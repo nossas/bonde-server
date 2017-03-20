@@ -24,11 +24,12 @@ class DnsRecordsController < ApplicationController
   # POST /dns_records
   # POST /dns_records.json
   def create
+    @dns_record = DnsRecord.new(dns_record_params(true))
+    @dns_record.dns_hosted_zone = @dns_hosted_zone
+
+    
     authorize(@dns_hosted_zone.community)
     skip_policy_scope
-
-    @dns_record = DnsRecord.new(dns_record_params)
-    @dns_record.dns_hosted_zone = @dns_hosted_zone
 
     if @dns_record.save
       render json: @dns_record
@@ -43,7 +44,7 @@ class DnsRecordsController < ApplicationController
     authorize @dns_record
     skip_policy_scope
 
-    if @dns_record.update(dns_record_params)
+    if @dns_record.update(dns_record_params(false))
       head :no_content
     else
       render json: @dns_record.errors, status: :unprocessable_entity
@@ -70,7 +71,14 @@ class DnsRecordsController < ApplicationController
       @dns_hosted_zone = DnsHostedZone.find params[:dns_hosted_zone_id]
     end
 
-    def dns_record_params
-      params.require(:dns_record).permit(:dns_hosted_zone_id, :name, :record_type, :value, :ttl)
+    def dns_record_params new_record
+      if params[:dns_record]
+        if new_record
+          return params.require(:dns_record).permit(policy(DnsRecord.new dns_hosted_zone:@dns_hosted_zone).permitted_attributes_for_create)
+        else
+          return params.require(:dns_record).permit(policy(@dns_record).permitted_attributes_for_update)
+        end
+      end
+      {}
     end
 end

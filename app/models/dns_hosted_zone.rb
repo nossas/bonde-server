@@ -1,7 +1,7 @@
 class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
-  after_create :create_hosted_zone
+  after_create :create_hosted_zone_on_aws
   before_destroy :delete_hosted_zone
 
   has_many :dns_records
@@ -18,9 +18,7 @@ class DnsHostedZone < ActiveRecord::Base
     self.response['hosted_zone']['id']
   end
 
-  private
-
-  def create_hosted_zone 
+  def create_hosted_zone_on_aws 
     self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json
   end
 

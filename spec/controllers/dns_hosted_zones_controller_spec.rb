@@ -19,6 +19,16 @@ require 'rails_helper'
 # that an instance is receiving a specific message.
 
 RSpec.describe DnsHostedZonesController, type: :controller do
+
+  before do
+    allow_any_instance_of(DnsService).to receive(:create_hosted_zone).and_return({
+      'delegation_set' => { 'name_servers' => ["ns-1258.awsdns-29.org", "ns-826.awsdns-39.net", "ns-55.awsdns-06.com", "ns-1552.awsdns-02.co.uk"] },
+      'hosted_zone' => {'id' => '12312312'}
+    })
+
+    allow_any_instance_of(DnsService).to receive(:delete_hosted_zone)
+  end
+
   let!(:user) { create(:user) }
   let!(:community) { create(:community) }
 
