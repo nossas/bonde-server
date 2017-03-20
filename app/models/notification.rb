@@ -12,6 +12,7 @@ class Notification < ActiveRecord::Base
       template_vars: template_vars.to_json
     )
     n.deliver! if auto_deliver
+    n
   end
 
   def deliver!
