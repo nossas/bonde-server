@@ -1,3 +1,5 @@
+require 'base64'
+
 class UsersController < ApplicationController
   respond_to :json
 
@@ -32,6 +34,18 @@ class UsersController < ApplicationController
     else
       {}
     end
+  end
+
+  def retrieve
+    skip_authorization
+    email = params['user']['email']
+    user = User.find_by_email email
+    if (user)
+      user.password = Base64.encode64(DateTime.now.strftime('%Q').to_s).strip.gsub(/=/, '')
+      user.save!
+      PasswordRetrieverMailer.retrieve(user).deliver_now
+    end
+    render nothing: true
   end
 
   private

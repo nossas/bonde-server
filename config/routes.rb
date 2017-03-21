@@ -44,5 +44,7 @@ Rails.application.routes.draw do
 
   get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
 
+  post '/auth/retrieve', to: 'users#retrieve'
+
   mount_devise_token_auth_for 'User', at: '/auth'
 end
