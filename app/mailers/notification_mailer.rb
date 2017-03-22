@@ -23,7 +23,8 @@ class NotificationMailer < ApplicationMailer
     {
       to: @notification.activist.email,
       subject: subject,
-      body: body
+      body: body.html_safe,
+      content_type: "text/html"
     }
   end
 
