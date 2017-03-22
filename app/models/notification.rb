@@ -20,6 +20,10 @@ class Notification < ActiveRecord::Base
   end
 
   def deliver_without_queue
-    NotificationMailer.notify(self).deliver_now!
+    mail.deliver_now!
+  end
+
+  def mail
+    NotificationMailer.notify(self)
   end
 end
