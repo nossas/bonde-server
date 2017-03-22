@@ -95,8 +95,8 @@ unless NotificationTemplate.find_by_label 'new_subscription'
     label: 'new_subscription',
     subject_template: 'Assinatura criada',
     body_template: %{
-    <p>Ola {{activist.name}}</p>
-    <p>Sua assinatura no valor de {{subscription.amount}} foi criada</p>}
+    <p>Ola {{customer.name}}</p>
+    <p>Sua assinatura no valor de {{amount}} foi criada</p>}
   )
 end
 
@@ -105,8 +105,8 @@ unless NotificationTemplate.find_by_label 'paid_subscription'
     label: 'paid_subscription',
     subject_template: 'Cobrança para assinatura efetuada',
     body_template: %{
-    <p>Ola {{activist.name}}</p>
-    <p>Sua assinatura no valor de {{subscription.amount}} foi paga com sucesso</p>}
+    <p>Ola {{customer.name}}</p>
+    <p>Sua assinatura no valor de {{amount}} foi paga com sucesso</p>}
   )
 end
 
@@ -115,8 +115,8 @@ unless NotificationTemplate.find_by_label 'unpaid_subscription'
     label: 'unpaid_subscription',
     subject_template: 'Cobrança para assinatura negada',
     body_template: %{
-    <p>Ola {{activist.name}}</p>
-    <p>Sua assinatura no valor de Não foi possível efetuar a cobrança da assinatura no valor {{subscription.amount}}</p>}
+    <p>Ola {{customer.name}}</p>
+    <p>Sua assinatura no valor de Não foi possível efetuar a cobrança da assinatura no valor {{amount}}</p>}
   )
 end
 
@@ -125,7 +125,7 @@ unless NotificationTemplate.find_by_label 'canceled_subscription'
     label: 'canceled_subscription',
     subject_template: 'Assinatura cancelada',
     body_template: %{
-    <p>Ola {{activist.name}}</p>
-    <p>Sua assinatura no valor de {{subscription.amount}} foi cancelada</p>}
+    <p>Ola {{customer.name}}</p>
+    <p>Sua assinatura no valor de {{amount}} foi cancelada</p>}
   )
 end
