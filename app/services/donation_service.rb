@@ -66,7 +66,7 @@ class DonationService
       subscription = Subscription.create!(
         widget_id: donation.widget_id,
         activist_id: donation.activist_id,
-        community: donation.community.id,
+        community_id: donation.community.id,
         status: 'pending',
         amount: donation.amount,
         card_data: @transaction.card.try(:to_json),
