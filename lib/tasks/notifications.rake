@@ -16,9 +16,9 @@ namespace :notifications do
             <tr>
                 <td style="padding-top:100px;padding-bottom:30px;font-size:26px;font-weight:700;">
                     <p style="margin:0 0 15px;">Olá, {{customer.first_name}}</p>
-                    <p style="margin:0 0 3px;">Seu apoio mensal da comunidade</p>
+                    <p style="margin:0 0 3px;">Sua assinatura para comunidade</p>
                     <p style="margin:0 0 3px;">{{community.name}}</p>
-                    <p style="margin:0 0 3px;">foi confirmado!</p>
+                    <p style="margin:0 0 3px;">foi criado!</p>
                 </td>
             </tr>
             <tr>
@@ -26,9 +26,6 @@ namespace :notifications do
                     A partir de agora, você será cobrado
                     <span style="font-weight:600;">
                         R$ {{amount}} todo mês.
-                        Caso deseje alterar essa opção, faça tal coisa. A partir de agora, você
-                        será cobrado {{amount}} todo mês. Caso deseje alterar essa opção,
-                        faça tal coisa.
                     </span>
                 </td>
             </tr>
@@ -132,25 +129,19 @@ namespace :notifications do
         <table style="width:420px;margin:0 auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td style="padding-top:100px;padding-bottom:30px;font-size:26px;font-weight:700;">
-                    <p style="margin:0 0 15px;">Olá, {{customer.first_name}}</p>
-                    <p style="margin:0 0 3px;">Seu apoio mensal da comunidade</p>
-                    <p style="margin:0 0 3px;">{{community.name}}</p>
-                    <p style="margin:0 0 3px;">foi confirmado!</p>
+                    <p style="margin:0 0 15px;">Problemas na cobrança da sua assinatura.</p>
                 </td>
             </tr>
             <tr>
                 <td>
-                    A partir de agora, você será cobrado
-                    <span style="font-weight:600;">
-                        R$ {{amount}} todo mês.
-                        Caso deseje alterar essa opção, faça tal coisa. A partir de agora, você
-                        será cobrado {{amount}} todo mês. Caso deseje alterar essa opção,
-                        faça tal coisa.
-                    </span>
+                    Ocorreu um erro ao tentar efetuar o pagamento da assinatura de R$ {{amount}} para comunidade {{comunity.name}}
                 </td>
             </tr>
             <tr>
                 <td style="padding:50px 0;">
+                  <a href="#cta-example" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
+                    EDITAR FORMA DE PAGAMENTO
+                  </a>
                 </td>
             </tr>
             <tr>
@@ -173,7 +164,7 @@ namespace :notifications do
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: 'Assinatura com problemas para Comunidade {{community.name}}',
+        subject_template: 'Problemas na cobrança da sua assinatura.',
         body_template: sub_template
       )
     end
@@ -190,21 +181,12 @@ namespace :notifications do
         <table style="width:420px;margin:0 auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td style="padding-top:100px;padding-bottom:30px;font-size:26px;font-weight:700;">
-                    <p style="margin:0 0 15px;">Olá, {{customer.first_name}}</p>
-                    <p style="margin:0 0 3px;">Seu apoio mensal da comunidade</p>
-                    <p style="margin:0 0 3px;">{{community.name}}</p>
-                    <p style="margin:0 0 3px;">foi confirmado!</p>
+                    <p style="margin:0 0 3px;">Sua assinatura foi cancelada.</p>
                 </td>
             </tr>
             <tr>
                 <td>
-                    A partir de agora, você será cobrado
-                    <span style="font-weight:600;">
-                        R$ {{amount}} todo mês.
-                        Caso deseje alterar essa opção, faça tal coisa. A partir de agora, você
-                        será cobrado {{amount}} todo mês. Caso deseje alterar essa opção,
-                        faça tal coisa.
-                    </span>
+                  Assinatura no valor R$ {{amount}} para comunidade {{community.name}} foi cancelada.
                 </td>
             </tr>
             <tr>
