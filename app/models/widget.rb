@@ -19,7 +19,7 @@ class Widget < ActiveRecord::Base
   delegate :user, to: :mobilization
 
   after_save do
-    mobilization.touch
+    mobilization.touch if mobilization.present?
   end
 
   def as_json(*)
