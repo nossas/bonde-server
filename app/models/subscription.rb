@@ -146,10 +146,12 @@ class Subscription < ActiveRecord::Base
       amount: ( amount / 100),
       community: {
         id: community_id,
-        name: community.name
+        name: community.name,
+        image: community.image
       },
       customer: {
-        name: activist.name
+        name: activist.name,
+        first_name: activist.name.split(' ').try(:first)
       }
     }
 
