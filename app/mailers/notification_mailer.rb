@@ -1,5 +1,5 @@
 class NotificationMailer < ApplicationMailer
-  layout :mailer
+  layout :notifications
 
   def notify(notification)
     @notification = notification

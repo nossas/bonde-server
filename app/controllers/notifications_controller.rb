@@ -5,6 +5,6 @@ class NotificationsController < ApplicationController
     raise 'not found' unless Rails.env.staging? or Rails.env.development?
     notification = Notification.find params[:id]
 
-    render html: notification.mail.body.to_s.html_safe, layout: 'layouts/mailer'
+    render html: notification.mail.body.to_s.html_safe, layout: 'layouts/notifications'
   end
 end
