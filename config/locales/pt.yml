@@ -76,3 +76,7 @@ pt:
     route53:
       errors:
         subdomain: Precisa ser um subdomínio do domínio principal
+  user:
+    email:
+      invitation:
+        subject:  Você acaba de receber um convite para ingressar em um grupo do Bonde®
