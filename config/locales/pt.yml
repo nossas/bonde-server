@@ -64,6 +64,8 @@ pt:
           attributes:
             domain_name:
               segments: 'Cada segmento não pode ultrapassar 63 caracteres'
+        invitation:
+          create_community_user: 'Convite expirado'
   http:
     client:
       error:

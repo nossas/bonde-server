@@ -807,4 +807,17 @@ RSpec.describe CommunitiesController, type: :controller do
       end
     end
   end
+
+  describe '#accept_invitation' do
+    let!(:invitation) {create :invitation, expires: (Date.today + 1) }
+
+    it 'should create new community_user' do
+      expect {post :accept_invitation, {format: :json, code: invitation.code, email: invitation.email}}.
+        to change{ CommunityUser.count }.by(1)
+    end
+
+    it 'should expose the created data' do
+      expect(assigns(:community_user)).to eq(CommunityUser.last)
+    end
+  end
 end
