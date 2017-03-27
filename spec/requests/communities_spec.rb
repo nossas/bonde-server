@@ -20,6 +20,61 @@ RSpec.describe "Communities", type: :request do
     end
   end
 
+  describe 'POST /communities/:community_id/invitation' do
+    let(:valid_invitation) { { email: 'ask@me.com', role: 1 } }
+
+    context 'valid invitation' do 
+      let!(:user) { create :user }
+      let!(:community) { create :community }
+      let(:returned) { JSON.parse(response.body) }
+      
+      before do
+        CommunityUser.create user: user, community: community, role: 1
+        stub_current_user user
+
+        post "/communities/#{community.id}/invitation", { format: :json, invitation: valid_invitation }
+      end
+
+      it { expect(response).to have_http_status(200) }
+      
+      it do
+        expect(returned['email']).to eq('ask@me.com')
+      end
+      
+      it do
+        expect(returned['role']).to eq(1)
+      end
+    end
+
+    context 'inexistent community' do 
+      let!(:user) { create :user }
+      let(:returned) { JSON.parse(response.body) }
+      
+      before do
+        post "/communities/0/invitation", { format: :json, invitation: valid_invitation }
+      end
+
+      it { expect(response).to have_http_status(404) }
+
+    end
+
+    context 'user not member' do 
+      let!(:user) { create :user }
+      let!(:community) { create :community }
+      let(:returned) { JSON.parse(response.body) }
+      
+      before do
+        stub_current_user user
+
+        post "/communities/#{community.id}/invitation", { format: :json, invitation: valid_invitation }
+      end
+
+      it { expect(response).to have_http_status(401) }
+
+    end
+  end
+
+
   describe 'POST /invitation' do
     context 'valid invitation' do 
       let!(:invitation) { create :invitation, expires: (Date.today + 1) }

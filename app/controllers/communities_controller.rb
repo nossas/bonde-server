@@ -115,6 +115,21 @@ class CommunitiesController < ApplicationController
     end
   end
 
+  def create_invitation
+    community = Community.find_by({id: params['community_id']})
+    unless community
+      skip_authorization
+      render(nothing: true, status: :not_found)
+    else 
+      authorize community
+
+      data = params[:invitation]
+      
+      invitation = community.invite_member(data['email'], current_user, data['role'])
+      render json:invitation
+    end
+  end
+
   private 
 
   def load_community
