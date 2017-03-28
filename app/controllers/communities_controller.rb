@@ -106,7 +106,7 @@ class CommunitiesController < ApplicationController
     invitation = Invitation.find_by_email_and_code params['email'], params['code']
     if invitation
       begin
-        render json: invitation.create_community_user, serializer: CommunityUserSerializer::CommunityUserSimpleSerializer
+        render json: (@community_user = invitation.create_community_user), serializer: CommunityUserSerializer::CommunityUserSimpleSerializer
       rescue InvitationException
         render nothing: true, status: 412
       end

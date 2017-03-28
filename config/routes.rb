@@ -43,7 +43,7 @@ Rails.application.routes.draw do
     post :recharge, on: :member
   end
 
-  post '/invitation', to: 'communities#accept_invitation', as: 'accept_invitation'
+  get '/invitation', to: 'communities#accept_invitation', as: 'accept_invitation'
   get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
 
   mount_devise_token_auth_for 'User', at: '/auth'

@@ -75,13 +75,13 @@ RSpec.describe "Communities", type: :request do
   end
 
 
-  describe 'POST /invitation' do
+  describe 'GET /invitation' do
     context 'valid invitation' do 
       let!(:invitation) { create :invitation, expires: (Date.today + 1) }
       let(:returned) { JSON.parse(response.body) }
 
       before do
-        post "/invitation", {format: :json, code: invitation.code, email: invitation.email}
+        get "/invitation", {code: invitation.code, email: invitation.email}
       end
 
       it { expect(response).to have_http_status(200) }
@@ -109,7 +109,7 @@ RSpec.describe "Communities", type: :request do
       let(:returned) { JSON.parse(response.body) }
 
       before do
-        post "/invitation", {format: :json, code: invitation.code, email: invitation.email}
+        get "/invitation", {code: invitation.code, email: invitation.email}
       end
 
       it { expect(response).to have_http_status(412) }
@@ -120,7 +120,7 @@ RSpec.describe "Communities", type: :request do
       let(:returned) { JSON.parse(response.body) }
 
       before do
-        post "/invitation", {format: :json, code: invitation.code, email: invitation.email}
+        get "/invitation", {code: invitation.code, email: invitation.email}
       end
 
       it { expect(response).to have_http_status(412) }
@@ -128,7 +128,7 @@ RSpec.describe "Communities", type: :request do
 
     context 'inexistent invitation' do
       before do
-        post "/invitation", {format: :json, code: '1234', email: 'ask@me.com'}
+        get "/invitation", {code: '1234', email: 'ask@me.com'}
       end
 
       it { expect(response).to have_http_status(404) }
