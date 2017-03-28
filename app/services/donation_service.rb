@@ -78,6 +78,8 @@ class DonationService
         donation.subscription_relation.transition_to(:paid, donation_data: @transaction.try(:to_h))
       elsif @transaction.status == 'refused'
         donation.subscription_relation.transition_to(:unpaid, donation_data: @transaction.try(:to_h))
+      elsif @transaction.status = 'waiting_payment'
+        donation.subscription_relation.notify_activist('slip_subscription')
       end
     end
   end

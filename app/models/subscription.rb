@@ -95,6 +95,8 @@ class Subscription < ActiveRecord::Base
         transition_to(:paid, donation_data: transaction.try(:to_h))
       when 'refused'
         transition_to(:unpaid, donation_data: transaction.try(:to_h))
+      when 'waiting_payment'
+        notify_activist('slip_subscription')
       end
 
       donation
