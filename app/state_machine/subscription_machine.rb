@@ -17,7 +17,15 @@ class SubscriptionMachine
       subscription.id)
   end
 
-  after_transition(to: :unpaid) do |subscription|
+  after_transition(from: :unpaid, to: :unpaid) do |subscription| 
+    subscription.notify_activist(:unpaid_after_charge_subscription)
+  end
+
+  after_transition(from: :pending, to: :unpaid) do |subscription|
+    subscription.notify_activist(:unpaid_subscription)
+  end
+
+  after_transition(from: :paid, to: :unpaid) do |subscription|
     subscription.notify_activist(:unpaid_subscription)
   end
 
