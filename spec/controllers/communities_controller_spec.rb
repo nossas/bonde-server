@@ -809,17 +809,40 @@ RSpec.describe CommunitiesController, type: :controller do
   end
 
   describe '#accept_invitation' do
-    let!(:invitation) {create :invitation, expires: (Date.today + 1) }
-
+    let!(:invitation) { create :invitation, expires: (Date.today + 1) }
     let(:call_accept) { get :accept_invitation, {code: invitation.code, email: invitation.email} }
 
-    it 'should create new community_user' do
-      expect{ call_accept }.to change{ CommunityUser.count }.by(1)
+    context 'invited user exists' do
+      let!(:invited_user) { create :user, email: invitation.email }
+
+      it 'should create new community_user' do
+        expect{ call_accept }.to change{ CommunityUser.count }.by(1)
+      end
+
+      it 'should expose the created data' do
+        call_accept      
+        expect(assigns(:community_user)).to eq(CommunityUser.last)
+      end
     end
 
-    it 'should expose the created data' do
-      call_accept      
-      expect(assigns(:community_user)).to eq(CommunityUser.last)
+    context 'invited user don\'t exists' do
+      it 'should create new user' do
+        expect{ call_accept }.to change{ User.count }.by(1)
+      end
+
+      xit 'should send an email to the new user' do
+          expect{ call_accept }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+
+      it 'should create new community_user' do
+        expect{ call_accept }.to change{ CommunityUser.count }.by(1)
+      end
+
+      it 'should expose the created data' do
+        call_accept      
+        expect(assigns(:community_user)).to eq(CommunityUser.last)
+      end
     end
   end
 end

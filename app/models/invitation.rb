@@ -26,10 +26,25 @@ class Invitation < ActiveRecord::Base
       self.update_attributes expired: true if (! self.expired)
       raise InvitationException.new(I18n.t 'activerecord.errors.models.invitation.create_community_user')
     end
-    CommunityUser.create user: self.user, community: self.community, role: self.role
+
+    invited_user = User.find_by_email self.email
+    invited_user = generate_user unless invited_user
+
+    community_user = CommunityUser.create! user: invited_user, community: self.community, role: self.role
+    self.expired = true
+    self.save!
+
+    community_user
   end
 
   private
+
+  def generate_user
+    invited_user = User.new( provider: :email, uid: self.email, email: self.email, admin: true)
+    invited_user.password = ((0...8).map { (65 + rand(26)).chr }.join)
+    invited_user.save!
+    invited_user
+  end
 
   def invitation_expired?
     expired? || ( expires < DateTime.now )

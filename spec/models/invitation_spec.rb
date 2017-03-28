@@ -38,13 +38,47 @@ RSpec.describe Invitation, type: :model do
   end
 
   describe '#create_community_user' do
+    before { subject.save }
     context 'not expired' do
-      it 'should create a correct instance' do
-        community_user = subject.create_community_user
+      context 'with user' do
+        before { create :user, email: subject.email }
 
-        expect(community_user.user_id).to eq(subject.user_id)
-        expect(community_user.community_id).to eq(subject.community_id)
-        expect(community_user.role).to eq(subject.role)
+        it 'shouldn\'t create an User' do
+          expect{subject.create_community_user}.not_to change{User.count}
+        end
+
+        it 'should create a correct instance' do
+          community_user = subject.create_community_user
+
+          expect(community_user.community_id).to eq(subject.community_id)
+          expect(community_user.role).to eq(subject.role)
+        end
+
+        it 'should turn invitation\'s expired to true' do
+          subject.create_community_user
+          subject.reload
+          expect(subject.expired).to be
+        end
+      end
+
+      context 'without user' do
+        it 'should create an User' do
+          subject
+          expect{subject.create_community_user}.to change{User.count}.by(1)
+        end
+  
+        it 'should create a correct instance' do
+          community_user = subject.create_community_user
+
+          expect(community_user.community_id).to eq(subject.community_id)
+          expect(community_user.role).to eq(subject.role)
+        end
+
+        it 'should turn invitation\'s expired to true' do
+          subject.create_community_user
+          subject.reload
+          expect(subject.expired).to be
+        end
       end
     end
 
@@ -57,6 +91,12 @@ RSpec.describe Invitation, type: :model do
       it do
         subject.expires = (Date.today - 1)
         expect{subject.create_community_user}.to raise_error(InvitationException)
+      end
+
+      it 'should turn invitation\'s expired to true' do
+        subject.create_community_user
+        subject.reload
+        expect(subject.expired).to be
       end
     end
   end
