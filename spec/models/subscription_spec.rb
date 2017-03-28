@@ -9,6 +9,10 @@ RSpec.describe Subscription, type: :model do
 
   let(:subscription) { Subscription.make!(card_data: { id: 'card_xpto_id'}) }
 
+  before do
+    allow(subscription).to receive(:notify_activist)
+  end
+
   describe "last_charge" do
     let!(:paid_donation_1) { Donation.make!(
                               transaction_status: 'paid',
@@ -156,6 +160,37 @@ RSpec.describe Subscription, type: :model do
             gateway_data: { customer: { id: '12345' } }.to_json
           )
         end
+        context "and payment is waiting_payment" do
+          let(:transaction) do
+            double(
+              {
+                id: '1235',
+                status: 'waiting_payment',
+                payables: [{id: 'x'}, {id: 'y'}],
+                card: nil,
+                boleto_url: 'url_boleto',
+                boleto_barcode: 'barcode',
+                boleto_expiraton_date: '17-01-2018',
+                charge: true
+              })
+          end
+          before do
+            expect(PagarMe::Transaction).to receive(:new).with(pagarme_attributes).and_return(transaction)
+          end
+
+          it 'should charge and update generated donation' do
+            expect(subscription).to receive(:notify_activist).with(:slip_subscription)
+            expect(subscription).not_to receive(:transition_to)
+            expect(SubscriptionWorker).not_to receive(:perform_at).with(anything, subscription.id).and_call_original
+            charged = subject
+            expect(charged.transaction_id).to eq("1235")
+            expect(charged.transaction_status).to eq('waiting_payment')
+            expect(subscription.current_state).to eq('pending')
+            expect(SubscriptionWorker.jobs.size).to eq(0)
+            expect(SubscriptionWorker.jobs.any?{ |j| j['args'][0] == subscription.id }).to eq(false)
+          end
+
+        end
         context "and payment is pending"do
           let(:transaction) do
             double(
@@ -228,6 +263,31 @@ RSpec.describe Subscription, type: :model do
             expect(SubscriptionWorker.jobs.any?{ |j| j['args'][0] == subscription.id }).to eq(false)
           end
         end
+
+        context 'when payment is refused again' do
+          let(:transaction) do
+            double(
+              {
+                id: '1235',
+                status: 'refused',
+                payables: [{id: 'x'}, {id: 'y'}],
+                card: { id: 'card_xpto_id'},
+                charge: true
+              })
+          end
+          before do
+            subscription.transition_to(:unpaid)
+            expect(PagarMe::Transaction).to receive(:new).with(pagarme_attributes).and_return(transaction)
+          end
+          it 'should charge and update generated donation' do
+            expect(subscription).to receive(:notify_activist).with(:unpaid_after_charge_subscription)
+            expect(subscription).to receive(:transition_to).with(:unpaid, anything).and_call_original
+            expect(SubscriptionWorker).not_to receive(:perform_at).with(anything, subscription.id)
+            charged = subject
+          end
+
+        end
+
       end
     end
 

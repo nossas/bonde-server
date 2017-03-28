@@ -90,7 +90,7 @@ class Subscription < ActiveRecord::Base
       )
       self.update_attributes(card_data: transaction.card.to_json) if transaction.card.present?
 
-      process_status_changes(transaciton.status, transaction.try(:to_h))
+      process_status_changes(transaction.status, transaction.try(:to_h))
 
       donation
     end
@@ -142,7 +142,7 @@ class Subscription < ActiveRecord::Base
     when 'refused'
       transition_to(:unpaid, donation_data: data)
     when 'waiting_payment'
-      notify_activist('slip_subscription')
+      notify_activist(:slip_subscription)
     end
   end
 
