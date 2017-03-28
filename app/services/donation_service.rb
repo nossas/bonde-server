@@ -74,7 +74,6 @@ class DonationService
       donation.update_attribute(:local_subscription_id, subscription.id)
 
       subscription.process_status_changes(@transaction.status, @transaction.try(:to_h))
-      end
     end
   end
 
