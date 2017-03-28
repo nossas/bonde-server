@@ -1,4 +1,12 @@
 class SubscriptionsController < ApplicationController
+  skip_before_filter :authenticate_user!
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
+
+  def show
+    render json: subscription, serializer: SubscriptionSerializer
+  end
+
   def recharge
     if subscription.current_state == 'unpaid'
       if params[:process_at].present?
@@ -8,7 +16,7 @@ class SubscriptionsController < ApplicationController
       end
     end
     subscription.reload
-    render json: subscription.to_json
+    render json: subscription, serializer: SubscriptionSerializer
   end
 
   protected
