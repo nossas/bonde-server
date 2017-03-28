@@ -72,14 +72,8 @@ class DonationService
         card_data: @transaction.card.try(:to_json),
         payment_method: donation.payment_method)
       donation.update_attribute(:local_subscription_id, subscription.id)
-      subscription.notify_activist(:new_subscription)
 
-      if @transaction.status == 'paid'
-        donation.subscription_relation.transition_to(:paid, donation_data: @transaction.try(:to_h))
-      elsif @transaction.status == 'refused'
-        donation.subscription_relation.transition_to(:unpaid, donation_data: @transaction.try(:to_h))
-      elsif @transaction.status = 'waiting_payment'
-        donation.subscription_relation.notify_activist('slip_subscription')
+      subscription.process_status_changes(@transaction.status, @transaction.try(:to_h))
       end
     end
   end

@@ -90,14 +90,7 @@ class Subscription < ActiveRecord::Base
       )
       self.update_attributes(card_data: transaction.card.to_json) if transaction.card.present?
 
-      case transaction.status
-      when 'paid'
-        transition_to(:paid, donation_data: transaction.try(:to_h))
-      when 'refused'
-        transition_to(:unpaid, donation_data: transaction.try(:to_h))
-      when 'waiting_payment'
-        notify_activist('slip_subscription')
-      end
+      process_status_changes(transaciton.status, transaction.try(:to_h))
 
       donation
     end
@@ -141,6 +134,16 @@ class Subscription < ActiveRecord::Base
       default_template_vars.merge(template_vars),
       auto_deliver)
   end
+
+  def process_status_changes(status, data)
+    case status
+    when 'paid'
+      transition_to(:paid, donation_data: data)
+    when 'refused'
+      transition_to(:unpaid, donation_data: data)
+    when 'waiting_payment'
+      notify_activist('slip_subscription')
+    end
   end
 
   def default_template_vars

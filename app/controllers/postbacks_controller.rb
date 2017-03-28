@@ -18,7 +18,7 @@ class PostbacksController < ApplicationController
   def process_postback_for resource_name
     case resource_name
     when :transaction then
-      donation_state_was = donation.state_was.dup
+      donation_state_was = donation.transaction_status_was.dup
       donation.try(:update_pagarme_data)
       process_subscription_changes(donation_state_was) if donation.subscription?
     when :subscription then
@@ -29,12 +29,8 @@ class PostbacksController < ApplicationController
 
   def process_subscription_changes(donation_state_was)
     donation.reload
-    if donation_state_was != donation.state
-      if donation.state == 'paid'
-        donation.subscription_relation.transition_to(:paid, donation_data: donation.gateway_data)
-      elsif donation.state == 'refused'
-        donation.subscription_relation.transition_to(:unpaid, donation_data: donation.gateway_data)
-      end
+    if donation_state_was != donation.transaction_status
+      donation.subscription_relation.process_status_changes(donation.transaction_status, donation.gateway_data)
     end
   end
 
