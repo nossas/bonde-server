@@ -134,11 +134,13 @@ class Subscription < ActiveRecord::Base
     )
   end
 
-  def notify_activist(template_name, template_vars = {})
+  def notify_activist(template_name, template_vars = {}, auto_deliver = true)
     Notification.notify!(
       activist_id,
       template_name,
-      default_template_vars.merge(template_vars))
+      default_template_vars.merge(template_vars),
+      auto_deliver)
+  end
   end
 
   def default_template_vars
