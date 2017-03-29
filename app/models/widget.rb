@@ -18,6 +18,10 @@ class Widget < ActiveRecord::Base
 
   delegate :user, to: :mobilization
 
+  after_save do
+    mobilization.touch if mobilization.present?
+  end
+
   def as_json(*)
     WidgetSerializer.new(self, {root: false})
   end
