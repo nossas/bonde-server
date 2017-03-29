@@ -10,6 +10,22 @@ class DnsService
     })
   end
 
+  def get_hosted_zone id
+    route53.get_hosted_zone({id: id})
+  end
+
+  def list_hosted_zones
+    hosted_zones = []
+
+    resp = route53.list_hosted_zones
+    while (resp['is_truncated'])
+      hosted_zones += (resp['hosted_zones'])
+      resp = route53.list_hosted_zones({marker: resp['next_marker']})
+    end
+    hosted_zones += (resp['hosted_zones'])
+    hosted_zones
+  end
+
   def delete_hosted_zone hosted_zone_id
     route53.delete_hosted_zone({ id: hosted_zone_id })
   end

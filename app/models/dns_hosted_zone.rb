@@ -18,12 +18,12 @@ class DnsHostedZone < ActiveRecord::Base
     self.response['hosted_zone']['id']
   end
 
-  def create_hosted_zone_on_aws 
-    self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json
+  def create_hosted_zone_on_aws
+    (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json) unless response
   end
 
   def delete_hosted_zone
-    DnsService.new.delete_hosted_zone hosted_zone_id
+    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id
   end
 
 end
