@@ -1,5 +1,5 @@
 class CommunitySerializer < ActiveModel::Serializer
-  attributes :id, :name, :city, :mailchimp_api_key, :mailchimp_list_id, :mailchimp_group_id, :image, :description, :recipient
+  attributes :id, :name, :city, :mailchimp_api_key, :mailchimp_list_id, :mailchimp_group_id, :image, :description, :recipient, :facebook_app_id
 
   include PagarmeHelper
 
