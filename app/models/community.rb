@@ -36,7 +36,7 @@ class Community < ActiveRecord::Base
 
   def synchronize_hosted_zones 
     aws_hosted_zones = DnsService.new.list_hosted_zones
-    
+
     zones = self.mobilizations.
       map{|m| m.custom_domain}.
       flatten.
@@ -56,5 +56,37 @@ class Community < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def import_aws_records
+    dns_hosted_zones.each do |dns_hosted_zone|
+      if dns_hosted_zone.hosted_zone_id
+        list_records = DnsService.new.list_resource_record_sets dns_hosted_zone.hosted_zone_id
+        list_records.each do |aws_record|
+          aws_record_name = aws_record.name.gsub(/\.$/, '')
+          # first, we create a dns_record for each 
+          if dns_hosted_zone.dns_records.where("name = ? and record_type = ?", aws_record_name, aws_record.type).count == 0
+            dns_hosted_zone.dns_records.create!(name: aws_record_name, record_type: aws_record.type, 
+               value: value(aws_record), ttl: aws_record.ttl, ignore_syncronization: true)
+          end
+        end
+
+        if list_records.select{|lr| lr.name.gsub(/\.$/, '') == dns_hosted_zone.domain_name && lr.type == 'A' }.count  == 0
+          dns_hosted_zone.dns_records.create!(name: dns_hosted_zone.domain_name, record_type: 'A', 
+             value: ENV['AWS_ROUTE_IP'], ttl: 3600)  
+        end
+
+        if list_records.select{|lr| lr.name.gsub(/\.$/, '') == "*.#{dns_hosted_zone.domain_name}" && lr.type == 'A' }.count  == 0
+          dns_hosted_zone.dns_records.create!(name: "*.#{dns_hosted_zone.domain_name}", record_type: 'A', 
+             value: ENV['AWS_ROUTE_IP'], ttl: 3600)  
+        end
+      end
+    end
+  end
+
+  private
+
+  def value aws_record
+    aws_record.resource_records.map{|r| r.value}.join("\n")
   end
 end

@@ -5,14 +5,24 @@ class DnsRecord < ActiveRecord::Base
     
   validates :dns_hosted_zone_id, :name, :record_type, :value, :ttl, presence: :true
 
-  after_save :update_dns_record_on_aws
-  after_destroy :delete_dns_record_on_aws
+  after_save :update_dns_record_on_aws, unless: :ignore_syncronization?
+  after_destroy :delete_dns_record_on_aws, unless: :ignore_syncronization?
+
+  def ignore_syncronization= (val)
+    @ignore_syncronization = val
+  end
+
+  def ignore_syncronization?
+    @ignore_syncronization
+  end
 
   def update_dns_record_on_aws
-    DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, self.value, self.comment
+    DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
+      self.value, self.comment, ttl_seconds: self.ttl
   end
 
   def delete_dns_record_on_aws
-    DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, self.value, self.comment, action: 'DELETE'
+    DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
+      self.value, self.comment, action: 'DELETE'
   end
 end
