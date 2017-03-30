@@ -18,6 +18,8 @@ RSpec.describe WidgetPolicy do
     :show_counter,
 
     # Settings specific widget
+    :whatsapp_text,
+
     # Content Widget
     :content,
 
