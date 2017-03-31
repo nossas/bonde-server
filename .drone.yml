@@ -1,6 +1,6 @@
 pipeline:
   build:
-    image: ruby:2.3.0
+    image: ruby:onbuild
     commands:
       - cp config/database.drone.yml config/database.yml
       - mkdir -p /tmp/bundler
