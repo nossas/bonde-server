@@ -8,6 +8,7 @@ pipeline:
       - bundle install --path=/tmp/bundler --quiet
       - psql -c 'create role hub SUPERUSER LOGIN;' postgres
       - psql -c 'create database hub_api_test;' -U hub postgres
+      - bundle exec rake db:migrate
       - bundle exec rspec spec
     services:
       database:
