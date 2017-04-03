@@ -42,7 +42,7 @@ class DnsService
     route53.delete_hosted_zone({ id: hosted_zone_id })
   end
 
-  def change_resource_record_sets hosted_zone_id, domain_name, type, value, comment, action: 'UPSERT', ttl_seconds: 300# 3600
+  def change_resource_record_sets hosted_zone_id, domain_name, type, values, comment, action: 'UPSERT', ttl_seconds: 300# 3600
     resp = route53.change_resource_record_sets({
       change_batch: {
       changes: [
@@ -50,11 +50,7 @@ class DnsService
           action: action, 
           resource_record_set: {
             name: domain_name, 
-            resource_records: [
-              {
-                value: value, 
-              }, 
-            ], 
+            resource_records: values.map{|v| { value: v } }, 
             ttl: ttl_seconds, 
             type: type, 
           }, 

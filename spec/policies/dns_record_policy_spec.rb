@@ -7,6 +7,7 @@ RSpec.describe DnsRecordPolicy do
       'hosted_zone' => {'id' => '12312312'}
     })
     allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
+    allow_any_instance_of(DnsService).to receive(:list_resource_record_sets).and_return([])
   end
 
   let!(:user) { create :user }

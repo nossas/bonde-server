@@ -2,6 +2,9 @@ class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
   after_create :create_hosted_zone_on_aws
+  after_create :create_default_records_on_aws
+  after_create :load_record_from_aws
+
   before_destroy :delete_hosted_zone
 
   has_many :dns_records
@@ -24,6 +27,35 @@ class DnsHostedZone < ActiveRecord::Base
 
   def delete_hosted_zone
     (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id
+  end
+
+  def load_record_from_aws
+    rs = DnsService.new.list_resource_record_sets self.hosted_zone_id
+    rs.each do |record_set| 
+      DnsRecord.create_from_record(record_set, self.id, ignore_syncronization: true) if 
+        dns_records.where("(name = ? and record_type = ?)", (record_set.name.gsub(/\.$/, '')), record_set.type).
+        count == 0
+    end
+  end
+
+  def create_default_records_on_aws
+    dns_service = DnsService.new
+    dns_service.change_resource_record_sets self.hosted_zone_id, self.domain_name, 'A', [ENV['AWS_ROUTE_IP']], 'autocreated'
+    dns_service.change_resource_record_sets self.hosted_zone_id, "*.#{self.domain_name}", 'A', [ENV['AWS_ROUTE_IP']], 'autocreated'
+  end
+
+  def create_google_mail_entries url: nil, ttl:3600
+    dns_records.create! name: (url || self.domain_name), record_type: 'MX', value: google_mx_values.join("\n"), comment: 'autocreated', ttl: ttl
+  end
+
+  private
+
+  def google_mx_values
+    [ '1 aspmx.l.google.com',
+      '5 alt1.aspmx.l.google.com',
+      '5 alt2.aspmx.l.google.com',
+      '10 alt3.aspmx.l.google.com',
+      '10 alt4.aspmx.l.google.com' ]
   end
 
 end

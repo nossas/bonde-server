@@ -8,8 +8,10 @@ RSpec.describe "DnsRecords", type: :request do
     })
 
     allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
+    allow_any_instance_of(DnsService).to receive(:list_resource_record_sets).and_return([])
   end
-  let!(:dns_record) { create(:dns_record) }
+
+  let(:dns_record) { create(:dns_record) }
 
   describe "GET /communities/:community_id/dns_hosted_zones/:dns_hosted_zone_id/dns_records" do
     it "works!" do

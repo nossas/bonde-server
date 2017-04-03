@@ -18,11 +18,27 @@ class DnsRecord < ActiveRecord::Base
 
   def update_dns_record_on_aws
     DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
-      self.value, self.comment, ttl_seconds: self.ttl
+      self.value.split("\n"), self.comment, ttl_seconds: self.ttl
   end
 
   def delete_dns_record_on_aws
     DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
-      self.value, self.comment, action: 'DELETE'
+      self.value.split("\n"), self.comment, action: 'DELETE'
+  end
+
+  def self.create_from_record aws_record, hosted_zone_id, ignore_syncronization: false
+    dns_record = DnsRecord.new
+    dns_record.dns_hosted_zone_id = hosted_zone_id
+    dns_record.name = aws_record.name.gsub(/\.$/, '')
+    dns_record.record_type = aws_record.type
+    dns_record.value = aws_record.resource_records.map{|r| r.value}.join("\n")
+    dns_record.ttl = aws_record.ttl
+    dns_record.ignore_syncronization = ignore_syncronization
+    dns_record.save!
   end
 end
+# :dns_hosted_zone_id
+# :name
+# :record_type
+# :value
+# :ttl
