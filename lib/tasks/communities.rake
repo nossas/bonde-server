@@ -3,7 +3,7 @@ namespace :communities do
   task synchronize_hosted_zones: [:environment] do
     erros = [ ]
 
-    Communities.all.each do |community|
+    Community.all.each do |community|
       community.synchronize_hosted_zones
     end
   end
@@ -12,7 +12,7 @@ namespace :communities do
   task import_records: [:environment] do
     erros = [ ]
 
-    Communities.all.each do |community|
+    Community.all.each do |community|
       community.import_aws_records
     end
   end
