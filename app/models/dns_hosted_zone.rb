@@ -26,23 +26,25 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def hosted_zone_id
-    self.response['hosted_zone']['id']
+    self.response['hosted_zone']['id'] if self.response
   end
 
   def create_hosted_zone_on_aws
-    (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json) unless response
+    (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json) if (! ignore_syncronization ) && response
   end
 
   def delete_hosted_zone
-    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id
+    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id and (! ignore_syncronization)
   end
 
   def load_record_from_aws
-    rs = DnsService.new.list_resource_record_sets self.hosted_zone_id
-    rs.each do |record_set| 
-      DnsRecord.create_from_record(record_set, self.id, ignore_syncronization: true) if 
-        dns_records.where("(name = ? and record_type = ?)", (record_set.name.gsub(/\.$/, '')), record_set.type).
-        count == 0
+    if self.hosted_zone_id
+      rs = DnsService.new.list_resource_record_sets self.hosted_zone_id
+      rs.each do |record_set| 
+        DnsRecord.create_from_record(record_set, self.id, ignore_syncronization: true) if 
+          dns_records.where("(name = ? and record_type = ?)", (record_set.name.gsub(/\.$/, '')), record_set.type).
+          count == 0
+      end
     end
   end
 

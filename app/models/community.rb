@@ -60,6 +60,7 @@ class Community < ActiveRecord::Base
 
   def import_aws_records
     dns_hosted_zones.each do |dns_hosted_zone|
+      
       if dns_hosted_zone.hosted_zone_id
         list_records = DnsService.new.list_resource_record_sets dns_hosted_zone.hosted_zone_id
         list_records.each do |aws_record|
