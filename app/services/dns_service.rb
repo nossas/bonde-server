@@ -7,7 +7,7 @@ class DnsService
         comment: comment,
         private_zone: private_zone
       }
-    })
+    }) if can_i?
   end
 
   def get_hosted_zone id
@@ -39,7 +39,7 @@ class DnsService
   end
 
   def delete_hosted_zone hosted_zone_id
-    route53.delete_hosted_zone({ id: hosted_zone_id })
+    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?
   end
 
   def change_resource_record_sets hosted_zone_id, domain_name, type, values, comment, action: 'UPSERT', ttl_seconds: 300# 3600
@@ -59,16 +59,20 @@ class DnsService
       comment: comment, 
       }, 
       hosted_zone_id: hosted_zone_id, 
-    })
+    }) if can_i?
   end
 
   def check_change change_id
-    route53.get_change change_id
+    route53.get_change(change_id) if can_i?
   end
 
   private
 
+  def can_i?
+    Rails.env.production? || ( ENV['BONDE_AWS_INTEGRATION'] == 'force' )
+  end
+
   def route53
-    Aws::Route53::Client.new(region: (ENV['AWS_ROUTE53_REGION'] || 'sa-east-1'))
+    Aws::Route53::Client.new(region: (ENV['AWS_ROUTE53_REGION'] || 'sa-east-1')) if can_i?
   end
 end
