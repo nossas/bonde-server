@@ -9,12 +9,14 @@ RSpec.describe "DnsRecords", type: :request do
 
     allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
     allow_any_instance_of(DnsService).to receive(:list_resource_record_sets).and_return([])
+    allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
   end
 
   let(:dns_record) { create(:dns_record) }
 
   describe "GET /communities/:community_id/dns_hosted_zones/:dns_hosted_zone_id/dns_records" do
     it "works!" do
+
       get community_dns_hosted_zone_dns_records_path community_id: dns_record.community.id, 
         dns_hosted_zone_id: dns_record.dns_hosted_zone.id
       expect(response).to have_http_status(200)

@@ -26,6 +26,7 @@ RSpec.describe DnsRecordsController, type: :controller do
     })
     allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
     allow_any_instance_of(DnsService).to receive(:list_resource_record_sets).and_return([])
+    allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
   end
 
   let!(:dns_hosted_zone) { create :dns_hosted_zone }

@@ -3,7 +3,7 @@ class DnsHostedZone < ActiveRecord::Base
 
   after_create :create_hosted_zone_on_aws, unless: :ignore_syncronization?
   after_create :create_default_records_on_aws, unless: :ignore_syncronization?
-  after_create :load_record_from_aws
+  after_create :load_record_from_aws, unless: :ignore_syncronization?
 
   before_destroy :delete_hosted_zone
 
@@ -30,11 +30,17 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def create_hosted_zone_on_aws
-    (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json) if (! ignore_syncronization ) && response
+    rs = DnsService.new.list_hosted_zones
+    record_filtered = rs.select{|record| record.name.gsub(/\.$/, '') == self.domain_name}
+    if (record_filtered.count == 0)
+      (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json)
+    else
+      (self.update_attributes response: (DnsService.new.get_hosted_zone record_filtered.first.hosted_zone.id).to_json)
+    end
   end
 
   def delete_hosted_zone
-    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id and (! ignore_syncronization)
+    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id and (! ignore_syncronization?)
   end
 
   def load_record_from_aws
