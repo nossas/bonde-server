@@ -11,31 +11,35 @@ class DnsService
   end
 
   def get_hosted_zone id
-    route53.get_hosted_zone({id: id})
+    route53.get_hosted_zone({id: id}) if can_i?
   end
 
   def list_hosted_zones
-    hosted_zones = []
+    if can_i?
+      hosted_zones = []
 
-    resp = route53.list_hosted_zones
-    while (resp['is_truncated'])
+      resp = route53.list_hosted_zones
+      while (resp['is_truncated'])
+        hosted_zones += (resp['hosted_zones'])
+        resp = route53.list_hosted_zones({marker: resp['next_marker']})
+      end
       hosted_zones += (resp['hosted_zones'])
-      resp = route53.list_hosted_zones({marker: resp['next_marker']})
+      hosted_zones
     end
-    hosted_zones += (resp['hosted_zones'])
-    hosted_zones
   end
 
   def list_resource_record_sets hosted_zone_id
-    resource_record_sets = []
+    if can_i?
+      resource_record_sets = []
 
-    resp = route53.list_resource_record_sets({hosted_zone_id: hosted_zone_id})
-    while (resp['is_truncated'])
+      resp = route53.list_resource_record_sets({hosted_zone_id: hosted_zone_id})
+      while (resp['is_truncated'])
+        resource_record_sets += (resp['resource_record_sets'])
+        resp = route53.list_resource_record_sets({hosted_zone_id: hosted_zone_id, start_record_name: resp['next_record_name']})
+      end
       resource_record_sets += (resp['resource_record_sets'])
-      resp = route53.list_resource_record_sets({hosted_zone_id: hosted_zone_id, start_record_name: resp['next_record_name']})
+      resource_record_sets
     end
-    resource_record_sets += (resp['resource_record_sets'])
-    resource_record_sets
   end
 
   def delete_hosted_zone hosted_zone_id

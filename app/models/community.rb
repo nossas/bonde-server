@@ -49,10 +49,10 @@ class Community < ActiveRecord::Base
       if dns_hosted_zones.where("domain_name = ?", hz).count == 0
         dhz = (aws_hosted_zones.select {|hosted_zone| hosted_zone.name.gsub(/\.$/, '') == hz}[0])
         unless dhz # The is no HostedZone created on amazon
-          dns_hosted_zones.create!( domain_name: hz)
+          dns_hosted_zones.create!( domain_name: hz )
         else
           data = DnsService.new.get_hosted_zone dhz.id
-          dns_hosted_zones.create!( domain_name: hz, response: data.to_json)
+          dns_hosted_zones.create!( domain_name: hz, response: data.to_json, ignore_syncronization: true )
         end
       end
     end

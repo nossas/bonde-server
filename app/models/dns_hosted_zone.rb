@@ -1,8 +1,8 @@
 class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
-  after_create :create_hosted_zone_on_aws
-  after_create :create_default_records_on_aws
+  after_create :create_hosted_zone_on_aws, unless: :ignore_syncronization?
+  after_create :create_default_records_on_aws, unless: :ignore_syncronization?
   after_create :load_record_from_aws
 
   before_destroy :delete_hosted_zone
@@ -12,6 +12,14 @@ class DnsHostedZone < ActiveRecord::Base
   
   validates :community_id, presence: true
   validates :domain_name, presence: true, length: {maximum: 255}
+
+  def ignore_syncronization= (val)
+    @ignore_syncronization = val
+  end
+
+  def ignore_syncronization?
+    @ignore_syncronization
+  end
 
   def delegation_set_servers
     self.response['delegation_set']['name_servers']
