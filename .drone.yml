@@ -46,6 +46,9 @@ pipeline:
 
 services:
   database:
-    - postgres
+    image: postgres:9.6.1
+  environment:
+    - POSTGRES_USER=bonde
+
   queue:
-    - redis
+    image: redis:3.2.4-alpine
