@@ -1,8 +1,9 @@
 pipeline:
   build:
-    image: ruby:2.3-alpine
+    image: ruby:2.3.0-alpine
     commands:
-      - apk -U add build-base
+      - apk -U --no-cache add libpq ca-certificates openssl tzdata build-base postgresql-dev imagemagick imagemagick-dev
+      - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && echo "America/Sao_Paulo" >  /etc/timezone
       - bin/bundle install --path=gems --retry=5 --jobs=5
       - bin/bundle exec rspec spec
   publish-staging:
