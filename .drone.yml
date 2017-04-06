@@ -43,5 +43,5 @@ pipeline:
 services:
   database:
     image: postgres:9.6.1
-    queue:
+  queue:
     image: redis:3.2.4-alpine
