@@ -28,8 +28,8 @@ ADD ./Gemfile* /usr/src/app/
 
 # 6.3: Install build dependencies AND install/build the app gems:
 RUN set -ex \
-  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev imagemagick imagemagick-dev\
-  && bundle install --without development test 
+  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev=9.6 imagemagick imagemagick-dev\
+  && bundle install --without development test
 
 # ==================================================================================================
 # 7: Copy the rest of the application code, install nodejs as a build dependency, then compile the

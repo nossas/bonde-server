@@ -2,7 +2,7 @@ pipeline:
   build:
     image: ruby:2.3.0-alpine
     commands:
-      - apk -U --no-cache add libpq ca-certificates openssl tzdata build-base postgresql-dev imagemagick imagemagick-dev
+      - apk -U --no-cache add libpq ca-certificates openssl tzdata build-base postgresql-dev=9.6 imagemagick imagemagick-dev
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && echo "America/Sao_Paulo" >  /etc/timezone
       - export DATABASE_URL=postgres://bonde@127.0.0.1/hub_api_test
       - psql -c 'create role bonde SUPERUSER LOGIN;' -h127.0.0.1 -Upostgres
@@ -42,6 +42,6 @@ pipeline:
       status: [ success, failure ]
 services:
   database:
-    image: postgres:9.4.11
+    image: postgres:9.6
   queue:
     image: redis:3.2.4-alpine
