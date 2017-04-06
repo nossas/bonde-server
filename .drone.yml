@@ -3,13 +3,8 @@ pipeline:
     image: ruby:2.3-alpine
     commands:
       - apk -U add build-base
-      - bundle install --path=gems --retry=5 --jobs=5
-      - bin/rake
-    cache:
-      mount:
-        - /tmp/bundler
-    enviroment:
-      - RAILS_ENV=test
+      - bin/bundle install --path=gems --retry=5 --jobs=5
+      - bin/bundle exec rspec spec
   publish-staging:
     image: plugins/docker
     repo: nossas/bonde-server
