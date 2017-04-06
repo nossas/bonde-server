@@ -4,7 +4,11 @@ pipeline:
     commands:
       - apk -U --no-cache add libpq ca-certificates openssl tzdata build-base postgresql-dev imagemagick imagemagick-dev
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && echo "America/Sao_Paulo" >  /etc/timezone
+      - cp config/database.sample.yml config/database.yml
+      - psql -c 'create role hub SUPERUSER LOGIN;' postgres
+      - psql -c 'create database hub_api_test;' -U hub postgres
       - bin/bundle install --path=gems --retry=5 --jobs=5
+      - bin/rake db:migrate
       - bin/bundle exec rspec spec
   publish-staging:
     image: plugins/docker
