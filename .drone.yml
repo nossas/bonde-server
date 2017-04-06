@@ -1,9 +1,6 @@
 pipeline:
   build:
-    image: ruby:2.3.0-onbuild
-    commands:
-      - ./bin/rake db:migrate
-      - ./bin/bundle exec rspec spec
+    image: ruby:2.3-onbuild
     services:
       database:
         - postgres
