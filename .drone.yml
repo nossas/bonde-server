@@ -1,6 +1,13 @@
 pipeline:
   build:
-    image: ruby:2.3-onbuild
+    image: ruby:2.3-alpine
+
+    commands:
+      - apk -U add build-base
+
+      - bundle install --path=gems --retry=5 --jobs=5
+      - bin/rake
+
     services:
       database:
         - postgres
