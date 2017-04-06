@@ -45,24 +45,31 @@ class Community < ActiveRecord::Base
       uniq.
       select{|a| a}.map{|x|x[0]}.uniq
 
+
+    problematic_zones = []
     zones.each do |hz|
       filtered_zones = dns_hosted_zones.where("domain_name = ?", hz)
       dhz = (aws_hosted_zones.select {|hosted_zone| hosted_zone.name.gsub(/\.$/, '') == hz}[0])
-      unless dhz # The is no HostedZone created on amazon
-        if filtered_zones.count == 0
-          dns_hosted_zones.create!( domain_name: hz, ignore_syncronization: true )
+      begin
+        unless dhz # The is no HostedZone created on amazon
+          if filtered_zones.count == 0
+            dns_hosted_zones.create!( domain_name: hz, ignore_syncronization: true )
+          else
+            filtered_zones[0].response = nil
+          end
         else
-          filtered_zones[0].response = nil
+          data = DnsService.new.get_hosted_zone dhz.id
+          if filtered_zones.count == 0
+            dns_hosted_zones.create!( domain_name: hz, response: data.to_json, ignore_syncronization: true )
+          else
+            filtered_zones[0].response = data.to_json
+          end
         end
-      else
-        data = DnsService.new.get_hosted_zone dhz.id
-        if filtered_zones.count == 0
-          dns_hosted_zones.create!( domain_name: hz, response: data.to_json, ignore_syncronization: true )
-        else
-          filtered_zones[0].response = data.to_json
-        end
+      rescue
+        problematic_zones << hz
       end
     end
+    problematic_zones
   end
 
   def export_hosted_zones 
@@ -81,7 +88,7 @@ class Community < ActiveRecord::Base
           # first, we create a dns_record for each 
           if dns_hosted_zone.dns_records.where("name = ? and record_type = ?", aws_record_name, aws_record.type).count == 0
             dns_hosted_zone.dns_records.create!(name: aws_record_name, record_type: aws_record.type, 
-               value: value(aws_record), ttl: aws_record.ttl, ignore_syncronization: true)
+               value: value(aws_record), ttl: aws_record.ttl, ignore_syncronization: true) unless value(aws_record).empty?
           end
         end
       end

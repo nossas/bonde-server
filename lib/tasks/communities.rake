@@ -4,8 +4,9 @@ namespace :communities do
     erros = [ ]
 
     Community.all.each do |community|
-      community.import_hosted_zones
+      erros += community.import_hosted_zones
     end
+    erros
   end
 
   desc 'Export AWS\' hosted zones'
@@ -13,8 +14,9 @@ namespace :communities do
     erros = [ ]
 
     Community.all.each do |community|
-      community.export_hosted_zones
+      erros += community.export_hosted_zones
     end
+    erros
   end
 
   desc 'Synchronize AWS\' records'
@@ -22,8 +24,9 @@ namespace :communities do
     erros = [ ]
 
     Community.all.each do |community|
-      community.import_aws_records
+      erros += community.import_aws_records
     end
+    erros
   end
 
   desc 'Export AWS\' records'
@@ -31,7 +34,8 @@ namespace :communities do
     erros = [ ]
 
     Community.all.each do |community|
-      community.export_aws_records
+      erros += community.export_aws_records
     end
+    erros
   end
 end
