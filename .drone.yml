@@ -8,13 +8,9 @@ pipeline:
       - bundle install --path=gems --retry=5 --jobs=5
       - bin/rake
 
-    services:
-      database:
-        - postgres
-      queue:
-        - redis
     cache:
-      - /tmp/bundler
+      mount:
+        - /tmp/bundler
     enviroment:
       - RAILS_ENV=test
   publish-staging:
@@ -47,3 +43,9 @@ pipeline:
     when:
       event: [ push, tag, build, publish, deployment, pull_request ]
       status: [ success, failure ]
+
+services:
+  database:
+    - postgres
+  queue:
+    - redis
