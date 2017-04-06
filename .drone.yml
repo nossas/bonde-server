@@ -1,15 +1,19 @@
 pipeline:
   build:
-    image: ruby:2.3.0-alpine
+    image: alpine:3.5
     commands:
-      - apk -U --no-cache add libpq ca-certificates openssl tzdata build-base postgresql-dev=9.6 imagemagick imagemagick-dev
-      - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && echo "America/Sao_Paulo" >  /etc/timezone
-      - export DATABASE_URL=postgres://bonde@127.0.0.1/hub_api_test
+      - apk update
+      - apk upgrade
+      - apk --update add --virtual build_deps postgresql-dev libxml2-dev libxslt-dev imagemagick imagemagick-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
+      - apk --update add ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
+      - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+      - echo "America/Sao_Paulo" > /etc/timezone
+      - export DATABASE_URL=postgres://bonde@127.0.0.1/hub_api_test CLIENT_APP_NAME=client
       - psql -c 'create role bonde SUPERUSER LOGIN;' -h127.0.0.1 -Upostgres
       - psql -c 'create database hub_api_test;' -h127.0.0.1 -Upostgres
-      - bin/bundle install --path=gems --retry=5 --jobs=5
-      - bin/rake db:migrate
-      - bin/bundle exec rspec spec
+      - bundle install
+      - rake db:migrate
+      - bundle exec rspec spec
   publish-staging:
     image: plugins/docker
     repo: nossas/bonde-server

@@ -1,47 +1,41 @@
-# This Dockerfile is intended to build a production-ready app image.
-# 1: Use ruby 2.2.6 as base:
-FROM ruby:2.3.0-alpine
+FROM alpine
+MAINTAINER Nossas <tech@nossas.org>
 
-# 2: We'll set the application path as the working directory
-WORKDIR /usr/src/app
+ENV BUILD_PACKAGES postgresql-dev libxml2-dev libxslt-dev imagemagick imagemagick-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
+ENV RUBY_PACKAGES ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
+ENV RAILS_ENV=production RACK_ENV=production
 
-# 3: We'll add the app's binaries path to $PATH, and set the environment name to 'production':
-ENV PATH=/usr/src/app/bin:$PATH RAILS_ENV=production RACK_ENV=production
+# Update and install all of the required packages.
+# At the end, remove the apk cache
+RUN apk update && \
+    apk upgrade && \
+    apk --update add --virtual build_deps $BUILD_PACKAGES && \
+    apk --update add $RUBY_PACKAGES
 
-# 4: Set the default command:
+RUN mkdir /usr/app
+WORKDIR /usr/app
+
+COPY Gemfile /usr/app/
+COPY Gemfile.lock /usr/app/
+
+RUN bundle install
+COPY . /usr/app
+
 CMD [ "bundle", "exec", "puma", "-C", "config/puma.rb" ]
 
-# 5: Expose the web port:
 EXPOSE 3000
 
-# ==================================================================================================
-# 6:  Install dependencies:
-
-# 6.1: Install the common runtime dependencies:
-RUN set -ex && apk add --no-cache libpq ca-certificates openssl tzdata
 RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && echo "America/Sao_Paulo" >  /etc/timezone
-
-# 6.2: Copy just the Gemfile & Gemfile.lock, to avoid the build cache failing whenever any other
-# file changed and installing dependencies all over again - a must if your'e developing this
-# Dockerfile...
-ADD ./Gemfile* /usr/src/app/
-
-# 6.3: Install build dependencies AND install/build the app gems:
-RUN set -ex \
-  && apk add --no-cache --virtual .app-builddeps build-base postgresql-dev=9.6 imagemagick imagemagick-dev\
-  && bundle install --without development test
 
 # ==================================================================================================
 # 7: Copy the rest of the application code, install nodejs as a build dependency, then compile the
 # app assets, and finally change the owner of the code to 'nobody':
-ADD . /usr/src/app
 RUN set -ex \
-  && mkdir -p /usr/src/app/tmp/cache \
-  && mkdir -p /usr/src/app/tmp/pids \
-  && mkdir -p /usr/src/app/tmp/sockets \
-  && echo "apk del .app-builddeps" \
-  && chown -R nobody /usr/src/app
+  && mkdir -p /usr/app/tmp/cache \
+  && mkdir -p /usr/app/tmp/pids \
+  && mkdir -p /usr/app/tmp/sockets
+#  && chown -R nobody /usr/app
 
 # ==================================================================================================
 # 8: Set the container user to 'nobody':
-USER nobody
+#USER nobody
