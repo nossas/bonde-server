@@ -42,6 +42,6 @@ pipeline:
       status: [ success, failure ]
 services:
   database:
-    image: postgres:9.6.1
+    image: postgres:9.4.11
   queue:
     image: redis:3.2.4-alpine
