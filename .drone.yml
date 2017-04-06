@@ -3,9 +3,6 @@ pipeline:
     image: ruby:onbuild
     commands:
       - cp config/database.drone.yml config/database.yml
-      - mkdir -p /tmp/bundler
-      - sudo chown ubuntu:ubuntu /tmp/bundler
-      - bundle install --path=/tmp/bundler --quiet
       - psql -c 'create role hub SUPERUSER LOGIN;' postgres
       - psql -c 'create database hub_api_test;' -U hub postgres
       - bundle exec rake db:migrate
