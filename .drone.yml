@@ -2,9 +2,6 @@ pipeline:
   build:
     image: ruby:2.3.0-onbuild
     commands:
-      - cp config/database.drone.yml config/database.yml
-      - psql -c 'create role hub SUPERUSER LOGIN;' postgres
-      - psql -c 'create database hub_api_test;' -U hub postgres
       - ./bin/rake db:migrate
       - ./bin/bundle exec rspec spec
     services:
@@ -28,13 +25,13 @@ pipeline:
       branch: [hotfix-*, release-*, feature-*, develop]
   deploy-staging:
     image: appleboy/drone-ssh
-    host: reboo-staging.org
+    host: staging.bonde.org
     username: ubuntu
     port: 22
     script:
       - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
-      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/bonde-server:${DRONE_BRANCH}
-      - dokku tags:deploy bonde-server ${DRONE_BRANCH}
+      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/server:${DRONE_BRANCH}
+      - dokku tags:deploy server ${DRONE_BRANCH}
     when:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
