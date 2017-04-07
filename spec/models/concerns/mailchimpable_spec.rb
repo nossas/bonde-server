@@ -95,7 +95,7 @@ RSpec.describe Mailchimpable do
     it 'timeout' do
       stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments").
          with(:body => "{\"name\":\"Meu Segmento\",\"static_segment\":[]}",
-              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
          to_timeout
       expect{fake.create_segment 'Meu Segmento'}.to raise_error(Gibbon::MailChimpError)
     end
@@ -103,7 +103,7 @@ RSpec.describe Mailchimpable do
     it 'net problem' do
       stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments").
          with(:body => "{\"name\":\"Meu Segmento\",\"static_segment\":[]}",
-              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
          to_raise(SocketError)
          
       expect{fake.create_segment 'Meu Segmento'}.to raise_error(Gibbon::MailChimpError)
@@ -112,7 +112,7 @@ RSpec.describe Mailchimpable do
     it 'Request ok' do
       stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments").
          with(:body => "{\"name\":\"Meu Segmento\",\"static_segment\":[]}",
-              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
          to_return(:status => 200, :body => valid_response, :headers => {})
 
       ret = fake.create_segment 'Meu Segmento'
@@ -221,7 +221,7 @@ RSpec.describe Mailchimpable do
     it 'Request ok' do
       stub_request(:put, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
         with(:body => "{\"email_address\":\"fake@nossas.org\",\"status\":\"subscribed\",\"merge_fields\":{\"FNAME\":\"my fake\",\"LNAME\":\"email\"}}",
-          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
         to_return(:status => 200, :body => valid_response, :headers => {})
 
 
@@ -233,7 +233,7 @@ RSpec.describe Mailchimpable do
     it 'Some error' do
       stub_request(:put, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
         with(:body => "{\"email_address\":\"fake@nossas.org\",\"status\":\"subscribed\",\"merge_fields\":{\"FNAME\":\"my fake\",\"LNAME\":\"email\"}}",
-          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
         to_timeout
 
       ret = fake.subscribe_to_list 'fake@nossas.org', {FNAME: 'my fake', LNAME: 'email'}, {update_existing: true}
@@ -332,7 +332,7 @@ RSpec.describe Mailchimpable do
     it 'Request ok' do
       stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq/members").
         with(:body => "{\"email_address\":\"fake@nossas.org\"}",
-          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
           to_return(:status => 200, :body => valid_response, :headers => {})
 
       ret = fake.subscribe_to_segment '123123eq', "fake@nossas.org"
@@ -343,7 +343,7 @@ RSpec.describe Mailchimpable do
     it 'Some error' do
       stub_request(:post, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq/members").
         with(:body => "{\"email_address\":\"fake@nossas.org\"}",
-          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.10.0'}).
+          :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic YXBpa2V5OjY4NDY0ODZxd2VyMjM0dzIzNGVsYTEyczEyNDc4OXNkLXVzNA==', 'Content-Type'=>'application/json'}).
           to_timeout
 
       ret = fake.subscribe_to_segment '123123eq', "fake@nossas.org"
