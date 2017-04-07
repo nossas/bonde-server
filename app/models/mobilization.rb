@@ -16,7 +16,6 @@ class Mobilization < ActiveRecord::Base
   has_many :form_entries, through: :widgets
 
   before_validation :slugify
-  before_save :set_custom_domain
   before_save :set_color_scheme
   before_create :set_twitter_share_text
 
