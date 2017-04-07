@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 class Mobilization < ActiveRecord::Base
   acts_as_taggable
-  
+
   include Shareable
-  include Herokuable
   include Filterable
 
   validates :name, :user_id, :goal, :slug, presence: true
@@ -46,12 +45,6 @@ class Mobilization < ActiveRecord::Base
 
   def slugify
     self.slug ||= "#{self.class.count}-#{self.name.try(:parameterize)}"
-  end
-
-  def set_custom_domain
-    return unless self.custom_domain_changed?
-    delete_domain(self.custom_domain_was)
-    create_domain({hostname: self.custom_domain})
   end
 
   def set_twitter_share_text
