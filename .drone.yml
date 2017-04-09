@@ -31,8 +31,8 @@ pipeline:
     port: 22
     script:
       - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
-      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/server:${DRONE_BRANCH}
-      - dokku tags:deploy server ${DRONE_BRANCH}
+      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/server:latest
+      - dokku tags:deploy server latest
     when:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
