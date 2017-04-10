@@ -3,7 +3,7 @@ MAINTAINER Nossas <tech@nossas.org>
 
 ENV BUILD_PACKAGES postgresql-dev libxml2-dev libxslt-dev imagemagick imagemagick-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
 ENV RUBY_PACKAGES ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
-ENV RAILS_ENV=production RACK_ENV=production
+ENV RAILS_ENV=production RACK_ENV=production DISABLE_SSL=true
 
 # Update and install all of the required packages.
 # At the end, remove the apk cache
