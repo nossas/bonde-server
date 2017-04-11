@@ -66,16 +66,6 @@ class DnsHostedZone < ActiveRecord::Base
     dns_records.create! name: (url || self.domain_name), record_type: 'MX', value: google_mx_values.join("\n"), comment: 'autocreated', ttl: ttl
   end
 
-  private
-
-  def google_mx_values
-    [ '1 aspmx.l.google.com',
-      '5 alt1.aspmx.l.google.com',
-      '5 alt2.aspmx.l.google.com',
-      '10 alt3.aspmx.l.google.com',
-      '10 alt4.aspmx.l.google.com' ]
-  end
-
   def check_ns_correctly_filled!
     unless self.ns_ok
       self.ns_ok = compare_ns
@@ -85,6 +75,14 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   private
+
+  def google_mx_values
+    [ '1 aspmx.l.google.com',
+      '5 alt1.aspmx.l.google.com',
+      '5 alt2.aspmx.l.google.com',
+      '10 alt3.aspmx.l.google.com',
+      '10 alt4.aspmx.l.google.com' ]
+  end
 
   def compare_ns
     resp = Resolver(self.domain_name, Net::DNS::NS).answer

@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe DnsHostedZone, type: :model do
   before do
     allow_any_instance_of(DnsService).to receive(:create_hosted_zone)
+    allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
+    allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
   end
 
   subject { build :dns_hosted_zone, community: (create :community) }
