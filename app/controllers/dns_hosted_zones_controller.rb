@@ -1,6 +1,6 @@
 class DnsHostedZonesController < ApplicationController
   before_action :set_community
-  before_action :set_dns_hosted_zone, only: [:show, :update, :destroy]
+  before_action :set_dns_hosted_zone, except: [:index, :create]
 
   # GET /dns_hosted_zones
   # GET /dns_hosted_zones.json
@@ -59,6 +59,16 @@ class DnsHostedZonesController < ApplicationController
     head :no_content
   end
 
+  def check
+    authorize @dns_hosted_zone
+
+    skip_policy_scope
+    
+    @checked = @dns_hosted_zone.check_ns_correctly_filled!
+
+    render json: @checked
+  end
+
   private
 
     def set_community
@@ -66,7 +76,7 @@ class DnsHostedZonesController < ApplicationController
     end
 
     def set_dns_hosted_zone
-      @dns_hosted_zone = DnsHostedZone.find(params[:id])
+      @dns_hosted_zone = DnsHostedZone.find(params[:id]||params[:dns_hosted_zone_id])
     end
 
     def dns_hosted_zone_params

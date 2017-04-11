@@ -1,3 +1,5 @@
+require 'net/dns'
+
 class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
@@ -74,4 +76,18 @@ class DnsHostedZone < ActiveRecord::Base
       '10 alt4.aspmx.l.google.com' ]
   end
 
+  def check_ns_correctly_filled!
+    unless self.ns_ok
+      self.ns_ok = compare_ns
+      update_attributes(ns_ok: true) if self.ns_ok
+    end
+    self.ns_ok
+  end
+
+  private
+
+  def compare_ns
+    resp = Resolver(self.domain_name, Net::DNS::NS).answer
+    resp.map{|q| q.value.gsub(/\.$/,'')}.sort == self.delegation_set_servers.sort
+  end
 end

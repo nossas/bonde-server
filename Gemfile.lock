@@ -271,6 +271,7 @@ GEM
     moneta (0.8.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
+    net-dns (0.8.0)
     netrc (0.11.0)
     newrelic_rpm (3.15.0.314)
     nokogiri (1.7.1)
@@ -426,6 +427,7 @@ DEPENDENCIES
   has_scope
   liquid
   machinist (>= 2.0.0.beta2)
+  net-dns
   newrelic_rpm (= 3.15.0.314)
   omniauth
   pagarme (= 2.1.2)

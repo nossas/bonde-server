@@ -27,6 +27,7 @@ gem 'postgres-copy'
 gem "liquid"
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'aws-sdk', '~> 2'
+gem 'net-dns'
 
 group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'

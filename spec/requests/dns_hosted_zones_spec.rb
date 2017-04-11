@@ -13,4 +13,24 @@ RSpec.describe "DnsHostedZones", type: :request do
       expect(response).to have_http_status(200)
     end
   end
+
+  describe 'GET /communities/:community_id/dns_hosted_zones/:dns_hosted_zones_id/check' do
+    [true, false].each do |checked|
+      context "returning #{checked}" do
+        let(:dns_hosted_zone) {create :dns_hosted_zone}
+
+        before do 
+          allow_any_instance_of(DnsHostedZone).to receive(:check_ns_correctly_filled!).and_return(checked)
+          allow_any_instance_of(DnsService).to receive(:create_hosted_zone)
+
+          get  "/communities/#{dns_hosted_zone.community.id}/dns_hosted_zones/#{dns_hosted_zone.id}/check"
+        end  
+
+        it do
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+  end
+
 end
