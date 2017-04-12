@@ -55,8 +55,12 @@ class Subscription < ActiveRecord::Base
     end
   end
 
+  def canceled?
+    current_state == 'canceled'
+  end
+
   def charge_next_payment card_hash = nil
-    if !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
+    if !canceled? && !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
       donation = donations.create(
         widget_id: widget.id,
         payment_method: payment_method,

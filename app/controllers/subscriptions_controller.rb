@@ -7,6 +7,11 @@ class SubscriptionsController < ApplicationController
     render json: subscription, serializer: SubscriptionSerializer
   end
 
+  def destroy
+    subscription.transition_to(:canceled) unless subscription.canceled?
+    render json: subscription, serializer: SubscriptionSerializer
+  end
+
   def recharge
     if subscription.current_state == 'unpaid'
       if params[:process_at].present?
