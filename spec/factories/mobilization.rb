@@ -29,7 +29,7 @@ FactoryGirl.define do
     lg_size { 12 }
     kind { "content" }
     action_community { false }
-    settings { {content: "My 12 columns widget", other: "#{sn}"} }
+    sequence(:settings) {|sn| {content: "My 12 columns widget", other: "#{sn}"} }
   end
 
   factory :match, class: Match do

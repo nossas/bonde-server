@@ -16,20 +16,57 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   end
 
   describe "GET #index" do
-    context "when access with user" do
-      let!(:form_entry) { FormEntry.make! widget: widget }
-      let!(:form_entry2) { FormEntry.make! widget: widget2 }
+    context 'with full_info flag' do
+      context "when access with user" do
+        let!(:form_entry) { FormEntry.make! widget: widget }
+        let!(:form_entry2) { FormEntry.make! widget: widget2 }
+
+        def fields_generated(fe)
+          {
+            'activist_id' => fe.activist_id,
+            'created_at' => fe.created_at,
+            'email' => 'zemane@naoexiste.com',
+            'first name' => 'José',
+            'id' => fe.id,
+            'last name' => 'manuel',
+            'requester' => current_user.id,
+            'updated_at' => fe.updated_at,
+            'widget_id' => fe.widget_id
+          }
+        end
 
         it "should return form_entries by mobilization" do
-        get(:index, mobilization_id: mobilization.id)
-        expect(response.body).to eq([form_entry, form_entry2].to_json)
-      end
+          get(:index, { mobilization_id: mobilization.id, INFO: 'disjoint_fields' })
+          expect(assigns(:form_entries)).to eq([fields_generated(form_entry), fields_generated(form_entry2)])
+        end
 
-      it "should return form_entries by widget_id" do
-        get(:index, mobilization_id: mobilization.id, widget_id: widget.id)
-        widget.reload
-        expect(response.body).to eq([form_entry].to_json)
-        expect(widget.exported_at).not_to eq(nil)
+        it "should return form_entries by widget_id" do
+          get(:index, { mobilization_id: mobilization.id, widget_id: widget.id, INFO: 'disjoint_fields'})
+
+          widget.reload
+          expect(assigns(:form_entries)).to eq([fields_generated(form_entry)])
+          expect(widget.exported_at).not_to eq(nil)
+        end
+      end
+    end
+
+    context 'without INFO' do
+      context "when access with user" do
+        let!(:form_entry) { FormEntry.make! widget: widget }
+        let!(:form_entry2) { FormEntry.make! widget: widget2 }
+
+        it "should return form_entries by mobilization" do
+          get(:index, mobilization_id: mobilization.id)
+          expect(assigns(:form_entries)).to eq([form_entry, form_entry2])
+        end
+
+        it "should return form_entries by widget_id" do
+          get(:index, mobilization_id: mobilization.id, widget_id: widget.id)
+
+          widget.reload
+          expect(assigns(:form_entries)).to eq([form_entry])
+          expect(widget.exported_at).not_to eq(nil)
+        end
       end
     end
   end
