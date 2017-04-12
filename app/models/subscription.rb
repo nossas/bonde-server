@@ -18,6 +18,11 @@ class Subscription < ActiveRecord::Base
       association_name: :transitions)
   end
 
+  def reached_retry_limit?
+    last_transition_created = transitions.order(:sort_key).last.try(:created_at) || DateTime.now
+    current_state == 'unpaid' && (last_transition_created - DateTime.now).abs > community.subscription_dead_days_interval.days
+  end
+
   def next_transaction_charge_date
     if last_charge
       return (last_charge.created_at + 1.month)

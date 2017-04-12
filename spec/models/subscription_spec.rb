@@ -33,6 +33,40 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "reached_retry_limit?" do
+    let(:created_at) { DateTime.now }
+    before do
+      Donation.make!(
+        transaction_status: 'unpaid',
+        created_at: created_at,
+        local_subscription_id: subscription.id )
+    end
+
+    subject { subscription.reached_retry_limit? }
+
+    context "when reached the retry limit" do
+      let(:created_at) { 91.days.ago }
+      before do
+        subscription.transition_to(:unpaid)
+        subscription.transitions.last.update_columns(created_at: created_at)
+        subscription.reload
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context "when not reached the retry limit" do
+      let(:created_at) { 69.days.ago }
+      before do
+        subscription.transition_to(:unpaid)
+        subscription.transitions.last.update_columns(created_at: created_at)
+        subscription.reload
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe "payment_options_to_use" do
     let(:card_hash) { nil }
     subject { subscription.payment_options_to_use(card_hash) }
