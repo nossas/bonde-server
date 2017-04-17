@@ -36,7 +36,7 @@ class Mobilizations::FormEntriesController < ApplicationController
     authorize @form_entry
     (render json: @form_entry.errors, status: 400 and return) unless @form_entry.validate
     @form_entry.save!
-    render json: {errors: @form_entry}
+    render json: @form_entry
   end
 
   private

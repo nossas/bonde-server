@@ -1,5 +1,6 @@
 class ActivistPressure < ActiveRecord::Base
   include Mailchimpable
+  include TagAnActivistOmatic
 
   attr_accessor :firstname, :lastname, :mail
 
@@ -10,7 +11,8 @@ class ActivistPressure < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :community, through: :mobilization
 
-  after_commit :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, on: :create, unless: :is_test?
+  after_create :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, unless: :is_test?
+  after_commit :add_automatic_tags, on: :create
 
   def as_json(*)
     ActivistPressureSerializer.new(self, {root: false})

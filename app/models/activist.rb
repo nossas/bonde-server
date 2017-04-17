@@ -37,6 +37,8 @@ class Activist < ActiveRecord::Base
   end
 
   def add_tag community_id, tag
+    self.save!
+
     activist_tag = self.activist_tags.find_by_community_id(community_id) || self.activist_tags.create!(community_id: community_id)
     activist_tag.tag_list.add tag
     activist_tag.save!

@@ -1,7 +1,8 @@
 module TagAnActivistOmatic
   def add_automatic_tags
-    tag = "#{widget.kind}_#{widget.mobilization.name}".downcase.gsub( /\W|\-{2}/, '-' ).gsub( /-{2}/, '-' )
+    self.reload
+    tag_to_add = "#{widget.kind}_#{widget.mobilization.name}".downcase.gsub( /\W|\-{2}/, '-' ).gsub( /-{2}/, '-' )
 
-    activist.add_tag widget.community.id, tag
+    self.activist.add_tag(widget.community.id, tag_to_add) if activist && widget
   end
 end

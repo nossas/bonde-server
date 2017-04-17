@@ -33,7 +33,7 @@ RSpec.describe FormEntry, type: :model do
       let(:email) { 'loem@lorem.com' }
 
       it 'should build a new activist' do
-        expect(build_form_entry).to receive(:create_activist).with(name: 'Foo bar', email: email).and_call_original
+        expect(build_form_entry).to receive(:create_activist).with(name: 'Foo bar manuel', email: email).and_call_original
         subject
         expect(build_form_entry.activist).to_not eq(activist)
       end

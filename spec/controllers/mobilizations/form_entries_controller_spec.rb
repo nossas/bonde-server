@@ -76,6 +76,8 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   describe "POST #create" do
     context "valid call" do
       before do 
+        ActivistTag.delete_all
+
         post(
           :create,
           mobilization_id: widget.mobilization.id,
@@ -90,6 +92,8 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
           }
         )
       end
+
+      it { expect(ActivistTag.count).to be(1) }
 
       it "should create with JSON format and parameters" do
         expect(widget.form_entries.count).to eq(1)
