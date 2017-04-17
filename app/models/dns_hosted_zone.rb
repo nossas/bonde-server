@@ -85,7 +85,11 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def compare_ns
-    resp = Resolver(self.domain_name, Net::DNS::NS).answer
-    resp.map{|q| q.value.gsub(/\.$/,'')}.sort == self.delegation_set_servers.sort
+    comparation = false
+    if self.delegation_set_servers
+      resp = Resolver(self.domain_name, Net::DNS::NS).answer
+      comparation = resp.map{|q| q.value.gsub(/\.$/,'')}.sort == (self.delegation_set_servers||[]).sort
+    end
+    comparation
   end
 end

@@ -23,6 +23,7 @@ RSpec.describe "DnsHostedZones", type: :request do
         before do
           allow_any_instance_of(DnsHostedZone).to receive(:check_ns_correctly_filled!).and_return(checked)
           allow_any_instance_of(DnsService).to receive(:create_hosted_zone)
+          allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
           allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
           allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
 
