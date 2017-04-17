@@ -57,7 +57,9 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
 
         it "should return form_entries by mobilization" do
           get(:index, mobilization_id: mobilization.id)
-          expect(assigns(:form_entries)).to eq([form_entry, form_entry2])
+          expect(assigns(:form_entries)).to include(form_entry)
+          expect(assigns(:form_entries)).to include(form_entry2)
+          expect(assigns(:form_entries).size).to be 2
         end
 
         it "should return form_entries by widget_id" do

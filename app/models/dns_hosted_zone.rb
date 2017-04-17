@@ -24,7 +24,7 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def delegation_set_servers
-    self.response['delegation_set']['name_servers']
+    self.response['delegation_set']['name_servers'] if self.response
   end
 
   def hosted_zone_id
@@ -69,7 +69,7 @@ class DnsHostedZone < ActiveRecord::Base
   def check_ns_correctly_filled!
     unless self.ns_ok
       self.ns_ok = compare_ns
-      update_attributes(ns_ok: true) if self.ns_ok
+      self.save! if self.ns_ok
     end
     self.ns_ok
   end

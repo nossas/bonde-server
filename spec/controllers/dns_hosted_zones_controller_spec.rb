@@ -147,10 +147,9 @@ RSpec.describe DnsHostedZonesController, type: :controller do
 
 
   describe 'GET #check' do
-
     [true, false].each do |checked|
       context "returning #{checked}" do
-        let(:dns_hosted_zone) {create :dns_hosted_zone}
+        let(:dns_hosted_zone) {create :dns_hosted_zone, ns_ok: checked}
 
         before do 
           allow_any_instance_of(DnsHostedZone).to receive(:check_ns_correctly_filled!).and_return(checked)
@@ -159,7 +158,7 @@ RSpec.describe DnsHostedZonesController, type: :controller do
         end  
 
         it do
-          expect(response.body).to eq checked.to_s
+          expect(assigns(:dns_hosted_zone).ns_ok?).to be checked
         end
       end
     end

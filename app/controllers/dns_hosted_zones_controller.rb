@@ -59,14 +59,18 @@ class DnsHostedZonesController < ApplicationController
     head :no_content
   end
 
+  # GET /dns_hosted_zones/1/check
+  # GET /dns_hosted_zones/1/check.json
   def check
+
     authorize @dns_hosted_zone
 
     skip_policy_scope
     
-    @checked = @dns_hosted_zone.check_ns_correctly_filled!
+    @dns_hosted_zone.check_ns_correctly_filled!
+    @dns_hosted_zone.reload
 
-    render json: @checked
+    render json: @dns_hosted_zone
   end
 
   private
