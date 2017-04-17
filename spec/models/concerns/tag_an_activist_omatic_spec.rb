@@ -2,6 +2,9 @@ class TagAnActivistOmaticFake
   attr_accessor :activist, :widget
 
   include TagAnActivistOmatic
+
+  def reload
+  end
 end
 
 
