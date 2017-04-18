@@ -37,7 +37,8 @@ class DnsHostedZone < ActiveRecord::Base
     if (record_filtered.count == 0)
       (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json)
     else
-      (self.update_attributes response: (DnsService.new.get_hosted_zone record_filtered.first.hosted_zone.id).to_json)
+      p record_filtered.first
+      (self.update_attributes response: (DnsService.new.get_hosted_zone(record_filtered.first.id)).to_json)
     end
   end
 
