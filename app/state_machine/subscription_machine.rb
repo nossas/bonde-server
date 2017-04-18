@@ -41,4 +41,8 @@ class SubscriptionMachine
       )
     end
   end
+
+  after_transition do |subscription, transition| 
+    subscription.update_attributes status: transition.to_state
+  end
 end
