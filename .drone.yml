@@ -29,13 +29,39 @@ pipeline:
     host: staging.bonde.org
     username: ubuntu
     port: 22
+    command_timeout: 180
     script:
       - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
       - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/api:latest
       - dokku tags:deploy api latest
+      - dokku run api bin/rake db:migrate
     when:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
+  publish:
+    image: plugins/docker
+    repo: nossas/bonde-server
+    username: lpirola
+    password: ${DOCKER_PASSWORD}
+    tags:
+      - ${DRONE_BRANCH}
+    when:
+      status: success
+      event: tag
+  deploy:
+    image: appleboy/drone-ssh
+    host: bonde.org
+    username: ubuntu
+    port: 22
+    command_timeout: 180
+    script:
+      - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
+      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/api:latest
+      - dokku tags:deploy api latest
+      - dokku run api bin/rake db:migrate
+    when:
+      status: success
+      event: tag
   notify:
     image: plugins/slack
     webhook: https://hooks.slack.com/services/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
