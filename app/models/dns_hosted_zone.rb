@@ -37,13 +37,28 @@ class DnsHostedZone < ActiveRecord::Base
     if (record_filtered.count == 0)
       (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json)
     else
-      p record_filtered.first
       (self.update_attributes response: (DnsService.new.get_hosted_zone(record_filtered.first.id)).to_json)
     end
   end
 
   def delete_hosted_zone
-    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id and (! ignore_syncronization?)
+    self.dns_records.destroy_all
+    self.reload
+
+    if hosted_zone_id and (! ignore_syncronization?)
+      dns_service = DnsService.new
+
+      records = dns_service.list_resource_record_sets hosted_zone_id
+      records.each do |rec|
+        begin
+          dns_records.change_resource_record_sets hosted_zone_id, rec.name, rec.type,  
+              rec.value.split("\n"), rec.comment, action: 'DELETE'
+        rescue StandardError => ex
+        end
+      end
+
+      dns_service.delete_hosted_zone hosted_zone_id
+    end
   end
 
   def load_record_from_aws

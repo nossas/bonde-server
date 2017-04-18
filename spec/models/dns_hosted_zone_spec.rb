@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe DnsHostedZone, type: :model do
   before do
     allow_any_instance_of(DnsService).to receive(:create_hosted_zone)
-    allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
     allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
     allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
   end
@@ -18,6 +17,25 @@ RSpec.describe DnsHostedZone, type: :model do
   it { should validate_presence_of :community_id }
   it { should validate_presence_of :domain_name }
   it { should validate_length_of(:domain_name).is_at_most(255) }
+
+
+  describe '#delete_hosted_zone' do
+    before do
+      subject.save!
+      create(:dns_record, dns_hosted_zone: subject)
+      create(:dns_record, dns_hosted_zone: subject, name: '*')
+      subject.reload
+    end
+
+    it 'should delete all children dns_records' do 
+      expect{ subject.delete_hosted_zone }.to change{DnsRecord.count}.by -2
+    end
+
+    it 'should remove from aws ' do
+      allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
+      subject.delete_hosted_zone
+    end
+  end
 
   describe '#check_ns_correctly_filled!' do
     context 'already checked' do
