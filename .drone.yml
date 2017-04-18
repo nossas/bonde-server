@@ -44,7 +44,7 @@ pipeline:
     username: lpirola
     password: ${DOCKER_PASSWORD}
     tags:
-      - ${DRONE_BRANCH}
+      - ${DRONE_TAG##v}
     when:
       status: success
       event: tag
@@ -55,8 +55,8 @@ pipeline:
     port: 22
     command_timeout: 180
     script:
-      - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
-      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/api:latest
+      - sudo docker pull nossas/bonde-server:${DRONE_TAG##v}
+      - sudo docker tag nossas/bonde-server:${DRONE_TAG##v} dokku/api:latest
       - dokku tags:deploy api latest
       - dokku run api bin/rake db:migrate
     when:
