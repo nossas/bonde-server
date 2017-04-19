@@ -20,7 +20,7 @@ class PostbacksController < ApplicationController
     when :transaction then
       donation_state_was = donation.transaction_status_was.dup
       donation.try(:update_pagarme_data)
-      process_subscription_changes(donation_state_was) if donation.subscription?
+      process_subscription_changes(donation_state_was) if donation.subscription_relation.present?
     when :subscription then
       sync_service = SubscriptionSyncService.new(params[:id])
       sync_service.sync(:last)
