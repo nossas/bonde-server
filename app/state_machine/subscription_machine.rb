@@ -33,11 +33,12 @@ class SubscriptionMachine
     subscription.notify_activist(:canceled_subscription)
   end
 
-  after_transition(to: :unpaid) do |subscription| 
+  after_transition(to: :unpaid) do |subscription, transition|
     unless subscription.reached_retry_limit?
       SubscriptionWorker.perform_at(
         subscription.community.subscription_retry_interval.days.from_now,
-        subscription.id
+        subscription.id,
+        transition.id
       )
     end
   end
