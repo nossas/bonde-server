@@ -5,10 +5,7 @@ class SubscriptionWorker
   def perform(subscription_id, last_unpaid_id = nil)
     subscription = Subscription.find subscription_id
 
-    if !last_unpaid_id.nil?
-      transition = subscription.transitions.order(:sort_key).last
-      return if transition.try(:id) != last_unpaid_id
-    end
+    return if !last_unpaid_id.nil? && subscription.last_transition.try(:id) != last_unpaid_id
 
     subscription.charge_next_payment
     subscription.reload

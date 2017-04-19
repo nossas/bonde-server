@@ -19,8 +19,12 @@ class Subscription < ActiveRecord::Base
   end
 
   def reached_retry_limit?
-    last_transition_created = transitions.order(:sort_key).last.try(:created_at) || DateTime.now
+    last_transition_created = last_transition.try(:created_at) || DateTime.now
     current_state == 'unpaid' && (last_transition_created - DateTime.now).abs > community.subscription_dead_days_interval.days
+  end
+
+  def last_transition
+    transitions.order(:sort_key).last
   end
 
   def next_transaction_charge_date
