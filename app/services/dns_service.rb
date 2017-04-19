@@ -62,6 +62,7 @@ class DnsService
 
       batch[:change_batch][:changes][0][:resource_record_set][:resource_records] = values.map{|v| { value: v } } if values
       batch[:change_batch][:comment] = comments if comments
+
       resp = route53.change_resource_record_sets(batch) 
     end
   end
