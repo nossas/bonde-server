@@ -2,8 +2,14 @@ class SubscriptionWorker
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(subscription_id)
+  def perform(subscription_id, last_unpaid_id = nil)
     subscription = Subscription.find subscription_id
+
+    if !last_unpaid_id.nil?
+      transition = subscription.transitions.order(:sort_key).last
+      return if transition.try(:id) != last_unpaid_id
+    end
+
     subscription.charge_next_payment
     subscription.reload
 
