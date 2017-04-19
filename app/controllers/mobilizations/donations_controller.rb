@@ -44,21 +44,21 @@ class Mobilizations::DonationsController < ApplicationController
     if activist = Activist.by_email(activist_params[:email])
       @donation.activist_id = activist.id
     else
-      @donation.create_activist(activist_params)
+      @donation.create_activist(activist_params.permit(*policy(Activist.new).permitted_attributes))
       Raven.capture_message "Ativista não gravado !\nDonation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
     end
   end
 
   def find_or_create_address(address_params)
-    @donation.activist.addresses.find_by(address_params) ||
-      @donation.activist.addresses.create(address_params)
+    pr = address_params.permit(*policy(Address.new).permitted_attributes)
+    @donation.activist.addresses.find_by(pr) || @donation.activist.addresses.create(pr)
   end
 
   def donation_params
     params.require(:donation).permit(*policy(@donation || Donation.new).permitted_attributes).tap do |whitelisted|
       customer_params = params[:donation][:customer]
       if customer_params
-        whitelisted[:donation][:customer] = customer_params
+        whitelisted[:customer] = customer_params
       end
     end
   end

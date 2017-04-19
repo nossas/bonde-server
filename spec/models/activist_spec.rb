@@ -4,6 +4,10 @@ RSpec.describe Activist, type: :model do
   it { should have_many :donations }
   it { should have_many :addresses }
   it { should have_many :credit_cards }
+  it { should have_many :activist_tags }
+  it { should have_many :form_entries }
+  it { should have_many :activist_pressures }
+  it { should have_many :activist_matches }
 
   it { should validate_presence_of :name }
   it { should validate_presence_of :email }
@@ -94,7 +98,7 @@ hanna montana,hanna.montana@disney.com,12312312413,cpf)
       'csv_content' => %(name,email,phone,document_number,document_type
 joe montana,joe.montana@nfl.com,12312312312,cpf
 hanna montana,hanna.montana@disney.com,12312312413,cpf)
-      }.each do |type, value|
+    }.each do |type, value|
 
       subject{ eval "Activist.update_from_#{type} '#{value}'"  }
 
@@ -109,6 +113,25 @@ hanna montana,hanna.montana@disney.com,12312312413,cpf)
       it 'should update data' do
         expect(subject.map{|s| s.name}.uniq).to include('joe montana')
       end
+    end
+  end
+
+  describe 'tag_list' do
+    let!(:activist_tag) {create(:activist_tag)}
+    let(:activist) { Activist.find activist_tag.activist_id }
+
+    before do
+      activist_tag.tag_list = 'politica, corrupcao'
+      activist_tag.save!
+    end
+
+    it 'should return the correct list of tags' do
+      community_id = activist_tag.community_id
+
+
+      expect(activist.tag_list community_id).to include('corrupcao')
+      expect(activist.tag_list community_id).to include('politica')
+      expect((activist.tag_list community_id).size).to eq 2
     end
   end
 end

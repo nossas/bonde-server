@@ -19,6 +19,19 @@ require 'rails_helper'
 # that an instance is receiving a specific message.
 
 RSpec.describe DnsHostedZonesController, type: :controller do
+
+  before do
+    allow_any_instance_of(DnsService).to receive(:create_hosted_zone).and_return({
+      'delegation_set' => { 'name_servers' => ["ns-1258.awsdns-29.org", "ns-826.awsdns-39.net", "ns-55.awsdns-06.com", "ns-1552.awsdns-02.co.uk"] },
+      'hosted_zone' => {'id' => '12312312'}
+    })
+
+    allow_any_instance_of(DnsService).to receive(:delete_hosted_zone)
+    allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
+    allow_any_instance_of(DnsService).to receive(:list_resource_record_sets).and_return([])
+    allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
+  end
+
   let!(:user) { create(:user) }
   let!(:community) { create(:community) }
 
@@ -132,4 +145,22 @@ RSpec.describe DnsHostedZonesController, type: :controller do
 
   end
 
+
+  describe 'GET #check' do
+    [true, false].each do |checked|
+      context "returning #{checked}" do
+        let(:dns_hosted_zone) {create :dns_hosted_zone, ns_ok: checked}
+
+        before do 
+          allow_any_instance_of(DnsHostedZone).to receive(:check_ns_correctly_filled!).and_return(checked)
+
+          get :check, { community_id: dns_hosted_zone.community.id, dns_hosted_zone_id: dns_hosted_zone.id }
+        end  
+
+        it do
+          expect(assigns(:dns_hosted_zone).ns_ok?).to be checked
+        end
+      end
+    end
+  end
 end

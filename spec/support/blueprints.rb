@@ -20,6 +20,7 @@ Mobilization.blueprint do
   custom_domain { "mymobilization" }
   slug { "#{sn}-mobilization" }
   community { Community.make! }
+  tag_list { "política, cultura" }
 end
 
 Block.blueprint do

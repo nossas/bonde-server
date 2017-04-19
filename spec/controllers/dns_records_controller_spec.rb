@@ -19,8 +19,18 @@ require 'rails_helper'
 # that an instance is receiving a specific message.
 
 RSpec.describe DnsRecordsController, type: :controller do
+  before do
+    allow_any_instance_of(DnsService).to receive(:create_hosted_zone).and_return({
+      'delegation_set' => { 'name_servers' => ["ns-1258.awsdns-29.org", "ns-826.awsdns-39.net", "ns-55.awsdns-06.com", "ns-1552.awsdns-02.co.uk"] },
+      'hosted_zone' => {'id' => '12312312'}
+    })
+    allow_any_instance_of(DnsService).to receive(:change_resource_record_sets)
+    allow_any_instance_of(DnsService).to receive(:list_resource_record_sets).and_return([])
+    allow_any_instance_of(DnsService).to receive(:list_hosted_zones).and_return([])
+  end
+
   let!(:dns_hosted_zone) { create :dns_hosted_zone }
-  let(:community) { dns_hosted_zone.community }
+  let!(:community) { dns_hosted_zone.community }
   let!(:user) { create :user }
 
   before do
@@ -43,7 +53,7 @@ RSpec.describe DnsRecordsController, type: :controller do
   let(:invalid_attributes) {
     {
       name: nil,
-      record_type: "A",
+      record_type: nil,
       value: "192.168.0.1",
       ttl: 3600
     }
@@ -81,7 +91,7 @@ RSpec.describe DnsRecordsController, type: :controller do
       end
 
       it "assigns a newly created dns_record as @dns_record" do
-        post :create, {dns_hosted_zone_id: dns_hosted_zone.id, community_id: community.id, dns_record: valid_attributes}
+        post :create, {dns_hosted_zone_id: dns_hosted_zone.id, community_id: community.id, dns_record: valid_attributes, format: :json}
         expect(assigns(:dns_record)).to be_a(DnsRecord)
         expect(assigns(:dns_record)).to be_persisted
       end

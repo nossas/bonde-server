@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :uploads, only: [:index]
   resources :communities, only: [:index, :create, :update, :show] do
     resources :dns_hosted_zones, except: [:new, :edit] do
+      get 'check', to: 'dns_hosted_zones#check'
       resources :dns_records, except: [:new, :edit]
     end
     resources :activist_actions, only: [:index], controller: 'communities/activist_actions'

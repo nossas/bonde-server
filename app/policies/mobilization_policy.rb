@@ -14,7 +14,8 @@ class MobilizationPolicy < ApplicationPolicy
         :body_font,
         :custom_domain,
         :slug,
-        :community_id
+        :community_id,
+        :tag_list
       ]
     else
       []

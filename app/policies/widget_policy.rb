@@ -17,6 +17,8 @@ class WidgetPolicy < ApplicationPolicy
         :show_counter,
 
         # Settings specific widget
+        :whatsapp_text,
+
         # Content Widget
         :content,
 

@@ -5,6 +5,7 @@ class Activist < ActiveRecord::Base
   has_many :form_entries
   has_many :activist_pressures
   has_many :activist_matches
+  has_many :activist_tags
 
   validates :name, :email, presence: true
   validates :name, length: { in: 3..70 }
@@ -28,6 +29,11 @@ class Activist < ActiveRecord::Base
 
   def self.update_from_csv_file csv_filename
     update_from_csv CsvReader.new(file_name: csv_filename)
+  end
+
+  def tag_list community_id
+    activist_tag = self.activist_tags.find_by_community_id community_id
+    return activist_tag.nil? ? nil : activist_tag.tag_list
   end
 
   private

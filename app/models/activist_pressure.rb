@@ -31,15 +31,10 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_pressure_email
-    chunk = 25.0
-    first = 0
-
-    (self.mail[:cc].length / chunk).ceil.times do |times|
+    self.mail[:cc].each do |recipient| 
       mail = self.mail.dup
-      last = (chunk * (times + 1))
-      mail[:cc] = mail[:cc][first...last]
+      mail[:cc] = recipient
       ActivistPressureMailer.pressure_email(self.id, mail).deliver_later
-      first = chunk * (times + 1)
     end
   end
 

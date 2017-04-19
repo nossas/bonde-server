@@ -2,10 +2,6 @@ require 'rails_helper'
 
 RSpec.describe MobilizationsController, type: :controller do
   before do
-    stub_request(:delete, "https://api.heroku.com/apps//domains/mymobilization").
-       with(:headers => {'Accept'=>'application/vnd.heroku+json; version=3', 'Authorization'=>'Bearer ', 'Host'=>'api.heroku.com:443', 'User-Agent'=>'excon/0.54.0'}).
-       to_return(:status => 200, :body => "", :headers => {})
-
     @user1 = User.make!
     @user2 = User.make!
     stub_current_user(@user1)
@@ -54,19 +50,19 @@ RSpec.describe MobilizationsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    before do
-      @mobilization = Mobilization.make! user: @user1
-    end
-  
     context 'update an existing Mobilization' do
       subject {
         Mobilization.make! user:@user1
       }
 
-      it 'should change data in database' do
-        patch :update, {format: :json, mobilization: {name: 'super-hiper-marevelous mobilization'}, id: subject.id}
+      let(:mob) { Mobilization.find subject.id }
 
-        expect((Mobilization.find subject.id).name).to eq('super-hiper-marevelous mobilization')
+      it 'should change data in database' do
+        patch :update, {format: :json, mobilization: {name: 'super-hiper-marevelous mobilization', tag_list: "corrupto, político"}, id: subject.id}
+
+        expect(mob.name).to eq('super-hiper-marevelous mobilization')
+        expect(mob.tag_list).to include('corrupto')
+        expect(mob.tag_list).to include('politico')
       end
 
       it 'should return an 200' do
@@ -93,9 +89,6 @@ RSpec.describe MobilizationsController, type: :controller do
       before do
         @template_blocks  = [template_block_1, template_block_2]
         @template_widgets = [tempalte_widget_1_1, tempalte_widget_1_2, tempalte_widget_2_1, tempalte_widget_2_2]
-        stub_request(:delete, "https://api.heroku.com/apps//domains/mymobilization").
-          with(:headers => {'Accept'=>'application/vnd.heroku+json; version=3', 'Authorization'=>'Bearer ', 'Host'=>'api.heroku.com:443', 'User-Agent'=>'excon/0.45.4'}).
-          to_return(:status => 200, :body => "", :headers => {})
 
         put :update, { template_mobilization_id: template.id, id: mobilization.id }
       end
@@ -124,7 +117,7 @@ RSpec.describe MobilizationsController, type: :controller do
         expect(newTemplate.uses_number).to eq((template.uses_number||0) + 1)
       end
 
-      it 'should save the blocks in the right sequence' do 
+      it 'should save the blocks in the right sequence' do
         template_blocs_names = @template_blocks.map{|template_block| template_block.name }
 
         blocks_names = saved_mobilization.blocks.order(:id).map{|block| block.name}
@@ -132,7 +125,7 @@ RSpec.describe MobilizationsController, type: :controller do
         expect(blocks_names).to eq(template_blocs_names)
       end
 
-      it 'should save the blocks in the right sequence' do 
+      it 'should save the blocks in the right sequence' do
         template_widgets_settings = @template_widgets.map{|template_widget| template_widget.settings['other'] }
 
         blocks_widgets_settings = (saved_mobilization.blocks.order(:id).map{|block| block.widgets.order(:id)}).flatten.map {|w| w.settings['other']}
@@ -147,7 +140,7 @@ RSpec.describe MobilizationsController, type: :controller do
       it { should respond_with 404 }
     end
   end
-  
+
 
   describe "POST #create" do
     context "single creation" do
@@ -158,11 +151,16 @@ RSpec.describe MobilizationsController, type: :controller do
         post :create, format: :json, mobilization: {
           name: 'Foo',
           goal: 'Bar',
-          community_id: community.id
+          community_id: community.id,
+          tag_list: "luta, corrupção"
         }
 
         expect(Mobilization.count).to eq(1)
-        expect(response.body).to include(Mobilization.first.to_json)
+        expect(response.body).to include('tag_list')
+        expect(response.body).to include('luta')
+        expect(response.body).to include('corrupcao')
+        expect(response.body).to include('Foo')
+        expect(response.body).to include('Bar')
       end
     end
   end
