@@ -24,7 +24,7 @@ class DnsRecord < ActiveRecord::Base
   def delete_dns_record_on_aws
     begin
       DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
-        action: 'DELETE' unless record_automatic?
+        values: self.value.split("\n"), action: 'DELETE' unless record_automatic?
     rescue Aws::Route53::Errors::InvalidChangeBatch => ex
       if (ex.message =~ /^Tried to delete resource record set .+ but it was not found$/).nil?
         throw ex
