@@ -7,7 +7,7 @@ class DnsService
         comment: comment,
         private_zone: private_zone
       }
-    }) if can_i?
+    }) if can_i?(hosted_zone)
   end
 
   def get_hosted_zone id
@@ -39,11 +39,11 @@ class DnsService
   end
 
   def delete_hosted_zone hosted_zone_id
-    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?
+    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?(HostedZone.find(hosted_zone_id).domain_name)
   end
 
   def change_resource_record_sets hosted_zone_id, domain_name, type, values: nil, comments: nil, action: 'UPSERT', ttl_seconds: 300# 3600
-    if can_i?
+    if can_i?(domain_name) 
       batch = {
         change_batch: {
           changes: [
@@ -72,8 +72,8 @@ class DnsService
 
   private
 
-  def can_i?
-    Rails.env.production? || ( ENV['AWS_ROUTE53_SYNC'] == 'force' )
+  def can_i? domain_name
+    (Rails.env.production? || ( ENV['AWS_ROUTE53_SYNC'] == 'force' )) && (domain_name =~ /bonde.org$/).nil?
   end
 
   def route53
