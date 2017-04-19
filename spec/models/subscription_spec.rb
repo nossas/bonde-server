@@ -288,7 +288,7 @@ RSpec.describe Subscription, type: :model do
           it 'should charge and update generated donation' do
             expect(subscription).to receive(:notify_activist).with(:unpaid_subscription)
             expect(subscription).to receive(:transition_to).with(:unpaid, anything).and_call_original
-            expect(SubscriptionWorker).to receive(:perform_at).with(anything, subscription.id)
+            expect(SubscriptionWorker).to receive(:perform_at).with(anything, subscription.id, kind_of(Numeric))
             charged = subject
             expect(charged.transaction_id).to eq("1235")
             expect(charged.transaction_status).to eq('refused')
@@ -314,7 +314,7 @@ RSpec.describe Subscription, type: :model do
           it 'should charge and update generated donation' do
             expect(subscription).to receive(:notify_activist).with(:unpaid_after_charge_subscription)
             expect(subscription).to receive(:transition_to).with(:unpaid, anything).and_call_original
-            expect(SubscriptionWorker).to receive(:perform_at).with(anything, subscription.id)
+            expect(SubscriptionWorker).to receive(:perform_at).with(anything, subscription.id, kind_of(Numeric))
             charged = subject
           end
 
