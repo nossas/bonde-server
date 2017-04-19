@@ -40,6 +40,7 @@ pt:
       record_invalid: Registro inválido
   activerecord:
     errors:
+      duplicated: Registro já existente
       models:
         form_entry:
           attributes:
@@ -62,3 +63,7 @@ pt:
   return:
     status:
       unauthorized: Sem autorização
+  aws:
+    route53:
+      errors:
+        subdomain: Precisa ser um subdomínio do domínio principal

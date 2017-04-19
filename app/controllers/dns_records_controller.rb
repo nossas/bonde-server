@@ -31,10 +31,16 @@ class DnsRecordsController < ApplicationController
     authorize(@dns_hosted_zone.community)
     skip_policy_scope
 
-    if @dns_record.save
+    is_subdomain = (@dns_record.name =~ eval("/#{@dns_record.dns_hosted_zone.domain_name.gsub(/\./, '\.')}$/"))
+    render json: { errors: [I18n.t('activerecord.errors.duplicated')] }, status: :unprocessable_entity and return if DnsRecord.where('name=? and record_type=?', @dns_record.name, @dns_record.record_type).count > 0 
+    if @dns_record.validate && is_subdomain
+      @dns_record.save
       render json: @dns_record
     else
-      render json: @dns_record.errors, status: :unprocessable_entity
+      errors = @dns_record.errors.clone
+      errors[:name] << I18n.t('aws.route53.errors.subdomain') unless is_subdomain
+
+      render json: { errors: errors }, status: :unprocessable_entity
     end
   end
 
