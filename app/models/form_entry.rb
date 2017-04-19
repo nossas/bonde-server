@@ -15,8 +15,8 @@ class FormEntry < ActiveRecord::Base
 
   before_create :link_activist
 
-  after_create :async_send_to_mailchimp
-  after_create :send_email
+  after_commit :async_send_to_mailchimp, on: :create
+  after_commit :send_email, on: :create
 
   def link_activist
     self.activist = (Activist.by_email(email) || create_activist(name: first_name, email: email)) if email.present?
