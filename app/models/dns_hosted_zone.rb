@@ -42,7 +42,7 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def delete_hosted_zone
-    self.dns_records.destroy_all
+    self.dns_records.each {|d|d.delete}
     self.reload
 
     if hosted_zone_id and (! ignore_syncronization?)
@@ -50,11 +50,8 @@ class DnsHostedZone < ActiveRecord::Base
 
       records = dns_service.list_resource_record_sets hosted_zone_id
       records.each do |rec|
-        begin
-          dns_records.change_resource_record_sets hosted_zone_id, rec.name, rec.type,  
-              rec.value.split("\n"), rec.comment, action: 'DELETE'
-        rescue StandardError => ex
-        end
+        dns_service.change_resource_record_sets hosted_zone_id, rec.name, rec.type, 
+          values: rec.resource_records.map{|o| o['value']}, ttl_seconds: rec.ttl , action: 'DELETE' unless rec.type =~ /SOA|NS/ && rec.name == "#{domain_name}."
       end
 
       dns_service.delete_hosted_zone hosted_zone_id
@@ -74,8 +71,8 @@ class DnsHostedZone < ActiveRecord::Base
 
   def create_default_records_on_aws
     dns_service = DnsService.new
-    dns_service.change_resource_record_sets self.hosted_zone_id, self.domain_name, 'A', [ENV['AWS_ROUTE_IP']], 'autocreated'
-    dns_service.change_resource_record_sets self.hosted_zone_id, "*.#{self.domain_name}", 'A', [ENV['AWS_ROUTE_IP']], 'autocreated'
+    dns_service.change_resource_record_sets self.hosted_zone_id, self.domain_name, 'A', values: [ENV['AWS_ROUTE_IP']], comments: 'autocreated'
+    dns_service.change_resource_record_sets self.hosted_zone_id, "*.#{self.domain_name}", 'A', values: [ENV['AWS_ROUTE_IP']], comments: 'autocreated'
   end
 
   def create_google_mail_entries url: nil, ttl:3600
