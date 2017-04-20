@@ -38,14 +38,17 @@ class UsersController < ApplicationController
 
   def retrieve
     skip_authorization
-    email = params['user']['email']
-    user = User.find_by_email email
-    if (user)
-      user.password = Base64.encode64(DateTime.now.strftime('%Q').to_s).strip.gsub(/=/, '')
-      user.save!
-      PasswordRetrieverMailer.retrieve(user).deliver_now
+
+    status = :not_found
+    user = User.find_by_email(params['user']['email'])
+    if user
+      Notification.notify! user, :bonde_password_retrieve, { 
+        new_password: Base64.encode64(DateTime.now.strftime('%Q').to_s).strip.gsub(/=/, ''),
+        user: user
+      }
+      status = :ok
     end
-    render nothing: true
+    render nothing: true, status: status
   end
 
   private
