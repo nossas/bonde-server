@@ -15,7 +15,7 @@ namespace :notifications do
         <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td>
-Olá {{customer.name}}
+Olá {{customer.first_name}}
 <br/><br/>
 Sua doação à {{community.name}} foi processada! Obrigada por mais um mês nos apoiando.
 <br/><br/>
@@ -60,7 +60,7 @@ Sua doação à {{community.name}} foi processada! Obrigada por mais um mês nos
         <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td>
-Olá {{customer.name}}, sua doação deste mês não foi processada com sucesso. Vamos resolver? Clique no botão a seguir para editar os dados da sua conta e continuar apoiando {{community.name}}
+Olá {{customer.first_name}}, sua doação deste mês não foi processada com sucesso. Vamos resolver? Clique no botão a seguir para editar os dados da sua conta e continuar apoiando {{community.name}}
 <br/>
 <br/>
                   <a href="{{manage_url}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
