@@ -17,15 +17,7 @@ class SubscriptionMachine
       subscription.id)
   end
 
-  after_transition(from: :unpaid, to: :unpaid) do |subscription| 
-    subscription.notify_activist(:unpaid_after_charge_subscription)
-  end
-
   after_transition(from: :pending, to: :unpaid) do |subscription|
-    subscription.notify_activist(:unpaid_subscription)
-  end
-
-  after_transition(from: :paid, to: :unpaid) do |subscription|
     subscription.notify_activist(:unpaid_subscription)
   end
 
@@ -34,6 +26,7 @@ class SubscriptionMachine
   end
 
   after_transition(to: :unpaid) do |subscription, transition|
+    subscription.notify_activist(:unpaid_subscription)
     unless subscription.reached_retry_limit?
       SubscriptionWorker.perform_at(
         subscription.community.subscription_retry_interval.days.from_now,

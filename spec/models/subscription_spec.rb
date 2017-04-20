@@ -312,7 +312,7 @@ RSpec.describe Subscription, type: :model do
             expect(PagarMe::Transaction).to receive(:new).with(pagarme_attributes).and_return(transaction)
           end
           it 'should charge and update generated donation' do
-            expect(subscription).to receive(:notify_activist).with(:unpaid_after_charge_subscription)
+            expect(subscription).to receive(:notify_activist).with(:unpaid_subscription)
             expect(subscription).to receive(:transition_to).with(:unpaid, anything).and_call_original
             expect(SubscriptionWorker).to receive(:perform_at).with(anything, subscription.id, kind_of(Numeric))
             charged = subject
