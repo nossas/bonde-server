@@ -164,7 +164,7 @@ class Subscription < ActiveRecord::Base
       subscription_id: id,
       activist_id: activist_id,
       amount: ( amount / 100),
-      manange_url: "https://app.bonde.org/subscriptions/#{id}/edit?token=#{token}",
+      manage_url: "https://app.bonde.org/subscriptions/#{id}/edit?token=#{token}",
       community: {
         id: community_id,
         name: community.name,
