@@ -145,6 +145,7 @@ class Subscription < ActiveRecord::Base
       activist_id,
       template_name,
       default_template_vars.merge(template_vars),
+      false, # from_community not implement yet
       auto_deliver)
   end
 
