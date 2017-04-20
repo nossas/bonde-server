@@ -141,19 +141,25 @@ Olá {{customer.first_name}}, sua doação mensal à {{community.name }} foi can
     puts 'looking for slip_subscription template'
     sub_template = (%{
 <tr>
-    <td style="height:134px;position:relative;background-color:#000;background-image:url('https://s3.amazonaws.com/hub-central-dev/uploads/1490248339_header-image.png');background-repeat:no-repeat;background-size:100%;background-position:0 0;">
+    <td style="height:134px;position:relative;">
         <div style="background-image:url({{community.image}});background-size:100%;position:absolute;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%;"></div>
     </td>
 </tr>
 <tr>
     <td>
-        <table style="width:420px;margin:60px auto;text-align:center;color:#222;font-size:17px;">
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td>
-Olá! Você acaba de solicitar a emissão de um boleto para doar a um projeto criado no BONDE, que utiliza o Pagar.me como plataforma de transações. Abaixo, você encontra o link para efetuar sua doação.<br/><br/>
-<a href="{{last_donation.boleto_url}}">{{last_donation.boleto_url}}</a>
-<br/><br/>
-O boleto pode ser pago pelo Internet Banking ou agência de qualquer banco até a data de vencimento - mas, depois de vencido, só será aceito pelo banco emissor, ok?<br/><br/>
+Olá {{customer.first_name}}, clique no link abaixo para visualizar o boleto e efetuar sua doação mensal a {{community.name}}
+<br/>
+<br/>
+                  <a href="{{last_donation.boleto_url}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
+                    ACESSAR BOLETO
+                  </a>
+<br/>
+<br/>
+O boleto pode ser pago pelo Internet Banking ou agência de qualquer banco até a data de vencimento. Depois de vencido, só será aceito pelo banco emissor.
+
                 </td>
             </tr>
 
@@ -179,7 +185,7 @@ O boleto pode ser pago pelo Internet Banking ou agência de qualquer banco até 
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: 'Aqui está o seu boleto para pagamento!',
+        subject_template: '{{community.name}} Emissão do boleto para doação',
         body_template: sub_template
       )
     end
