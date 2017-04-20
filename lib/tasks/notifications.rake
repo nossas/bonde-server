@@ -6,21 +6,19 @@ namespace :notifications do
     puts 'looking for paid_subscription template'
     sub_template = (%{
 <tr>
-    <td style="height:134px;position:relative;background-color:#000;background-image:url('https://s3.amazonaws.com/hub-central-dev/uploads/1490248339_header-image.png');background-repeat:no-repeat;background-size:100%;background-position:0 0;">
+    <td style="height:134px;position:relative;">
         <div style="background-image:url({{community.image}});background-size:100%;position:absolute;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%;"></div>
     </td>
 </tr>
 <tr>
     <td>
-        <table style="width:420px;margin:60px auto;text-align:center;color:#222;font-size:17px;">
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td>
-Você está recebendo este email pois acabou de fazer uma doação a um projeto criado no BONDE, que utiliza o Pagar.me como plataforma de transações.
+Olá {{customer.name}}
 <br/><br/>
-Sua doação foi efetuada com sucesso e queremos te agradecer pelo apoio!
+Sua doação à {{community.name}} foi processada! Obrigada por mais um mês nos apoiando.
 <br/><br/>
-Abraços
-
                 </td>
             </tr>
 {% if community.fb_link %}
@@ -45,7 +43,7 @@ Abraços
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: 'Doação feita com sucesso!',
+        subject_template: '{{community.name}} Doação processada!',
         body_template: sub_template
       )
     end
