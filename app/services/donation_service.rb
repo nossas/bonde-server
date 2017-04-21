@@ -73,6 +73,7 @@ class DonationService
         payment_method: donation.payment_method)
       donation.update_attribute(:local_subscription_id, subscription.id)
 
+      subscription.reload
       subscription.process_status_changes(@transaction.status, @transaction.try(:to_h))
     end
   end
