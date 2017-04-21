@@ -14,32 +14,6 @@ class DonationService
     self.create_transaction(donation, address)
   end
 
-  # Helper method to find a transaction by metadata
-  # github.com/catarse/catarse_pagarme
-  def self.find_by_metadata(key, value)
-    request = PagarMe::Request.new('/search', 'GET')
-    query = {
-      type: 'transaction',
-      query: {
-        from: 0,
-        size: 1,
-        query: {
-          bool: {
-            must: {
-              match: {
-                "metadata.#{key}" => value
-              }
-            }
-          }
-        }
-      }.to_json
-    }
-
-    request.parameters.merge!(query)
-    response = request.run
-    response.try(:[], "hits").try(:[], "hits").try(:[], 0).try(:[], "_source")
-  end
-
   def self.new_transaction(donation)
     self.find_or_create_card(donation) unless donation.boleto?
 
@@ -75,6 +49,7 @@ class DonationService
           gateway_data: @transaction.try(:to_json),
           payables: @transaction.try(:payables)
         )
+        process_subscription(donation)
 
         if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
@@ -83,6 +58,23 @@ class DonationService
         Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
+    end
+  end
+
+  def self.process_subscription(donation)
+    if donation.subscription? && !donation.subscription_relation.present?
+      subscription = Subscription.create!(
+        widget_id: donation.widget_id,
+        activist_id: donation.activist_id,
+        community_id: donation.community.id,
+        status: 'pending',
+        amount: donation.amount,
+        card_data: @transaction.card.try(:to_json),
+        payment_method: donation.payment_method)
+      donation.update_attribute(:local_subscription_id, subscription.id)
+
+      subscription.reload
+      subscription.process_status_changes(@transaction.status, @transaction.try(:to_h))
     end
   end
 

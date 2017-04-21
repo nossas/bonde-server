@@ -163,6 +163,14 @@ CommunityUser.blueprint do
   role {1}
 end
 
+Subscription.blueprint do
+  widget { Widget.make! }
+  community { Community.make! }
+  activist { Activist.make! }
+  amount { 1000 }
+  payment_method { 'credit_card' }
+end
+
 Recipient.blueprint do
   community { Community.make! }
   pagarme_recipient_id { 're_ci9bucss300h1zt6dvywufeqc' }

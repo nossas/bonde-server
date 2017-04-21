@@ -18,10 +18,19 @@ class PostbacksController < ApplicationController
   def process_postback_for resource_name
     case resource_name
     when :transaction then
+      donation_state_was = donation.transaction_status_was.dup
       donation.try(:update_pagarme_data)
+      process_subscription_changes(donation_state_was) if donation.subscription_relation.present?
     when :subscription then
       sync_service = SubscriptionSyncService.new(params[:id])
       sync_service.sync(:last)
+    end
+  end
+
+  def process_subscription_changes(donation_state_was)
+    donation.reload
+    if donation_state_was != donation.transaction_status
+      donation.subscription_relation.process_status_changes(donation.transaction_status, donation.gateway_data)
     end
   end
 

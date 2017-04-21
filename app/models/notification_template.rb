@@ -6,11 +6,11 @@ class NotificationTemplate < ActiveRecord::Base
   before_save :down_label
 
   def generate_subject vars
-    template_parser(subject_template).render(vars.stringify_keys)
+    template_parser(subject_template).render(vars.deep_stringify_keys)
   end
 
   def generate_body vars
-    template_parser(body_template).render(vars.stringify_keys)
+    template_parser(body_template).render(vars.deep_stringify_keys)
   end
 
   protected

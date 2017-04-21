@@ -106,13 +106,6 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
       it "message status should be a 200" do
         expect(response.status).to be 200
       end
-
-      it "should put a message on Sidekiq" do
-        form_entry = widget.form_entries.first
-        sidekiq_jobs = MailchimpSyncWorker.jobs
-        expect(sidekiq_jobs.size).to eq(1)
-        expect(sidekiq_jobs.last['args']).to eq([form_entry.id, 'formEntry'])
-      end
     end
 
     context "invalid email" do

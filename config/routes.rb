@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   post '/postbacks' => 'postbacks#create', as: :create_postback
+  resources :notifications, only: [:show]
   resources :mobilizations, only: [:index, :create, :update] do
     get :published, on: :collection
     resources :blocks, controller: 'mobilizations/blocks', only: [:index, :create, :update, :destroy]
@@ -37,6 +38,9 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [:create, :update]
+  resources :subscriptions do
+    post :recharge, on: :member
+  end
 
   get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
 

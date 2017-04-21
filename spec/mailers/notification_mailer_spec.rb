@@ -11,7 +11,7 @@ RSpec.describe NotificationMailer, type: :mailer do
     it "should parse and set contents" do
       expect(mail.subject).to eq("hello lorem2")
       expect(mail.to).to eq([activist.email])
-      expect(mail.body.encoded).to eq('World lorem2')
+      expect(mail.body.encoded).to include('World lorem2')
       expect(mail['X-SMTPAPI'].present?).to eq(true)
     end
   end

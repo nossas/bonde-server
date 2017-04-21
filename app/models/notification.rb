@@ -4,16 +4,31 @@ class Notification < ActiveRecord::Base
 
   validates :activist, :notification_template, presence: true
 
-  def self.notify!(activist_id, template_name, template_vars, from_community = false)
-    notification_template = NotificationTemplate.find_by_label(template_name)
-    create!(
+  def self.notify!(activist_id, template_name, template_vars, from_community = false, auto_deliver = true)
+    notification_template = NotificationTemplate.find_by_label(template_name.to_s)
+    n = create!(
       activist_id: activist_id,
       notification_template: notification_template,
       template_vars: template_vars.to_json
     )
+
+    if auto_deliver
+      n.reload
+      job_id = n.deliver!
+      Rails.logger.info "schedule notification #{notification_template.label} -> job_id #{job_id}"
+    end
+    n
+  end
+
+  def deliver!
+    NotificationWorker.perform_async(self.id)
   end
 
   def deliver_without_queue
-    NotificationMailer.notify(self).deliver_now!
+    mail.deliver_now!
+  end
+
+  def mail
+    NotificationMailer.notify(self)
   end
 end

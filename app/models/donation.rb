@@ -7,6 +7,7 @@ class Donation < ActiveRecord::Base
 
   belongs_to :widget
   belongs_to :activist
+  belongs_to :subscription_relation, foreign_key: :local_subscription_id, class_name: 'Subscription'
 
   has_one :mobilization, through: :widget
   has_one :community, through: :mobilization
@@ -26,9 +27,16 @@ class Donation < ActiveRecord::Base
 
   scope :by_widget, -> (widget_id) { where(widget_id: widget_id) if widget_id }
   scope :by_community, -> (community_id) { where("community_id = ?", community_id) if community_id }
+  scope :paid, -> { where(transaction_status: 'paid') }
+
+  scope :ordered, -> { order(id: :desc) }
 
   def boleto?
     self.payment_method == 'boleto'
+  end
+
+  def subscription?
+    self.subscription || subscription_relation.present?
   end
 
   def self.to_txt
