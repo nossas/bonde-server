@@ -13,6 +13,7 @@ class Notification < ActiveRecord::Base
     )
 
     if auto_deliver
+      n.reload
       job_id = n.deliver!
       Rails.logger.info "schedule notification #{notification_template.label} -> job_id #{job_id}"
     end
