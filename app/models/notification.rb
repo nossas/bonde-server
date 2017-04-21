@@ -11,7 +11,11 @@ class Notification < ActiveRecord::Base
       notification_template: notification_template,
       template_vars: template_vars.to_json
     )
-    n.deliver! if auto_deliver
+
+    if auto_deliver
+      job_id = n.deliver!
+      Rails.logger.info "schedule notification #{notification_template.label} -> job_id #{job_id}"
+    end
     n
   end
 
