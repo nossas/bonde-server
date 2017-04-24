@@ -15,6 +15,8 @@ class Notification < ActiveRecord::Base
       params[:user] = to 
     elsif to.is_a? Activist
       params[:activist] = to 
+    elsif to.is_a? String
+      params[:email] = to 
     else
       params[:activist_id] = to
     end

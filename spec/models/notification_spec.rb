@@ -36,6 +36,7 @@ RSpec.describe Notification, type: :model do
 
       it do
         expect(subject.activist).to eq(activist)
+        expect(subject.email).not_to be
         expect(subject.user).not_to be
         expect(subject.notification_template).to eq(notification_template)
         expect(subject.template_vars).to_not be_nil
@@ -52,7 +53,25 @@ RSpec.describe Notification, type: :model do
 
       it do
         expect(subject.activist).not_to be
+        expect(subject.email).not_to be
         expect(subject.user).to eq(user)
+        expect(subject.notification_template).to eq(notification_template)
+        expect(subject.template_vars).to_not be_nil
+        expect(subject.persisted?).to eq(true)
+      end
+    end
+
+    context "should create an notification for an email" do
+      subject { Notification.notify!("ask@me.com", notification_template.label, { name: 'lorem1'}) }
+
+      before do
+        allow(NotificationTemplate).to receive(:find_by_label).with(notification_template.label).and_call_original
+      end
+
+      it do
+        expect(subject.activist).not_to be
+        expect(subject.email).to eq('ask@me.com')
+        expect(subject.user).not_to be
         expect(subject.notification_template).to eq(notification_template)
         expect(subject.template_vars).to_not be_nil
         expect(subject.persisted?).to eq(true)
