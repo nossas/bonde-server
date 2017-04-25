@@ -54,7 +54,7 @@ class DnsHostedZone < ActiveRecord::Base
           values: rec.resource_records.map{|o| o['value']}, ttl_seconds: rec.ttl , action: 'DELETE' unless rec.type =~ /SOA|NS/ && rec.name == "#{domain_name}."
       end
 
-      dns_service.delete_hosted_zone hosted_zone_id
+      dns_service.delete_hosted_zone hosted_zone_id, domain_name
     end
   end
 
