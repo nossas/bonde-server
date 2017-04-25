@@ -23,7 +23,7 @@ RSpec.describe DnsHostedZone, type: :model do
     before do
       subject.save!
       create(:dns_record, dns_hosted_zone: subject)
-      create(:dns_record, dns_hosted_zone: subject, name: '*')
+      create(:dns_record, dns_hosted_zone: subject, name: "*.#{subject.domain_name}")
       subject.reload
     end
 

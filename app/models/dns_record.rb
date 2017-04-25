@@ -5,6 +5,8 @@ class DnsRecord < ActiveRecord::Base
     
   validates :dns_hosted_zone_id, :name, :record_type, :value, :ttl, presence: :true
 
+  validate :verify_length, :verify_subdomain
+
   after_save :update_dns_record_on_aws, unless: :ignore_syncronization?
   after_destroy :delete_dns_record_on_aws, unless: :ignore_syncronization?
 
@@ -58,6 +60,20 @@ class DnsRecord < ActiveRecord::Base
   end
 
   private
+
+  def verify_length
+    return unless self.name && self.dns_hosted_zone
+    if ( self.name.size - self.dns_hosted_zone.domain_name.size ) > 63
+      self.errors.add(:name, I18n.t('activerecord.errors.models.dns_record'))
+    end
+  end
+
+  def verify_subdomain
+    return unless self.name && self.dns_hosted_zone
+    if (name =~ eval("/#{dns_hosted_zone.domain_name}$/")).nil?
+      self.errors.add(:name, I18n.t('activerecord.errors.models.dns_record'))
+    end
+  end
 
   def record_automatic?
     self.name == dns_hosted_zone.domain_name &&

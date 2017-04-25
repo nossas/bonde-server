@@ -55,6 +55,11 @@ pt:
             password:
               too_short: "Senha não pode ser tão curta - deve ter pelo menos %{count} caracteres"
               too_long: "Senha não pode ser tão longa - deve ter no máximo %{count} caracteres"
+        dns_record:
+          attributes:
+            name:
+              length: 'Tamanho do subdomínio não pode ultrapassar 63 caracteres'
+              not_subdomain: 'Deve parte do domínio principal'
   http:
     client:
       error:
