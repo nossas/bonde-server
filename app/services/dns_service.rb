@@ -38,8 +38,8 @@ class DnsService
     resource_record_sets
   end
 
-  def delete_hosted_zone hosted_zone_id
-    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?(HostedZone.find(hosted_zone_id).domain_name)
+  def delete_hosted_zone hosted_zone_id, domain_name
+    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?(domain_name)
   end
 
   def change_resource_record_sets hosted_zone_id, domain_name, type, values: nil, comments: nil, action: 'UPSERT', ttl_seconds: 300# 3600
