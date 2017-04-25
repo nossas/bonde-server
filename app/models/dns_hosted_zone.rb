@@ -46,15 +46,25 @@ class DnsHostedZone < ActiveRecord::Base
     self.reload
 
     if hosted_zone_id and (! ignore_syncronization?)
-      dns_service = DnsService.new
+      begin 
+        dns_service = DnsService.new
 
-      records = dns_service.list_resource_record_sets hosted_zone_id
-      records.each do |rec|
-        dns_service.change_resource_record_sets hosted_zone_id, rec.name, rec.type, 
-          values: rec.resource_records.map{|o| o['value']}, ttl_seconds: rec.ttl , action: 'DELETE' unless rec.type =~ /SOA|NS/ && rec.name == "#{domain_name}."
+        records = dns_service.list_resource_record_sets hosted_zone_id
+        records.each do |rec|
+          begin
+            dns_service.change_resource_record_sets hosted_zone_id, rec.name, rec.type, 
+              values: rec.resource_records.map{|o| o['value']}, ttl_seconds: rec.ttl , action: 'DELETE' unless rec.type =~ /SOA|NS/ && rec.name == "#{domain_name}."
+          rescue StandardError => e
+            p e
+          end
+        end
+
+        dns_service.delete_hosted_zone hosted_zone_id, domain_name
+      rescue StandardError => ex
+        if (ex.message =~ /^No hosted zone found with ID/).nil?
+          throw ex
+        end
       end
-
-      dns_service.delete_hosted_zone hosted_zone_id, domain_name
     end
   end
 
