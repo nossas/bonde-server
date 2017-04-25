@@ -20,6 +20,7 @@ RSpec.describe DnsRecord, type: :model do
   
   it { should validate_presence_of :dns_hosted_zone_id }
   it { should validate_presence_of :name }
+  it { should validate_length_of(:name).is_at_most(254) }
   it { should validate_presence_of :record_type }
   it { should validate_presence_of :value }
   it { should validate_presence_of :ttl }
@@ -36,5 +37,11 @@ RSpec.describe DnsRecord, type: :model do
 
     expect(subject.validate).not_to be
     expect(subject.errors['name'].size).to be 1
+  end
+
+  it 'should accept masks' do
+    subject.name = "*.#{subject.dns_hosted_zone.domain_name}"
+
+    expect(subject.validate).to be
   end
 end

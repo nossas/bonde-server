@@ -3,9 +3,12 @@ class DnsRecord < ActiveRecord::Base
   has_one :community, through: :dns_hosted_zone
   has_many :users, through: :community
     
-  validates :dns_hosted_zone_id, :name, :record_type, :value, :ttl, presence: :true
+  validates :dns_hosted_zone_id, :record_type, :value, :ttl, presence: :true
+  validates :name, presence: :true, length: {maximum: 254}
+  validates :name, format: { with: /\A(\*\.)?([a-z0-9\-]{0,63}\.)*([a-z0-9\-]{0,63})\z/ , 
+      message: I18n.t('activerecord.errors.models.dns_record.attributes.name.segments') }
 
-  validate :verify_length, :verify_subdomain
+  validate :verify_subdomain
 
   after_save :update_dns_record_on_aws, unless: :ignore_syncronization?
   after_destroy :delete_dns_record_on_aws, unless: :ignore_syncronization?
@@ -60,13 +63,6 @@ class DnsRecord < ActiveRecord::Base
   end
 
   private
-
-  def verify_length
-    return unless self.name && self.dns_hosted_zone
-    if ( self.name.size - self.dns_hosted_zone.domain_name.size ) > 63
-      self.errors.add(:name, I18n.t('activerecord.errors.models.dns_record'))
-    end
-  end
 
   def verify_subdomain
     return unless self.name && self.dns_hosted_zone
