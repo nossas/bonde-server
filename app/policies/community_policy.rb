@@ -1,6 +1,6 @@
 class CommunityPolicy < ApplicationPolicy
   def permitted_attributes
-    [:name, :city, :pagarme, :transfer_day, :transfer_enabled, :image, :description, :mailchimp_api_key, :mailchimp_list_id, :mailchimp_group_id, :facebook_app_id]
+    [:name, :city, :pagarme, :transfer_day, :transfer_enabled, :image, :description, :mailchimp_api_key, :mailchimp_list_id, :mailchimp_group_id, :facebook_app_id, :fb_link, :twitter_link, :subscription_dead_days_interval, :subscription_retry_interval]
   end
 
   def can_handle_with_payables?

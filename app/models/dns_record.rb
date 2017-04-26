@@ -18,12 +18,18 @@ class DnsRecord < ActiveRecord::Base
 
   def update_dns_record_on_aws
     DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
-      self.value.split("\n"), self.comment, ttl_seconds: self.ttl
+      values: self.value.split("\n"), comments: self.comment, ttl_seconds: self.ttl
   end
 
   def delete_dns_record_on_aws
-    DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
-      self.value.split("\n"), self.comment, action: 'DELETE'
+    begin
+      DnsService.new.change_resource_record_sets self.dns_hosted_zone.hosted_zone_id, self.name, self.record_type, 
+        values: self.value.split("\n"), ttl_seconds: self.ttl, action: 'DELETE' unless record_automatic?
+    rescue Aws::Route53::Errors::InvalidChangeBatch => ex
+      if (ex.message =~ /^Tried to delete resource record set .+ but it was not found$/).nil?
+        throw ex
+      end
+    end
   end
 
   def self.create_from_record aws_record, hosted_zone_id, ignore_syncronization: false
@@ -36,9 +42,11 @@ class DnsRecord < ActiveRecord::Base
     dns_record.ignore_syncronization = ignore_syncronization
     dns_record.save!
   end
+
+  private
+
+  def record_automatic?
+    self.name == dns_hosted_zone.domain_name &&
+    self.record_type =~ /NS|SOA/
+  end
 end
-# :dns_hosted_zone_id
-# :name
-# :record_type
-# :value
-# :ttl

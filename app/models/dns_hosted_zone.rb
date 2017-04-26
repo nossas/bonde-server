@@ -1,3 +1,5 @@
+require 'net/dns'
+
 class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
@@ -22,7 +24,7 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def delegation_set_servers
-    self.response['delegation_set']['name_servers']
+    self.response['delegation_set']['name_servers'] if self.response
   end
 
   def hosted_zone_id
@@ -35,12 +37,35 @@ class DnsHostedZone < ActiveRecord::Base
     if (record_filtered.count == 0)
       (self.update_attributes response: (DnsService.new.create_hosted_zone domain_name, comment: comment).to_json)
     else
-      (self.update_attributes response: (DnsService.new.get_hosted_zone record_filtered.first.hosted_zone.id).to_json)
+      (self.update_attributes response: (DnsService.new.get_hosted_zone(record_filtered.first.id)).to_json)
     end
   end
 
   def delete_hosted_zone
-    (DnsService.new.delete_hosted_zone hosted_zone_id) if hosted_zone_id and (! ignore_syncronization?)
+    self.dns_records.each {|d|d.delete}
+    self.reload
+
+    if hosted_zone_id and (! ignore_syncronization?)
+      begin 
+        dns_service = DnsService.new
+
+        records = dns_service.list_resource_record_sets hosted_zone_id
+        records.each do |rec|
+          begin
+            dns_service.change_resource_record_sets hosted_zone_id, rec.name, rec.type, 
+              values: rec.resource_records.map{|o| o['value']}, ttl_seconds: rec.ttl , action: 'DELETE' unless rec.type =~ /SOA|NS/ && rec.name == "#{domain_name}."
+          rescue StandardError => e
+            p e
+          end
+        end
+
+        dns_service.delete_hosted_zone hosted_zone_id, domain_name
+      rescue StandardError => ex
+        if (ex.message =~ /^No hosted zone found with ID/).nil?
+          throw ex
+        end
+      end
+    end
   end
 
   def load_record_from_aws
@@ -56,12 +81,20 @@ class DnsHostedZone < ActiveRecord::Base
 
   def create_default_records_on_aws
     dns_service = DnsService.new
-    dns_service.change_resource_record_sets self.hosted_zone_id, self.domain_name, 'A', [ENV['AWS_ROUTE_IP']], 'autocreated'
-    dns_service.change_resource_record_sets self.hosted_zone_id, "*.#{self.domain_name}", 'A', [ENV['AWS_ROUTE_IP']], 'autocreated'
+    dns_service.change_resource_record_sets self.hosted_zone_id, self.domain_name, 'A', values: [ENV['AWS_ROUTE_IP']], comments: 'autocreated'
+    dns_service.change_resource_record_sets self.hosted_zone_id, "*.#{self.domain_name}", 'A', values: [ENV['AWS_ROUTE_IP']], comments: 'autocreated'
   end
 
   def create_google_mail_entries url: nil, ttl:3600
     dns_records.create! name: (url || self.domain_name), record_type: 'MX', value: google_mx_values.join("\n"), comment: 'autocreated', ttl: ttl
+  end
+
+  def check_ns_correctly_filled!
+    unless self.ns_ok
+      self.ns_ok = compare_ns
+      self.save! if self.ns_ok
+    end
+    self.ns_ok
   end
 
   private
@@ -74,4 +107,15 @@ class DnsHostedZone < ActiveRecord::Base
       '10 alt4.aspmx.l.google.com' ]
   end
 
+  def compare_ns
+    comparation = false
+    begin
+      if self.delegation_set_servers
+        resp = Resolver(self.domain_name, Net::DNS::NS).answer
+        comparation = resp.map{|q| q.value.gsub(/\.$/,'')}.sort == (self.delegation_set_servers||[]).sort
+      end
+    rescue Net::DNS::Resolver::NoResponseError
+    end
+    comparation
+  end
 end

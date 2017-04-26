@@ -7,7 +7,7 @@ class DnsService
         comment: comment,
         private_zone: private_zone
       }
-    }) if can_i?
+    }) if can_i?(hosted_zone)
   end
 
   def get_hosted_zone id
@@ -38,28 +38,32 @@ class DnsService
     resource_record_sets
   end
 
-  def delete_hosted_zone hosted_zone_id
-    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?
+  def delete_hosted_zone hosted_zone_id, domain_name
+    route53.delete_hosted_zone({ id: hosted_zone_id }) if can_i?(domain_name)
   end
 
-  def change_resource_record_sets hosted_zone_id, domain_name, type, values, comment, action: 'UPSERT', ttl_seconds: 300# 3600
-    resp = route53.change_resource_record_sets({
-      change_batch: {
-      changes: [
-        {
-          action: action, 
-          resource_record_set: {
-            name: domain_name, 
-            resource_records: values.map{|v| { value: v } }, 
-            ttl: ttl_seconds, 
-            type: type, 
-          }, 
+  def change_resource_record_sets hosted_zone_id, domain_name, type, values: nil, comments: nil, action: 'UPSERT', ttl_seconds: 300# 3600
+    if can_i?(domain_name) 
+      batch = {
+        change_batch: {
+          changes: [
+            {
+              action: action, 
+              resource_record_set: {
+                name: domain_name, 
+                ttl: ttl_seconds,
+                type: type
+              }, 
+            }
+          ]
         }, 
-      ], 
-      comment: comment, 
-      }, 
-      hosted_zone_id: hosted_zone_id, 
-    }) if can_i?
+        hosted_zone_id: hosted_zone_id
+      }
+
+      batch[:change_batch][:changes][0][:resource_record_set][:resource_records] = values.map{|v| { value: v } } if values
+      batch[:change_batch][:comment] = comments if comments
+      resp = route53.change_resource_record_sets(batch) 
+    end
   end
 
   def check_change change_id
@@ -68,8 +72,8 @@ class DnsService
 
   private
 
-  def can_i?
-    Rails.env.production? || ( ENV['AWS_ROUTE53_SYNC'] == 'force' )
+  def can_i? domain_name
+    (Rails.env.production? || ( ENV['AWS_ROUTE53_SYNC'] == 'force' )) && (domain_name =~ /bonde.org$/).nil?
   end
 
   def route53

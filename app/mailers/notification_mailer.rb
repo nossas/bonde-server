@@ -1,9 +1,8 @@
 class NotificationMailer < ApplicationMailer
-  layout :mailer
-
   def notify(notification)
     @notification = notification
     @template = notification.notification_template
+    @body = body.html_safe
 
     configure_xsmtp_headers
     mail(mail_attributes)
@@ -23,7 +22,7 @@ class NotificationMailer < ApplicationMailer
     {
       to: @notification.activist.email,
       subject: subject,
-      body: body
+      content_type: "text/html",
     }
   end
 
