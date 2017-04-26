@@ -74,7 +74,7 @@ class Widget < ActiveRecord::Base
   def create_mailchimp_segment
     if self.synchro_to_mailchimp?
       segment = create_segment(segment_name)
-      self.update_attribute :mailchimp_segment_id, segment["id"]
+      self.update_attribute :mailchimp_segment_id, segment.body["id"]
     end
   end
   
