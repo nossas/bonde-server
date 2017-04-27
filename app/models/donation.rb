@@ -18,8 +18,8 @@ class Donation < ActiveRecord::Base
   has_many :payments
   has_many :payable_details
 
-  after_create :send_mail, unless: :skip?
-  after_create :async_update_mailchimp
+  after_commit :send_mail, on: :create, unless: :skip?
+  after_commit :async_update_mailchimp, on: :create
 
   delegate :name, to: :mobilization, prefix: true
 

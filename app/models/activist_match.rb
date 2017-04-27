@@ -12,7 +12,7 @@ class ActivistMatch < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :community, through: :mobilization
 
-  after_create :async_update_mailchimp
+  after_commit :async_update_mailchimp, on: :create
 
   def async_update_mailchimp
     MailchimpSyncWorker.perform_async(self.id, 'activist_match')

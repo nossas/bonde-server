@@ -10,7 +10,7 @@ class ActivistPressure < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :community, through: :mobilization
 
-  after_create :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, unless: :is_test?
+  after_commit :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, on: :create, unless: :is_test?
 
   def as_json(*)
     ActivistPressureSerializer.new(self, {root: false})
