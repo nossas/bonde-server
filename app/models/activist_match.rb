@@ -31,7 +31,7 @@ class ActivistMatch < ActiveRecord::Base
 
       update_member(self.activist.email, {
         groupings: groupings
-      })
+      }) if groupings
     end
   end
 end

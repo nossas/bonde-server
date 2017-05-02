@@ -84,7 +84,7 @@ class FormEntry < ActiveRecord::Base
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
       update_member(self.email, {
         groupings: groupings
-      })
+      }) if groupings
     end
   end
 

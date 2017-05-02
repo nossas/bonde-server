@@ -90,7 +90,7 @@ class Donation < ActiveRecord::Base
   def update_mailchimp
     subscribe_to_list(self.activist.email, subscribe_attributes)
     subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
-    update_member(self.activist.email, { groupings: groupings })
+    update_member(self.activist.email, { groupings: groupings }) if groupings
   end
 
   def generate_activist
