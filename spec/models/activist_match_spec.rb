@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ActivistMatch, type: :model do
-  subject { ActivistMatch.make( activist: Activist.make!) }
+  subject { build :activist_match }
 
   it { should belong_to :activist }
   it { should belong_to :match }
@@ -26,12 +26,16 @@ RSpec.describe ActivistMatch, type: :model do
   end
 
   describe '#update_mailchimp' do
-    before do
-       stub_request(:post, "https://us6.api.mailchimp.com/3.0/lists/#{ENV['MAILCHIMP_LIST_ID']}/members").
-         with(:body => "{\"email_address\":\"foo@bar.org\",\"status\":\"subscribed\",\"merge_fields\":{\"FNAME\":null,\"LNAME\":null,\"EMAIL\":\"foo@bar.org\"}}").
-         to_return(:status => 200, :body => "", :headers => {})
+    let(:mailchimp_list_id) { 9989 }
+    subject { create :activist_match }
 
-     stub_request(:patch, "https://us6.api.mailchimp.com/3.0/lists/#{ENV['MAILCHIMP_LIST_ID']}/members/24191827e60cdb49a3d17fb1befe951b").
+    before do
+      subject.community.update_attributes mailchimp_api_key: "8b0bd9c101204efdc538affee79c4b06-us8", mailchimp_list_id: mailchimp_list_id
+
+      stub_request(:post, "https://us8.api.mailchimp.com/3.0/lists/#{mailchimp_list_id}/members").
+        to_return(:status => 200, :body => "", :headers => {})
+
+       stub_request(:patch, /\Ahttps\:\/\/us8\.api\.mailchimp\.com\/3\.0\/lists\/#{mailchimp_list_id}\/members\// ).
          to_return(:status => 200, :body => "", :headers => {})
     end
 
