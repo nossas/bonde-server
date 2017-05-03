@@ -84,7 +84,7 @@ class Community < ActiveRecord::Base
       if dns_hosted_zone.hosted_zone_id
         list_records = DnsService.new.list_resource_record_sets dns_hosted_zone.hosted_zone_id
         list_records.each do |aws_record|
-          aws_record_name = aws_record.name.gsub(/\.$/, '')
+          aws_record_name = eval(%Q("#{aws_record.name.gsub(/\.$/, '')}"))
           # first, we create a dns_record for each 
           if dns_hosted_zone.dns_records.where("name = ? and record_type = ?", aws_record_name, aws_record.type).count == 0
             dns_hosted_zone.dns_records.create!(name: aws_record_name, record_type: aws_record.type, 
