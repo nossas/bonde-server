@@ -8,6 +8,20 @@ class DnsRecord < ActiveRecord::Base
   after_save :update_dns_record_on_aws, unless: :ignore_syncronization?
   after_destroy :delete_dns_record_on_aws, unless: :ignore_syncronization?
 
+  scope :only_unsensible, -> { 
+      joins(:dns_hosted_zone).
+      where( %Q[
+          ( not ( 
+            dns_hosted_zones.domain_name = dns_records.name and 
+            (dns_records.record_type = 'SOA' or dns_records.record_type = 'NS' or dns_records.record_type = 'A' or dns_records.record_type = 'AAAA') 
+          ) ) and
+          ( not ( 
+            name = '*.' || dns_hosted_zones.domain_name  and
+            (dns_records.record_type = 'CNAME' or dns_records.record_type = 'A' or dns_records.record_type = 'AAAA') 
+          ) )
+      ] )
+    }
+
   def ignore_syncronization= (val)
     @ignore_syncronization = val
   end
