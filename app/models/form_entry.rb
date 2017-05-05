@@ -15,7 +15,7 @@ class FormEntry < ActiveRecord::Base
 
   before_create :link_activist
 
-  after_commit :async_send_to_mailchimp, on: :create
+  after_commit :async_update_mailchimp, on: :create
   after_commit :send_email, on: :create
 
   def link_activist
@@ -61,11 +61,11 @@ class FormEntry < ActiveRecord::Base
     field_decode [/^(cidade|city|ciudad)/]
   end
 
-  def async_send_to_mailchimp
+  def async_update_mailchimp
     MailchimpSyncWorker.perform_async(self.id, 'formEntry')
   end
 
-  def send_to_mailchimp
+  def update_mailchimp
     if(!Rails.env.test?)
       subscribe_attributes =  {
         FNAME: self.first_name,
@@ -84,7 +84,7 @@ class FormEntry < ActiveRecord::Base
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.email)
       update_member(self.email, {
         groupings: groupings
-      })
+      }) if groupings
     end
   end
 
