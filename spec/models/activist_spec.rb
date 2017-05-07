@@ -70,6 +70,7 @@ RSpec.describe Activist, type: :model do
   end
 
   describe '#update_from_' do
+    let!(:community) { create :community }
     {
       'csv_file' => './spec/models/activist.csv',
       'csv_content' => %(name,email,phone,document_number,document_type
@@ -77,7 +78,7 @@ joe montana,joe.montana@nfl.com,12312312312,cpf
 hanna montana,hanna.montana@disney.com,12312312413,cpf)
       }.each do |type, value|
 
-      subject{ eval "Activist.update_from_#{type} '#{value}'"  }
+      subject{ eval "Activist.update_from_#{type}('#{value}', #{community.id})"  }
 
       it 'sould return the records' do
         expect(subject.size).to eq 2
@@ -91,6 +92,7 @@ hanna montana,hanna.montana@disney.com,12312312413,cpf)
 
   describe '#update_from_' do
 
+    let!(:community) { create :community }
     let!(:activist) { Activist.create name: 'Joe Mon', email:'joe.montana@nfl.com' }
 
     {
@@ -100,7 +102,7 @@ joe montana,joe.montana@nfl.com,12312312312,cpf
 hanna montana,hanna.montana@disney.com,12312312413,cpf)
     }.each do |type, value|
 
-      subject{ eval "Activist.update_from_#{type} '#{value}'"  }
+      subject{ eval "Activist.update_from_#{type} '#{value}', #{community.id}"  }
 
       it 'sould return the records' do
         expect(subject.size).to eq 2
