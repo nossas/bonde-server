@@ -48,10 +48,29 @@ RSpec.describe DnsRecordsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
+    let!(:dns_records) { [
+      create(:dns_record, name: "#{dns_hosted_zone.domain_name}", record_type: 'SOA', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, name: "#{dns_hosted_zone.domain_name}", record_type: 'NS', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, name: "#{dns_hosted_zone.domain_name}", record_type: 'A', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, name: "#{dns_hosted_zone.domain_name}", record_type: 'AAAA', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, name: "*.#{dns_hosted_zone.domain_name}", record_type: 'A', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, name: "*.#{dns_hosted_zone.domain_name}", record_type: 'AAAA', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, name: "*.#{dns_hosted_zone.domain_name}", record_type: 'CNAME', dns_hosted_zone: dns_hosted_zone),
+      create(:dns_record, dns_hosted_zone: dns_hosted_zone)
+    ] }
+
     it "assigns all dns_records as @dns_records" do
-      dns_record = create(:dns_record, dns_hosted_zone: dns_hosted_zone)
+      get :index, { dns_hosted_zone_id: dns_hosted_zone.id, community_id: community.id, full_data: 'true'}
+
+      dns_records.each{|r| expect(assigns(:dns_records)).to include(r) }
+      expect(assigns(:dns_records).size).to be dns_records.size
+    end
+
+    it "assigns all dns_records as @dns_records" do
       get :index, { dns_hosted_zone_id: dns_hosted_zone.id, community_id: community.id}
-      expect(assigns(:dns_records)).to eq([dns_record])
+
+      dns_records.each{|r| expect(assigns(:dns_records)).to include(dns_records.last) }
+      expect(assigns(:dns_records).size).to be 1
     end
   end
 
