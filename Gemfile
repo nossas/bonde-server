@@ -44,6 +44,7 @@ group :test, :development do
   gem 'factory_girl_rails', '~> 4.8'
 end
 
+gem 'test_after_commit', :group => :test
 group :test do
   gem 'webmock', '2.3.1'
   gem "fakeredis", :require => "fakeredis/rspec"
