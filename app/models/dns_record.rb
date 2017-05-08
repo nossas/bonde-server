@@ -35,7 +35,7 @@ class DnsRecord < ActiveRecord::Base
   def self.create_from_record aws_record, hosted_zone_id, ignore_syncronization: false
     dns_record = DnsRecord.new
     dns_record.dns_hosted_zone_id = hosted_zone_id
-    dns_record.name = aws_record.name.gsub(/\.$/, '')
+    dns_record.name = eval(%Q("#{aws_record.name.gsub(/\.$/, '')}"))
     dns_record.record_type = aws_record.type
     dns_record.value = aws_record.resource_records.map{|r| r.value}.join("\n")
     dns_record.ttl = aws_record.ttl
