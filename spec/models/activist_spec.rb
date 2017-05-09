@@ -98,8 +98,8 @@ hanna montana,hanna.montana@disney.com,12312312413,cpf)
     {
       'csv_file' => './spec/models/activist.csv',
       'csv_content' => %(name,email,phone,document_number,document_type
-joe montana,joe.montana@nfl.com,12312312312,cpf
-hanna montana,hanna.montana@disney.com,12312312413,cpf)
+joe montana,joe.montana@nfl.com,12-1234-1234,12312312312,cpf
+hanna montana,hanna.montana@disney.com,11-1212-3434,12312312413,cpf)
     }.each do |type, value|
 
       subject{ eval "Activist.update_from_#{type} '#{value}', #{community.id}"  }
