@@ -26,7 +26,7 @@ RSpec.describe DnsRecordsController, type: :controller do
   # adjust the attributes here as well.
   let(:valid_attributes) {
     {
-      name: "www.nossas.org",
+      name: "www.#{dns_hosted_zone.domain_name}",
       record_type: "AAAA",
       value: "fe80::6668:f729:dbce:7441/64",
       ttl: 3600
