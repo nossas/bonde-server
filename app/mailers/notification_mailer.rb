@@ -19,11 +19,17 @@ class NotificationMailer < ApplicationMailer
   end
 
   def mail_attributes
-    {
+    attrs = {
       to: @notification.activist.email,
       subject: subject,
       content_type: "text/html",
     }
+
+    if @notification.custom_from_email.present?
+      attrs.merge!(from: @notification.custom_from_email)
+    end
+
+    attrs
   end
 
   def configure_xsmtp_headers

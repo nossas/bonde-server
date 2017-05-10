@@ -12,6 +12,9 @@ class Community < ActiveRecord::Base
   has_many :activist_actions
   has_many :dns_hosted_zones
 
+  has_many :notification_templates
+  has_many :notifications
+
   belongs_to :recipient
 
   def pagarme_recipient_id
