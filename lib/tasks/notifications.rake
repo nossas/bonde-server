@@ -202,7 +202,7 @@ O boleto pode ser pago pelo Internet Banking ou agência de qualquer banco até 
         <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
             <tr>
                 <td>
-Olá {{customer.first_name}}, tudo bem? <br/><br/
+Olá {{customer.first_name}}, tudo bem? <br/><br/>
 Ontem você recebeu um e-mail do Pagar.me informando o cancelamento da sua doação a {{community.name}}. Estamos fazendo uma atualização no nosso sistema de pagamento e esse e-mail não deveria ter sido enviado.
 <br/><br/>
 Sua doação continua válida e você continuará sendo debitado na data correta. Não será necessária nenhuma ação sua para continuar contribuindo. Desculpe-nos o transtorno. Qualquer dúvida, estamos à disposição
