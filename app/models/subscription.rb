@@ -145,7 +145,7 @@ class Subscription < ActiveRecord::Base
       activist_id,
       template_name,
       default_template_vars.merge(template_vars),
-      subscription.community_id,
+      community_id,
       auto_deliver)
   end
 
