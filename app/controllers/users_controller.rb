@@ -42,8 +42,12 @@ class UsersController < ApplicationController
     status = :not_found
     user = User.find_by_email(params['user']['email'])
     if user
+      pass = Base64.encode64(DateTime.now.strftime('%Q').to_s).strip.gsub(/=/, '')
+      user.update_attributes password: pass
+      user.reload
+
       Notification.notify! user, :bonde_password_retrieve, { 
-        new_password: Base64.encode64(DateTime.now.strftime('%Q').to_s).strip.gsub(/=/, ''),
+        new_password: pass,
         user: user
       }
       status = :ok
