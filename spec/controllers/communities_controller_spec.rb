@@ -685,6 +685,7 @@ RSpec.describe CommunitiesController, type: :controller do
   describe 'GET #list_mobilizations' do
     let(:community) {Community.make!}
     let(:user2) {User.make!}
+    let(:user3) {User.make!}
 
 
     before do
@@ -695,6 +696,27 @@ RSpec.describe CommunitiesController, type: :controller do
       @mob3 = Mobilization.make! user: @user, custom_domain: "foobar2", slug: "1.2-foo", community: community
       @mob4 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "2-foo"
       @mob5 = Mobilization.make! user: user2
+    end
+
+    context "unlogged" do
+      before do
+        stub_current_user(nil)
+
+        get :list_mobilizations, {community_id: community.id}
+      end
+
+      it { expect(response.status).to be 401 } # not authorized
+    end
+
+    context 'logged but with no data related to him' do
+      before do
+        stub_current_user(user3)
+        get :list_mobilizations, {community_id: community.id}
+      end
+
+      it 'should return a 404 status' do
+        expect(response.status).to be 404
+      end
     end
 
     context "inexistent community" do

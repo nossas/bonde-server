@@ -16,14 +16,21 @@ RSpec.describe DnsHostedZone, type: :model do
 
   it { should validate_presence_of :community_id }
   it { should validate_presence_of :domain_name }
-  it { should validate_length_of(:domain_name).is_at_most(255) }
+  it { should validate_length_of(:domain_name).is_at_most(254) }
 
+  it do
+    subject.domain_name = 'thenameofmaydomaincanbeasbigasnecessarybutmyimaginationsnotworking.com'
+
+    expect(subject.validate).not_to be
+
+    expect(subject.errors[:domain_name].size).to be 1
+  end
 
   describe '#delete_hosted_zone' do
     before do
       subject.save!
       create(:dns_record, dns_hosted_zone: subject)
-      create(:dns_record, dns_hosted_zone: subject, name: '*')
+      create(:dns_record, dns_hosted_zone: subject, name: "*.#{subject.domain_name}")
       subject.reload
     end
 
