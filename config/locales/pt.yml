@@ -59,6 +59,15 @@ pt:
     password:
       retrieve:
         subject: Sua nova senha no Bonde.org !
+        dns_record:
+          attributes:
+            name:
+              not_subdomain: 'Deve parte do domínio principal'
+              segments: 'Cada segmento não pode ultrapassar 63 caracteres'
+        dns_hosted_zone:
+          attributes:
+            domain_name:
+              segments: 'Cada segmento não pode ultrapassar 63 caracteres'
   http:
     client:
       error:

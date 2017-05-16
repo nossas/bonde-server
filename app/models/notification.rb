@@ -1,15 +1,17 @@
 class Notification < ActiveRecord::Base
   belongs_to :activist
+  belongs_to :community
   belongs_to :user
   belongs_to :notification_template
 
   validates :notification_template, presence: true
 
-  def self.notify!(to, template_name, template_vars, from_community = false, auto_deliver = true)
-    notification_template = NotificationTemplate.find_by_label(template_name.to_s)
+  def self.notify!(to, template_name, template_vars, from_community_id = nil, auto_deliver = true)
+    notification_template = find_template_by_attributes(label: template_name.to_s, community_id: from_community_id) || find_template_by_attributes(label: template_name.to_s)
     params = {
       notification_template: notification_template,
-      template_vars: template_vars.to_json
+      template_vars: template_vars.to_json,
+      community_id: from_community_id
     }
     if to.is_a? User
       params[:user] = to 
@@ -18,7 +20,8 @@ class Notification < ActiveRecord::Base
     else
       params[:activist_id] = to
     end
-    n = create!(params)
+
+    n = Notification.create!(params)
 
     if auto_deliver
       n.reload
@@ -26,6 +29,14 @@ class Notification < ActiveRecord::Base
       Rails.logger.info "schedule notification #{notification_template.label} -> job_id #{job_id}"
     end
     n
+  end
+
+  def self.find_template_by_attributes attrs
+    NotificationTemplate.find_by attrs
+  end
+
+  def custom_from_email
+    community.try(:email_template_from)
   end
 
   def deliver!

@@ -5,11 +5,13 @@ class DnsRecordsController < ApplicationController
   # GET /dns_records
   # GET /dns_records.json
   def index
+    render_404 and return if (! @dns_hosted_zone ) || ("#{@dns_hosted_zone.community.id}" != params[:community_id])
     authorize @dns_hosted_zone.community
     skip_policy_scope
 
     @dns_records = @dns_hosted_zone.dns_records
-
+    @dns_records = @dns_records.only_unsensible unless params[:full_data] == 'true'
+      
     render json: @dns_records
   end
 
@@ -69,12 +71,18 @@ class DnsRecordsController < ApplicationController
 
   private
 
+    def render_404
+      skip_authorization
+      skip_policy_scope
+      render nothing:true, status: :not_found
+    end
+
     def set_dns_record
       @dns_record = DnsRecord.find(params[:id])
     end
 
     def set_dns_hosted_zone
-      @dns_hosted_zone = DnsHostedZone.find params[:dns_hosted_zone_id]
+      @dns_hosted_zone = DnsHostedZone.find_by_id params[:dns_hosted_zone_id]
     end
 
     def dns_record_params new_record
