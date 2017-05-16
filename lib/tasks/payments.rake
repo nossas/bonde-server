@@ -31,4 +31,34 @@ namespace :payments do
       end
     end
   end
+
+  desc 'sync all gateway payments'
+  task sync_gateway_transactions: :environment do
+    page = 1
+    per_page = 200
+
+    loop do
+      Rails.logger.info "[GatewayTransaction SYNC] -> running on page #{page}"
+
+      transactions = PagarMe::Transaction.all(page, per_page)
+
+      if transactions.empty?
+        Rails.logger.info "[GatewayTransaction SYNC] -> exiting no transactions returned"
+        break
+      end
+
+      transactions.each do |transaction| 
+        transaction = GatewayTransaction.find_or_create_by transaction_id: transaction.id.to_s
+        transaction.update_attributes(
+          gateway_data: transaction.to_json
+        )
+        print '.'
+      end
+
+      Rails.logger.info "[GatewayPayment SYNC] - transactions synced on page #{page}"
+
+      page = page+1
+    end
+  end
+
 end
