@@ -112,7 +112,7 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe '#retrieve' do
-    let!(:templ) { create :notification_template, label: :bonde_password_retrieve }
+    let!(:templ) { create :notification_template, label: :bonde_test_template }
     let!(:user) { create :user, password: '123456789' }
 
     it do

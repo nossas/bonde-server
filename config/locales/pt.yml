@@ -55,6 +55,10 @@ pt:
             password:
               too_short: "Senha não pode ser tão curta - deve ter pelo menos %{count} caracteres"
               too_long: "Senha não pode ser tão longa - deve ter no máximo %{count} caracteres"
+        notification_template:
+          attributes:
+            label:
+              invalid: "Label inválido"
   mailer:
     password:
       retrieve:
