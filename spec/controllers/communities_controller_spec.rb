@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 
 RSpec.describe CommunitiesController, type: :controller do
@@ -34,7 +35,8 @@ RSpec.describe CommunitiesController, type: :controller do
             description: 'A community to solve ours problems',
             mailchimp_api_key: 'abc56',
             mailchimp_list_id: '1234',
-            mailchimp_group_id: '7890'
+            mailchimp_group_id: '7890',
+            email_template_from: 'Lorem <lorem@lorem.com>'
           }}
       before do
         @count = Community.count
@@ -53,9 +55,10 @@ RSpec.describe CommunitiesController, type: :controller do
       end
 
       it 'should return the data saved' do
+        dt = JSON.parse response.body
+
         vals.each do |f, v|
-          expect(response.body).to include(f.to_s)
-          expect(response.body).to include(v)
+          expect(dt[f.to_s]).to eq(v)
         end
       end
 
@@ -66,6 +69,7 @@ RSpec.describe CommunitiesController, type: :controller do
         expect(saved.mailchimp_api_key).to eq('abc56')
         expect(saved.mailchimp_list_id).to eq('1234')
         expect(saved.mailchimp_group_id).to eq('7890')
+        expect(saved.email_template_from.html_safe).to eq('Lorem <lorem@lorem.com>')
         expect(saved.description).to eq('A community to solve ours problems')
         expect(saved.city).to eq('Pindamonhangaba, SP')
         expect(saved.name).to eq('José Marculino Silva')

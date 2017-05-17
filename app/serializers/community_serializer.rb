@@ -1,5 +1,5 @@
 class CommunitySerializer < ActiveModel::Serializer
-  attributes :id, :name, :city, :mailchimp_api_key, :mailchimp_list_id, :mailchimp_group_id, :image, :description, :recipient, :facebook_app_id, :subscription_dead_days_interval, :subscription_retry_interval
+  attributes :id, :name, :city, :mailchimp_api_key, :mailchimp_list_id, :mailchimp_group_id, :image, :description, :recipient, :facebook_app_id, :subscription_dead_days_interval, :subscription_retry_interval, :email_template_from
 
   include PagarmeHelper
 
