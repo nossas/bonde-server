@@ -78,5 +78,5 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  default_url_options[:host] = "api-ssl.reboo.org"
+  default_url_options[:host] = ENV['API_HOST'] || "api.bonde.org"
 end
