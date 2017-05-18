@@ -48,8 +48,8 @@ namespace :payments do
       end
 
       transactions.each do |transaction| 
-        transaction = GatewayTransaction.find_or_create_by transaction_id: transaction.id.to_s
-        transaction.update_attributes(
+        gateway_transaction = GatewayTransaction.find_or_create_by transaction_id: transaction.id.to_s
+        gateway_transaction.update_attributes(
           gateway_data: transaction.to_json
         )
         print '.'
