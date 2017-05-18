@@ -27,7 +27,7 @@ class MailchimpSyncWorker
     widget = form_entry.widget 
     if (widget) and ( not form_entry.synchronized )
       create_segment_if_necessary(form_entry.widget)
-      form_entry.send_to_mailchimp
+      form_entry.update_mailchimp
       update_status form_entry
     end
   end

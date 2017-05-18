@@ -394,6 +394,8 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     statesman (2.0.1)
+    test_after_commit (1.1.0)
+      activerecord (>= 3.2)
     thor (0.19.4)
     thread_safe (0.3.6)
     trollop (2.1.2)
@@ -451,6 +453,7 @@ DEPENDENCIES
   sidekiq
   spring
   statesman (= 2.0.1)
+  test_after_commit
   webmock (= 2.3.1)
 
 RUBY VERSION

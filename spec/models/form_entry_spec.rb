@@ -51,8 +51,9 @@ RSpec.describe FormEntry, type: :model do
   describe "Puts a message in sidekiq queue" do
     before do
       @form_entry=FormEntry.new id:25
-      @form_entry.async_send_to_mailchimp
+      @form_entry.async_update_mailchimp
     end
+
     it "should save data in sidekiq" do
       sidekiq_jobs = MailchimpSyncWorker.jobs
       expect(sidekiq_jobs.size).to eq(1)

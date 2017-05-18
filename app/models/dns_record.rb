@@ -3,10 +3,29 @@ class DnsRecord < ActiveRecord::Base
   has_one :community, through: :dns_hosted_zone
   has_many :users, through: :community
     
-  validates :dns_hosted_zone_id, :name, :record_type, :value, :ttl, presence: :true
+  validates :dns_hosted_zone_id, :record_type, :value, :ttl, presence: :true
+  validates :name, presence: :true, length: {maximum: 254}
+  validates :name, format: { with: /\A(\*\.)?([a-z0-9\-]{0,63}\.)*([a-z0-9\-]{0,63})\z/ , 
+      message: I18n.t('activerecord.errors.models.dns_record.attributes.name.segments') }
+
+  validate :verify_subdomain
 
   after_save :update_dns_record_on_aws, unless: :ignore_syncronization?
   after_destroy :delete_dns_record_on_aws, unless: :ignore_syncronization?
+
+  scope :only_unsensible, -> { 
+      joins(:dns_hosted_zone).
+      where( %Q[
+          ( not ( 
+            dns_hosted_zones.domain_name = dns_records.name and 
+            (dns_records.record_type = 'SOA' or dns_records.record_type = 'NS' or dns_records.record_type = 'A' or dns_records.record_type = 'AAAA') 
+          ) ) and
+          ( not ( 
+            name = '*.' || dns_hosted_zones.domain_name  and
+            (dns_records.record_type = 'CNAME' or dns_records.record_type = 'A' or dns_records.record_type = 'AAAA') 
+          ) )
+      ] )
+    }
 
   def ignore_syncronization= (val)
     @ignore_syncronization = val
@@ -35,7 +54,7 @@ class DnsRecord < ActiveRecord::Base
   def self.create_from_record aws_record, hosted_zone_id, ignore_syncronization: false
     dns_record = DnsRecord.new
     dns_record.dns_hosted_zone_id = hosted_zone_id
-    dns_record.name = aws_record.name.gsub(/\.$/, '')
+    dns_record.name = eval(%Q("#{aws_record.name.gsub(/\.$/, '')}"))
     dns_record.record_type = aws_record.type
     dns_record.value = aws_record.resource_records.map{|r| r.value}.join("\n")
     dns_record.ttl = aws_record.ttl
@@ -44,6 +63,13 @@ class DnsRecord < ActiveRecord::Base
   end
 
   private
+
+  def verify_subdomain
+    return unless self.name && self.dns_hosted_zone
+    if (name =~ eval("/#{dns_hosted_zone.domain_name}$/")).nil?
+      self.errors.add(:name, I18n.t('activerecord.errors.models.dns_record'))
+    end
+  end
 
   def record_automatic?
     self.name == dns_hosted_zone.domain_name &&

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::API
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from PagarMe::PagarMeError, with: :pagarme_error
+  rescue_from Mailchimpable::MailchimpableException, with: :mailchimpable_exception
 
   after_action :verify_authorized, unless: -> {devise_controller?}
   after_action :verify_policy_scoped, unless: -> {devise_controller?}
@@ -38,6 +39,13 @@ class ApplicationController < ActionController::API
     end
 
     render json: { errors: [ "Pagarme: #{error_messages} #{ENV['PAGARME_API_KEY']}" ] }, status: :internal_server_error
+  end
+
+  def mailchimpable_exception(exception)
+    unless exception.message =~ /.*title="Member Exists".*/
+      Raven.capture_message("Erro ao gravar usuário na lista:\nEmail: #{email}\nMergeVars: #{merge_vars.to_json unless merge_vars.nil?}\nOptions: #{options.to_json}\n#{exception}") unless Rails.env.test?
+      logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{exception}") 
+    end
   end
 
   def get_error status

@@ -12,14 +12,14 @@ class ActivistMatch < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :community, through: :mobilization
 
-  after_create :async_update_mailchimp
+  after_commit :async_update_mailchimp, on: :create
 
   def async_update_mailchimp
     MailchimpSyncWorker.perform_async(self.id, 'activist_match')
   end
 
-  def update_mailchimp
-    if(!Rails.env.test?)
+  def update_mailchimp force_in_test: false
+    if(!Rails.env.test?) || force_in_test
       subscribe_attributes =  {
         FNAME: self.firstname,
         LNAME: self.lastname,
@@ -28,9 +28,10 @@ class ActivistMatch < ActiveRecord::Base
 
       subscribe_to_list(self.activist.email, subscribe_attributes)
       subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
+
       update_member(self.activist.email, {
         groupings: groupings
-      })
+      }) if groupings
     end
   end
 end
