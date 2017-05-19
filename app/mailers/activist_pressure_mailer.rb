@@ -56,8 +56,7 @@ class ActivistPressureMailer < ApplicationMailer
   end
 
   def targets
-    #@mail[:cc].join(',')
-    @mail[:cc]
+    @mail[:cc].kind_of?(Array) ? @mail[:cc].join(',') : @mail[:cc]
   end
 
   def activist_email
