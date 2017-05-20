@@ -10,6 +10,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
   let(:notification) { create(:notification, community: community, activist: activist, notification_template: notification_template, template_vars: { name: 'lorem2' }) }
   let(:notification2) { create(:notification, user: user, notification_template: notification_template, template_vars: { name: 'lorem2' }) }
+  let(:notification3) { create(:notification, email: 'ask@me.com', notification_template: notification_template, template_vars: { name: 'lorem2' }) }
 
   describe "#notify" do
     context "Addressed to an activist" do
@@ -30,6 +31,17 @@ RSpec.describe NotificationMailer, type: :mailer do
       it "should parse and set contents" do
         expect(mail.subject).to eq("hello lorem2")
         expect(mail.to).to eq([user.email])
+        expect(mail.body.encoded).to include('World lorem2')
+        expect(mail['X-SMTPAPI'].present?).to eq(true)
+      end
+    end 
+
+    context "Addressed to an email" do
+      let(:mail) { NotificationMailer.notify(notification3) }
+
+      it "should parse and set contents" do
+        expect(mail.subject).to eq("hello lorem2")
+        expect(mail.to).to eq(['ask@me.com'])
         expect(mail.body.encoded).to include('World lorem2')
         expect(mail['X-SMTPAPI'].present?).to eq(true)
       end
