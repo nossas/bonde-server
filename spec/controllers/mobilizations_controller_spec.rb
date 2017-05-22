@@ -13,7 +13,8 @@ RSpec.describe MobilizationsController, type: :controller do
       @mob2 = Mobilization.make! user: @user2
     end
 
-    context "unlogged user" do
+    # Temporary removed - see comments on implementation
+    xcontext "unlogged user" do
       before do
         stub_current_user nil
         get :index
