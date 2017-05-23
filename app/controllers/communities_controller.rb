@@ -13,7 +13,11 @@ class CommunitiesController < ApplicationController
     skip_authorization
     skip_policy_scope
 
-    render json: current_user.communities
+    if current_user
+      render json: current_user.communities
+    else
+      render nothing:true, status: :unauthorized
+    end
   end
 
 
