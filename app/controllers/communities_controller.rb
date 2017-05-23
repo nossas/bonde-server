@@ -4,6 +4,8 @@ class CommunitiesController < ApplicationController
   include Pundit
   include PagarmeHelper
   
+  before_action :load_community, only: [:list_mobilizations]
+
   after_action :verify_authorized, except: [:index, :list_mobilizations]
   after_action :verify_policy_scoped, only: [:index, :list_mobilizations]
 
@@ -11,7 +13,11 @@ class CommunitiesController < ApplicationController
     skip_authorization
     skip_policy_scope
 
-    render json: current_user.communities
+    if current_user
+      render json: current_user.communities
+    else
+      render nothing:true, status: :unauthorized
+    end
   end
 
 
@@ -77,15 +83,15 @@ class CommunitiesController < ApplicationController
   end
 
   def list_mobilizations
-    community = Community.find_by({id: params['community_id']})
-
-    if community
+    if ! current_user
+      (render_status :unauthorized) and return
+    elsif @community
       begin
-        @mobilizations = policy_scope(community.mobilizations).order('updated_at DESC')
+        @mobilizations = @community.mobilizations.order('updated_at DESC')
         @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
         @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
         @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
-        render json: @mobilizations
+        render json: policy_scope(@mobilizations)
       rescue StandardError => e
         Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error e
@@ -96,6 +102,10 @@ class CommunitiesController < ApplicationController
   end
 
   private 
+
+  def load_community
+    @community = current_user.communities.find_by({id: params['community_id']}) if current_user
+  end
 
   def recipients community, recipient_dt
     recipient_data = to_pagarme_recipient recipient_dt
@@ -146,7 +156,13 @@ class CommunitiesController < ApplicationController
     community_user.save!
   end
 
-  def return404
+  def render_status status
+    skip_authorization
+    skip_policy_scope
+    render :status =>status, :nothing => true
+  end
+
+  def return404 
     skip_authorization
     skip_policy_scope
     render :status =>404, :nothing => true

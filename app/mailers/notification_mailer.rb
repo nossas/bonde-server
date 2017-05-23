@@ -20,7 +20,7 @@ class NotificationMailer < ApplicationMailer
 
   def mail_attributes
     attrs = {
-      to: @notification.activist.email,
+      to: @notification.email || (@notification.activist||@notification.user).email,
       subject: subject,
       content_type: "text/html",
     }

@@ -1,21 +1,29 @@
 class Notification < ActiveRecord::Base
   belongs_to :activist
   belongs_to :community
+  belongs_to :user
   belongs_to :notification_template
 
-  validates :activist, :notification_template, presence: true
+  validates :notification_template, presence: true
 
-  def self.notify!(activist_id, template_name, template_vars, from_community_id = nil, auto_deliver = true)
-
+  def self.notify!(to, template_name, template_vars, from_community_id = nil, auto_deliver = true)
     notification_template = find_template_by_attributes(label: template_name.to_s, community_id: from_community_id) || find_template_by_attributes(label: template_name.to_s)
-    from_community = Community.find(from_community_id) rescue nil
-
-    n = create!(
-      activist_id: activist_id,
+    params = {
       notification_template: notification_template,
       template_vars: template_vars.to_json,
-      community: from_community
-    )
+      community_id: from_community_id
+    }
+    if to.is_a? User
+      params[:user] = to 
+    elsif to.is_a? Activist
+      params[:activist] = to 
+    elsif to.is_a? String
+      params[:email] = to 
+    else
+      params[:activist_id] = to
+    end
+
+    n = Notification.create!(params)
 
     if auto_deliver
       n.reload

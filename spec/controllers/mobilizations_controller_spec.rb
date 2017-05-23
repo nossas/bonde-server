@@ -13,6 +13,17 @@ RSpec.describe MobilizationsController, type: :controller do
       @mob2 = Mobilization.make! user: @user2
     end
 
+    # Temporary removed - see comments on implementation
+    xcontext "unlogged user" do
+      before do
+        stub_current_user nil
+        get :index
+      end
+
+      it { expect(response.status).to be 401 }
+    end
+
+
     it "should return all mobilizations" do
       get :index
 

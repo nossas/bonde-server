@@ -5,6 +5,11 @@ class MobilizationsController < ApplicationController
 
   def index
     # TODO: Lets use has_scope here :)
+
+    # Review: There is no need to have this endpoint for listing content, just to get specific items
+    #         frontend need to be reviewsd too.
+    #
+    # render_status :unauthorized and return unless current_user
     begin
       @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
       @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
@@ -82,6 +87,12 @@ class MobilizationsController < ApplicationController
   end
 
   private 
+
+  def render_status status
+    skip_authorization
+    skip_policy_scope
+    render :status =>status, :nothing => true
+  end
 
   def return404
     skip_authorization

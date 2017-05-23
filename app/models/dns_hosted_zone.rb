@@ -13,7 +13,10 @@ class DnsHostedZone < ActiveRecord::Base
   has_many :users, through: :community
   
   validates :community_id, presence: true
-  validates :domain_name, presence: true, length: {maximum: 255}
+  validates :domain_name, presence: true, length: {maximum: 254}
+
+  validates :domain_name, format: { with: /\A([a-z0-9\-]{0,63}\.)*([a-z0-9\-]{0,63})\z/ , 
+      message: I18n.t('activerecord.errors.models.dns_hosted_zone.attributes.domain_name.segments') }
 
   def ignore_syncronization= (val)
     @ignore_syncronization = val
