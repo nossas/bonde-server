@@ -20,7 +20,7 @@ module Mailchimpable
   def subscribe_to_list(email, merge_vars, options = {})
     begin
       if options[:update_existing]
-        api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email.downcase)).upsert(body: create_body(email, merge_vars: merge_vars, options: options))
+        api_client.lists(mailchimp_list_id).members(create_hash email).upsert(body: create_body(email, merge_vars: merge_vars, options: options))
       else
         api_client.lists(mailchimp_list_id).members.create(body: create_body(email, merge_vars: merge_vars, options: options))
       end
@@ -38,6 +38,18 @@ module Mailchimpable
       }) if segment_id
     rescue StandardError => e
       raise MailchimpableException.new( e, "Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')\nError:#{e}" )
+    end
+  end
+
+
+  def unsubscribe_to_segment(segment_id, email)
+    begin
+      if segment_id
+        api_client.lists(mailchimp_list_id).segments(segment_id).members(create_hash email).delete 
+        true
+      end
+    rescue StandardError => e
+      raise MailchimpableException.new( e, "Unsubscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')\nError:#{e}" )
     end
   end
 
@@ -91,5 +103,11 @@ module Mailchimpable
     end
     body[:interests] = options[:groupings] if options[:groupings]
     body
+  end
+
+  private
+
+  def create_hash email
+    Digest::MD5.hexdigest(email.downcase) 
   end
 end
