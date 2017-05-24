@@ -46,10 +46,11 @@ class MobilizationsController < ApplicationController
 
   def update
     @mobilization = Mobilization.find_by({id: params[:id]})
+    template_mobilization_id = params[:mobilization][:template_mobilization_id]
     if not @mobilization
       return404
-    elsif params[:template_mobilization_id]
-      template = TemplateMobilization.find_by({id: params[:template_mobilization_id]})
+    elsif template_mobilization_id
+      template = TemplateMobilization.find_by({id: template_mobilization_id})
       if template
         authorize @mobilization
         @mobilization.copy_from template

@@ -101,7 +101,7 @@ RSpec.describe MobilizationsController, type: :controller do
         @template_blocks  = [template_block_1, template_block_2]
         @template_widgets = [tempalte_widget_1_1, tempalte_widget_1_2, tempalte_widget_2_1, tempalte_widget_2_2]
 
-        put :update, { template_mobilization_id: template.id, id: mobilization.id }
+        put :update, { mobilization: { template_mobilization_id: template.id } , id: mobilization.id }
       end
 
       it { should respond_with 200 }
@@ -146,7 +146,7 @@ RSpec.describe MobilizationsController, type: :controller do
     end
 
     context "update from an inexisting template" do
-      before { put :update, { template_mobilization_id: 0, id: mobilization.id } }
+      before { put :update, { mobilization: { template_mobilization_id: 0 }, id: mobilization.id } }
 
       it { should respond_with 404 }
     end
