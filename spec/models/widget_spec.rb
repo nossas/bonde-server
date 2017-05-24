@@ -36,9 +36,13 @@ RSpec.describe Widget, type: :model do
         expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}M#{widget.id} - #{widget.block.mobilization.name[0..89]}"
       end
 
-      it "should set a segment name" do
-        widget = Widget.make! kind: 'donation'
-        expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}D#{widget.id} - #{widget.block.mobilization.name[0..89]}"
+      context 'kind: donation' do
+        let!(:widget) { Widget.make! kind: 'donation' }
+
+        it { expect(widget.segment_name).to eq "M#{widget.block.mobilization.id}D#{widget.id} - #{widget.block.mobilization.name[0..89]}" }
+        it { expect(widget.segment_name donation_segment_kind: :unique).to eq "M#{widget.block.mobilization.id}D#{widget.id} - Única Paga - #{widget.block.mobilization.name[0..89]}" }
+        it { expect(widget.segment_name donation_segment_kind: :recurring_active).to eq "M#{widget.block.mobilization.id}D#{widget.id} - Recorrente Ativa - #{widget.block.mobilization.name[0..89]}" }
+        it { expect(widget.segment_name donation_segment_kind: :recurring_inactive).to eq "M#{widget.block.mobilization.id}D#{widget.id} - Recorrente Inativa - #{widget.block.mobilization.name[0..89]}" }
       end
 
       it "should set a segment name" do
