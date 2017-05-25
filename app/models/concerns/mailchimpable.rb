@@ -16,6 +16,19 @@ module Mailchimpable
     })
   end
 
+  def status_on_list(segment_id, email)
+    begin
+      member = api_client.lists(mailchimp_list_id).members(create_hash email).retrieve
+      member.body['status'].to_sym
+    rescue Gibbon::MailChimpError => e
+      if e.to_s =~ /the server responded with status 404/
+        false
+      else
+        raise MailchimpableException.new(e, "status on list segment_id: #{segment_id}, email: '#{email}'")
+      end
+    end
+  end
+
 
   def subscribe_to_list(email, merge_vars, options = {})
     begin

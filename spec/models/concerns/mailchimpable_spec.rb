@@ -564,4 +564,64 @@ RSpec.describe Mailchimpable do
       expect { fake.update_member 'fake@nossas.org', {groupings: {'1234212': true, '12312': true}} }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
+
+  describe '#status_on_list' do
+
+    def valid_response status 
+%Q({ 
+  "id": "2b5a209483eb26743e862f736d80f96b", 
+  "email_address": "fake@nossas.org", 
+  "unique_email_id": "4e80eb2636e", 
+  "email_type": "html", 
+  "status": "#{status}", 
+  "merge_fields": {
+    "FNAME": "Fake", 
+    "LNAME": "Man", 
+    "ORG": "TESTE", 
+    "CITY": "Pindonhangaba"
+  }, 
+  "interests": {
+    "bcde6938c1": false, 
+    "bcde6938c2": false, 
+    "bcde6938c3": false
+  }, 
+  "stats": {
+    "avg_open_rate": 0, 
+    "avg_click_rate": 0
+  }
+})
+    end
+
+    it 'Subscribed on list' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 200, :body => valid_response('subscribed'), :headers => {})
+
+      ret = fake.status_on_list '9989', 'fake@nossas.org'
+
+      expect(ret).to be :subscribed
+    end
+
+    it 'Unsubscribed on list' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 200, :body => valid_response('unsubscribed'), :headers => {})
+
+      ret = fake.status_on_list '9989', 'fake@nossas.org'
+
+      expect(ret).to be :unsubscribed
+    end
+
+    it 'don\'t exist' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 404, :body => "", :headers => {})
+
+      expect( fake.status_on_list '9989', 'fake@nossas.org' ).not_to be
+    end
+
+    it 'Other Problem' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_timeout
+
+      expect { fake.status_on_list '9989', 'fake@nossas.org' }.to raise_error(Mailchimpable::MailchimpableException)
+    end
+  end
 end
