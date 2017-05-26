@@ -431,13 +431,6 @@ RSpec.describe Subscription, type: :model do
   end
 
   describe '#mailchimp_remove_from_active_donators' do
-    # let(:widget) { spy :widget }
-
-    # before do 
-    #   allow(widget).to receive(:id).and_return(12)
-    #   allow(subscription).to receive(:widget).and_return(widget)
-    # end
-
     context 'if not on mailchimp' do
       before do
         allow(subscription).to receive(:status_on_list).and_return :not_registred
