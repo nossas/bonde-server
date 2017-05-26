@@ -82,6 +82,14 @@ class Widget < ActiveRecord::Base
       self.update_attribute :mailchimp_segment_id, segment.body["id"]
     end
   end
+
+  def create_mailchimp_donators_segments
+    unless self.mailchimp_unique_segment_id
+      self.update_attributes mailchimp_segment_id: create_segment(segment_name donation_segment_kind: :unique).body["id"],
+        mailchimp_recurring_active_segment_id: create_segment(segment_name donation_segment_kind: :recurring_active).body["id"],
+        mailchimp_recurring_inactive_segment_id: create_segment(segment_name donation_segment_kind: :recurring_inactive).body["id"]
+    end
+  end
   
   def self.create_from template, block_instance
     widget = Widget.new

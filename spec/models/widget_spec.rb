@@ -191,4 +191,18 @@ RSpec.describe Widget, type: :model do
       expect((Widget.new kind: 'draft').synchro_to_mailchimp?).to be false
     end
   end
+
+  describe '#create_mailchimp_donators_segments' do
+    let(:widget) { create :widget, mailchimp_unique_segment_id: nil }
+
+    it do 
+      obj = spy :segment_data
+      allow(obj).to receive(:body).and_return({"id" => 12})
+      allow(widget).to receive(:create_segment).and_return obj
+
+      widget.create_mailchimp_donators_segments
+
+      expect(widget).to have_received(:create_segment).exactly(3).times
+    end
+  end
 end
