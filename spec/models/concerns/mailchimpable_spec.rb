@@ -596,7 +596,7 @@ RSpec.describe Mailchimpable do
       stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
         to_return(:status => 200, :body => valid_response('subscribed'), :headers => {})
 
-      ret = fake.status_on_list '9989', 'fake@nossas.org'
+      ret = fake.status_on_list 'fake@nossas.org'
 
       expect(ret).to be :subscribed
     end
@@ -605,7 +605,7 @@ RSpec.describe Mailchimpable do
       stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
         to_return(:status => 200, :body => valid_response('unsubscribed'), :headers => {})
 
-      ret = fake.status_on_list '9989', 'fake@nossas.org'
+      ret = fake.status_on_list 'fake@nossas.org'
 
       expect(ret).to be :unsubscribed
     end
@@ -614,14 +614,14 @@ RSpec.describe Mailchimpable do
       stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
         to_return(:status => 404, :body => "", :headers => {})
 
-      expect( fake.status_on_list '9989', 'fake@nossas.org' ).not_to be
+      expect( fake.status_on_list 'fake@nossas.org' ).to be :not_registred
     end
 
     it 'Other Problem' do
       stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
         to_timeout
 
-      expect { fake.status_on_list '9989', 'fake@nossas.org' }.to raise_error(Mailchimpable::MailchimpableException)
+      expect { fake.status_on_list 'fake@nossas.org' }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
 end

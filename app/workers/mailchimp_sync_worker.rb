@@ -3,15 +3,19 @@ class MailchimpSyncWorker
   sidekiq_options queue: :mailchimp_synchro
 
   def perform(id, queue) 
+    action_widget = nil
     if queue == 'formEntry'
-      perform_with_formEntry(id)
+      action_widget = FormEntry.find id
     elsif queue == 'activist_pressure'
-      perform_with_activist_pressure(id)
+      action_widget = ActivistPressure.find id
     elsif queue == 'activist_match'
-      perform_with_activist_match(id)
+      action_widget = ActivistMatch.find id
     elsif queue == 'donation'
-      perform_with_donation(id)
+      action_widget = Donation.find id
+    elsif queue == 'subscription'
+      perform_subscription( Subscription.find id ) and return
     end
+    perform_with action_widget if action_widget
   end
 
   def create_segment_if_necessary(widget)
@@ -20,51 +24,27 @@ class MailchimpSyncWorker
     end
   end
 
-
-  def perform_with_formEntry(form_entry_id)
-    form_entry = FormEntry.find(form_entry_id)
-
-    widget = form_entry.widget 
-    if (widget) and ( not form_entry.synchronized )
-      create_segment_if_necessary(form_entry.widget)
-      form_entry.update_mailchimp
-      update_status form_entry
-    end
-  end
-
-  def perform_with_activist_pressure(activist_pressure_id)
-    activist_pressure = ActivistPressure.find(activist_pressure_id)
-    widget = activist_pressure.widget 
-    if ( widget ) and ( not activist_pressure.synchronized )
-      create_segment_if_necessary(activist_pressure.widget)
-      activist_pressure.update_mailchimp
-      update_status activist_pressure
-    end
-  end
-
-  def perform_with_activist_match(activist_match_id)
-    activist_match = ActivistMatch.find(activist_match_id)
-    widget = activist_match.widget 
-    if ( widget ) and ( not activist_match.synchronized )
+  def perform_with action_widget
+    widget = action_widget.widget 
+    if ( widget ) and ( not action_widget.synchronized )
       create_segment_if_necessary(widget)
-      activist_match.update_mailchimp
-      update_status activist_match
+      action_widget.update_mailchimp
+      update_status action_widget
     end
   end
 
-  def perform_with_donation(donation_id)
-    donation = Donation.find(donation_id)
-    widget = donation.widget 
-    if ( widget ) and ( not donation.synchronized )
-      create_segment_if_necessary(widget)
-      donation.update_mailchimp
-      update_status donation
+  def perform_subscription subscription
+    return if (subscription.status =~ /(un)?paid|canceled/.nil?) || (subscription.synchronized) 
+    if subscription.status =~ /unpaid|canceled/
+      subscription.mailchimp_remove_from_active_donators
+    else
+      subscription.mailchimp_add_active_donators
     end
+    update_status subscription
   end
 
   def update_status record
     record.synchronized = true
     record.save! validate: false
   end
-
 end
