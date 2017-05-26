@@ -1,4 +1,6 @@
 class Subscription < ActiveRecord::Base
+  include Mailchimpable
+
   belongs_to :widget
   belongs_to :activist
   belongs_to :community
@@ -189,6 +191,23 @@ class Subscription < ActiveRecord::Base
           boleto_url: last_donation.gateway_data.try(:[], 'boleto_url'),
         }
       )
+    end
+  end
+
+  def mailchimp_add_active_donators
+    email_status = status_on_list(activist.email)
+    raise StandardError.new('Unsubscribed') if email_status == :not_registred
+    widget.create_mailchimp_donators_segments
+    widget.reload
+    subscribe_to_segment(widget.mailchimp_recurring_active_segment_id, activist.email) if email_status == :subscribed
+  end
+
+  def mailchimp_remove_from_active_donators
+    email_status = status_on_list(activist.email)
+    raise StandardError.new('Unsubscribed') if email_status == :not_registred
+    if email_status == :subscribed
+      unsubscribe_from_segment widget.mailchimp_recurring_active_segment_id, activist.email
+      subscribe_to_segment widget.mailchimp_recurring_inactive_segment_id, activist.email
     end
   end
 end
