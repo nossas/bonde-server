@@ -348,7 +348,7 @@ RSpec.describe Mailchimpable do
     end
   end
 
-  describe '#unsubscribe_to_segment' do
+  describe '#unsubscribe_from_segment' do
     def valid_response
       %( {
         "id": "06f12badc3b5fffc57576822131ded7c",
@@ -438,7 +438,7 @@ RSpec.describe Mailchimpable do
       stub_request(:delete, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq/members/4e80eb2636e37dc06d4ad0c542f0becd").
         to_return(:status => 204, :body => "", :headers => {})
 
-      ret = fake.unsubscribe_to_segment '123123eq', "fake@nossas.org"
+      ret = fake.unsubscribe_from_segment '123123eq', "fake@nossas.org"
 
       expect(ret).to be 
     end
@@ -447,7 +447,7 @@ RSpec.describe Mailchimpable do
       stub_request(:delete, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq1/members/4e80eb2636e37dc06d4ad0c542f0becd").
         to_timeout
 
-      expect { fake.unsubscribe_to_segment '123123eq1', "fake@nossas.org" }.to raise_error(Mailchimpable::MailchimpableException)
+      expect { fake.unsubscribe_from_segment '123123eq1', "fake@nossas.org" }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
 

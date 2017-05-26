@@ -55,7 +55,7 @@ module Mailchimpable
   end
 
 
-  def unsubscribe_to_segment(segment_id, email)
+  def unsubscribe_from_segment(segment_id, email)
     begin
       if segment_id
         api_client.lists(mailchimp_list_id).segments(segment_id).members(create_hash email).delete 
