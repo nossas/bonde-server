@@ -17,6 +17,7 @@ class Donation < ActiveRecord::Base
 
   has_many :payments
   has_many :payable_details
+  has_many :transitions, class_name: "DonationTransition", autosave: false
 
   after_commit :send_mail, on: :create, unless: :skip?
   after_commit :async_update_mailchimp, on: :create
