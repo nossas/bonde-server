@@ -87,11 +87,10 @@ class Donation < ActiveRecord::Base
   end
 
   def update_pagarme_data
-    self.update_attributes(
-      transaction_status: pagarme_transaction.status,
+    update_attributes(
       gateway_data: pagarme_transaction.to_json,
-      payables: pagarme_transaction.try(:payables)
-    )
+      payables: pagarme_transaction.try(:payables))
+    transition_to(pagarme_transaction.status.to_sym, pagarme_transaction.to_json)
   end
 
   def async_update_mailchimp
@@ -126,6 +125,12 @@ class Donation < ActiveRecord::Base
       obj = fill_customer trans
       self.email = obj['email'] if  (! self.try :email) && (obj['email'])
       self.customer = obj if obj.size > 0
+    end
+  end
+
+  def notify_when_not_subscription template_name
+    unless local_subscription_id.present?
+      notify_activist(template_name.to_sym)
     end
   end
 
@@ -192,4 +197,38 @@ class Donation < ActiveRecord::Base
     return_attributes[:CITY] = self.activist.city if self.activist and self.activist.city
     return_attributes
   end
+
+  def notify_activist(template_name, template_vars = {}, auto_deliver = true)
+    Notification.notify!(
+      activist_id,
+      template_name,
+      default_template_vars.merge(template_vars),
+      community_id,
+      auto_deliver)
+  end
+
+  def default_template_vars
+    global = {
+      payment_method: payment_method,
+      widget_id: widget_id,
+      mobilization_id: mobilization.try(:id),
+      mobilization_name: mobilization.try(:name),
+      boleto_expiration_date: gateway_data.try(:[], 'boleto_expiration_date'),
+      boleto_barcode: gateway_data.try(:[], 'boleto_barcode'),
+      boleto_url: gateway_data.try(:[], 'boleto_url'),
+      donation_id: id,
+      activist_id: activist_id,
+      amount: ( amount / 100),
+      community: {
+        id: community.id,
+        name: community.name,
+        image: community.image
+      },
+      customer: {
+        name: activist.name,
+        first_name: activist.name.split(' ').try(:first)
+      }
+    }
+  end
+
 end
