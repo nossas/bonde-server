@@ -40,4 +40,62 @@ RSpec.describe Donation, type: :model do
       it { is_expected.to eq(3) }
     end
   end
+
+  describe 'state_machine' do
+    before do
+      allow(donation).to receive(:notify_when_not_subscription)
+    end
+    let(:donation) { Donation.make! transaction_status: 'pending' }
+
+    context "should start at pending" do
+      it { expect(donation.transaction_status).to eq('pending') }
+      it { expect(donation.current_state).to eq('pending') }
+    end
+
+    context "when donations has waiting_payment" do
+      before do
+        expect(donation).to receive(:notify_when_not_subscription).with(:waiting_payment_donation)
+        donation.transition_to(:waiting_payment)
+        donation.reload
+      end
+
+      it { expect(donation.transaction_status).to eq('waiting_payment') }
+      it { expect(donation.current_state).to eq('waiting_payment') }
+    end
+
+    context "when donation has paid" do
+      before do
+        expect(donation).to receive(:notify_when_not_subscription).with(:paid_donation)
+        donation.transition_to(:paid)
+        donation.reload
+      end
+
+      it { expect(donation.transaction_status).to eq('paid') }
+      it { expect(donation.current_state).to eq('paid') }
+    end
+  end
+
+  describe ".notify_when_not_subscription" do
+    before do
+      allow(donation).to receive(:notify_activist)
+    end
+    let(:donation) { Donation.make! transaction_status: 'pending' }
+
+    context "when donation has from local subcription" do
+      before do
+        allow(donation).to receive(:local_subscription_id).and_return(143)
+        expect(donation).not_to receive(:notify_activist)
+      end
+
+      it { donation.notify_when_not_subscription :template_name }
+    end
+
+    context "when donation has not from local subscription" do
+      before do
+        expect(donation).to receive(:notify_activist).with(:template_name)
+      end
+
+      it { donation.notify_when_not_subscription "template_name" }
+    end
+  end
 end

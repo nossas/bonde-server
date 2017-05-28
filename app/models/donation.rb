@@ -32,6 +32,16 @@ class Donation < ActiveRecord::Base
 
   scope :ordered, -> { order(id: :desc) }
 
+  delegate :can_transition_to?, :transition_to!, :transition_to, :current_state,
+           to: :state_machine
+
+  def state_machine
+    @state_machine ||= DonationMachine.new(
+      self,
+      transition_class: DonationTransition,
+      association_name: :transitions)
+  end
+
   def boleto?
     self.payment_method == 'boleto'
   end
