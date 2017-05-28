@@ -63,6 +63,18 @@ RSpec.describe Donation, type: :model do
       it { expect(donation.current_state).to eq('waiting_payment') }
     end
 
+    context "when donation has refused" do
+      before do
+        expect(donation).to receive(:notify_when_not_subscription).with(:refused_donation)
+        donation.transition_to(:refused)
+        donation.reload
+      end
+
+      it { expect(donation.transaction_status).to eq('refused') }
+      it { expect(donation.current_state).to eq('refused') }
+
+    end
+
     context "when donation has paid" do
       before do
         expect(donation).to receive(:notify_when_not_subscription).with(:paid_donation)

@@ -28,6 +28,10 @@ class DonationMachine
     donation.notify_when_not_subscription :paid_donation
   end
 
+  after_transition to: :refused do |donation|
+    donation.notify_when_not_subscription :refused_donation
+  end
+
   after_transition do |donation, transition|
     donation.update_attributes transaction_status: transition.to_state
   end
