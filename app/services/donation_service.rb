@@ -43,17 +43,21 @@ class DonationService
 
       begin
         @transaction.charge
-        donation.update_attributes(
-          transaction_id: @transaction.id,
-          transaction_status: @transaction.status,
-          gateway_data: @transaction.try(:to_json),
-          payables: @transaction.try(:payables)
-        )
-        process_subscription(donation)
 
         if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
         end
+
+        donation.update_attributes(
+          transaction_id: @transaction.id,
+          gateway_data: @transaction.try(:to_json),
+          payables: @transaction.try(:payables)
+        )
+
+        donation.transition_to(
+          @transaction.status.to_sym, @transaction.try(:to_json))
+        process_subscription(donation)
+
       rescue PagarMe::PagarMeError => e
         Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
