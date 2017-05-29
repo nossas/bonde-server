@@ -203,7 +203,7 @@ class Donation < ActiveRecord::Base
       activist_id,
       template_name,
       default_template_vars.merge(template_vars),
-      community_id,
+      community.id,
       auto_deliver)
   end
 
