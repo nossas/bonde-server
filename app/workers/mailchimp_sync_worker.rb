@@ -35,7 +35,7 @@ class MailchimpSyncWorker
 
   def perform_subscription subscription
     return if (subscription.current_state =~ /(un)?paid|canceled/.nil?) || (subscription.synchronized) 
-    if subscription.status =~ /unpaid|canceled/
+    if subscription.current_state =~ /unpaid|canceled/
       subscription.mailchimp_remove_from_active_donators
     else
       subscription.mailchimp_add_active_donators
