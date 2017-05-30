@@ -37,6 +37,7 @@ class DonationMachine
   end
 
   after_transition(to: :paid) do |donation|
+    donation.update_attributes synchronized: false
     donation.async_update_mailchimp
   end
 

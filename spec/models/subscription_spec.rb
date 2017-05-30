@@ -10,6 +10,7 @@ RSpec.describe Subscription, type: :model do
   let(:subscription) { Subscription.make!(card_data: { id: 'card_xpto_id'}) }
 
   before do
+    allow_any_instance_of(Subscription).to receive(:subscribe_to_list)
     allow(subscription).to receive(:notify_activist)
   end
 
@@ -395,16 +396,6 @@ RSpec.describe Subscription, type: :model do
     before do 
       allow(widget).to receive(:id).and_return(12)
       allow(subscription).to receive(:widget).and_return(widget)
-    end
-
-    context 'if not on mailchimp' do
-      before do
-        allow(subscription).to receive(:status_on_list).and_return :not_registred
-      end
-
-      it "should raise an error - we expect it already there" do 
-        expect{subscription.mailchimp_add_active_donators}.to raise_error(StandardError)
-      end
     end
 
     context 'active on mailchimp\'s list' do
