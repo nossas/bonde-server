@@ -31,7 +31,7 @@ RSpec.describe PayableDetail, type: :model do
           recipient_id: community.recipient.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
-          transaction_id: 123,
+          transaction_id: 1234,
           anticipation_fee: 0,
           bulk_anticipation_id: nil,
           original_payment_date: nil
@@ -45,7 +45,7 @@ RSpec.describe PayableDetail, type: :model do
       subscription: false,
       subscription_id: nil,
       transaction_status: 'paid',
-      transaction_id: 1234,
+      transaction_id: 12345,
       payables: [
         {
           id: 3102754,
@@ -60,7 +60,7 @@ RSpec.describe PayableDetail, type: :model do
           recipient_id: community.recipient.pagarme_recipient_id,
           split_rule_id: nil,
           payment_method: "credit_card",
-          transaction_id: 123,
+          transaction_id: 12345,
           anticipation_fee: 0,
           bulk_anticipation_id: nil,
           original_payment_date: nil
