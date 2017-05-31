@@ -7,6 +7,7 @@ class Mobilization < ActiveRecord::Base
 
   validates :name, :user_id, :goal, :slug, presence: true
   validates :slug, uniqueness: true
+  validates :custom_domain, uniqueness: true
 
   belongs_to :user
   belongs_to :community
