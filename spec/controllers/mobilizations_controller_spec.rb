@@ -154,9 +154,10 @@ RSpec.describe MobilizationsController, type: :controller do
 
 
   describe "POST #create" do
+    let!(:community) { create :community }
+
     context "single creation" do
       it "should create with JSON format" do
-        community = Community.make!
         expect(Mobilization.count).to eq(0)
 
         post :create, format: :json, mobilization: {
@@ -173,6 +174,9 @@ RSpec.describe MobilizationsController, type: :controller do
         expect(response.body).to include('Foo')
         expect(response.body).to include('Bar')
       end
+    end
+
+    context "repeated custom_domain" do
     end
   end
 end

@@ -698,7 +698,7 @@ RSpec.describe CommunitiesController, type: :controller do
       @mob1 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "1.1-foo", community: community
       @mob2 = Mobilization.make! user: user2, community: community
       @mob3 = Mobilization.make! user: @user, custom_domain: "foobar2", slug: "1.2-foo", community: community
-      @mob4 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "2-foo"
+      @mob4 = Mobilization.make! user: @user, custom_domain: "foobar3", slug: "2-foo"
       @mob5 = Mobilization.make! user: user2
     end
 
