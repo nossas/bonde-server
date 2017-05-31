@@ -1,17 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe MobilizationsController, type: :controller do
-  before do
-    @user1 = User.make!
-    @user2 = User.make!
-    stub_current_user(@user1)
-  end
+  let!(:user1) { create :user }
+  let!(:user2) { create :user }
+
+  before { stub_current_user(user1) }
 
   describe "GET #index" do
-    before do
-      @mob1 = Mobilization.make! user: @user1, custom_domain: "foobar", slug: "1-foo"
-      @mob2 = Mobilization.make! user: @user2
-    end
+    let!(:mob1) { Mobilization.make! user: user1, custom_domain: "foobar", slug: "1-foo" }
+    let!(:mob2) { Mobilization.make! user: user2 }
 
     # Temporary removed - see comments on implementation
     xcontext "unlogged user" do
@@ -27,43 +24,43 @@ RSpec.describe MobilizationsController, type: :controller do
     it "should return all mobilizations" do
       get :index
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).to include(@mob2.name)
+      expect(response.body).to include(mob1.name)
+      expect(response.body).to include(mob2.name)
     end
 
     it "should return mobilizations by user" do
-      get :index, user_id: @user1.id
+      get :index, user_id: user1.id
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).to_not include(@mob2.name)
+      expect(response.body).to include(mob1.name)
+      expect(response.body).to_not include(mob2.name)
     end
 
     it "should return mobilizations by custom_domain" do
       get :index, custom_domain: "foobar"
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).to_not include(@mob2.name)
+      expect(response.body).to include(mob1.name)
+      expect(response.body).to_not include(mob2.name)
     end
 
     it "should return mobilizations by slug" do
       get :index, slug: "1-foo"
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).to_not include(@mob2.name)
+      expect(response.body).to include(mob1.name)
+      expect(response.body).to_not include(mob2.name)
     end
 
     it "should return mobilizations by id" do
-      get :index, ids: [@mob1.id]
+      get :index, ids: [mob1.id]
 
-      expect(response.body).to include(@mob1.name)
-      expect(response.body).to_not include(@mob2.name)
+      expect(response.body).to include(mob1.name)
+      expect(response.body).to_not include(mob2.name)
     end
   end
 
   describe 'PATCH #update' do
     context 'update an existing Mobilization' do
       subject {
-        Mobilization.make! user:@user1
+        Mobilization.make! user: user1
       }
 
       let(:mob) { Mobilization.find subject.id }
@@ -84,9 +81,10 @@ RSpec.describe MobilizationsController, type: :controller do
     end
 
   end
+  
   describe 'PUT #update' do
     let(:template) { TemplateMobilization.make! }
-    let(:mobilization) { Mobilization.make! user: @user1 }
+    let(:mobilization) { Mobilization.make! user: user1, slug: nil }
     let(:saved_mobilization) { Mobilization.find mobilization.id }
 
     context "update an existing Mobilization from an existing template" do
@@ -149,6 +147,22 @@ RSpec.describe MobilizationsController, type: :controller do
       before { put :update, { mobilization: { template_mobilization_id: 0 }, id: mobilization.id } }
 
       it { should respond_with 404 }
+    end
+
+    context "fields changing validation" do
+      before { put :update, { mobilization: { 
+        name: 'new name',
+        slug: 'my slug',
+        custom_domain: 'anewdomainfor.us'
+      }, id: mobilization.id } }
+
+      it { should respond_with 200 }
+      
+      it { expect(assigns(:mobilization).name).to eq('new name')}
+
+      it { expect(assigns(:mobilization).slug).to eq('my slug')}
+
+      it { expect(assigns(:mobilization).custom_domain).to eq('anewdomainfor.us')}
     end
   end
 

@@ -5,8 +5,8 @@ class Mobilization < ActiveRecord::Base
   include Shareable
   include Filterable
 
-  validates :name, :user_id, :goal, :slug, presence: true
-  validates :slug, uniqueness: true
+  validates :name, :user_id, :goal, presence: true
+  validates :slug, presence: :true, uniqueness: true, length: {maximum: 63}
   validates :custom_domain, uniqueness: true
 
   belongs_to :user
