@@ -41,7 +41,7 @@ class MobilizationsController < ApplicationController
     @mobilization.user = current_user
     authorize @mobilization
     
-    render json: { errors: @mobilization.errors }, status: :unprocessable_entity and return unless @mobilization.validate
+    return render json: { errors: @mobilization.errors }, status: :unprocessable_entity unless @mobilization.validate
     @mobilization.save!
 
     render json: @mobilization
