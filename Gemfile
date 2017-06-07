@@ -6,6 +6,8 @@ gem 'rails-api'
 gem 'spring', group: :development
 gem 'pg'
 gem 'devise_token_auth'
+gem 'bcrypt'
+gem 'jwt'
 gem 'omniauth'
 gem 'rack-cors', require: 'rack/cors'
 gem 'carrierwave'

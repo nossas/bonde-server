@@ -256,6 +256,7 @@ GEM
     jmespath (1.3.1)
     json (1.8.6)
     jsonapi-renderer (0.1.2)
+    jwt (1.5.6)
     liquid (4.0.0)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -419,6 +420,7 @@ DEPENDENCIES
   active_model_serializers
   acts-as-taggable-on (~> 4.0)
   aws-sdk (~> 2)
+  bcrypt
   byebug
   carrierwave
   codeclimate-test-reporter (< 1.0.0)
@@ -428,6 +430,7 @@ DEPENDENCIES
   fog
   gibbon (>= 2)
   has_scope
+  jwt
   liquid
   machinist (>= 2.0.0.beta2)
   net-dns
