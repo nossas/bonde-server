@@ -1,13 +1,7 @@
 class User < ActiveRecord::Base
   has_many :mobilizations
   has_many :community_users
-  has_many :communities, through: :community_users 
-
-  # Include default devise modules.
-  devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :trackable, :validatable,
-          :confirmable, :omniauthable
-  include DeviseTokenAuth::Concerns::User
+  has_many :communities, through: :community_users
 
   # mount_uploader :avatar, AvatarUploader
 
@@ -15,5 +9,16 @@ class User < ActiveRecord::Base
 
   def as_json(_options = {})
     UserSerializer.new(self, {root: false})
+  end
+
+  def password=(new_password)
+    @password = new_password
+    self.encrypted_password = digest(@password) if @password.present?
+  end
+
+  private
+
+  def digest(password)
+    ::BCrypt::Password.create(password, cost: 11).to_s
   end
 end
