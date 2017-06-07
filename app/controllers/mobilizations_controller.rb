@@ -77,7 +77,10 @@ class MobilizationsController < ApplicationController
       end
     else
       authorize @mobilization
+
+      return render json: { errors: @mobilization.errors }, status: :unprocessable_entity unless @mobilization.validate
       @mobilization.update!(mobilization_params)
+
       render json: @mobilization
     end
   end
