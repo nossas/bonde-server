@@ -33,10 +33,37 @@ $$ language plpgsql strict security definer;
 
 comment on function postgraphql.authenticate(text, text) is 'Creates a JWT token that will securely identify a user and give them certain permissions.';
 
-create role postgraphql login password '3x4mpl3';
-create role anonymous;
-create role common_user;
-create role admin;
+DO $$
+    BEGIN
+        IF NOT EXISTS (
+           SELECT *
+           FROM   pg_catalog.pg_roles
+           WHERE  rolname = 'postgraphql') THEN
+            create role postgraphql login password '3x4mpl3';
+        END IF;
+
+        IF NOT EXISTS (
+           SELECT *
+           FROM   pg_catalog.pg_roles
+           WHERE  rolname = 'anonymous') THEN
+            create role anonymous;
+        END IF;
+
+        IF NOT EXISTS (
+           SELECT *
+           FROM   pg_catalog.pg_roles
+           WHERE  rolname = 'common_user') THEN
+            create role common_user;
+        END IF;
+
+        IF NOT EXISTS (
+           SELECT *
+           FROM   pg_catalog.pg_roles
+           WHERE  rolname = 'admin') THEN
+            create role admin;
+        END IF;
+    END;
+$$;
 
 grant common_user to admin;
 grant admin to postgraphql;
