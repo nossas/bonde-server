@@ -8,7 +8,7 @@ FactoryGirl.define do
     goal 'Make the world a better place' 
     header_font 'ubuntu' 
     body_font 'open-sans'
-    custom_domain  "mymobilization" 
+    sequence(:custom_domain) {|sn| "mymobilization#{sn}.mydomain.org" }  
     sequence(:slug) { |sn| "#{sn}-mobilization" }
     community
   end

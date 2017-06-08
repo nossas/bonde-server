@@ -385,5 +385,153 @@ Não foi possível processar seu cartão de crédito referente a doação efetua
     end
 
 
+    puts 'looking for waiting_payment_donation template'
+    sub_template = (%{
+<tr>
+    <td style="height:134px;position:relative;">
+        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+            <tr>
+                <td>
+Olá {{customer.first_name}}<br/>
+Sua doação à {{community.name}} foi recebida e você pode acessar o boleto através do botão abaixo.
+<br/>
+<br/>
+                  <a href="{{boleto_url}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
+                     Link p/ boleto
+                  </a>
+<br/>
+<br/>
+
+                </td>
+            </tr>
+
+{% if community.fb_link %}
+            <tr>
+                <td style="padding-bottom:30px;">
+                    <p>
+                        Siga de perto o trabalho da {{community.name}}:
+                    </p>
+                    <div>
+                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
+                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
+                    </div>
+                </td>
+            </tr>
+{% endif %}
+        </table>
+    </td>
+</tr>})
+    label = 'waiting_payment_donation'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attribute(:body_template, sub_template)
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: 'Boleto de doação para {{community.name}}',
+        body_template: sub_template
+      )
+    end
+
+    puts 'looking for paid_donation template'
+    sub_template = (%{
+<tr>
+    <td style="height:134px;position:relative;">
+        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+            <tr>
+                <td>
+Olá {{customer.first_name}}<br/>
+Sua doação à {{community.name}} foi processada com sucesso! Obrigada por nos apoiar.
+<br/>
+<br/>
+
+                </td>
+            </tr>
+
+{% if community.fb_link %}
+            <tr>
+                <td style="padding-bottom:30px;">
+                    <p>
+                        Siga de perto o trabalho da {{community.name}}:
+                    </p>
+                    <div>
+                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
+                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
+                    </div>
+                </td>
+            </tr>
+{% endif %}
+        </table>
+    </td>
+</tr>})
+    label = 'paid_donation'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attribute(:body_template, sub_template)
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: 'Doação para {{community.name}} processada com sucesso!',
+        body_template: sub_template
+      )
+    end
+
+    puts 'looking for refused_donation template'
+    sub_template = (%{
+<tr>
+    <td style="height:134px;position:relative;">
+        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+            <tr>
+                <td>
+Olá {{customer.first_name}}<br/>
+Não foi possível processar seu cartão de crédito referente a doação efetuada à {{community.name}} Tente novamente e certifique-se de que todas as informações inseridas estão corretas.
+
+<br/>
+<br/>
+
+                </td>
+            </tr>
+
+{% if community.fb_link %}
+            <tr>
+                <td style="padding-bottom:30px;">
+                    <p>
+                        Siga de perto o trabalho da {{community.name}}:
+                    </p>
+                    <div>
+                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
+                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
+                    </div>
+                </td>
+            </tr>
+{% endif %}
+        </table>
+    </td>
+</tr>})
+    label = 'refused_donation'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attribute(:body_template, sub_template)
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: 'Tivemos problemas com sua doação para {{community.name}}',
+        body_template: sub_template
+      )
+    end
+
+
   end
 end

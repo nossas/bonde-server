@@ -55,6 +55,14 @@ pt:
             password:
               too_short: "Senha não pode ser tão curta - deve ter pelo menos %{count} caracteres"
               too_long: "Senha não pode ser tão longa - deve ter no máximo %{count} caracteres"
+        notification_template:
+          attributes:
+            label:
+              invalid: "Label inválido"
+  mailer:
+    password:
+      retrieve:
+        subject: Sua nova senha no Bonde.org !
         dns_record:
           attributes:
             name:
@@ -64,6 +72,8 @@ pt:
           attributes:
             domain_name:
               segments: 'Cada segmento não pode ultrapassar 63 caracteres'
+        invitation:
+          create_community_user: 'Convite expirado'
   http:
     client:
       error:
@@ -76,3 +86,7 @@ pt:
     route53:
       errors:
         subdomain: Precisa ser um subdomínio do domínio principal
+  user:
+    email:
+      invitation:
+        subject:  Você acaba de receber um convite para ingressar em um grupo do Bonde®

@@ -118,7 +118,7 @@ hanna montana,hanna.montana@disney.com,11-1212-3434,12312312413,cpf)
     end
   end
 
-  describe 'tag_list' do
+  describe '#tag_list' do
     let!(:activist_tag) {create(:activist_tag)}
     let(:activist) { Activist.find activist_tag.activist_id }
 
@@ -134,6 +134,28 @@ hanna montana,hanna.montana@disney.com,11-1212-3434,12312312413,cpf)
       expect(activist.tag_list community_id).to include('corrupcao')
       expect(activist.tag_list community_id).to include('politica')
       expect((activist.tag_list community_id).size).to eq 2
+    end
+  end
+
+  describe '#add_tag' do
+    let!(:activist) { create :activist }
+    let!(:community) { create :community }
+    let!(:recno) { ActivistTag.count }
+
+    before do
+      activist.add_tag community.id, 'teste_politica'
+      activist.add_tag community.id, 'corrupcao ativa'
+    end
+
+    it 'should create a activist_tags' do
+      expect(ActivistTag.count).to be(recno + 1)
+    end
+
+    it 'should save the tags' do
+      tl = ActivistTag.last.tag_list
+
+      expect(tl).to include('corrupcao-ativa')
+      expect(tl).to include('teste_politica')
     end
   end
 end

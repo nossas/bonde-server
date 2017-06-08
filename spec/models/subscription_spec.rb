@@ -10,6 +10,7 @@ RSpec.describe Subscription, type: :model do
   let(:subscription) { Subscription.make!(card_data: { id: 'card_xpto_id'}) }
 
   before do
+    allow_any_instance_of(Subscription).to receive(:subscribe_to_list)
     allow(subscription).to receive(:notify_activist)
   end
 
@@ -386,6 +387,74 @@ RSpec.describe Subscription, type: :model do
       expect(subject.liable).to eq(true)
       expect(subject.percentage).to eq(87)
       expect(subject.recipient_id).to eq("123")
+    end
+  end
+
+  describe '#mailchimp_add_active_donators' do
+    let(:widget) { spy :widget }
+
+    before do 
+      allow(widget).to receive(:id).and_return(12)
+      allow(subscription).to receive(:widget).and_return(widget)
+    end
+
+    context 'active on mailchimp\'s list' do
+      before do
+        allow(subscription).to receive(:status_on_list).and_return :subscribed
+        allow(subscription).to receive(:subscribe_to_segment)
+      end
+      it "should create donations segments, if needed" do 
+        subscription.mailchimp_add_active_donators
+        expect(subscription).to have_received(:subscribe_to_segment).once
+      end
+    end
+
+    context 'inactive on mailchimp\'s list' do
+      before do
+        allow(subscription).to receive(:status_on_list).and_return :unsubscribed
+        allow(subscription).to receive(:subscribe_to_segment)
+      end
+      it "should create donations segments, if needed" do 
+        subscription.mailchimp_add_active_donators
+        expect(subscription).not_to have_received(:subscribe_to_segment)
+      end
+    end
+  end
+
+  describe '#mailchimp_remove_from_active_donators' do
+    context 'if not on mailchimp' do
+      before do
+        allow(subscription).to receive(:status_on_list).and_return :not_registred
+      end
+
+      it "should raise an error - we expect it already there" do 
+        expect{subscription.mailchimp_remove_from_active_donators}.to raise_error(StandardError)
+      end
+    end
+
+    context 'active on mailchimp\'s list' do
+      before do
+        allow(subscription).to receive(:status_on_list).and_return :subscribed
+        allow(subscription).to receive(:subscribe_to_segment)
+        allow(subscription).to receive(:unsubscribe_from_segment)
+        subscription.mailchimp_remove_from_active_donators
+      end
+    
+      it { expect(subscription).to have_received(:subscribe_to_segment).once }
+
+      it { expect(subscription).to have_received(:unsubscribe_from_segment).once }
+    end
+
+    context 'inactive on mailchimp\'s list' do
+      before do
+        allow(subscription).to receive(:status_on_list).and_return :unsubscribed
+        allow(subscription).to receive(:subscribe_to_segment)
+        allow(subscription).to receive(:unsubscribe_from_segment)
+        subscription.mailchimp_remove_from_active_donators
+      end
+      it { expect(subscription).not_to have_received(:subscribe_to_segment) }
+
+      it { expect(subscription).not_to have_received(:unsubscribe_from_segment) }
     end
   end
 end

@@ -698,7 +698,7 @@ RSpec.describe CommunitiesController, type: :controller do
       @mob1 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "1.1-foo", community: community
       @mob2 = Mobilization.make! user: user2, community: community
       @mob3 = Mobilization.make! user: @user, custom_domain: "foobar2", slug: "1.2-foo", community: community
-      @mob4 = Mobilization.make! user: @user, custom_domain: "foobar", slug: "2-foo"
+      @mob4 = Mobilization.make! user: @user, custom_domain: "foobar3", slug: "2-foo"
       @mob5 = Mobilization.make! user: user2
     end
 
@@ -804,6 +804,44 @@ RSpec.describe CommunitiesController, type: :controller do
           expect(response.body).not_to include(@mob4.name)
           expect(response.body).not_to include(@mob5.name)
         end
+      end
+    end
+  end
+
+  describe '#accept_invitation' do
+    let!(:invitation) { create :invitation, expires: (Date.today + 1) }
+    let(:call_accept) { get :accept_invitation, {code: invitation.code, email: invitation.email} }
+
+    context 'invited user exists' do
+      let!(:invited_user) { create :user, email: invitation.email }
+
+      it 'should create new community_user' do
+        expect{ call_accept }.to change{ CommunityUser.count }.by(1)
+      end
+
+      it 'should expose the created data' do
+        call_accept      
+        expect(assigns(:community_user)).to eq(CommunityUser.last)
+      end
+    end
+
+    context 'invited user don\'t exists' do
+      it 'should create new user' do
+        expect{ call_accept }.to change{ User.count }.by(1)
+      end
+
+      xit 'should send an email to the new user' do
+          expect{ call_accept }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+
+      it 'should create new community_user' do
+        expect{ call_accept }.to change{ CommunityUser.count }.by(1)
+      end
+
+      it 'should expose the created data' do
+        call_accept      
+        expect(assigns(:community_user)).to eq(CommunityUser.last)
       end
     end
   end

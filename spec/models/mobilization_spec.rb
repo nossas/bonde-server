@@ -1,24 +1,34 @@
 require 'rails_helper'
 
 RSpec.describe Mobilization, type: :model do
+  subject { create :mobilization, slug: nil }
+
   it { should belong_to :user }
+  
   it { should have_many :blocks }
   it { should have_many(:widgets).through(:blocks) }
   it { should have_many(:form_entries).through(:widgets) }
+
   it { should validate_presence_of :user_id }
   it { should validate_presence_of :name }
   it { should validate_presence_of :goal }
+  
   it { should validate_length_of :twitter_share_text }
 
-  before { @community = Community.make! }
+  it { should validate_uniqueness_of :slug }
+  it { should validate_uniqueness_of :custom_domain }
+
+  it { should validate_length_of(:slug).is_at_most(63) }
+
+  let(:community) { create(:community) }
 
   context "generate a slug" do
     before do
       @mobilization = Mobilization.create!(
         name: "mobilization",
         goal: "change the world",
-        user: User.make!,
-        community_id: @community.id
+        user: create(:user),
+        community_id: community.id
       )
     end
 
@@ -32,8 +42,8 @@ RSpec.describe Mobilization, type: :model do
       Mobilization.create!(
         name: "mobilization",
         goal: "change the world",
-        user: User.make!,
-        community_id: @community.id
+        user: create(:user),
+        community_id: community.id
       )
     }
 
@@ -44,10 +54,10 @@ RSpec.describe Mobilization, type: :model do
 
   context "create mobilization from TemplateMobilition object" do
     before do 
-      @template = TemplateMobilization.make!
+      @template = create(:template_mobilization)
     end
     subject {
-      Mobilization.make!.copy_from(@template)
+      create(:mobilization).copy_from(@template)
     }
 
     it "should copy the color_scheme value" do

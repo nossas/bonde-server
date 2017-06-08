@@ -2,6 +2,7 @@ require 'csv'
 
 class Donation < ActiveRecord::Base
   include Mailchimpable
+  include TagAnActivistOmatic
 
   store_accessor :customer
 
@@ -19,8 +20,9 @@ class Donation < ActiveRecord::Base
   has_many :payable_details
   has_many :transitions, class_name: "DonationTransition", autosave: false
 
-  after_commit :send_mail, on: :create, unless: :skip?
-  after_commit :async_update_mailchimp, on: :create
+  after_create :send_mail, unless: :skip?
+  after_create :async_update_mailchimp
+  after_commit :add_automatic_tags, on: :create
 
   delegate :name, to: :mobilization, prefix: true
 
@@ -100,6 +102,10 @@ class Donation < ActiveRecord::Base
   def update_mailchimp
     subscribe_to_list(self.activist.email, subscribe_attributes)
     subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
+    if self.current_state.to_sym == :paid
+      widget.create_mailchimp_donators_segments
+      subscribe_to_segment(self.widget.mailchimp_unique_segment_id, self.activist.email) 
+    end
     update_member(self.activist.email, { groupings: groupings }) if groupings
   end
 

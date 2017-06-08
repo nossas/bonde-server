@@ -17,7 +17,7 @@ Mobilization.blueprint do
   goal { 'Make the world a better place' }
   header_font { 'ubuntu' }
   body_font { 'open-sans' }
-  custom_domain { "mymobilization" }
+  custom_domain { "mymobilization#{sn}.mydomain.org" }
   slug { "#{sn}-mobilization" }
   community { Community.make! }
   tag_list { "política, cultura" }
