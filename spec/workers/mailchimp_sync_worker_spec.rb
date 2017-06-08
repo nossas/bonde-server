@@ -122,7 +122,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
     end
 
     it 'should add to segment if status is paid' do
-      subscription = spy(:subscription, :id =>1, :widget => widget_with_segment_id, :synchronized => false, :status => 'paid')
+      subscription = spy(:subscription, :id =>1, :widget => widget_with_segment_id, :synchronized => false, :status => 'paid', current_state: 'paid')
       worker.perform_subscription subscription
 
       expect(subscription).not_to have_received(:mailchimp_remove_from_active_donators)
@@ -132,7 +132,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
 
     ['unpaid', 'canceled'].each do |status|
       it "should add to segment if status is #{status}" do
-        subscription = spy(:subscription, :id =>1, :widget => widget_with_segment_id, :synchronized => false, :status => status)
+        subscription = spy(:subscription, :id =>1, :widget => widget_with_segment_id, :synchronized => false, :status => status, current_state: status)
         worker.perform_subscription subscription
 
         expect(subscription).to have_received(:mailchimp_remove_from_active_donators)
