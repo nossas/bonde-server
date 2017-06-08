@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     get 'mobilizations', to: 'communities#list_mobilizations'
     get 'activists', to: 'communities#list_activists'
     post 'activists', to: 'activists#add_activists'
+    post 'invitation', to: 'communities#create_invitation'
   end
 
   resources :users, only: [:create, :update]
@@ -42,6 +43,7 @@ Rails.application.routes.draw do
     post :recharge, on: :member
   end
 
+  get '/invitation', to: 'communities#accept_invitation', as: 'accept_invitation'
   get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
 
 

@@ -104,9 +104,16 @@ class Community < ActiveRecord::Base
     end
   end
 
+  def invite_member email, inviter, role
+    invitation = Invitation.create email: email, community: self, user: inviter, expires: (DateTime.now + 3.days), role: role    
+    invitation.invitation_email
+    invitation
+  end
+
   private
 
   def value aws_record
     aws_record.resource_records.map{|r| r.value}.join("\n")
   end
+
 end

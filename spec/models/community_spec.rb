@@ -14,4 +14,12 @@ RSpec.describe Community, type: :model do
   it { should belong_to :recipient }
 
   it { should validate_uniqueness_of :name }
+
+  describe '#invite_member' do
+    it do
+      expect_any_instance_of(Invitation).to receive(:invitation_email).once
+
+      subject.invite_member 'ask@me', create(:user), 1
+    end
+  end
 end

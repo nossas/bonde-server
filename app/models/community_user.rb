@@ -10,4 +10,9 @@ class CommunityUser < ActiveRecord::Base
   def role_str
     @@ROLES[self.role-1] if self.role and self.role > 0 and self.role < @@ROLES.count
   end
+
+  def self.create_from_invitation invitation
+    communityUser = CommunityUser.create user:invitation.user, community: invitation.community, role: invitation.role
+    communityUser
+  end
 end
