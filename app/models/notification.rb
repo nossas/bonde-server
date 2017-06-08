@@ -8,6 +8,9 @@ class Notification < ActiveRecord::Base
 
   def self.notify!(to, template_name, template_vars, from_community_id = nil, auto_deliver = true)
     notification_template = find_template_by_attributes(label: template_name.to_s, community_id: from_community_id) || find_template_by_attributes(label: template_name.to_s)
+
+    raise StandardError.new "template name does not exists: #{template_name}" unless notification_template
+
     params = {
       notification_template: notification_template,
       template_vars: template_vars.to_json,

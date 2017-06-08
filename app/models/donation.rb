@@ -102,6 +102,10 @@ class Donation < ActiveRecord::Base
   def update_mailchimp
     subscribe_to_list(self.activist.email, subscribe_attributes)
     subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
+    if self.current_state.to_sym == :paid
+      widget.create_mailchimp_donators_segments
+      subscribe_to_segment(self.widget.mailchimp_unique_segment_id, self.activist.email) 
+    end
     update_member(self.activist.email, { groupings: groupings }) if groupings
   end
 
