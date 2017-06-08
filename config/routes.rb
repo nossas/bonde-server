@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     post 'activists', to: 'activists#add_activists'
   end
 
+  post '/register' => 'users#create', as: :user_register
   resources :users, only: [:create, :update]
   resources :subscriptions do
     post :recharge, on: :member
