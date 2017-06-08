@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :notification_template do
-    label "template_1"
+    sequence(:label) { |x| "template_#{x}" }
     subject_template "hello {{name}}"
     body_template "World {{name}}"
   end

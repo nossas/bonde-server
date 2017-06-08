@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe NotificationTemplate, type: :model do
+  before do
+    n = build :notification_template
+  end
+
   it { should belong_to :community}
   it { should validate_presence_of :label }
   it { should validate_presence_of :subject_template }
