@@ -110,4 +110,15 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe '#retrieve' do
+    let!(:templ) { create :notification_template, label: :bonde_test_template }
+    let!(:user) { create :user, password: '123456789' }
+
+    it do
+      Notification.should_receive(:notify!).once
+
+      post :retrieve, { format: :json, user: { email: user.email } }
+    end
+  end
 end

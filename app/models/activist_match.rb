@@ -1,5 +1,6 @@
 class ActivistMatch < ActiveRecord::Base
   include Mailchimpable
+  include TagAnActivistOmatic
 
   attr_accessor :firstname
   attr_accessor :lastname
@@ -12,7 +13,8 @@ class ActivistMatch < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :community, through: :mobilization
 
-  after_commit :async_update_mailchimp, on: :create
+  after_create :async_update_mailchimp
+  after_commit :add_automatic_tags, on: :create
 
   def async_update_mailchimp
     MailchimpSyncWorker.perform_async(self.id, 'activist_match')

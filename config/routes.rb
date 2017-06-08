@@ -46,5 +46,7 @@ Rails.application.routes.draw do
   get '/invitation', to: 'communities#accept_invitation', as: 'accept_invitation'
   get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
 
+
   mount_devise_token_auth_for 'User', at: '/auth'
+  post '/auth/retrieve', to: 'users#retrieve'
 end

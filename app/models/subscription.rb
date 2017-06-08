@@ -1,4 +1,6 @@
 class Subscription < ActiveRecord::Base
+  include Mailchimpable
+
   belongs_to :widget
   belongs_to :activist
   belongs_to :community
@@ -191,4 +193,35 @@ class Subscription < ActiveRecord::Base
       )
     end
   end
+
+  def mailchimp_add_active_donators
+    subscribe_to_list(self.activist.email, subscribe_attributes)
+    widget.create_mailchimp_donators_segments
+    widget.reload
+    
+    email_status = status_on_list(activist.email)
+    subscribe_to_segment(widget.mailchimp_recurring_active_segment_id, activist.email) if email_status == :subscribed
+  end
+
+  def mailchimp_remove_from_active_donators
+    email_status = status_on_list(activist.email)
+    raise StandardError.new('Unsubscribed') if email_status == :not_registred
+    if email_status == :subscribed
+      unsubscribe_from_segment widget.mailchimp_recurring_active_segment_id, activist.email
+      subscribe_to_segment widget.mailchimp_recurring_inactive_segment_id, activist.email
+    end
+  end
+
+  private
+
+  def subscribe_attributes
+    return_attributes = {
+      FNAME: self.activist.first_name,
+      LNAME: self.activist.last_name,
+      EMAIL: self.activist.email,
+    }
+    return_attributes[:CITY] = self.activist.city if self.activist and self.activist.city
+    return_attributes
+  end
+
 end

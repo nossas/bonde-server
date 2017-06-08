@@ -35,4 +35,10 @@ class DonationMachine
   after_transition do |donation, transition|
     donation.update_attributes transaction_status: transition.to_state
   end
+
+  after_transition(to: :paid) do |donation|
+    donation.update_attributes synchronized: false
+    donation.async_update_mailchimp
+  end
+
 end

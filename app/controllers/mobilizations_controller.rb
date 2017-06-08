@@ -40,8 +40,12 @@ class MobilizationsController < ApplicationController
     @mobilization = Mobilization.new(mobilization_params)
     @mobilization.user = current_user
     authorize @mobilization
-    @mobilization.save!
-    render json: @mobilization
+    
+    if @mobilization.save
+      return render json: @mobilization
+    else
+      return render json: { errors: @mobilization.errors }, status: :unprocessable_entity 
+    end
   end
 
   def update
@@ -74,8 +78,12 @@ class MobilizationsController < ApplicationController
       end
     else
       authorize @mobilization
-      @mobilization.update!(mobilization_params)
-      render json: @mobilization
+      @mobilization.attributes = mobilization_params
+      if @mobilization.save
+        return render json: @mobilization
+      else
+        return render json: { errors: @mobilization.errors }, status: :unprocessable_entity 
+      end
     end
   end
 
