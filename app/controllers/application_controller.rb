@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-  include DeviseTokenAuth::Concerns::SetUserByToken
 
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -9,13 +8,18 @@ class ApplicationController < ActionController::API
   after_action :verify_authorized, unless: -> {devise_controller?}
   after_action :verify_policy_scoped, unless: -> {devise_controller?}
 
-  before_action :configure_permitted_parameters, if: :devise_controller?
+  helper_method :devise_controller? # just for keeping legacy for a moment
+
+  def devise_controller?
+    false
+  end
+
+  def current_user
+    auth_service = AuthenticationService.new(request)
+    auth_service.current_user
+  end
 
   protected
-
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:first_name, :last_name) }
-  end
 
   def user_not_authorized
     render json: {errors: [ ( I18n.t 'return.status.unauthorized', default: 'Unauthorized') ]}, status: :unauthorized
