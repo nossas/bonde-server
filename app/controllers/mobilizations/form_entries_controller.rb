@@ -18,7 +18,7 @@ class Mobilizations::FormEntriesController < ApplicationController
         widget.update_attribute :exported_at, DateTime.now
       end
     end
-
+    @form_entries = @form_entries.order(:id)
     @form_entries = disjoint_fields if params[:INFO] == 'disjoint_fields'
 
     respond_with do |format|
@@ -36,7 +36,7 @@ class Mobilizations::FormEntriesController < ApplicationController
     authorize @form_entry
     (render json: @form_entry.errors, status: 400 and return) unless @form_entry.validate
     @form_entry.save!
-    render json: {errors: @form_entry}
+    render json: @form_entry
   end
 
   private

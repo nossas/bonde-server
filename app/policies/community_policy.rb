@@ -23,6 +23,10 @@ class CommunityPolicy < ApplicationPolicy
     is_owned_by?(user)
   end
 
+  def create_invitation?
+    is_owned_by?(user)
+  end
+
 private
 
   def is_owned_by?(user)

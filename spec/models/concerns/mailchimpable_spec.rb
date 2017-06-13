@@ -348,6 +348,109 @@ RSpec.describe Mailchimpable do
     end
   end
 
+  describe '#unsubscribe_from_segment' do
+    def valid_response
+      %( {
+        "id": "06f12badc3b5fffc57576822131ded7c",
+        "email_address": "fake@nossas.org",
+        "unique_email_id": "b9e87761ed",
+        "email_type": "html",
+        "status": "subscribed",
+        "merge_fields": {
+          "FNAME": "my fake",
+          "LNAME": "email"
+        },
+        "stats": {
+          "avg_open_rate": 0,
+          "avg_click_rate": 0
+        },
+        "ip_signup": "",
+        "timestamp_signup": "",
+        "ip_opt": "198.2.191.44",
+        "timestamp_opt": "2016-02-10T16:41:47+00:00",
+        "member_rating": 2,
+        "last_changed": "2016-02-10T16:49:36+00:00",
+        "language": "",
+        "vip": false,
+        "email_client": "",
+        "location": {
+          "latitude": 0,
+          "longitude": 0,
+          "gmtoff": 0,
+          "dstoff": 0,
+          "country_code": "",
+          "timezone": ""
+        },
+        "list_id": "205d96e6b4",
+        "_links": [
+          {
+            "rel": "self",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/segments/457/members",
+            "method": "GET",
+            "targetSchema": "https://api.mailchimp.com/schema/3.0/Lists/Segments/Members/Collection.json"
+          },
+          {
+            "rel": "parent",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/segments/457",
+            "method": "GET",
+            "targetSchema": "https://api.mailchimp.com/schema/3.0/Lists/Segments/Instance.json"
+          },
+          {
+            "rel": "update",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/members/06f12badc3b5fffc57576822131ded7c",
+            "method": "PATCH",
+            "schema": "https://api.mailchimp.com/schema/3.0/Lists/Members/Instance.json"
+          },
+          {
+            "rel": "upsert",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/members/06f12badc3b5fffc57576822131ded7c",
+            "method": "PUT",
+            "schema": "https://api.mailchimp.com/schema/3.0/Lists/Members/Instance.json"
+          },
+          {
+            "rel": "delete",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/members/06f12badc3b5fffc57576822131ded7c",
+            "method": "DELETE"
+          },
+          {
+            "rel": "activity",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/members/06f12badc3b5fffc57576822131ded7c/activity",
+            "method": "GET",
+            "targetSchema": "https://api.mailchimp.com/schema/3.0/Lists/Members/Activity/Collection.json"
+          },
+          {
+            "rel": "goals",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/members/06f12badc3b5fffc57576822131ded7c/goals",
+            "method": "GET",
+            "targetSchema": "https://api.mailchimp.com/schema/3.0/Lists/Members/Goals/Collection.json"
+          },
+          {
+            "rel": "notes",
+            "href": "https://usX.api.mailchimp.com/3.0/lists/205d96e6b4/members/06f12badc3b5fffc57576822131ded7c/notes",
+            "method": "GET",
+            "targetSchema": "https://api.mailchimp.com/schema/3.0/Lists/Members/Notes/Collection.json"
+          }
+        ]
+      } )
+    end
+    
+    it 'Request ok' do
+      stub_request(:delete, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 204, :body => "", :headers => {})
+
+      ret = fake.unsubscribe_from_segment '123123eq', "fake@nossas.org"
+
+      expect(ret).to be 
+    end
+
+    it 'Some error' do
+      stub_request(:delete, "https://us4.api.mailchimp.com/3.0/lists/9989/segments/123123eq1/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_timeout
+
+      expect { fake.unsubscribe_from_segment '123123eq1', "fake@nossas.org" }.to raise_error(Mailchimpable::MailchimpableException)
+    end
+  end
+
   describe '#update_member' do
     def valid_response
       %({
@@ -459,6 +562,66 @@ RSpec.describe Mailchimpable do
         to_timeout
 
       expect { fake.update_member 'fake@nossas.org', {groupings: {'1234212': true, '12312': true}} }.to raise_error(Mailchimpable::MailchimpableException)
+    end
+  end
+
+  describe '#status_on_list' do
+
+    def valid_response status 
+%Q({ 
+  "id": "2b5a209483eb26743e862f736d80f96b", 
+  "email_address": "fake@nossas.org", 
+  "unique_email_id": "4e80eb2636e", 
+  "email_type": "html", 
+  "status": "#{status}", 
+  "merge_fields": {
+    "FNAME": "Fake", 
+    "LNAME": "Man", 
+    "ORG": "TESTE", 
+    "CITY": "Pindonhangaba"
+  }, 
+  "interests": {
+    "bcde6938c1": false, 
+    "bcde6938c2": false, 
+    "bcde6938c3": false
+  }, 
+  "stats": {
+    "avg_open_rate": 0, 
+    "avg_click_rate": 0
+  }
+})
+    end
+
+    it 'Subscribed on list' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 200, :body => valid_response('subscribed'), :headers => {})
+
+      ret = fake.status_on_list 'fake@nossas.org'
+
+      expect(ret).to be :subscribed
+    end
+
+    it 'Unsubscribed on list' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 200, :body => valid_response('unsubscribed'), :headers => {})
+
+      ret = fake.status_on_list 'fake@nossas.org'
+
+      expect(ret).to be :unsubscribed
+    end
+
+    it 'don\'t exist' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_return(:status => 404, :body => "", :headers => {})
+
+      expect( fake.status_on_list 'fake@nossas.org' ).to be :not_registred
+    end
+
+    it 'Other Problem' do
+      stub_request(:get, "https://us4.api.mailchimp.com/3.0/lists/9989/members/4e80eb2636e37dc06d4ad0c542f0becd").
+        to_timeout
+
+      expect { fake.status_on_list 'fake@nossas.org' }.to raise_error(Mailchimpable::MailchimpableException)
     end
   end
 end

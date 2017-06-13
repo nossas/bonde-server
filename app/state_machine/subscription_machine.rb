@@ -15,6 +15,7 @@ class SubscriptionMachine
     SubscriptionWorker.perform_at(
       subscription.next_transaction_charge_date,
       subscription.id)
+    MailchimpSyncWorker.perform_async(subscription.id, 'subscription')
   end
 
   after_transition(from: :pending, to: :unpaid) do |subscription|
@@ -23,6 +24,7 @@ class SubscriptionMachine
 
   after_transition(to: :canceled) do |subscription|
     subscription.notify_activist(:canceled_subscription)
+    MailchimpSyncWorker.perform_async(subscription.id, 'subscription')
   end
 
   after_transition(to: :unpaid) do |subscription, transition|
@@ -34,6 +36,7 @@ class SubscriptionMachine
         transition.id
       )
     end
+    MailchimpSyncWorker.perform_async(subscription.id, 'subscription')
   end
 
   after_transition do |subscription, transition| 

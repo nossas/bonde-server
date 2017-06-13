@@ -14,7 +14,6 @@ user = User.find_or_create_by(email: 'foo@bar.com') do |u|
   u.first_name = 'Foo'
   u.last_name = 'Bar'
   u.admin = false
-  u.skip_confirmation!
 end
 
 user_admin = User.find_or_create_by(email: 'admin_foo@bar.com') do |u|

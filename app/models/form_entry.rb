@@ -1,10 +1,11 @@
 class FormEntry < ActiveRecord::Base
   include Mailchimpable
+  include TagAnActivistOmatic
 
   validates :widget, :fields, presence: true
   validates :complete_name, length: { in: 3..70 }, allow_blank: true
   validates :email, allow_blank: true, presence: false
-  validates_format_of :email, with: Devise.email_regexp , if: "! ( self.email.nil? || self.email.blank? )"
+  validates_format_of :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/ , if: "! ( self.email.nil? || self.email.blank? )"
 
 
   belongs_to :widget
@@ -17,9 +18,11 @@ class FormEntry < ActiveRecord::Base
 
   after_commit :async_update_mailchimp, on: :create
   after_commit :send_email, on: :create
+  after_commit :add_automatic_tags, on: :create
+  
 
   def link_activist
-    self.activist = (Activist.by_email(email) || create_activist(name: first_name, email: email)) if email.present?
+    self.activist = (Activist.by_email(email) || create_activist(name: complete_name, email: email)) if email.present?
   end
 
   def fields_as_json

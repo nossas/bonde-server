@@ -26,7 +26,7 @@ class Widget < ActiveRecord::Base
     WidgetSerializer.new(self, {root: false})
   end
 
-  def segment_name
+  def segment_name donation_segment_kind: :main
     kinds_correlation = {'pressure' => 'P', 'form' => 'F', 'match' => 'M', 'donation' => 'D'}
 
     mob = self.mobilization
@@ -34,7 +34,12 @@ class Widget < ActiveRecord::Base
     mob_name = mob.name
 
     return "M#{mob_id}C#{self.id} - [Comunidade] #{mob_name[0..89]}" if action_community?
-    "M#{mob_id}#{kinds_correlation[self.kind] || 'A'}#{self.id} - #{mob_name[0..89]}"
+    if  (! donation? ) || (donation? && donation_segment_kind == :main )
+      "M#{mob_id}#{kinds_correlation[self.kind] || 'A'}#{self.id} - #{mob_name[0..89]}"
+    else
+      donation_segment_kinds = {main: '', unique: 'Única Paga', recurring_active: 'Recorrente Ativa', recurring_inactive: 'Recorrente Inativa' }
+      "M#{mob_id}#{kinds_correlation[self.kind] || 'A'}#{self.id} - #{donation_segment_kinds[donation_segment_kind]} - #{mob_name[0..89]}"
+    end
   end
 
   def form?
@@ -75,6 +80,14 @@ class Widget < ActiveRecord::Base
     if self.synchro_to_mailchimp?
       segment = create_segment(segment_name)
       self.update_attribute :mailchimp_segment_id, segment.body["id"]
+    end
+  end
+
+  def create_mailchimp_donators_segments
+    unless self.mailchimp_unique_segment_id
+      self.update_attributes mailchimp_unique_segment_id: create_segment(segment_name donation_segment_kind: :unique).body["id"],
+        mailchimp_recurring_active_segment_id: create_segment(segment_name donation_segment_kind: :recurring_active).body["id"],
+        mailchimp_recurring_inactive_segment_id: create_segment(segment_name donation_segment_kind: :recurring_inactive).body["id"]
     end
   end
   

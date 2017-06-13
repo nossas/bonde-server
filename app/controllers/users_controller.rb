@@ -1,17 +1,16 @@
+require 'base64'
+
 class UsersController < ApplicationController
   respond_to :json
 
   after_action :verify_authorized, except: %i[index action_opportunities]
   after_action :verify_policy_scoped, only: %i[index action_opportunities]
-  after_action :update_auth_header, only: [:new]
 
   def create
     skip_authorization
 
     create_user
-    @user.skip_confirmation!
     if @user.save
-      sign_in @user
       put_token_on_header
       render json: @user
     else
@@ -34,18 +33,34 @@ class UsersController < ApplicationController
     end
   end
 
+  def retrieve
+    skip_authorization
+
+    status = :not_found
+    user = User.find_by_email(params['user']['email'])
+    if user
+      pass = Base64.encode64(DateTime.now.strftime('%Q').to_s).strip.gsub(/=/, '')
+      user.update_attributes password: pass
+      user.reload
+
+      Notification.notify! user, :bonde_password_retrieve, { 
+        new_password: pass,
+        user: user
+      }
+      status = :ok
+    end
+    render nothing: true, status: status
+  end
+
   private
 
   def put_token_on_header
-    tok = @user.create_new_auth_token
-    tok.keys.each do |field|
-      response.header[field] = tok[field]
-    end
+    response.header['access-token'] = AuthenticationService.gen_token(@user)
   end
 
   def create_user
     @user = User.new(params.require(:user).permit(:email, :first_name, :last_name, :password, :avatar))
-    @user.admin = true
+    @user.admin = true   # @see Invitation.create_community_user
     @user.uid = @user.email
     @user.provider = 'email'
   end

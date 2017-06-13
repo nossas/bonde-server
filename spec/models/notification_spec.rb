@@ -168,11 +168,13 @@ RSpec.describe Notification, type: :model do
     let(:delivered) { subject.deliver_without_queue }
 
     it do
+      expect{ delivered }.to change{ActionMailer::Base.deliveries.count}.by(1)
+    end
+
+    it do
       deliveries = ActionMailer::Base.deliveries
-      expect(deliveries.empty?).to be(true)
       delivered
-      expect(deliveries.size).to be(1)
-      expect(deliveries.first).to eq(delivered)
+      expect(deliveries.last).to eq(delivered)
     end
   end
 end
