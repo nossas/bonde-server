@@ -62,7 +62,7 @@ class Subscription < ActiveRecord::Base
     if payment_method == 'credit_card'
       (card_hash.present? ? { card_hash: card_hash } : { card_id: card_data["id"]})
     else
-      {}
+      { payment_method: 'boleto' }
     end
   end
 

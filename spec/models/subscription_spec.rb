@@ -77,7 +77,7 @@ RSpec.describe Subscription, type: :model do
           subscription.payment_method = 'boleto'
           subscription.save
         end
-        it { is_expected.to eq({}) }
+        it { is_expected.to eq({payment_method: 'boleto'}) }
       end
 
       context "credit card" do
