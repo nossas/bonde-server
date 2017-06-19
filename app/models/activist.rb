@@ -8,7 +8,6 @@ class Activist < ActiveRecord::Base
   has_many :activist_tags
 
   validates :name, :email, presence: true
-  validates :name, length: { in: 3..70 }
   validates_format_of :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
 
   def self.by_email email
