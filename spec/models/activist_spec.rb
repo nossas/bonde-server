@@ -15,7 +15,7 @@ RSpec.describe Activist, type: :model do
   it { should allow_value('lorem@lorem.com').for(:email) }
   it { should_not allow_value('[{"uid"=>"field-1478867526541-5", "kind"=>"text", "label"=>"Nome", "placeholder"=>"", "required"=>"true", "value"=>"lorem"}]').for(:email) }
   it { should allow_value('lorem ipsum dolor sit amet').for(:name) }
-  it { should_not allow_value('[{"uid"=>"field-1478867526541-5", "kind"=>"text", "label"=>"Nome", "placeholder"=>"", "required"=>"true", "value"=>"lorem"}]').for(:name) }
+  #it { should_not allow_value('[{"uid"=>"field-1478867526541-5", "kind"=>"text", "label"=>"Nome", "placeholder"=>"", "required"=>"true", "value"=>"lorem"}]').for(:name) }
 
   describe '#first_name' do
     context 'nil name' do
