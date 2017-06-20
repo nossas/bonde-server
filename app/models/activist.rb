@@ -11,7 +11,7 @@ class Activist < ActiveRecord::Base
   validates_format_of :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
 
   def self.by_email email
-    self.where("lower(email) = lower(?)", email).order(id: :asc).first
+    self.where("lower(email) = lower(?)", email.strip).order(id: :asc).first
   end
 
   def first_name
