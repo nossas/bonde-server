@@ -22,11 +22,11 @@ class Mobilizations::DonationsController < ApplicationController
     @donation = Donation.new(donation_params)
     activist_params = donation_params[:customer]
     address_params = activist_params.delete(:address)
+    find_or_create_activist(activist_params)
 
     authorize @donation
 
     if @donation.save!
-      find_or_create_activist(activist_params)
       address = find_or_create_address(address_params)
 
       DonationService.run(@donation, address)# unless @donation.subscription?
