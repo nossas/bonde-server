@@ -28,7 +28,7 @@ class DonationsMailer < ApplicationMailer
       }#
 
       mail(
-        to: donation.customer['email'],
+        to: donation.activist.try(:email) || donation.customer['email'],
         subject: subject,
         from: from_address
       )
