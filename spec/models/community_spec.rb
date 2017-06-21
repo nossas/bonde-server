@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Community, type: :model do
   it { should validate_presence_of :name }
-  
+
   it { should have_many :payable_transfers }
   it { should have_many :payable_details }
   it { should have_many :mobilizations }
@@ -16,10 +16,11 @@ RSpec.describe Community, type: :model do
   it { should validate_uniqueness_of :name }
 
   describe '#invite_member' do
+    let(:community) { create(:community)}
     it do
       expect_any_instance_of(Invitation).to receive(:invitation_email).once
 
-      subject.invite_member 'ask@me', create(:user), 1
+      community.invite_member 'ask@me', create(:user), 1
     end
   end
 end

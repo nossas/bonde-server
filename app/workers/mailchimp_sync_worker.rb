@@ -1,6 +1,6 @@
 class MailchimpSyncWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :mailchimp_synchro
+  sidekiq_options queue: :mailchimp_synchro, retry: 1
 
   def perform(id, queue) 
     action_widget = nil

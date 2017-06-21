@@ -120,13 +120,16 @@ class CommunitiesController < ApplicationController
     unless community
       skip_authorization
       render(nothing: true, status: :not_found)
-    else 
+    else
       authorize community
-
       data = params[:invitation]
-      
       invitation = community.invite_member(data['email'], current_user, data['role'])
-      render json:invitation
+
+      if invitation.valid?
+        render json: invitation
+      else
+        render json: { errors: invitation.errors.to_json }
+      end
     end
   end
 

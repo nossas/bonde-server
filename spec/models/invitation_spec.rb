@@ -25,8 +25,9 @@ RSpec.describe Invitation, type: :model do
   end
 
   describe '#invitation_email' do
+    let(:invitation) { create(:invitation) }
     it 'should send an email' do
-      expect { subject.invitation_email }
+      expect { invitation.invitation_email }
         .to change { ActionMailer::Base.deliveries.count }.by(1)
     end
   end

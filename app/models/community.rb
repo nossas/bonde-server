@@ -106,7 +106,7 @@ class Community < ActiveRecord::Base
 
   def invite_member email, inviter, role
     invitation = Invitation.create email: email, community: self, user: inviter, expires: (DateTime.now + 3.days), role: role    
-    invitation.invitation_email
+    invitation.invitation_email if invitation.valid?
     invitation
   end
 
