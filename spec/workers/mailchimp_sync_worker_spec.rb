@@ -66,17 +66,19 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
 
 
   describe '#perform_with' do
-    it 'should not synchronize if don\'t have widget' do
-      activist_pressure = spy(:activist_pressure, :id =>1, :widget => nil)
+    it 'should fill error reason when sync fails' do
+			activist_pressure = spy(:activist_pressure, :id =>1, :widget => widget_without_segment_id, :synchronized => false)
       
+      allow(activist_pressure).to receive(:update_mailchimp).and_raise('boom')
+      expect(worker).to receive(:update_error).with(activist_pressure, anything).and_call_original
       worker.perform_with activist_pressure
 
-      expect(activist_pressure).not_to have_received(:update_mailchimp)
+			expect(activist_pressure).to have_received(:update_mailchimp).once
     end
 
     it 'should not synchronize if don\'t have widget' do
       activist_pressure = spy(:activist_pressure, :id =>1, :widget => nil)
-      
+
       worker.perform_with activist_pressure
 
       expect(activist_pressure).not_to have_received(:update_mailchimp)
@@ -118,7 +120,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
 
       expect(subscription).not_to have_received(:mailchimp_remove_from_active_donators)
       expect(subscription).not_to have_received(:mailchimp_add_active_donators)
-      expect(subscription).not_to have_received(:save!)
+      expect(subscription).not_to have_received(:update_columns)
     end
 
     it 'should add to segment if status is paid' do
@@ -127,7 +129,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
 
       expect(subscription).not_to have_received(:mailchimp_remove_from_active_donators)
       expect(subscription).to have_received(:mailchimp_add_active_donators)
-      expect(subscription).to have_received(:save!)
+      expect(subscription).to have_received(:update_columns)
     end
 
     ['unpaid', 'canceled'].each do |status|
@@ -137,7 +139,7 @@ RSpec.describe MailchimpSyncWorker, type: :worker do
 
         expect(subscription).to have_received(:mailchimp_remove_from_active_donators)
         expect(subscription).not_to have_received(:mailchimp_add_active_donators)
-        expect(subscription).to have_received(:save!)
+        expect(subscription).to have_received(:update_columns)
       end
     end
   end
