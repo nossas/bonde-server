@@ -1,6 +1,7 @@
 module Mailchimpable
   class MailchimpableException < StandardError
     def initialize standard_error, message
+      @original_error = standard_error
       @message = "#{message} +\r\n#{standard_error.message}"
     end
 
@@ -39,7 +40,7 @@ module Mailchimpable
       end
     rescue StandardError => e
       raise Mailchimpable::MailchimpableException.new(e, 
-        "List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{e}" ) unless e.message =~ /.*title="Member Exists".*/
+        "List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')" ) unless e.message =~ /.*title="Member Exists".*/
     end
   end
 
@@ -50,7 +51,7 @@ module Mailchimpable
         email_address: email
       }) if segment_id
     rescue StandardError => e
-      raise MailchimpableException.new( e, "Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')\nError:#{e}" )
+      raise MailchimpableException.new( e, "Subscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')" )
     end
   end
 
@@ -62,7 +63,7 @@ module Mailchimpable
         true
       end
     rescue StandardError => e
-      raise MailchimpableException.new( e, "Unsubscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')\nError:#{e}" )
+      raise MailchimpableException.new( e, "Unsubscribe_to_segment error:\nParams: (segment_id: '#{segment_id}', (email: '#{email}')" )
     end
   end
 
@@ -71,7 +72,7 @@ module Mailchimpable
     begin
       api_client.lists(mailchimp_list_id).members(Digest::MD5.hexdigest(email.downcase)).update(body: create_body(email, options: options))
     rescue StandardError => e
-      raise MailchimpableException.new(e, "update_member error:\nParams: (email: '#{email}', options: '#{options}')\nError:#{e}")
+      raise MailchimpableException.new(e, "update_member error:\nParams: (email: '#{email}', options: '#{options}')")
     end
   end
 
