@@ -27,24 +27,41 @@ class MailchimpSyncWorker
   def perform_with action_widget
     widget = action_widget.widget 
     if ( widget ) and ( not action_widget.synchronized )
-      create_segment_if_necessary(widget)
-      action_widget.update_mailchimp
-      update_status action_widget
+      begin
+        create_segment_if_necessary(widget)
+        action_widget.update_mailchimp
+        update_status action_widget
+      rescue => e
+        update_error(action_widget, e)
+      end
     end
   end
 
   def perform_subscription subscription
-    return if (subscription.current_state =~ /(un)?paid|canceled/.nil?) || (subscription.synchronized) 
-    if subscription.current_state =~ /unpaid|canceled/
-      subscription.mailchimp_remove_from_active_donators
-    else
-      subscription.mailchimp_add_active_donators
+    return if (subscription.current_state =~ /(un)?paid|canceled/.nil?) || (subscription.synchronized)
+    begin
+      if subscription.current_state =~ /unpaid|canceled/
+        subscription.mailchimp_remove_from_active_donators
+      else
+        subscription.mailchimp_add_active_donators
+      end
+      update_status subscription
+    rescue => e
+      update_error(subscription, e)
     end
-    update_status subscription
+  end
+
+  def update_error record, error
+    record.update_columns(
+      mailchimp_syncronization_at: DateTime.now,
+      mailchimp_syncronization_error_reason: error.to_s
+    )
   end
 
   def update_status record
-    record.synchronized = true
-    record.save! validate: false
+    record.update_columns(
+      mailchimp_syncronization_at: DateTime.now,
+      synchronized: true
+    )
   end
 end

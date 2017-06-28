@@ -29,6 +29,8 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
             'first name' => 'José',
             'id' => fe.id,
             'last name' => 'manuel',
+            "mailchimp_syncronization_at"=>nil,
+            "mailchimp_syncronization_error_reason"=>nil,
             'requester' => current_user.id,
             'updated_at' => fe.updated_at,
             'widget_id' => fe.widget_id

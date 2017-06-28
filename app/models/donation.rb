@@ -77,7 +77,9 @@ class Donation < ActiveRecord::Base
 
   def send_mail
     begin
-      DonationsMailer.thank_you_email(self).deliver_later!
+      if self.local_subscription_id.nil? || (self.subscription_relation.donations.size = 1)
+        DonationsMailer.thank_you_email(self).deliver_later!
+      end
     rescue StandardError => e
       Raven.capture_exception(e) unless Rails.env.test?
       logger.error("\n==> ERROR SENDING DONATION EMAIL: #{e.inspect}\n")
