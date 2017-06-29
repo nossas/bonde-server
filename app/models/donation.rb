@@ -77,7 +77,7 @@ class Donation < ActiveRecord::Base
 
   def send_mail
     begin
-      if self.local_subscription_id.nil? || (self.subscription_relation.donations.size = 1)
+      if self.local_subscription_id.nil? || (self.subscription_relation.donations.size == 1)
         DonationsMailer.thank_you_email(self).deliver_later!
       end
     rescue StandardError => e
