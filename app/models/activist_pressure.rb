@@ -11,8 +11,7 @@ class ActivistPressure < ActiveRecord::Base
   has_one :mobilization, through: :block
   has_one :community, through: :mobilization
 
-  after_create :async_update_mailchimp
-  after_commit :send_thank_you_email, :send_pressure_email, on: :create, unless: :is_test?
+  after_commit :async_update_mailchimp, :send_thank_you_email, :send_pressure_email, on: :create, unless: :is_test?
   after_commit :add_automatic_tags, on: :create
 
   def as_json(*)
