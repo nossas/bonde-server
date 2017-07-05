@@ -1,4 +1,16 @@
 namespace :recipients do
+  desc 'sync over all balance operations'
+  task sync_balance_operations: :environment do
+    Recipient.find_each do |recipient|
+      begin
+        operations_sync = BalanceOperationSyncService.new(recipient)
+        operations_sync.sync_balance_operations
+      rescue StandardError => e
+        puts e.inspect
+      end
+    end
+  end
+
   namespace :staging do
     desc 'refresh all recipients on test pagarme'
     task refresh_recipients: :environment do
