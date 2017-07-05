@@ -43,7 +43,7 @@ class Mobilization < ActiveRecord::Base
   private
 
   def slugify
-    self.slug ||= "#{self.class.count}-#{self.name.try(:parameterize)}"
+    self.slug = "#{self.class.count}-#{self.name.try(:parameterize)}" unless self.slug.present?
   end
 
   def set_twitter_share_text
