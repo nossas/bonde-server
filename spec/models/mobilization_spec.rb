@@ -84,10 +84,6 @@ RSpec.describe Mobilization, type: :model do
       expect(subject.facebook_share_image).to eq(@template.facebook_share_image)
     end
 
-    it "should copy the slug value" do
-      expect(subject.slug).to eq(@template.slug)
-    end
-
     it "should copy the custom_domain value" do
       expect(subject.custom_domain).to eq(@template.custom_domain)
     end
