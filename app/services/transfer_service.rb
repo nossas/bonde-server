@@ -88,7 +88,7 @@ class TransferService
       :conta => data[:conta],
       :conta_dv => data[:conta_dv],
       :type => data[:type],
-      :legal_name => data[:legal_name],
+      :legal_name => data[:legal_name][0..29],
       :document_number => data[:document_number]
     })
 
