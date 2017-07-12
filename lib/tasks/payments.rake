@@ -61,4 +61,18 @@ namespace :payments do
     end
   end
 
+  desc 'recovery based on metadata donation id'
+  task recovery_from_metadata: :environment do
+    collection = GatewayTransaction.joins("left join donations d on d.transaction_id = gateway_transactions.transaction_id").
+      where("d.id is null and gateway_transactions.gateway_data->'metadata'->>'donation_id' is not null")
+    collection.find_each do |gateway_transaction|
+      Rails.logger.info "Searching donation for #{gateway_transaction.transaction_id}"
+      donation = Donation.find gateway_transaction.gateway_data['metadata']['donation_id']
+      unless donation.transaction_id.present?
+        donation.update_column(:transaction_id, gateway_transaction.transaction_id)
+        Rails.logger.info "updating donation #{donation.id}"
+        donation.update_pagarme_data
+      end
+    end
+  end
 end
