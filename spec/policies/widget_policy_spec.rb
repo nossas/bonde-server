@@ -92,6 +92,49 @@ RSpec.describe WidgetPolicy do
     end
   end
 
+  context "for a user in Community's list" do
+    let(:user) { User.make! admin: true }
+    let(:mobilization) { Mobilization.make! user: user }
+    let(:block) { Block.make! mobilization: mobilization }
+    subject { described_class.new(user, Widget.make!(block: block)) }
+
+    before { CommunityUser.create! user_id: user.id, community_id: mobilization.community.id, role: 1}
+
+    it { should allows(:index) }
+    it { should allows(:show) }
+    it { should allows(:create) }
+    it { should allows(:new) }
+    it { should allows(:update) }
+    it { should allows(:edit) }
+    it { should allows(:destroy) }
+    it "should have complete scope" do
+      expect(subject.scope).to eq Widget
+    end
+    it "should return permitted attributes" do
+      expect(subject.permitted_attributes).to eq permitted_attributes
+    end
+  end
+
+  context "for an admin" do
+    let(:user) { User.make! admin: true }
+    let(:mobilization) { Mobilization.make! user: user }
+    let(:block) { Block.make! mobilization: mobilization }
+    subject { described_class.new(user, Widget.make!(block: block)) }
+    it { should allows(:index) }
+    it { should allows(:show) }
+    it { should allows(:create) }
+    it { should allows(:new) }
+    it { should allows(:update) }
+    it { should allows(:edit) }
+    it { should allows(:destroy) }
+    it "should have complete scope" do
+      expect(subject.scope).to eq Widget
+    end
+    it "should return permitted attributes" do
+      expect(subject.permitted_attributes).to eq permitted_attributes
+    end
+  end
+
   context "for the owner" do
     let(:user) { User.make! }
     let(:mobilization) { Mobilization.make! user: user }

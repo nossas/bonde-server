@@ -11,7 +11,6 @@ class CommunitiesController < ApplicationController
 
   def index
     skip_authorization
-    skip_policy_scope
 
     if current_user
       render json: current_user.communities

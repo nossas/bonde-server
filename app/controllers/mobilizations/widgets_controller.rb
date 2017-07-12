@@ -1,5 +1,8 @@
 class Mobilizations::WidgetsController < ApplicationController
+  include ControllerHelper
+  
   respond_to :json
+
   after_action :verify_authorized, except: %i[index]
   after_action :verify_policy_scoped, only: %i[index]
 
@@ -9,14 +12,18 @@ class Mobilizations::WidgetsController < ApplicationController
   end
 
   def update
-    @widget = Widget.find(params[:id])
-    authorize @widget
+    @widget = Widget.find_by({id:params[:id]})
+    if @widget
+      authorize @widget
 
-    if @widget.update!(widget_params)
-      SubscriptionService.create_plans(@widget) if @widget.recurring? && @widget.donation?
-      render json: @widget
+      if @widget.update!(widget_params)
+        SubscriptionService.create_plans(@widget) if @widget.recurring? && @widget.donation?
+        render json: @widget
+      else
+        render json: @widget.errors, status: :unprocessable_entity
+      end
     else
-      render json: @widget.errors, status: :unprocessable_entity
+      render_404
     end
   end
 

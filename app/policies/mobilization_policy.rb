@@ -25,4 +25,11 @@ class MobilizationPolicy < ApplicationPolicy
   def authenticated?
     user.present?
   end
+
+  private
+
+  def is_owned_by?(user)
+    user.present? and (record.user == user or record.community.users.include? user)
+  end
+
 end

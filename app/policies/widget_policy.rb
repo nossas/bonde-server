@@ -65,6 +65,6 @@ class WidgetPolicy < ApplicationPolicy
   private
 
   def is_owned_by?(user)
-    user.present? && record.mobilization.user == user
+    user.present? and (record.mobilization.user == user or record.community.users.include? user)
   end
 end
