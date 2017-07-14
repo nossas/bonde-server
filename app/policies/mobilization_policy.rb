@@ -15,7 +15,8 @@ class MobilizationPolicy < ApplicationPolicy
         :custom_domain,
         :slug,
         :community_id,
-        :tag_list
+        :tag_list,
+        :favicon
       ]
     else
       []
