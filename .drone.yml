@@ -8,17 +8,18 @@ pipeline:
       - apk --update add ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
       - echo "America/Sao_Paulo" > /etc/timezone
-      - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@127.0.0.1/hub_api_test
-      - psql -c 'create role bonde SUPERUSER LOGIN;' -h127.0.0.1 -Upostgres
-      - psql -c 'create database hub_api_test;' -h127.0.0.1 -Upostgres
+      - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test
+      - psql -c 'create role bonde SUPERUSER LOGIN;' -hdatabase -Upostgres
+      - psql -c 'create database hub_api_test;' -hdatabase -Upostgres
       - bundle install
       - rake db:migrate
       - bundle exec rspec spec
+    when:
+      event: [push, tag]
   publish-staging:
     image: plugins/docker
     repo: nossas/bonde-server
-    username: lpirola
-    password: ${DOCKER_PASSWORD}
+    secrets: [ docker_username, docker_password ]
     tags:
       - ${DRONE_BRANCH}
     when:
@@ -30,6 +31,7 @@ pipeline:
     username: ubuntu
     port: 22
     command_timeout: 180
+    secrets: [ ssh_key ]
     script:
       - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
       - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/api:latest
@@ -41,8 +43,7 @@ pipeline:
   publish:
     image: plugins/docker
     repo: nossas/bonde-server
-    username: lpirola
-    password: ${DOCKER_PASSWORD}
+    secrets: [ docker_username, docker_password ]
     tags:
       - ${DRONE_TAG##v}
     when:
@@ -54,6 +55,7 @@ pipeline:
     username: ubuntu
     port: 22
     command_timeout: 180
+    secrets: [ ssh_key ]
     script:
       - sudo docker pull nossas/bonde-server:${DRONE_TAG##v}
       - sudo docker tag nossas/bonde-server:${DRONE_TAG##v} dokku/api:latest
