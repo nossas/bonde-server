@@ -34,6 +34,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'aws-sdk', '~> 2'
 gem 'net-dns'
 gem 'test_after_commit', :group => :test
+gem 'whenever', :require => false
 
 group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'

@@ -64,6 +64,7 @@ GEM
       mime-types (>= 1.16)
     case_transform (0.2)
       activesupport
+    chronic (0.10.2)
     codeclimate-test-reporter (0.6.0)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.1)
@@ -399,6 +400,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    whenever (0.9.7)
+      chronic (>= 0.6.3)
     xml-simple (1.1.5)
 
 PLATFORMS
@@ -446,6 +449,7 @@ DEPENDENCIES
   statesman (= 2.0.1)
   test_after_commit
   webmock (= 2.3.1)
+  whenever
 
 RUBY VERSION
    ruby 2.3.3p222
