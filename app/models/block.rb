@@ -7,6 +7,10 @@ class Block < ActiveRecord::Base
   before_validation :set_position
   before_save :switch_position
 
+  after_save do
+    mobilization.touch if mobilization.present?
+  end
+
   private
 
   def set_position
