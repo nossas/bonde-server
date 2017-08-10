@@ -28,13 +28,15 @@ class Invitation < ActiveRecord::Base
     end
 
     invited_user = User.find_by_email self.email
-    invited_user = generate_user unless invited_user
+    #invited_user = generate_user unless invited_user
 
-    community_user = CommunityUser.create! user: invited_user, community: self.community, role: self.role
-    self.expired = true
-    self.save!
+    if invited_user
+      community_user = CommunityUser.create! user: invited_user, community: self.community, role: self.role
+      self.expired = true
+      self.save!
 
-    community_user
+      community_user
+    end
   end
 
   private
