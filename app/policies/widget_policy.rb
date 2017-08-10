@@ -28,6 +28,7 @@ class WidgetPolicy < ApplicationPolicy
         :pressure_body,
         :reply_email,
         :show_city,
+        :disable_edit_field,
 
         # Donation widget
         :default_donation_value,
