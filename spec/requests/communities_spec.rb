@@ -61,7 +61,6 @@ RSpec.describe "Communities", type: :request do
     context 'user not member' do 
       let!(:user) { create :user }
       let!(:community) { create :community }
-      let(:returned) { JSON.parse(response.body) }
       
       before do
         stub_current_user user
@@ -74,64 +73,59 @@ RSpec.describe "Communities", type: :request do
     end
   end
 
-
   describe 'GET /invitation' do
     context 'valid invitation' do 
       let!(:invitation) { create :invitation, expires: (Date.today + 1) }
-      let(:returned) { JSON.parse(response.body) }
+      let!(:user) { create(:user, email: invitation.email)}
 
       before do
         get "/invitation", {code: invitation.code, email: invitation.email}
       end
 
-      it { expect(response).to have_http_status(200) }
-
-      it do
-        expect(returned['id']).to eq(CommunityUser.last.id)
+      it { expect(response).to have_http_status(302) }
+      it 'should create community user' do
+        expect(CommunityUser.where(user_id: user.id).count).to eq(1)
       end
-
-      it do
-        expect(returned['user_id']).to eq(CommunityUser.last.user_id)
-      end
-
-      it do
-        expect(returned['community_id']).to eq(CommunityUser.last.community_id)
-      end
-
-      it do
-        expect(returned['role']).to eq(CommunityUser.last.role)
-      end
-
     end
 
     context 'expired invitation' do
       let(:invitation) {create :invitation, expired: true}
-      let(:returned) { JSON.parse(response.body) }
+      let!(:user) { create(:user, email: invitation.email)}
 
       before do
         get "/invitation", {code: invitation.code, email: invitation.email}
       end
 
-      it { expect(response).to have_http_status(412) }
+      it { expect(response).to have_http_status(302) }
+      it 'should not create community user' do
+        expect(CommunityUser.where(user_id: user.id).count).to eq(0)
+      end
     end
 
-    context 'expired invitation' do
+    context 'expired invitation with time' do
+      let!(:user) { create(:user, email: invitation.email)}
       let!(:invitation) {create :invitation, expired: false, expires: (Date.today - 1)}
-      let(:returned) { JSON.parse(response.body) }
 
       before do
         get "/invitation", {code: invitation.code, email: invitation.email}
       end
 
-      it { expect(response).to have_http_status(412) }
+      it { expect(response).to have_http_status(302) }
+      it 'should not create community user' do
+        expect(CommunityUser.where(user_id: user.id).count).to eq(0)
+      end
     end
 
     context 'inexistent invitation' do
+      let!(:user) { create(:user, email: 'ask@me.com')}
       before do
         get "/invitation", {code: '1234', email: 'ask@me.com'}
       end
 
-      it { expect(response).to have_http_status(404) }
+      it { expect(response).to have_http_status(302) }
+      it 'should not create community user' do
+        expect(CommunityUser.where(user_id: user.id).count).to eq(0)
+      end
     end
   end
 end

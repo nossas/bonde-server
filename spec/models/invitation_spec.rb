@@ -58,32 +58,32 @@ RSpec.describe Invitation, type: :model do
         it 'should turn invitation\'s expired to true' do
           subject.create_community_user
           subject.reload
-          expect(subject.expired).to be
+          expect(subject.expired).to eq(true)
         end
       end
 
       context 'without user' do
-        it 'should create an User' do
+        it 'should not create an User' do
           subject
-          expect{subject.create_community_user}.to change{User.count}.by(1)
+          expect{subject.create_community_user}.not_to change{User.count}
         end
-  
-        it 'should create a correct instance' do
+
+        it 'should not return nil' do
           community_user = subject.create_community_user
 
-          expect(community_user.community_id).to eq(subject.community_id)
-          expect(community_user.role).to eq(subject.role)
+          expect(community_user).to eq(nil)
         end
 
-        it 'should turn invitation\'s expired to true' do
+        it 'should not turn invitation\'s expired to true' do
           subject.create_community_user
           subject.reload
-          expect(subject.expired).to be
+          expect(subject.expired).to eq(false)
         end
       end
     end
 
     context 'expired' do
+      before { create :user, email: subject.email }
       it do
         subject.expired = true
         expect{subject.create_community_user}.to raise_error(InvitationException)
@@ -97,7 +97,7 @@ RSpec.describe Invitation, type: :model do
       it 'should turn invitation\'s expired to true' do
         subject.create_community_user
         subject.reload
-        expect(subject.expired).to be
+        expect(subject.expired).to eq(true)
       end
     end
   end
