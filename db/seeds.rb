@@ -23,7 +23,6 @@ user_admin = User.find_or_create_by(email: 'admin_foo@bar.com') do |u|
   u.first_name = 'admin Foo'
   u.last_name = 'Bar'
   u.admin = true
-#  u.skip_confirmation!
 end
 
 communities = Community.create([
@@ -54,7 +53,7 @@ communities = Community.create([
 
 communities.each do |c|
   CommunityUser.create([
-    {  
+    {
       user_id: user.id,
       community_id: c.id,
       role: 1
