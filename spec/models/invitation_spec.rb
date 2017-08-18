@@ -86,12 +86,12 @@ RSpec.describe Invitation, type: :model do
       before { create :user, email: subject.email }
       it do
         subject.expired = true
-        expect{subject.create_community_user}.to raise_error(InvitationException)
+        expect(subject.create_community_user).to eq(nil)
       end
 
       it do
         subject.expires = (Date.today - 1)
-        expect{subject.create_community_user}.to raise_error(InvitationException)
+        expect(subject.create_community_user).to eq(nil)
       end
 
       it 'should turn invitation\'s expired to true' do
