@@ -103,16 +103,12 @@ class CommunitiesController < ApplicationController
 
   def accept_invitation
     skip_authorization
-    invitation = Invitation.find_by_email_and_code params['email'], params['code']
-    if invitation
-      begin
-        render json: (@community_user = invitation.create_community_user), serializer: CommunityUserSerializer::CommunityUserSimpleSerializer
-      rescue InvitationException
-        render nothing: true, status: 412
-      end
-    else
-      render nothing: true, status: :not_found
-    end
+    invitation = Invitation.find_by(
+      email: params['email'],
+      code: params['code'])
+    invitation.create_community_user if invitation
+
+    redirect_to (Rails.env.staging? ? 'https://staging.bonde.org' : 'https://app.bonde.org')
   end
 
   def create_invitation

@@ -819,29 +819,14 @@ RSpec.describe CommunitiesController, type: :controller do
         expect{ call_accept }.to change{ CommunityUser.count }.by(1)
       end
 
-      it 'should expose the created data' do
-        call_accept      
-        expect(assigns(:community_user)).to eq(CommunityUser.last)
+      it 'should redirect after request' do
+        expect(call_accept).to be_redirect
       end
     end
 
     context 'invited user don\'t exists' do
-      it 'should create new user' do
-        expect{ call_accept }.to change{ User.count }.by(1)
-      end
-
-      xit 'should send an email to the new user' do
-          expect{ call_accept }.to change { ActionMailer::Base.deliveries.count }.by(1)
-      end
-
-
-      it 'should create new community_user' do
-        expect{ call_accept }.to change{ CommunityUser.count }.by(1)
-      end
-
-      it 'should expose the created data' do
-        call_accept      
-        expect(assigns(:community_user)).to eq(CommunityUser.last)
+      it 'should not create community_user' do
+        expect{ call_accept }.to change{ CommunityUser.count }.by(0)
       end
     end
   end

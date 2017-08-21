@@ -22,19 +22,21 @@ class Invitation < ActiveRecord::Base
   end
 
   def create_community_user
-    if invitation_expired?
-      self.update_attributes expired: true if (! self.expired)
-      raise InvitationException.new(I18n.t 'activerecord.errors.models.invitation.create_community_user')
-    end
-
     invited_user = User.find_by_email self.email
-    invited_user = generate_user unless invited_user
+    #invited_user = generate_user unless invited_user
 
-    community_user = CommunityUser.create! user: invited_user, community: self.community, role: self.role
-    self.expired = true
-    self.save!
+    if invited_user
+       if invitation_expired?
+         self.update_attributes expired: true if (! self.expired)
+         return
+       end
 
-    community_user
+      community_user = CommunityUser.create! user: invited_user, community: self.community, role: self.role
+      self.expired = true
+      self.save!
+
+      community_user
+    end
   end
 
   private
@@ -49,7 +51,4 @@ class Invitation < ActiveRecord::Base
   def invitation_expired?
     expired? || ( expires < DateTime.now )
   end
-end
-
-class InvitationException < RuntimeError
 end
