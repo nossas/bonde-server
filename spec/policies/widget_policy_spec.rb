@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe WidgetPolicy do
 
-  permitted_attributes = [:kind, settings: [
+  permitted_attributes = [:kind, :goal, settings: [
     # Can re-use settings
     # Autofire config
     :email_text,

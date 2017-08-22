@@ -1,7 +1,7 @@
 class WidgetPolicy < ApplicationPolicy
   def permitted_attributes # rubocop:disable Metrics/MethodLength
     if create?
-      [:kind, settings: [
+      [:kind, :goal, settings: [
         # Can re-use settings
         # Autofire config
         :email_text,
