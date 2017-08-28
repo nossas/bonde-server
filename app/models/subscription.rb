@@ -47,11 +47,11 @@ class Subscription < ActiveRecord::Base
 
 
   def customer
-    if last_charge
+    if last_charge && last_charge.gateway_data.try(:[], 'customer').try(:[], 'id').present?
       return last_charge.gateway_data["customer"]
     end
 
-    donations.where("gateway_data is not null").last.gateway_data["customer"]
+    donations.where("gateway_data is not null").last.try(:gateway_data).try(:[], 'customer')
   end
 
   def has_pending_payments?
