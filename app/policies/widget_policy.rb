@@ -41,6 +41,7 @@ class WidgetPolicy < ApplicationPolicy
         :payment_type,
         :payment_methods,
         :customer_data,
+        :goal_date_limit,
 
         # Match Widget
         :choicesA,
