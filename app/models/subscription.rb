@@ -159,6 +159,7 @@ class Subscription < ActiveRecord::Base
     when 'refused'
       transition_to(:unpaid, donation_data: data)
     when 'waiting_payment'
+      transition_to(:waiting_payment, donation_data: data)
       notify_activist(:slip_subscription)
     end
   end
