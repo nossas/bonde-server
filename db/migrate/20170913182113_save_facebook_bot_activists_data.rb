@@ -69,9 +69,11 @@ AS $function$
                     messages = CASE WHEN v_quick_reply IS NULL THEN messages || v_messages
                     ELSE messages
                     END,
-                    quick_replies = CASE WHEN quick_replies IS NOT NULL THEN
+                    quick_replies = CASE WHEN v_quick_replies IS NOT NULL THEN
                         (SELECT ARRAY_AGG(DISTINCT qr)
                         FROM UNNEST(ARRAY_CAT(quick_replies, v_quick_replies)) as qr)
+                    ELSE
+                        quick_replies
                     END
                 WHERE fb_context_recipient_id = NEW.fb_context_recipient_id;
             END IF;
