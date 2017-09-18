@@ -2,13 +2,15 @@ class SubscriptionMachine
   include Statesman::Machine
 
   state :pending, initial: true
+  state :waiting_payment
   state :paid
   state :unpaid
   state :canceled
 
   transition from: :pending, to: %i(paid unpaid canceled)
-  transition from: :paid, to: %i(paid unpaid canceled)
+  transition from: :paid, to: %i(paid unpaid canceled waiting_payment)
   transition from: :unpaid, to: %i(paid unpaid canceled)
+  transition from: :waiting_payment, to: %i(paid unpaid canceled waiting_payment)
 
   after_transition(to: :paid) do |subscription|
     subscription.notify_activist(:paid_subscription)

@@ -47,11 +47,11 @@ class Subscription < ActiveRecord::Base
 
 
   def customer
-    if last_charge
+    if last_charge && last_charge.gateway_data.try(:[], 'customer').try(:[], 'id').present?
       return last_charge.gateway_data["customer"]
     end
 
-    donations.where("gateway_data is not null").last.gateway_data["customer"]
+    donations.where("gateway_data is not null").last.try(:gateway_data).try(:[], 'customer')
   end
 
   def has_pending_payments?
@@ -159,6 +159,7 @@ class Subscription < ActiveRecord::Base
     when 'refused'
       transition_to(:unpaid, donation_data: data)
     when 'waiting_payment'
+      transition_to(:waiting_payment, donation_data: data)
       notify_activist(:slip_subscription)
     end
   end
