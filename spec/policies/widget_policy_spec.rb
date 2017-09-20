@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe WidgetPolicy do
 
-  permitted_attributes = [:kind, settings: [
+  permitted_attributes = [:kind, :goal, settings: [
     # Can re-use settings
     # Autofire config
     :email_text,
@@ -42,6 +42,7 @@ RSpec.describe WidgetPolicy do
     :payment_type,
     :payment_methods,
     :customer_data,
+    :goal_date_limit,
 
     # Match Widget
     :choicesA,

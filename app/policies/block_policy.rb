@@ -2,7 +2,7 @@ class BlockPolicy < ApplicationPolicy
   def permitted_attributes
     if create?
       [:position, :bg_class, :bg_image, :hidden, :name, :menu_hidden,
-        widgets_attributes: [:kind, :sm_size, :md_size, :lg_size, settings: [
+        widgets_attributes: [:kind, :goal, :sm_size, :md_size, :lg_size, settings: [
         # Can re-use settings
         # Autofire config
         :email_text,

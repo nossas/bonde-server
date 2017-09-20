@@ -215,7 +215,7 @@ RSpec.describe Subscription, type: :model do
 
           it 'should charge and update generated donation' do
             expect(subscription).to receive(:notify_activist).with(:slip_subscription)
-            expect(subscription).not_to receive(:transition_to)
+            expect(subscription).to receive(:transition_to).with(:waiting_payment, anything)
             expect(SubscriptionWorker).not_to receive(:perform_at).with(anything, subscription.id).and_call_original
             charged = subject
             expect(charged.transaction_id).to eq("1235")

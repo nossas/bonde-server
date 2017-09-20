@@ -52,8 +52,9 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
       block = mobilization.blocks.first
       expect(response.body).to include(BlockSerializer::CompleteBlockSerializer.new(block).to_json)
       expect(block.widgets.count).to eq(2)
-      widget1 = block.widgets[0]
-      widget2 = block.widgets[1]
+      widgets = block.widgets.order(id: :asc)
+      widget1 = widgets[0]
+      widget2 = widgets[1]
       expect(widget1.kind).to eq('content')
       expect(widget1.sm_size).to eq(8)
       expect(widget1.md_size).to eq(6)

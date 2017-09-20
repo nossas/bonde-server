@@ -1,5 +1,5 @@
 pipeline:
-  build:
+  unit-tests:
     image: alpine:3.5
     commands:
       - apk update
@@ -16,7 +16,8 @@ pipeline:
       - bundle exec rspec spec
     when:
       event: [push, tag]
-  publish-staging:
+
+  publish-docker-staging:
     image: plugins/docker
     repo: nossas/bonde-server
     secrets: [ docker_username, docker_password ]
@@ -25,21 +26,19 @@ pipeline:
     when:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
-  deploy-staging:
-    image: appleboy/drone-ssh
-    host: staging.bonde.org
-    username: ubuntu
-    port: 22
-    command_timeout: 180
-    secrets: [ ssh_key ]
-    script:
-      - sudo docker pull nossas/bonde-server:${DRONE_BRANCH}
-      - sudo docker tag nossas/bonde-server:${DRONE_BRANCH} dokku/api:latest
-      - dokku tags:deploy api latest
-      - dokku run api bin/rake db:migrate
+
+  deploy-rancher-staging:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: staging/api-v1
+    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
+
   publish:
     image: plugins/docker
     repo: nossas/bonde-server
@@ -72,6 +71,7 @@ pipeline:
     when:
       event: [ push, tag, build, publish, deployment, pull_request ]
       status: [ success, failure ]
+
 services:
   database:
     image: postgres:9.6
