@@ -53,7 +53,7 @@ class Activist < ActiveRecord::Base
     end
 
     if !activist_tag.taggings.where(tag_id: _tag.id).exists?
-      activist_tag.taggings.create!(
+      activist_tag.taggings.create(
         tag_id: _tag.id,
         taggable_id: activist_tag.id,
         taggable_type: 'ActivistTag',

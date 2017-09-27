@@ -1,6 +1,5 @@
 module TagAnActivistOmatic
   def add_automatic_tags
-    self.reload
     if widget.mobilization.present?
       tag_to_add = "#{widget.kind}_#{widget.mobilization.name}".downcase.gsub( /\W|\-{2}/, '-' ).gsub( /-{2}/, '-' )
 
