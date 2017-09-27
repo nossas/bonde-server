@@ -43,10 +43,22 @@ class Activist < ActiveRecord::Base
     }
 
     activist_tag = self.activist_tags.find_by(conditions) || self.activist_tags.create!(conditions.merge(created_at: date_created))
-    if !activist_tag.tags.where(name: tag).exists?
-      activist_tag.tags.create(
+
+    _tag = ActsAsTaggableOn::Tag.where(name: tag).last
+    if !_tag.present?
+      _tag = activist_tag.tags.create(
         name: tag,
         label: mobilization.try(:name)
+      )
+    end
+
+    if !activist_tag.taggings.where(tag_id: _tag.id).exists?
+      activist_tag.taggings.create!(
+        tag_id: _tag.id,
+        taggable_id: activist_tag.id,
+        taggable_type: 'ActivistTag',
+        context: 'tags',
+        created_at: date_created
       )
     end
     activist_tag.save

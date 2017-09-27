@@ -1,6 +1,7 @@
 require './app/models/concerns/tag_an_activist_omatic'
+require 'webmock'
 class TagAnActivistOmaticFake
-  attr_accessor :activist, :widget
+  attr_accessor :activist, :widget, :created_at
 
   include ::TagAnActivistOmatic
 
@@ -13,7 +14,8 @@ RSpec.describe TagAnActivistOmatic do
   subject { TagAnActivistOmaticFake.new }
 
   describe 'add_automatic_tags' do
-    it do 
+    it do
+      subject.created_at = DateTime.now()
       subject.activist = spy(:activist)
       subject.widget = spy(:widget)
       mobilization = spy(:mobilization)
@@ -25,7 +27,7 @@ RSpec.describe TagAnActivistOmatic do
       allow(subject.widget).to receive(:mobilization).and_return(mobilization)
       allow(subject.widget).to receive(:kind).and_return('form')
 
-      expect(subject.activist).to receive(:add_tag).with(13,"form_let-s-create-a-better-world-friends", mobilization, anything)
+      expect(subject.activist).to receive(:add_tag).with(13,"form_let-s-create-a-better-world-friends", anything, anything)
 
       subject.add_automatic_tags
     end
