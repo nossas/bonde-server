@@ -1,7 +1,8 @@
+require './app/models/concerns/tag_an_activist_omatic'
 class TagAnActivistOmaticFake
   attr_accessor :activist, :widget
 
-  include TagAnActivistOmatic
+  include ::TagAnActivistOmatic
 
   def reload
   end
@@ -24,7 +25,7 @@ RSpec.describe TagAnActivistOmatic do
       allow(subject.widget).to receive(:mobilization).and_return(mobilization)
       allow(subject.widget).to receive(:kind).and_return('form')
 
-      expect(subject.activist).to receive(:add_tag).with(13,"form_let-s-create-a-better-world-friends")
+      expect(subject.activist).to receive(:add_tag).with(13,"form_let-s-create-a-better-world-friends", mobilization, anything)
 
       subject.add_automatic_tags
     end

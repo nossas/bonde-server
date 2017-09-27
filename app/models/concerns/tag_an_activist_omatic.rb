@@ -7,7 +7,8 @@ module TagAnActivistOmatic
       .add_tag(
         widget.community.id,
         tag_to_add,
-        widget.mobilization
+        widget.mobilization,
+        DateTime.now
     ) if activist && widget
   end
 end

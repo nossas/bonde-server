@@ -35,22 +35,21 @@ class Activist < ActiveRecord::Base
     return activist_tag.nil? ? nil : activist_tag.tag_list
   end
 
-  def add_tag community_id, tag, mobilization = nil
+  def add_tag community_id, tag, mobilization = nil, date_created = DateTime.now
     self.save!
     conditions =  {
       community_id: community_id,
       mobilization_id: mobilization.try(:id)
     }
 
-    activist_tag = self.activist_tags.find_by(conditions) || self.activist_tags.create!(conditions)
-    activist_tag.tag_list.add tag
+    activist_tag = self.activist_tags.find_by(conditions) || self.activist_tags.create!(conditions.merge(created_at: date_created))
     if !activist_tag.tags.where(name: tag).exists?
       activist_tag.tags.create(
         name: tag,
         label: mobilization.try(:name)
       )
     end
-    activist_tag.save!
+    activist_tag.save
   end
 
   private
