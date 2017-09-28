@@ -74,6 +74,7 @@ class DonationService
         status: 'pending',
         amount: donation.amount,
         card_data: @transaction.card.try(:to_json),
+        gateway_customer_id: @transaction.customer.try(:id),
         payment_method: donation.payment_method)
       donation.update_attribute(:local_subscription_id, subscription.id)
 

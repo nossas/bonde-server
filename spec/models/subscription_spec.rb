@@ -91,7 +91,6 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
-
   describe "next_transaction_charge_date" do
     context "when subscriptions is new without donations" do
       subject { subscription.next_transaction_charge_date.to_date }
@@ -165,7 +164,10 @@ RSpec.describe Subscription, type: :model do
             status: 'paid',
             payables: [{id: 'x'}, {id: 'y'}],
             card: { id: 'card_xpto_id'},
-            charge: true
+            charge: true,
+            customer: double(
+              id: 12345
+            )
           })
       end
       let(:pagarme_attributes) do
@@ -206,7 +208,10 @@ RSpec.describe Subscription, type: :model do
                 boleto_url: 'url_boleto',
                 boleto_barcode: 'barcode',
                 boleto_expiraton_date: '17-01-2018',
-                charge: true
+                charge: true,
+                customer: double(
+                  id: 12345
+                )
               })
           end
           before do
@@ -216,6 +221,7 @@ RSpec.describe Subscription, type: :model do
           it 'should charge and update generated donation' do
             expect(subscription).to receive(:notify_activist).with(:slip_subscription)
             expect(subscription).to receive(:transition_to).with(:waiting_payment, anything)
+            expect(subscription).to receive(:update_attribute).with(:gateway_customer_id, 12345)
             expect(SubscriptionWorker).not_to receive(:perform_at).with(anything, subscription.id).and_call_original
             charged = subject
             expect(charged.transaction_id).to eq("1235")
@@ -234,7 +240,10 @@ RSpec.describe Subscription, type: :model do
                 status: 'processing',
                 payables: [{id: 'x'}, {id: 'y'}],
                 card: { id: 'card_xpto_id'},
-                charge: true
+                charge: true,
+                customer: double(
+                  id: 12345
+                )
               })
           end
           before do
@@ -280,7 +289,10 @@ RSpec.describe Subscription, type: :model do
                 status: 'refused',
                 payables: [{id: 'x'}, {id: 'y'}],
                 card: { id: 'card_xpto_id'},
-                charge: true
+                charge: true,
+                customer: double(
+                  id: 12345
+                )
               })
           end
           before do
@@ -305,7 +317,10 @@ RSpec.describe Subscription, type: :model do
                 status: 'refused',
                 payables: [{id: 'x'}, {id: 'y'}],
                 card: { id: 'card_xpto_id'},
-                charge: true
+                charge: true,
+                customer: double(
+                  id: 12345
+                )
               })
           end
           before do
