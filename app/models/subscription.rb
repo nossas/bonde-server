@@ -45,8 +45,11 @@ class Subscription < ActiveRecord::Base
     last_donation ||= donations.ordered.first
   end
 
-
   def customer
+    return {
+      "id" => gateway_customer_id
+    } if gateway_customer_id.present?
+
     if last_charge && last_charge.gateway_data.try(:[], 'customer').try(:[], 'id').present?
       return last_charge.gateway_data["customer"]
     end
@@ -105,7 +108,7 @@ class Subscription < ActiveRecord::Base
         payables: transaction.payables.to_json
       )
       self.update_attributes(card_data: transaction.card.to_json) if transaction.card.present?
-
+      self.update_attribute(:gateway_customer_id, transaction.customer.id) if transaction.customer.present?
       process_status_changes(transaction.status, transaction.try(:to_h))
 
       donation
