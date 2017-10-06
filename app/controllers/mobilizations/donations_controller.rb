@@ -20,6 +20,8 @@ class Mobilizations::DonationsController < ApplicationController
 
   def create
     @donation = Donation.new(donation_params)
+    @donation.checkout_data = donation_params[:customer]
+
     activist_params = donation_params[:customer]
     address_params = activist_params.delete(:address)
     find_or_create_activist(activist_params)
@@ -43,6 +45,9 @@ class Mobilizations::DonationsController < ApplicationController
   def find_or_create_activist(activist_params)
     if activist = Activist.by_email(activist_params[:email])
       @donation.activist_id = activist.id
+      unless activist.document_number.present?
+        activist.update_column(:document_number, @donation.checkout_data['document_number'])
+      end
     else
       @donation.create_activist(activist_params.permit(*policy(Activist.new).permitted_attributes))
       Raven.capture_message "Ativista não gravado !\nDonation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
