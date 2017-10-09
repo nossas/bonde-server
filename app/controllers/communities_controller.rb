@@ -72,12 +72,18 @@ class CommunitiesController < ApplicationController
 
     authorize community
 
+    conditions = if params[:list_id].present?
+                   {activist_id: params[:list_id]}
+                 else
+                   {}
+                 end
+
     respond_with do |format|
       format.json do
-        render json: community.agg_activists
+        render json: community.agg_activists.where(conditions)
       end
       format.csv do
-        send_data community.agg_activists.copy_to_string, type: Mime::CSV, disposition: "attachment; filename=activists_#{community.name.parameterize}.csv"
+        send_data community.agg_activists.where(conditions).copy_to_string, type: Mime::CSV, disposition: "attachment; filename=activists_#{community.name.parameterize}.csv"
       end
     end
   end
