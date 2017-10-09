@@ -51,6 +51,14 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
         post(:create, mobilization_id: @widget.mobilization.id, format: :json, donation: donation_params)
       }.to change { Donation.count }.by 1
     end
+
+    it "should persist customer data in checkout_data" do
+      post(:create, mobilization_id: @widget.mobilization.id, format: :json, donation: donation_params)
+      donation = Donation.find ActiveSupport::JSON.decode(response.body)["id"]
+      expect(donation).to_not be_nil
+      expect(donation.checkout_data).to_not be_nil
+      expect(donation.checkout_data["document_number"]).to_not be_nil
+    end
   end
 end
 

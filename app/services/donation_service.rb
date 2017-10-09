@@ -131,9 +131,9 @@ class DonationService
 
   def self.customer_params(donation, address)
     return_customer_params = {
-      name: donation.activist.name,
-      email: donation.activist.email,
-      document_number: donation.activist.document_number,
+      name: donation.activist.name || donation.checkout_data['name'],
+      email: donation.activist.email || donation.checkout_data['email'],
+      document_number: donation.activist.document_number || donation.checkout_data['document_number'],
       address: {
         street: address.street,
         street_number: address.street_number,
