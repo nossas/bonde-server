@@ -24,4 +24,5 @@ every 1.day, at: '1:00 am' do
   command "dokku run api payments:sync_gateway_transactions"
   command "dokku run api payments:sync_donations"
   command "dokku run api payments:recovery_from_metadata"
+  command "dokku run api recipients:sync_balance_operations"
 end
