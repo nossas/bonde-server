@@ -35,12 +35,34 @@ class Activist < ActiveRecord::Base
     return activist_tag.nil? ? nil : activist_tag.tag_list
   end
 
-  def add_tag community_id, tag
-    self.save!
+  def add_tag community_id, tag, mobilization = nil, date_created = DateTime.now
+    if self.save
+      conditions =  {
+        community_id: community_id,
+        mobilization_id: mobilization.try(:id)
+      }
 
-    activist_tag = self.activist_tags.find_by_community_id(community_id) || self.activist_tags.create!(community_id: community_id)
-    activist_tag.tag_list.add tag
-    activist_tag.save!
+      activist_tag = self.activist_tags.find_by(conditions) || self.activist_tags.create!(conditions.merge(created_at: date_created))
+
+      _tag = ActsAsTaggableOn::Tag.where(name: tag).last
+      if !_tag.present?
+        _tag = activist_tag.tags.create(
+          name: tag,
+          label: mobilization.try(:name)
+        )
+      end
+
+      if !activist_tag.taggings.where(tag_id: _tag.id).exists?
+        activist_tag.taggings.create(
+          tag_id: _tag.id,
+          taggable_id: activist_tag.id,
+          taggable_type: 'ActivistTag',
+          context: 'tags',
+          created_at: date_created
+        )
+      end
+      activist_tag.save
+    end
   end
 
   private

@@ -169,7 +169,7 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
         message_retrieved: 'Campo não pode estar vazio'
       },
       {
-        field_name: 'first name',
+        field_name: 'first-name',
         field_type: 'text',
         field_value: 'Jão',
         message_retrieved: 'Email inválido'
