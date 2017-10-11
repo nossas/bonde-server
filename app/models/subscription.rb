@@ -60,9 +60,10 @@ class Subscription < ActiveRecord::Base
   def has_pending_payments?
     #%w(processing pending waiting_payment).include?(donations.last.try(:transaction_status))
     donations.where(%Q{
+    transaction_id is not null AND (
     (payment_method = 'credit_card' and transaction_status in ('processing', 'pending'))
     OR (payment_method = 'boleto' and transaction_status in ('waiting_payment', 'pending', 'processing')
-    and ((gateway_data->>'boleto_expiration_date')::timestamp + '2 days'::interval) >= now())
+    and ((gateway_data->>'boleto_expiration_date')::timestamp + '2 days'::interval) >= now()))
                     }).order(id: :desc).limit(1).exists?
   end
 
