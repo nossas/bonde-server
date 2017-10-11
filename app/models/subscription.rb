@@ -62,7 +62,7 @@ class Subscription < ActiveRecord::Base
     donations.where(%Q{
     (payment_method = 'credit_card' and transaction_status in ('processing', 'pending'))
     OR (payment_method = 'boleto' and transaction_status in ('waiting_payment', 'pending', 'processing')
-    and (gateway_data->>'boleto_expiration_date')::timestamp >= now())
+    and ((gateway_data->>'boleto_expiration_date')::timestamp + '2 days'::interval) >= now())
                     }).order(id: :desc).limit(1).exists?
   end
 
