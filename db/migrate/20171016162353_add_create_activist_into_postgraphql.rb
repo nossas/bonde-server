@@ -84,7 +84,7 @@ delete from activist_pressures ma where ma.id in (
 );
 
 delete from activist_tags ma where ma.id in (
-    select m2.id from activist_pressures m2
+    select m2.id from activist_tags m2
     join activists a on a.id = m2.activist_id
     where not unaccent(lower(btrim(a.email))) ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
 );
