@@ -1,6 +1,8 @@
 class AddCreateActivistIntoPostgraphql < ActiveRecord::Migration
+  disable_ddl_transaction!
   def up
     execute %Q{
+begin;
 CREATE EXTENSION if not exists citext;
 CREATE DOMAIN email AS citext
     CHECK ( value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
@@ -92,10 +94,8 @@ delete from activist_tags where activist_id in (
 );
 
 delete from activists where not email ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$';
-
-
+commit;
 create unique index uniq_email_acts on activists(lower(email::email));
-
 CREATE OR REPLACE FUNCTION postgraphql.create_activist(activist json)
  RETURNS json
  LANGUAGE plpgsql
