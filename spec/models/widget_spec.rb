@@ -205,4 +205,21 @@ RSpec.describe Widget, type: :model do
       expect(widget).to have_received(:create_segment).exactly(3).times
     end
   end
+
+  describe 'resync_all' do
+    let(:widget) { create(:widget) }
+    let!(:form_entry) { create(:form_entry, widget: widget)}
+    let!(:donation) { create(:donation, widget: widget)}
+    let!(:activist_pressure) { create(:activist_pressure, widget: widget)}
+
+    before do
+      expect_any_instance_of(FormEntry).to receive(:async_update_mailchimp)
+      expect_any_instance_of(Donation).to receive(:async_update_mailchimp)
+      expect_any_instance_of(ActivistPressure).to receive(:async_update_mailchimp)
+    end
+
+    it 'should call async mailchimp update on related entities' do
+      widget.resync_all
+    end
+  end
 end

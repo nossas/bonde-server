@@ -26,6 +26,18 @@ class Widget < ActiveRecord::Base
     WidgetSerializer.new(self, {root: false})
   end
 
+  def resync_all
+    form_entries.find_each do |fe|
+      fe.async_update_mailchimp
+    end
+    donations.find_each do |d|
+      d.async_update_mailchimp
+    end
+    activist_pressures.find_each do |ap|
+      ap.async_update_mailchimp
+    end
+  end
+
   def segment_name donation_segment_kind: :main
     kinds_correlation = {'pressure' => 'P', 'form' => 'F', 'match' => 'M', 'donation' => 'D'}
 
