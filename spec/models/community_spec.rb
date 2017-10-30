@@ -23,4 +23,44 @@ RSpec.describe Community, type: :model do
       community.invite_member 'ask@me', create(:user), 1
     end
   end
+
+  describe '#resync_all' do
+    let(:community) { create(:community)}
+
+    context 'when not sent resync yet' do
+      before do
+        expect(community).to receive(:update_column).with(:mailchimp_sync_request_at, anything)
+        expect(CommunityMailchimpResyncWorker).to receive(:perform_async).with(community.id)
+      end
+
+      it 'should call community resync worker' do
+        community.resync_all
+      end
+    end
+
+    context 'when last requested at is in 10 minutes window' do
+
+      before do
+        community.update_column(:mailchimp_sync_request_at, 5.minutes.ago)
+        expect(community).to_not receive(:update_column).with(:mailchimp_sync_request_at, anything)
+        expect(CommunityMailchimpResyncWorker).to_not receive(:perform_async).with(community.id)
+      end
+
+      it 'should call community resync worker' do
+        community.resync_all
+      end
+    end
+
+    context 'when last requested at is greater 10 minutes window' do
+      before do
+        community.update_column(:mailchimp_sync_request_at, 11.minutes.ago)
+        expect(community).to receive(:update_column).with(:mailchimp_sync_request_at, anything)
+        expect(CommunityMailchimpResyncWorker).to receive(:perform_async).with(community.id)
+      end
+
+      it 'should call community resync worker' do
+        community.resync_all
+      end
+    end
+  end
 end
