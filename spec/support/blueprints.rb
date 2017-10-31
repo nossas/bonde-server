@@ -82,7 +82,7 @@ end
 
 Activist.blueprint do
   name { "Foo Bar" }
-  email { "foo@bar.org" }
+  email { "#{sn}@bar.org" }
   phone { { ddd: "11", number: "999999999" }.to_s }
   document_number { "12345678909" }
 end
