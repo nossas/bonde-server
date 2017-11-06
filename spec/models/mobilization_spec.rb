@@ -22,6 +22,17 @@ RSpec.describe Mobilization, type: :model do
 
   let(:community) { create(:community) }
 
+  describe '.not_deleted' do
+    let!(:deleted_mob) { create(:mobilization, deleted_at: DateTime.now) }
+    let!(:mob) { create(:mobilization, deleted_at: nil) }
+
+    subject { Mobilization.not_deleted }
+
+    it 'deleted mob should not be returned' do
+      expect(subject).to_not include(deleted_mob)
+    end
+  end
+
   context "generate a slug" do
     before do
       @mobilization = Mobilization.create!(
