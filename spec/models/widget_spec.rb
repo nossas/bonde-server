@@ -19,6 +19,18 @@ RSpec.describe Widget, type: :model do
   it { should have_many :matches }
   it { should have_many :activist_pressures }
 
+  describe '.not_deleted' do
+    let!(:deleted) { create(:widget, deleted_at: DateTime.now) }
+    let!(:wiget) { create(:widget, deleted_at: nil) }
+
+    subject { Widget.not_deleted }
+
+    it 'deleted widget should not be returned' do
+      expect(subject).to_not include(deleted)
+    end
+  end
+
+
   describe "#segment_name" do
     context "Regular form" do
       it "should set a segment name" do
