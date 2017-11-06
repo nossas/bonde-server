@@ -81,12 +81,13 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
   end
 
   describe "DELETE #destroy" do
+    let(:mobilization) { create(:mobilization, user: @user) }
+    let(:block) { create(:block, mobilization: mobilization,  bg_class: 'bg-white', position: 123, hidden: false) }
+
     it "should destroy with JSON format" do
-      mobilization = Mobilization.make! user: @user
-      block = Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 123, hidden: false
-      expect(mobilization.blocks.count).to eq(1)
       delete :destroy, mobilization_id: mobilization.id, id: block.id, format: :json
-      expect(mobilization.blocks.count).to eq(0)
+      block.reload
+      expect(block.deleted_at).to_not be_nil
       expect(response.body).to include(block.to_json)
     end
   end
