@@ -11,6 +11,8 @@ class Block < ActiveRecord::Base
     mobilization.touch if mobilization.present?
   end
 
+  scope :not_deleted, -> { where(deleted_at: nil) }
+
   private
 
   def set_position

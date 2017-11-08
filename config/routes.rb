@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     resources :payable_details, only: [:index], controller: 'communities/payable_details'
     resources :donation_reports, only: [:index], controller: 'communities/donation_reports'
     resources :community_users, path: 'users', only: [:index, :create, :update]
+    post 'resync_mailchimp', to: 'communities#resync_mailchimp'
     get 'mobilizations', to: 'communities#list_mobilizations'
     get 'activists', to: 'communities#list_activists'
     post 'download_activists', to: 'communities#list_activists'

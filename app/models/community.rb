@@ -5,6 +5,8 @@ class Community < ActiveRecord::Base
   has_many :payable_details
   has_many :donation_reports
   has_many :mobilizations
+  has_many :blocks, through: :mobilizations
+  has_many :widgets, through: :blocks
   has_many :community_users
   has_many :users, through: :community_users
   has_many :agg_activists
@@ -115,6 +117,13 @@ class Community < ActiveRecord::Base
     end
 
     invitation
+  end
+
+  def resync_all
+    if !mailchimp_sync_request_at.present? || (mailchimp_sync_request_at + 10.minutes < DateTime.now)
+      update_column(:mailchimp_sync_request_at, DateTime.now)
+      CommunityMailchimpResyncWorker.perform_async(self.id)
+    end
   end
 
   private

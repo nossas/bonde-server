@@ -5,9 +5,9 @@ class WidgetsController < ApplicationController
 
   # FIXME efficiency
   def index
-    mobilization = policy_scope(Mobilization).filter(params.slice(:custom_domain, :slug))
+    mobilization = policy_scope(Mobilization).not_deleted.filter(params.slice(:custom_domain, :slug))
     mobilization = mobilization.first if mobilization.kind_of?(Array)
-    widgets = mobilization.present? ? mobilization.widgets.order(:id) : Widget.none
+    widgets = mobilization.present? ? mobilization.widgets.not_deleted.order(:id) : Widget.none
     render json: widgets
   end
 

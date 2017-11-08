@@ -4,12 +4,20 @@ class Mobilizations::WidgetsController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    @widgets = policy_scope(Widget).joins(:block).where(blocks: {mobilization_id: params[:mobilization_id]}).order(:id)
+    @widgets = policy_scope(Widget).
+      joins(:block).
+      not_deleted.
+      where({
+      blocks: {
+        deleted_at: nil,
+        mobilization_id: params[:mobilization_id]
+      }}).order(:id)
+
     render json: @widgets
   end
 
   def update
-    @widget = Widget.find(params[:id])
+    @widget = Widget.not_deleted.find(params[:id])
     authorize @widget
 
     if @widget.update!(widget_params)

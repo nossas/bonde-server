@@ -7,6 +7,19 @@ RSpec.describe Block, type: :model do
   it { should validate_presence_of :position }
   it { should accept_nested_attributes_for :widgets }
 
+  describe '.not_deleted' do
+    context 'should not list blocks that has deleted' do
+      let!(:block_deleted) { create(:block, deleted_at: DateTime.now)}
+      let!(:block) { create(:block) }
+
+      subject { Block.not_deleted }
+
+      it 'should not include deleted' do
+        expect(subject).to_not include(block_deleted)
+      end
+    end
+  end
+
   describe "#set_position" do
     it "should set the block's position to the maximum position + 1" do
       mobilization1 = Mobilization.make!

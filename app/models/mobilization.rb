@@ -20,6 +20,8 @@ class Mobilization < ActiveRecord::Base
   before_save :set_color_scheme
   before_create :set_twitter_share_text
 
+  scope :not_deleted, -> { where(deleted_at: nil) }
+
   def url
     if self.custom_domain.present?
       "http://#{self.custom_domain}"

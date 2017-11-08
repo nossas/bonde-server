@@ -4,9 +4,9 @@ class CommunitiesController < ApplicationController
   include Pundit
   include PagarmeHelper
   
-  before_action :load_community, only: [:list_mobilizations]
+  before_action :load_community, only: [:list_mobilizations, :resync_mailchimp]
 
-  after_action :verify_authorized, except: [:index, :list_mobilizations]
+  after_action :verify_authorized, except: [:index, :list_mobilizations, :resync_mailchimp]
   after_action :verify_policy_scoped, only: [:index, :list_mobilizations]
 
   def index
@@ -131,6 +131,16 @@ class CommunitiesController < ApplicationController
         render json: invitation
       else
         render json: { errors: invitation.errors.to_json }
+      end
+    end
+  end
+
+  def resync_mailchimp
+    authorize @community || Community
+    @community.resync_all
+    respond_with do |format|
+      format.json do
+        render json: { message: 'successful', sync_requested_at: @community.mailchimp_sync_request_at}
       end
     end
   end

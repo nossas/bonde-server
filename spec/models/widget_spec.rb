@@ -19,6 +19,18 @@ RSpec.describe Widget, type: :model do
   it { should have_many :matches }
   it { should have_many :activist_pressures }
 
+  describe '.not_deleted' do
+    let!(:deleted) { create(:widget, deleted_at: DateTime.now) }
+    let!(:wiget) { create(:widget, deleted_at: nil) }
+
+    subject { Widget.not_deleted }
+
+    it 'deleted widget should not be returned' do
+      expect(subject).to_not include(deleted)
+    end
+  end
+
+
   describe "#segment_name" do
     context "Regular form" do
       it "should set a segment name" do
@@ -203,6 +215,23 @@ RSpec.describe Widget, type: :model do
       widget.create_mailchimp_donators_segments
 
       expect(widget).to have_received(:create_segment).exactly(3).times
+    end
+  end
+
+  describe 'resync_all' do
+    let(:widget) { create(:widget) }
+    let!(:form_entry) { create(:form_entry, widget: widget)}
+    let!(:donation) { create(:donation, widget: widget)}
+    let!(:activist_pressure) { create(:activist_pressure, widget: widget)}
+
+    before do
+      expect_any_instance_of(FormEntry).to receive(:async_update_mailchimp)
+      expect_any_instance_of(Donation).to receive(:async_update_mailchimp)
+      expect_any_instance_of(ActivistPressure).to receive(:async_update_mailchimp)
+    end
+
+    it 'should call async mailchimp update on related entities' do
+      widget.resync_all
     end
   end
 end

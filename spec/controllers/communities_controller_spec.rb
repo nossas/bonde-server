@@ -115,10 +115,6 @@ RSpec.describe CommunitiesController, type: :controller do
     end
   end
 
-
-
-
-
   describe 'PUT #update' do
     let!(:community) { Community.make! }
 
@@ -642,8 +638,6 @@ RSpec.describe CommunitiesController, type: :controller do
     end
   end
 
-
-
   describe 'GET #show' do
     let(:community) { Community.make! }
 
@@ -684,7 +678,6 @@ RSpec.describe CommunitiesController, type: :controller do
       end
     end
   end
-
 
   describe 'GET #list_mobilizations' do
     let(:community) {Community.make!}
@@ -827,6 +820,38 @@ RSpec.describe CommunitiesController, type: :controller do
     context 'invited user don\'t exists' do
       it 'should not create community_user' do
         expect{ call_accept }.to change{ CommunityUser.count }.by(0)
+      end
+    end
+  end
+
+
+  describe 'POST #resync_mailchimp' do
+    let(:community) { create(:community) }
+    let!(:community_users) { create(:community_user, community: community, user: @user)}
+    context 'valid call' do
+      before do
+        post :resync_mailchimp, {
+          format: :json, 
+          community_id: community.id
+        }
+      end
+
+      it 'should return a 200 status' do
+        expect(response.status).to be 200
+      end
+    end
+
+    context 'user not logged' do 
+      before do
+        stub_current_user(nil)
+        post :resync_mailchimp, {
+          format: :json, 
+          community_id: community.id
+        }
+      end
+
+      it 'should return a 401 status' do
+        expect(response.status).to be 401
       end
     end
   end

@@ -4,7 +4,7 @@ class Mobilizations::BlocksController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    render json: policy_scope(Block).where(mobilization_id: params[:mobilization_id]).order(:position)
+    render json: policy_scope(Block).not_deleted.where(mobilization_id: params[:mobilization_id]).order(:position)
   end
 
   def create
@@ -15,7 +15,7 @@ class Mobilizations::BlocksController < ApplicationController
   end
 
   def update
-    @block = Block.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
+    @block = Block.not_deleted.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
     authorize @block
     @block.update!(block_params)
     render json: @block
@@ -24,7 +24,7 @@ class Mobilizations::BlocksController < ApplicationController
   def destroy
     @block = Block.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
     authorize @block
-    @block.destroy!
+    @block.update_attribute(:deleted_at, DateTime.now)
     render json: @block
   end
 

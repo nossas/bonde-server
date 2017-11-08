@@ -11,7 +11,7 @@ class MobilizationsController < ApplicationController
     #
     # render_status :unauthorized and return unless current_user
     begin
-      @mobilizations = policy_scope(Mobilization).order('updated_at DESC')
+      @mobilizations = policy_scope(Mobilization).not_deleted.order('updated_at DESC')
       @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
       @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
       @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
@@ -26,6 +26,7 @@ class MobilizationsController < ApplicationController
   def published
     begin
       @mobilizations = policy_scope(Mobilization).
+        not_deleted.
         where.not(custom_domain: nil).
         where.not(custom_domain: 'null')
       render json: @mobilizations
@@ -49,7 +50,7 @@ class MobilizationsController < ApplicationController
   end
 
   def update
-    @mobilization = Mobilization.find_by({id: params[:id]})
+    @mobilization = Mobilization.not_deleted.find_by({id: params[:id]})
     template_mobilization_id = params[:mobilization][:template_mobilization_id]
     if not @mobilization
       return404
