@@ -1,3 +1,4 @@
+require './app/services/balance_operations_sync_service'
 namespace :recipients do
   desc 'sync over all balance operations'
   task sync_balance_operations: :environment do

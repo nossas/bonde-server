@@ -20,9 +20,9 @@
 # Learn more: http://github.com/javan/whenever
 
 every 1.day, at: '1:00 am' do
-  command "dokku run api subscriptions:schedule_charges"
-  command "dokku run api payments:sync_gateway_transactions"
-  command "dokku run api payments:sync_donations"
-  command "dokku run api payments:recovery_from_metadata"
-  command "dokku run api recipients:sync_balance_operations"
+  command "dokku run api bundle exec rake subscriptions:schedule_charges"
+  command "dokku run api bundle exec rake payments:sync_gateway_transactions"
+  command "dokku run api bundle exec rake payments:sync_donations"
+  command "dokku run api bundle exec rake payments:recovery_from_metadata"
+  command "dokku run api bundle exec rake recipients:sync_balance_operations"
 end
