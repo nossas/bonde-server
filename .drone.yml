@@ -66,7 +66,7 @@ pipeline:
   notify:
     image: plugins/slack
     webhook: https://hooks.slack.com/services/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
-    channel: n_tech
+    channel: bonde_bots
     username: CI - ${DRONE_REPO_NAME}
     when:
       event: [ push, tag, build, publish, deployment, pull_request ]
