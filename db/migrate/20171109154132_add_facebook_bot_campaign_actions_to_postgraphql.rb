@@ -75,7 +75,7 @@ $function$;
   def down
     %Q{
 DROP FUNCTION postgraphql.get_facebook_bot_campaigns_by_community_id(ctx_community_id integer);
-DROP FUNCTION postgraphql.create_facebook_bot_campaign(campaign postgraphql.facebook_bot_campaigns_type)
+DROP FUNCTION postgraphql.create_facebook_bot_campaign(campaign postgraphql.facebook_bot_campaigns_type);
 DROP TYPE postgraphql.facebook_bot_campaigns_type;
 REVOKE USAGE ON SEQUENCE public.facebook_bot_campaign_activists_id_seq FROM admin, common_user;
 REVOKE USAGE ON SEQUENCE public.facebook_bot_campaigns_id_seq FROM admin, common_user;
