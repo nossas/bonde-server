@@ -12,6 +12,7 @@ RSpec.describe PayableDetail, type: :model do
   let(:donation_pending) do
     Donation.make!(
       widget: widget,
+      cached_community_id: community.id,
       amount: 10,
       subscription: true,
       subscription_id: 123,
@@ -40,6 +41,7 @@ RSpec.describe PayableDetail, type: :model do
   end
   let(:donation_paid) do
     Donation.make!(
+      cached_community_id: community.id,
       widget: widget_2,
       amount: 10,
       subscription: false,
