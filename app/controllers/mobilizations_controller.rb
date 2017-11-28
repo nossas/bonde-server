@@ -2,6 +2,7 @@ class MobilizationsController < ApplicationController
   respond_to :json
   after_action :verify_authorized, except: %i[index published]
   after_action :verify_policy_scoped, only: %i[index published]
+  has_scope :by_status
 
   def index
     # TODO: Lets use has_scope here :)
@@ -11,7 +12,7 @@ class MobilizationsController < ApplicationController
     #
     # render_status :unauthorized and return unless current_user
     begin
-      @mobilizations = policy_scope(Mobilization).not_deleted.order('updated_at DESC')
+      @mobilizations = policy_scope(apply_scopes(Mobilization)).not_deleted.order('updated_at DESC')
       @mobilizations = @mobilizations.where(user_id: params[:user_id]) if params[:user_id].present?
       @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
       @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
@@ -41,11 +42,11 @@ class MobilizationsController < ApplicationController
     @mobilization = Mobilization.new(mobilization_params)
     @mobilization.user = current_user
     authorize @mobilization
-    
+
     if @mobilization.save
       return render json: @mobilization
     else
-      return render json: { errors: @mobilization.errors }, status: :unprocessable_entity 
+      return render json: { errors: @mobilization.errors }, status: :unprocessable_entity
     end
   end
 

@@ -24,6 +24,8 @@ class Mobilization < ActiveRecord::Base
 
   scope :not_deleted, -> { where(deleted_at: nil) }
 
+  scope :by_status, -> status { where(status: status) }
+
   def url
     if self.custom_domain.present?
       "http://#{self.custom_domain}"

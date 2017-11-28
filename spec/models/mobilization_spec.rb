@@ -4,7 +4,7 @@ RSpec.describe Mobilization, type: :model do
   subject { create :mobilization, slug: nil }
 
   it { should belong_to :user }
-  
+
   it { should have_many :blocks }
   it { should have_many(:widgets).through(:blocks) }
   it { should have_many(:form_entries).through(:widgets) }
@@ -12,7 +12,7 @@ RSpec.describe Mobilization, type: :model do
   it { should validate_presence_of :user_id }
   it { should validate_presence_of :name }
   it { should validate_presence_of :goal }
-  
+
   it { should validate_length_of :twitter_share_text }
 
   it { should validate_uniqueness_of :slug }
@@ -30,6 +30,21 @@ RSpec.describe Mobilization, type: :model do
 
     it 'deleted mob should not be returned' do
       expect(subject).to_not include(deleted_mob)
+    end
+  end
+
+  describe "validate scope by_status" do
+    before do
+      @mob01 = create(:mobilization, status: 'active')
+      @mob02 = create(:mobilization, status: 'archived')
+    end
+
+    it 'scope by_status must be active' do
+      expect(Mobilization.by_status('active')).to_not include(@mob02)
+    end
+
+    it 'scope by_status must be archived' do
+      expect(Mobilization.by_status('archived')).to_not include(@mob01)
     end
   end
 
@@ -64,7 +79,7 @@ RSpec.describe Mobilization, type: :model do
   end
 
   context "create mobilization from TemplateMobilition object" do
-    before do 
+    before do
       @template = create(:template_mobilization)
     end
     subject {
