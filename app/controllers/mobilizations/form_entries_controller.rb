@@ -34,6 +34,7 @@ class Mobilizations::FormEntriesController < ApplicationController
   def create
     @form_entry = FormEntry.new(form_entry_params)
     authorize @form_entry
+    @form_entry.cached_community_id = parent.community_id
     (render json: @form_entry.errors, status: 400 and return) unless @form_entry.validate
     @form_entry.save!
     render json: @form_entry

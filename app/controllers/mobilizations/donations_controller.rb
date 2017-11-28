@@ -21,6 +21,7 @@ class Mobilizations::DonationsController < ApplicationController
   def create
     @donation = Donation.new(donation_params)
     @donation.checkout_data = donation_params[:customer]
+    @donation.cached_community_id = @donation.try(:mobilization).try(:community_id)
 
     activist_params = donation_params[:customer]
     address_params = activist_params.delete(:address)

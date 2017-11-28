@@ -56,6 +56,7 @@ RSpec.describe Mobilizations::DonationsController, type: :controller do
       post(:create, mobilization_id: @widget.mobilization.id, format: :json, donation: donation_params)
       donation = Donation.find ActiveSupport::JSON.decode(response.body)["id"]
       expect(donation).to_not be_nil
+      expect(donation.cached_community_id).to eq(@widget.mobilization.community_id)
       expect(donation.checkout_data).to_not be_nil
       expect(donation.checkout_data["document_number"]).to_not be_nil
     end
