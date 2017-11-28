@@ -2,6 +2,8 @@
 class Mobilization < ActiveRecord::Base
   acts_as_taggable
 
+  enum status: { active: 'active', draft: 'draft', archived: 'archived' }
+
   include Shareable
   include Filterable
 

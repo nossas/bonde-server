@@ -83,7 +83,7 @@ class MobilizationsController < ApplicationController
       if @mobilization.save
         return render json: @mobilization
       else
-        return render json: { errors: @mobilization.errors }, status: :unprocessable_entity 
+        return render json: { errors: @mobilization.errors }, status: :unprocessable_entity
       end
     end
   end
@@ -96,7 +96,7 @@ class MobilizationsController < ApplicationController
     end
   end
 
-  private 
+  private
 
   def render_status status
     skip_authorization
