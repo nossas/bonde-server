@@ -2,6 +2,8 @@
 class Mobilization < ActiveRecord::Base
   acts_as_taggable
 
+  enum status: { active: 'active', draft: 'draft', archived: 'archived' }
+
   include Shareable
   include Filterable
 
@@ -21,6 +23,8 @@ class Mobilization < ActiveRecord::Base
   before_create :set_twitter_share_text
 
   scope :not_deleted, -> { where(deleted_at: nil) }
+
+  scope :by_status, -> status { where(status: status) }
 
   def url
     if self.custom_domain.present?

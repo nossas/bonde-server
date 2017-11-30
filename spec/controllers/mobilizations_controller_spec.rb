@@ -81,7 +81,7 @@ RSpec.describe MobilizationsController, type: :controller do
     end
 
   end
-  
+
   describe 'PUT #update' do
     let(:template) { TemplateMobilization.make! }
     let(:mobilization) { Mobilization.make! user: user1, slug: nil }
@@ -150,19 +150,41 @@ RSpec.describe MobilizationsController, type: :controller do
     end
 
     context "fields changing validation" do
-      before { put :update, { mobilization: { 
+      before { put :update, { mobilization: {
         name: 'new name',
         slug: 'my slug',
         custom_domain: 'anewdomainfor.us'
       }, id: mobilization.id } }
 
       it { should respond_with 200 }
-      
+
       it { expect(assigns(:mobilization).name).to eq('new name')}
 
       it { expect(assigns(:mobilization).slug).to eq('my slug')}
 
       it { expect(assigns(:mobilization).custom_domain).to eq('anewdomainfor.us')}
+    end
+  end
+
+  describe "update mobilization" do
+    context 'update status an existing mobilization' do
+      subject {
+        Mobilization.make! user: user1
+      }
+
+      let(:mobilization) { Mobilization.find subject.id }
+
+      it 'should change status in database' do
+        patch :update, {format: :json, mobilization: {status: 'active'}, id: subject.id}
+
+        expect(mobilization.status).to eq('active')
+      end
+
+      it 'should return an 200' do
+        patch :update, {format: :json, mobilization: {status: 'active'}, id: subject.id}
+
+        expect(response.status).to eq(200)
+      end
     end
   end
 
