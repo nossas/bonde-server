@@ -19,7 +19,6 @@ class TemplateMobilization < ActiveRecord::Base
   	template.body_font = mobilization.body_font
   	template.facebook_share_image = mobilization.facebook_share_image
   	template.slug = mobilization.slug
-  	template.custom_domain = mobilization.custom_domain
   	template.twitter_share_text = mobilization.twitter_share_text
   	template.community_id = mobilization.community_id
   	template
