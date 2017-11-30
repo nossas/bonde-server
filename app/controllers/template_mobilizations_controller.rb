@@ -18,7 +18,7 @@ class TemplateMobilizationsController < ApplicationController
 	template_mobilization = TemplateMobilization.find_by({id: params[:id]})
 	if template_mobilization
 	  authorize template_mobilization
-	  template_mobilization.transaction do 
+	  template_mobilization.transaction do
 	    template_mobilization.template_blocks.each do |block|
 	      block.template_widgets.each do |widget|
 	        widget.delete
@@ -44,11 +44,11 @@ class TemplateMobilizationsController < ApplicationController
 
 	private
 
-	def list_missing_fields 
+	def list_missing_fields
 		missing = []
 		missing << :mobilization_id if not params[:mobilization_id]
-		missing << :goal if not params[:goal] 
-		missing << :name if not params[:name] 
+		missing << :goal if not params[:goal]
+		missing << :name if not params[:name]
 		missing
 	end
 
@@ -61,7 +61,7 @@ class TemplateMobilizationsController < ApplicationController
 		else
 			skip_authorization
 			render :status=>404, :nothing => true
-		end		
+		end
 	end
 
 	def template_creation mobilization
@@ -82,7 +82,7 @@ class TemplateMobilizationsController < ApplicationController
 					template_widget.save!
 				end
 			end
-		end	
+		end
 		template_mobilization
 	end
 end
