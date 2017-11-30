@@ -10,6 +10,7 @@ class Widgets::FillController < ApplicationController
     result = {}
     if @widget.kind == 'pressure'
       @activist_pressure = ActivistPressure.new(activist_pressure_params)
+      @activist_pressure.cached_community_id = @widget.try(:mobilization).try(:community_id)
       @activist_pressure.firstname = firstname
       @activist_pressure.lastname = lastname
       @activist_pressure.mail = mail

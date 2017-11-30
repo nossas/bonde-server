@@ -11,6 +11,7 @@ RSpec.describe Communities::PayableDetailsController, type: :controller do
   let(:donation) do
     Donation.make!(
       widget: widget,
+      cached_community_id: community.id,
       amount: 1000,
       subscription: true,
       subscription_id: 123,
