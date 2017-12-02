@@ -2,7 +2,7 @@ class Invitation < ActiveRecord::Base
   include Rails.application.routes.url_helpers
 
   attr_readonly :community_id, :user_id, :email, :code, :role, :expires
- 
+
   validates :community_id, :user_id, :email, :role, :expires, presence: true
   validates :code, uniqueness: { scope: [:community_id] }
 
