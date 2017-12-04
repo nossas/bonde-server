@@ -3,7 +3,7 @@ class CommunitiesController < ApplicationController
 
   include Pundit
   include PagarmeHelper
-  
+
   before_action :load_community, only: [:list_mobilizations, :resync_mailchimp]
 
   after_action :verify_authorized, except: [:index, :list_mobilizations, :resync_mailchimp]
@@ -27,7 +27,7 @@ class CommunitiesController < ApplicationController
     if not @community.validate
       render json: @community.errors, :status => 400
     else
-      Community.transaction do 
+      Community.transaction do
         @community.save!
         create_role
         render json: @community, serializer: CommunitySerializer
@@ -104,7 +104,7 @@ class CommunitiesController < ApplicationController
       end
     else
       return404
-    end    
+    end
   end
 
   def accept_invitation
@@ -180,7 +180,7 @@ class CommunitiesController < ApplicationController
     errors << "Tipo de conta inválido. Deve ter até 2 caracteres alfanuméricos." if (bank_account['type'] =~ /^(conta_corrente)|(conta_poupanca)|(conta_corrente_conjunta)|(conta_poupanca_conjunta)$/).nil?
     errors << "Número de documento inválido. Deve ter 11 ou 14 dígitos" if (bank_account['document_number'] =~ /^\d{11}(\d{3})?$/).nil?
     if errors.count > 0
-      raise ArgumentError.new errors 
+      raise ArgumentError.new errors
     end
   end
 
@@ -206,7 +206,7 @@ class CommunitiesController < ApplicationController
     render :status =>status, :nothing => true
   end
 
-  def return404 
+  def return404
     skip_authorization
     skip_policy_scope
     render :status =>404, :nothing => true
