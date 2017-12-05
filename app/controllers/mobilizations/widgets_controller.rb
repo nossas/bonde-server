@@ -21,7 +21,6 @@ class Mobilizations::WidgetsController < ApplicationController
     authorize @widget
 
     if @widget.update!(widget_params)
-      SubscriptionService.create_plans(@widget) if @widget.recurring? && @widget.donation?
       render json: @widget
     else
       render json: @widget.errors, status: :unprocessable_entity
