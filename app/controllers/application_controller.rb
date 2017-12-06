@@ -29,26 +29,13 @@ class ApplicationController < ActionController::API
 
   def pagarme_error(error)
     Raven.capture_exception(error) unless Rails.env.test?
-    match = error.message.match(/^(\d{3})\s(.*)$/)
-    error_messages = nil
-
-    if match
-      error_messages = [get_error(match[1].to_i)]
-    elsif error.try(:errors)
-      error_messages = error.errors.map{|e| e.message}
-    elsif error.try(:error)
-      error_messages = error.error.message
-    else
-      error_messages = error.message
-    end
-
-    render json: { errors: [ "Pagarme: #{error_messages} #{ENV['PAGARME_API_KEY']}" ] }, status: :internal_server_error
+    render json: { errors: error.to_json }, status: :internal_server_error
   end
 
   def mailchimpable_exception(exception)
     unless exception.message =~ /.*title="Member Exists".*/
       Raven.capture_message("Erro ao gravar usuário na lista:\nEmail: #{email}\nMergeVars: #{merge_vars.to_json unless merge_vars.nil?}\nOptions: #{options.to_json}\n#{exception}") unless Rails.env.test?
-      logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{exception}") 
+      logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{exception}")
     end
   end
 
