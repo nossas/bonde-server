@@ -1,10 +1,11 @@
 pipeline:
   unit-tests:
-    image: alpine:3.5
+    image: alpine:3.6
     commands:
+      - echo 'http://dl-cdn.alpinelinux.org/alpine/v3.5/main' >> /etc/apk/repositories
       - apk update
       - apk upgrade
-      - apk --update add --virtual build_deps postgresql-dev libxml2-dev libxslt-dev imagemagick imagemagick-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
+      - apk --update add --virtual build_deps postgresql-dev libxml2-dev libxslt-dev imagemagick=6.9.6.8-r1 imagemagick-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
       - apk --update add ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
       - echo "America/Sao_Paulo" > /etc/timezone
