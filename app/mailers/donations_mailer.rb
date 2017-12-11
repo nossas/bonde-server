@@ -10,8 +10,7 @@ class DonationsMailer < ApplicationMailer
       email_address = ws['sender_email'] ? ws['sender_email'] : user.email
       subject = ws['email_subject'] ? ws['email_subject'] : "[#{@mobilization.name}] Obrigada por doar!"
 
-      # from_address = sender ? "#{sender} <#{email_address}>" : email_address
-      from_address = "suporte@bonde.org"
+      from_address = sender ? "#{sender} <#{email_address}>" : email_address
 
       headers['X-SMTPAPI'] = %#{
         "filters": {
