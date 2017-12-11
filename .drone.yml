@@ -30,7 +30,7 @@ pipeline:
   deploy-rancher-staging:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: staging/api-v1
+    service: bonde-staging/api-v1
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
