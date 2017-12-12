@@ -27,7 +27,7 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging:
+  deploy-rancher-staging-server:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     service: staging/server
@@ -39,7 +39,7 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging:
+  deploy-rancher-staging-mailers:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     service: staging/server-mailers
@@ -51,7 +51,7 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging:
+  deploy-rancher-staging-mailchimp:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     service: staging/server-worker
