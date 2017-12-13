@@ -33,7 +33,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_pressure_email
-    self.mail[:cc].each do |recipient| 
+    self.mail[:cc].each do |recipient|
       mail = self.mail.dup
       mail[:cc] = recipient
       ActivistPressureMailer.pressure_email(self.id, mail).deliver_later

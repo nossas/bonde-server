@@ -1,6 +1,6 @@
 class Community < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
-  
+
   has_many :payable_transfers
   has_many :payable_details
   has_many :donation_reports
@@ -39,7 +39,7 @@ class Community < ActiveRecord::Base
     @subscription_payables_to_transfer ||= payable_details.is_paid.from_subscription.over_limit_to_transfer
   end
 
-  def import_hosted_zones 
+  def import_hosted_zones
     aws_hosted_zones = DnsService.new.list_hosted_zones
 
     zones = self.mobilizations.
@@ -77,7 +77,7 @@ class Community < ActiveRecord::Base
     problematic_zones
   end
 
-  def export_hosted_zones 
+  def export_hosted_zones
     dns_hosted_zones.each do |dns_hosted_zone|
       dns_hosted_zone.create_hosted_zone_on_aws unless dns_hosted_zone.hosted_zone_id
     end
@@ -85,14 +85,14 @@ class Community < ActiveRecord::Base
 
   def import_aws_records
     dns_hosted_zones.each do |dns_hosted_zone|
-      
+
       if dns_hosted_zone.hosted_zone_id
         list_records = DnsService.new.list_resource_record_sets dns_hosted_zone.hosted_zone_id
         list_records.each do |aws_record|
           aws_record_name = eval(%Q("#{aws_record.name.gsub(/\.$/, '')}"))
-          # first, we create a dns_record for each 
+          # first, we create a dns_record for each
           if dns_hosted_zone.dns_records.where("name = ? and record_type = ?", aws_record_name, aws_record.type).count == 0
-            dns_hosted_zone.dns_records.create!(name: aws_record_name, record_type: aws_record.type, 
+            dns_hosted_zone.dns_records.create!(name: aws_record_name, record_type: aws_record.type,
                value: value(aws_record), ttl: aws_record.ttl, ignore_syncronization: true) unless value(aws_record).empty?
           end
         end
@@ -107,10 +107,10 @@ class Community < ActiveRecord::Base
   end
 
   def invite_member email, inviter, role
-    invitation = Invitation.create email: email, community: self, user: inviter, expires: (DateTime.now + 3.days), role: role    
+    invitation = Invitation.create email: email, community: self, user: inviter, expires: (DateTime.now + 3.days), role: role
 
     if invitation.valid?
-      invitation.invitation_email 
+      invitation.invitation_email
     elsif invitation.code.present? && Invitation.where(code: invitation.code).exists?
       invitation = Invitation.find_by code: invitation.code
       invitation.invitation_email if invitation.present?

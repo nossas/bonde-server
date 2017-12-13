@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resources :form_entries, controller: 'mobilizations/form_entries', only: [:create, :index]
     resources :donations, controller: 'mobilizations/donations', only: [:create, :index]
   end
-  
+
   resources :template_mobilizations, only: [:index, :destroy, :create], path: '/templates' do
   end
 
