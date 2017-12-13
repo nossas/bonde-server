@@ -43,7 +43,7 @@ class UsersController < ApplicationController
       user.update_attributes password: pass
       user.reload
 
-      Notification.notify! user, :bonde_password_retrieve, { 
+      Notification.notify! user, :bonde_password_retrieve, {
         new_password: pass,
         user: user
       }

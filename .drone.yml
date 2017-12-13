@@ -28,10 +28,34 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging:
+  deploy-rancher-staging-server:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     service: staging/server
+    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+  deploy-rancher-staging-mailers:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: staging/server-mailers
+    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+  deploy-rancher-staging-mailchimp:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: staging/server-worker
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
