@@ -61,7 +61,8 @@ class MailchimpSyncWorker
   def update_status record
     record.update_columns(
       mailchimp_syncronization_at: DateTime.now,
-      synchronized: true
+      synchronized: true,
+      mailchimp_syncronization_error_reason: nil
     )
   end
 end
