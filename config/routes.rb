@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'root#index'
   post '/postbacks' => 'postbacks#create', as: :create_postback
   resources :notifications, only: [:show]
   resources :mobilizations, only: [:index, :create, :update] do
