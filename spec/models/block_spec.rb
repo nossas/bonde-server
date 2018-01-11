@@ -51,14 +51,14 @@ RSpec.describe Block, type: :model do
       expect(block4.position).to eq 2
       block1.update position: 2
       expect(block1.reload.position).to eq 2
-      expect(block2.reload.position).to eq 1
+      expect(block2.reload.position).to eq 3
       expect(block3.reload.position).to eq 1
       expect(block4.reload.position).to eq 2
     end
   end
 
   context "create block from TemplateBlock object" do
-    before do 
+    before do
       @template = TemplateBlock.make!
       @mobilization = Mobilization.make!
     end
