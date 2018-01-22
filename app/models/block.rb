@@ -5,7 +5,7 @@ class Block < ActiveRecord::Base
   accepts_nested_attributes_for :widgets
 
   before_validation :set_position
-  before_save :switch_position
+  after_save :switch_position
 
   after_save do
     mobilization.touch if mobilization.present?
@@ -17,13 +17,14 @@ class Block < ActiveRecord::Base
 
   def set_position
     unless self.position.present? || self.mobilization.nil?
-      self.position = (self.mobilization.blocks.maximum(:position) || 0) + 1
+      self.position = (self.mobilization.blocks.where(deleted_at: nil).maximum(:position) || 0) + 1
     end
   end
 
   def switch_position
-    if self.position_changed?
-      self.mobilization.blocks.where(position: position_change[1]).update_all(position: position_change[0])
+    block = self.mobilization.blocks.where("position >= ? and deleted_at is null and id <> ?", self.position, self.id).order(:position).first
+    if block.present?
+      block.update_attributes(position: block.position + 1)
     end
   end
 
