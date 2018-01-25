@@ -18,10 +18,9 @@ pipeline:
       event: [push, tag]
 
   db-tests:
-    image: comum/pgtap
+    image: nossas/docker-pgtap 
     commands:
-      - ./test.sh -h database -u bonde -w 3x4mpl3 -d hub_api_test -t './spec/**/**/*.sql'
-      #- PGPASSWORD=3x4mpl3 pg_prove -h database -p 5432 -h database -U bonde -d hub_api_test ./spec/**/**/*.sql
+      - /test.sh -h database -u bonde -w 3x4mpl3 -d hub_api_test -t './spec/**/**/*.sql'
 
   publish-docker-staging:
     image: plugins/docker
