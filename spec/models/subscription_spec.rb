@@ -225,6 +225,7 @@ RSpec.describe Subscription, type: :model do
             expect(SubscriptionWorker).not_to receive(:perform_at).with(anything, subscription.id).and_call_original
             charged = subject
             expect(charged.transaction_id).to eq("1235")
+            expect(charged.cached_community_id).to eq(subscription.community.id)
             expect(charged.transaction_status).to eq('waiting_payment')
             expect(subscription.current_state).to eq('pending')
             expect(SubscriptionWorker.jobs.size).to eq(0)
@@ -257,6 +258,7 @@ RSpec.describe Subscription, type: :model do
             charged = subject
             expect(charged.transaction_id).to eq("1235")
             expect(charged.transaction_status).to eq('processing')
+            expect(charged.cached_community_id).to eq(subscription.community.id)
             expect(subscription.current_state).to eq('pending')
             expect(SubscriptionWorker.jobs.size).to eq(0)
             expect(SubscriptionWorker.jobs.any?{ |j| j['args'][0] == subscription.id }).to eq(false)
@@ -275,6 +277,7 @@ RSpec.describe Subscription, type: :model do
             charged = subject
             expect(charged.transaction_id).to eq("1235")
             expect(charged.transaction_status).to eq('paid')
+            expect(charged.cached_community_id).to eq(subscription.community.id)
             expect(subscription.current_state).to eq('paid')
             expect(SubscriptionWorker.jobs.size).to eq(1)
             expect(SubscriptionWorker.jobs.any?{ |j| j['args'][0] == subscription.id }).to eq(true)
@@ -304,6 +307,7 @@ RSpec.describe Subscription, type: :model do
             expect(SubscriptionWorker).to receive(:perform_at).with(anything, subscription.id, kind_of(Numeric))
             charged = subject
             expect(charged.transaction_id).to eq("1235")
+            expect(charged.cached_community_id).to eq(subscription.community.id)
             expect(charged.transaction_status).to eq('refused')
             expect(subscription.current_state).to eq('unpaid')
           end

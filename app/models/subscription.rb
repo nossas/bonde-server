@@ -83,6 +83,7 @@ class Subscription < ActiveRecord::Base
     if !canceled? && !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
       donation = donations.create(
         widget_id: widget.id,
+        cached_community_id: community.id,
         payment_method: payment_method,
         amount: amount,
         email: activist.email,
