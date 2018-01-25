@@ -20,7 +20,7 @@ pipeline:
   db-tests:
     image: comum/pgtap
     commands:
-      - PGPASSWORD=3x4mpl3 pg_prove -h database -p 5432 -h database -U bonde -d hub_api_test ./spec/**/*.sql
+      - PGPASSWORD=3x4mpl3 pg_prove -h database -p 5432 -h database -U bonde -d hub_api_test ./spec/**/**/*.sql
 
   publish-docker-staging:
     image: plugins/docker
