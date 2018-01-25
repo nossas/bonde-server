@@ -1,7 +1,7 @@
 require './app/services/balance_operations_sync_service'
 namespace :recipients do
   desc 'sync over all waiting funds balance operations'
-  task sync_balance_operations: :environment do
+  task sync_waiting_payment_balance_operations: :environment do
     Recipient.find_each do |recipient|
       begin
         operations_sync = BalanceOperationSyncService.new(recipient)
@@ -13,7 +13,7 @@ namespace :recipients do
   end
 
   desc 'sync over all availables balance operations'
-  task sync_balance_operations: :environment do
+  task sync_availables_balance_operations: :environment do
     Recipient.find_each do |recipient|
       begin
         operations_sync = BalanceOperationSyncService.new(recipient)
@@ -25,7 +25,7 @@ namespace :recipients do
   end
 
   desc 'sync over all transferred balance operations'
-  task sync_balance_operations: :environment do
+  task sync_transferred_balance_operations: :environment do
     Recipient.find_each do |recipient|
       begin
         operations_sync = BalanceOperationSyncService.new(recipient)
