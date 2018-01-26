@@ -1,5 +1,5 @@
 BEGIN;
-    SELECT plan(10);
+    SELECT plan(9);
 
     -- check table presence
     SELECT has_table('public'::name, 'form_entries'::name);
