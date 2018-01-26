@@ -17,6 +17,11 @@ pipeline:
     when:
       event: [push, tag]
 
+  db-tests:
+    image: nossas/docker-pgtap 
+    commands:
+      - /test.sh -h database -u bonde -w 3x4mpl3 -d hub_api_test -t './spec/**/**/*.sql'
+
   publish-docker-staging:
     image: plugins/docker
     repo: nossas/bonde-server

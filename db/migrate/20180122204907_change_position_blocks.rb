@@ -1,4 +1,4 @@
-class ChangeBlocksPositionsOrder < ActiveRecord::Migration
+class ChangePositionBlocks < ActiveRecord::Migration
   def change
     Mobilization.find_each do |mobi|
       if mobi.blocks.where(position: nil).count >= 1
@@ -7,6 +7,7 @@ class ChangeBlocksPositionsOrder < ActiveRecord::Migration
         mobi.blocks.where("deleted_at is null and position is null").order(:id).each do |block|
           block.position = last_block.position + x
           block.save
+          puts "Block: #{block.id} UPDATED"
           x + 1
         end
       end
