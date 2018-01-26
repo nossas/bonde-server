@@ -21,7 +21,7 @@ BEGIN;
        'public', 'activists', 'id');
 
     -- check indexes
-    SELECT has_index('public', 'form_entries', 'idx_form_entries_activist_id', 'activist_id', 'index on column');
+    -- SELECT has_index('public', 'form_entries', 'idx_form_entries_activist_id', 'activist_id', 'index on column');
     SELECT has_index('public', 'form_entries', 'index_form_entries_on_widget_id', 'widget_id', 'index on column');
 
 
