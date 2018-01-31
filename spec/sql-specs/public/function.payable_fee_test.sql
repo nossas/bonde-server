@@ -19,13 +19,17 @@ BEGIN;
                     ),
                     json_build_object(
                         'id', 'payable_id_2_tax',
-                        'fee', 450,
+                        'fee', 45,
                         'amount', 8700
                     )
                 )::jsonb)
                 returning * into _donation;
 
-            return next is(public.payable_fee(_donation), (8700/100.0)::decimal);
+            return next is(
+              public.payable_fee(_donation), 
+              (8700/100.0)::decimal - (45/100.0)::decimal,
+              'should use payable that have fee charged'
+            );
         end;
     $$;
     select * from test_donations_with_split();
@@ -40,7 +44,7 @@ BEGIN;
                 values (1000, now(), now(), json_build_array(
                     json_build_object(
                         'id', 'payable_id_1',
-                        'fee', 0,
+                        'fee', 45,
                         'amount', 1000
                     )
                 )::jsonb)
@@ -48,7 +52,7 @@ BEGIN;
 
             return next is(
                 public.payable_fee(_donation),
-                ((1000*0.13)/100.0)::decimal,
+                ((1000*0.13)/100.0)::decimal - (45/100.0),
                 'shoul calculate 13% of tax over donation amount'
             );
 
