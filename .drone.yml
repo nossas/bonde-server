@@ -85,7 +85,7 @@ pipeline:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server
+    service: bonde/server
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
@@ -98,7 +98,7 @@ pipeline:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server-mailers
+    service: bonde/server-mailers
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
@@ -111,7 +111,7 @@ pipeline:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server-worker
+    service: bonde/server-worker
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
@@ -124,7 +124,7 @@ pipeline:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server-crontab
+    service: bonde/server-crontab
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
