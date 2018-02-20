@@ -49,8 +49,10 @@ class Notification < ActiveRecord::Base
   end
 
   def deliver_without_queue
-    mail.deliver_now!
-    update_column(:delivered_at, DateTime.now)
+    transaction do
+      update_column(:delivered_at, DateTime.now)
+      mail.deliver_now!
+    end
   end
 
   def mail
