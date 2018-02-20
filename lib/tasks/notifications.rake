@@ -534,4 +534,47 @@ Não foi possível processar seu cartão de crédito referente a doação efetua
 
 
   end
+
+  desc 'accounts notifications'
+  task accounts_templates: :environment do
+    puts 'looking for reset_password_instructions template'
+    sub_template = (%{
+<tr>
+    <td style="height:134px;position:relative;">
+        <div style="background-image:url();background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+            <tr>
+                <td>
+Olá {{user.first_name}}
+<br/><br/>
+Você requisitou uam troca de senha para o bonde, clique no link abaixo para trocar sua senha:
+<br/><br/>
+
+                  <a href="http://app.bonde.org/?reset_password_token={{user.reset_password_token}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
+                    TROCAR SENHA
+                  </a>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>})
+    label = 'reset_password_instructions'
+    subject = 'Instruções para alteração de senha'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: sub_template,
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: sub_template
+      )
+    end
+  end
 end
