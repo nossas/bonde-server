@@ -44,6 +44,10 @@ class Notification < ActiveRecord::Base
     community.try(:email_template_from)
   end
 
+  def deliver
+    deliver! unless delivered_at.present?
+  end
+
   def deliver!
     NotificationWorker.perform_async(self.id)
   end
