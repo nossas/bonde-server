@@ -28,6 +28,16 @@ class AddCreateCommunityToPostgraphql < ActiveRecord::Migration
                       now()
                   ) returning * into _community;
 
+              -- create user x community after create community
+              insert into public.community_users(user_id, community_id, role, created_at, updated_at)
+                  values(
+                      postgraphql.current_user_id(),
+                      _community.id,
+                      1,
+                      now(),
+                      now()
+                  );
+
               return row_to_json(_community);
           end;
       $function$
