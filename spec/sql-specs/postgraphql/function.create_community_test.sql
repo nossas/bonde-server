@@ -1,6 +1,6 @@
 begin;
-  insert into public.users(id, email, provider, uid, encrypted_password, admin, locale) values
-    (1, 'foo@foo.com', 'bonde', '1', crypt('123456', gen_salt('bf', 9)), false, 'pt-BR');
+  insert into public.users(id, email, provider, uid, encrypted_password, admin) values
+    (1, 'foo@foo.com', 'bonde', '1', crypt('123456', gen_salt('bf', 9)), false);
 
   select plan(8);
 
