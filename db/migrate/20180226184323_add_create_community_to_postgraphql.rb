@@ -46,6 +46,8 @@ class AddCreateCommunityToPostgraphql < ActiveRecord::Migration
       grant execute on function postgraphql.create_community(json) to common_user, admin, anonymous;
       grant insert, select on public.communities to common_user, admin;
       grant usage on sequence communities_id_seq to common_user, admin;
+      grant insert, select  on public.community_users to common_user, admin;
+      grant usage on sequence community_users_id_seq to common_user, admin;
     }
   end
 
