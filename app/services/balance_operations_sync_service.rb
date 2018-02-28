@@ -4,7 +4,7 @@ class BalanceOperationSyncService
   end
 
   def sync_balance_operations page = 1, peer_page = 50, status
-    balance_ops = gateway_recipient.balance_operations page, peer_page, status
+    balance_ops = gateway_recipient.balance_operations({page: page, peer_page: peer_page, status: status})
 
     if balance_ops.size > 1
 
