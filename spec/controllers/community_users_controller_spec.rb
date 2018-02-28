@@ -81,6 +81,11 @@ RSpec.describe CommunityUsersController, type: :controller do
         expect(response.body).to include "\"user_id\":#{adding_user.id}"
         expect(response.body).to include '"role":2'
       end
+
+      it 'should not duplicate community from user' do
+        c = CommunityUser.create community_id: community.id , user: user, role: 1
+        expect(c.valid?).to be_falsey
+      end
     end
 
     context 'admin valid call' do
