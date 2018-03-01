@@ -39,7 +39,7 @@ RSpec.describe "Mobilizations", type: :request do
     it {expect(response).to have_http_status(200)}
 
     it {expect(response.body).to include('my-little-slug')}
-    
+
     it {expect(response.body).to include('www.mydomain.org')}
   end
 
