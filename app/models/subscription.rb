@@ -79,6 +79,10 @@ class Subscription < ActiveRecord::Base
     current_state == 'canceled'
   end
 
+  def unpaid?
+    current_state == 'unpaid'
+  end
+
   def charge_next_payment card_hash = nil
     if !canceled? && !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
       donation = donations.create(
