@@ -240,4 +240,19 @@ class Subscription < ActiveRecord::Base
     return_attributes
   end
 
+  def new_card_from_hash card_hash
+    return unless card_hash.present?
+
+    PagarMe::Card.create(card_hash: card_hash)
+  rescue Exception => e
+    self.errors.add(:card_data, e.message)
+  end
+  def new_customer_from_customer_data data
+    return unless data.present?
+
+    PagarMe::Customer.create(data)
+  rescue Exception => e
+    self.errors.add(:customer_data, e.message)
+  end
+
 end
