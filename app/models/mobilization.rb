@@ -8,7 +8,8 @@ class Mobilization < ActiveRecord::Base
   include Filterable
 
   validates :name, :user_id, :goal, presence: true
-  validates :slug, presence: :true, uniqueness: true, length: {maximum: 63}
+  validates :slug, presence: :true, uniqueness: true
+  validates_length_of :slug, maximum: 63
   validates :custom_domain, uniqueness: true, allow_nil: true
 
   belongs_to :user
@@ -49,7 +50,8 @@ class Mobilization < ActiveRecord::Base
   private
 
   def slugify
-    self.slug = "#{self.class.count}-#{self.name.try(:parameterize)}" unless self.slug.present?
+    self.slug = "#{self.class.count+1}-#{self.name.try(:parameterize)}" if ((Mobilization.where(name: self.name).count > 0 and self.id.present? and self.id != Mobilization.find_by(name: self.name).id ) or self.slug.nil?)
+
   end
 
   def set_twitter_share_text
