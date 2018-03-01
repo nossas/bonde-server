@@ -20,6 +20,24 @@ class Subscription < ActiveRecord::Base
       association_name: :transitions)
   end
 
+  def handle_update attrs
+    _card = attrs[:card_hash].present? ? new_card_from_hash(attrs[:card_hash]) : nil
+    _customer = attrs[:customer_data].present? ? new_customer_from_customer_data(attrs[:customer_data]) : nil
+
+    unless self.errors.present?
+      self.update_attributes(
+        amount: attrs[:amount] || amount,
+        schedule_next_charge_at: attrs[:process_at].presence || schedule_next_charge_at,
+        card_data: _card.try(:to_json) || card_data,
+        customer_data: _customer.try(:to_json) || customer_data,
+        gateway_customer_id: _customer.try(:id) || gateway_customer_id
+      )
+    else
+      false
+    end
+  end
+
+
   def reached_retry_limit?
     last_transition_created = last_transition.try(:created_at) || DateTime.now
     current_state == 'unpaid' && (last_transition_created - DateTime.now).abs > community.subscription_dead_days_interval.days
