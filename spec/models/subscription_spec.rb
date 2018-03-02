@@ -320,6 +320,34 @@ RSpec.describe Subscription, type: :model do
             gateway_data: { customer: { id: '12345' } }.to_json
           )
         end
+
+        context 'when schedule_next_charge_at is defined' do
+          let(:transaction) do
+            double(
+              {
+                id: '1235',
+                status: 'processing',
+                payables: [{id: 'x'}, {id: 'y'}],
+                card: { id: 'card_xpto_id'},
+                charge: true,
+                customer: double(
+                  id: 12345
+                )
+              })
+          end
+          before do
+            expect(PagarMe::Transaction).to receive(:new).with(pagarme_attributes).and_return(transaction)
+            subscription.update_column(:schedule_next_charge_at, 2.days.ago)
+          end
+
+          it 'should clean schedule_next_charge_at' do
+            expect(subscription.schedule_next_charge_at.nil?).to eq(false)
+            charged = subject
+            subscription.reload
+            expect(subscription.schedule_next_charge_at).to eq(nil)
+          end
+        end
+
         context "and payment is waiting_payment" do
           let(:transaction) do
             double(

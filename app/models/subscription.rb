@@ -138,8 +138,12 @@ class Subscription < ActiveRecord::Base
         gateway_data: transaction.to_json,
         payables: transaction.payables.to_json
       )
-      self.update_attributes(card_data: transaction.card.to_json) if transaction.card.present?
-      self.update_attribute(:gateway_customer_id, transaction.customer.id) if transaction.customer.present?
+      self.update_attributes(
+        card_data: transaction.try(:card).try(:to_json) || self.card_data,
+        schedule_next_charge_at: nil,
+        gateway_customer_id: transaction.try(:customer).try(:id) || self.gateway_customer_id,
+        customer_data: transaction.try(:customer).try(:to_json) || self.customer_data
+      )
       process_status_changes(transaction.status, transaction.try(:to_h))
 
       donation
