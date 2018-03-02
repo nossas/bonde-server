@@ -205,6 +205,16 @@ RSpec.describe Subscription, type: :model do
   end
 
   describe "next_transaction_charge_date" do
+    context "when subscription have schedule_next_charge_at defined" do
+      let(:date) { 2.days.from_now }
+
+      before do
+        subscription.update_column(:schedule_next_charge_at, date)
+      end
+      subject { subscription.next_transaction_charge_date }
+      it { is_expected.to eq(date) }
+    end
+
     context "when subscriptions is new without donations" do
       subject { subscription.next_transaction_charge_date.to_date }
       it { is_expected.to eq(DateTime.now.to_date) }

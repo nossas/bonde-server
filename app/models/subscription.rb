@@ -48,6 +48,8 @@ class Subscription < ActiveRecord::Base
   end
 
   def next_transaction_charge_date
+    return schedule_next_charge_at if schedule_next_charge_at.present?
+
     if last_charge
       return (last_charge.created_at + 1.month)
     end
@@ -232,7 +234,7 @@ class Subscription < ActiveRecord::Base
     subscribe_to_list(self.activist.email, subscribe_attributes)
     widget.create_mailchimp_donators_segments
     widget.reload
-    
+
     email_status = status_on_list(activist.email)
     subscribe_to_segment(widget.mailchimp_recurring_active_segment_id, activist.email) if email_status == :subscribed
   end
