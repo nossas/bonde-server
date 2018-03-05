@@ -25,6 +25,7 @@ class Subscription < ActiveRecord::Base
     _customer = attrs[:customer_data].present? ? new_customer_from_customer_data(attrs[:customer_data]) : nil
 
     unless self.errors.present?
+      Rails.logger.info "None errors found when updating subscription new data #{_card.inspect} | #{_customer.inspect}"
       self.update_attributes(
         amount: attrs[:amount] || amount,
         schedule_next_charge_at: attrs[:process_at].presence || schedule_next_charge_at,
