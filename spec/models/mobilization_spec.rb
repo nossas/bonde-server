@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Mobilization, type: :model do
-  subject { create :mobilization, slug: nil }
+  subject { create :mobilization }
 
   it { should belong_to :user }
 
@@ -15,10 +15,10 @@ RSpec.describe Mobilization, type: :model do
 
   it { should validate_length_of :twitter_share_text }
 
-  it { should validate_uniqueness_of :slug }
+  # it { should validate_uniqueness_of :slug }
   it { should validate_uniqueness_of :custom_domain }
 
-  it { should validate_length_of(:slug).is_at_most(63) }
+  it { should validate_length_of(:slug).is_at_most(63).with_message("Campo é grande demais.(No máximo 63)") }
 
   let(:community) { create(:community) }
 
