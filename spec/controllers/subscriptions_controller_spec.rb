@@ -141,7 +141,7 @@ RSpec.describe SubscriptionsController, type: :controller do
 
       it 'should fill schedule_next_charge_at on subscription' do
         subscription.reload
-        expect(subscription.schedule_next_charge_at).to eq(process_at)
+        expect(subscription.schedule_next_charge_at.to_date).to eq(process_at.to_date)
         json_response = ActiveSupport::JSON.decode(response.body)
         expect(response.status).to eq(200)
         expect(json_response["id"]).to eq(subscription.id)
