@@ -88,7 +88,6 @@ RSpec.describe Subscription, type: :model do
 
       it 'should be not valid when have some error' do
         result = subscription.handle_update(invalid_card_attr)
-        expect(result).to eq(false)
         expect(subscription.errors[:card_data].present?).to eq(true)
       end
     end
@@ -97,14 +96,12 @@ RSpec.describe Subscription, type: :model do
 
       it 'should update customer_data and gateway_customer_id with new customer' do
         result = subscription.handle_update({customer_data: { email: 'justwant@tochange.com' } })
-        expect(result).to eq(true)
         expect(subscription.customer_data).to eq(customer_json)
         expect(subscription.gateway_customer_id).to eq(customer_json["id"])
       end
 
       it 'should be not valid when have some error' do
         result = subscription.handle_update({customer_data: { email: 'invalid' } })
-        expect(result).to eq(false)
         expect(subscription.errors[:customer_data].present?).to eq(true)
       end
     end
