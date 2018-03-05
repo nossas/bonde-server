@@ -32,9 +32,9 @@ class Subscription < ActiveRecord::Base
         customer_data: _customer.try(:to_json) || customer_data,
         gateway_customer_id: _customer.try(:id) || gateway_customer_id
       )
-    else
-      false
     end
+
+    self
   end
 
 
@@ -232,6 +232,8 @@ class Subscription < ActiveRecord::Base
         }
       )
     end
+
+    global
   end
 
   def mailchimp_add_active_donators
