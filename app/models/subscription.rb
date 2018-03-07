@@ -20,6 +20,25 @@ class Subscription < ActiveRecord::Base
       association_name: :transitions)
   end
 
+  def handle_update attrs
+    _card = attrs[:card_hash].present? ? new_card_from_hash(attrs[:card_hash]) : nil
+    _customer = attrs[:customer_data].present? ? new_customer_from_customer_data(attrs[:customer_data]) : nil
+
+    unless self.errors.present?
+      Rails.logger.info "None errors found when updating subscription new data #{_card.inspect} | #{_customer.inspect}"
+      self.update_attributes(
+        amount: attrs[:amount] || amount,
+        schedule_next_charge_at: attrs[:process_at].presence || schedule_next_charge_at,
+        card_data: _card.try(:to_json) || card_data,
+        customer_data: _customer.try(:to_json) || customer_data,
+        gateway_customer_id: _customer.try(:id) || gateway_customer_id
+      )
+    end
+
+    self
+  end
+
+
   def reached_retry_limit?
     last_transition_created = last_transition.try(:created_at) || DateTime.now
     current_state == 'unpaid' && (last_transition_created - DateTime.now).abs > community.subscription_dead_days_interval.days
@@ -30,6 +49,8 @@ class Subscription < ActiveRecord::Base
   end
 
   def next_transaction_charge_date
+    return schedule_next_charge_at if schedule_next_charge_at.present?
+
     if last_charge
       return (last_charge.created_at + 1.month)
     end
@@ -79,6 +100,10 @@ class Subscription < ActiveRecord::Base
     current_state == 'canceled'
   end
 
+  def unpaid?
+    current_state == 'unpaid'
+  end
+
   def charge_next_payment card_hash = nil
     if !canceled? && !has_pending_payments? && next_transaction_charge_date <= DateTime.now && customer
       donation = donations.create(
@@ -114,8 +139,12 @@ class Subscription < ActiveRecord::Base
         gateway_data: transaction.to_json,
         payables: transaction.payables.to_json
       )
-      self.update_attributes(card_data: transaction.card.to_json) if transaction.card.present?
-      self.update_attribute(:gateway_customer_id, transaction.customer.id) if transaction.customer.present?
+      self.update_attributes(
+        card_data: transaction.try(:card).try(:to_json) || self.card_data,
+        schedule_next_charge_at: nil,
+        gateway_customer_id: transaction.try(:customer).try(:id) || self.gateway_customer_id,
+        customer_data: transaction.try(:customer).try(:to_json) || self.customer_data
+      )
       process_status_changes(transaction.status, transaction.try(:to_h))
 
       donation
@@ -204,13 +233,15 @@ class Subscription < ActiveRecord::Base
         }
       )
     end
+
+    global
   end
 
   def mailchimp_add_active_donators
     subscribe_to_list(self.activist.email, subscribe_attributes)
     widget.create_mailchimp_donators_segments
     widget.reload
-    
+
     email_status = status_on_list(activist.email)
     subscribe_to_segment(widget.mailchimp_recurring_active_segment_id, activist.email) if email_status == :subscribed
   end
@@ -234,6 +265,21 @@ class Subscription < ActiveRecord::Base
     }
     return_attributes[:CITY] = self.activist.city if self.activist and self.activist.city
     return_attributes
+  end
+
+  def new_card_from_hash card_hash
+    return unless card_hash.present?
+
+    PagarMe::Card.create(card_hash: card_hash)
+  rescue Exception => e
+    self.errors.add(:card_data, e.message)
+  end
+  def new_customer_from_customer_data data
+    return unless data.present?
+
+    PagarMe::Customer.create(data)
+  rescue Exception => e
+    self.errors.add(:customer_data, e.message)
   end
 
 end
