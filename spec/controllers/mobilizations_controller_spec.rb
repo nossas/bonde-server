@@ -84,7 +84,7 @@ RSpec.describe MobilizationsController, type: :controller do
 
   describe 'PUT #update' do
     let(:template) { TemplateMobilization.make! }
-    let(:mobilization) { Mobilization.make! user: user1, slug: nil }
+    let(:mobilization) { Mobilization.make! user: user1 }
     let(:saved_mobilization) { Mobilization.find mobilization.id }
 
     context "update an existing Mobilization from an existing template" do

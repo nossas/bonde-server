@@ -44,12 +44,19 @@ class Notification < ActiveRecord::Base
     community.try(:email_template_from)
   end
 
+  def deliver
+    deliver! unless delivered_at.present?
+  end
+
   def deliver!
     NotificationWorker.perform_async(self.id)
   end
 
   def deliver_without_queue
-    mail.deliver_now!
+    transaction do
+      update_column(:delivered_at, DateTime.now)
+      mail.deliver_now!
+    end
   end
 
   def mail
