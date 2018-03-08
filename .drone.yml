@@ -95,7 +95,6 @@ pipeline:
   publish-docker-production:
     image: plugins/docker
     repo: nossas/bonde-server
-    secrets: [ docker_username, docker_password ]
     tags:
       - ${DRONE_TAG##v}
     when:
@@ -159,7 +158,6 @@ pipeline:
     when:
       status: success
       branch: tag
-
 
   # deploy:
   #   image: appleboy/drone-ssh
