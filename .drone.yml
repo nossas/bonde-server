@@ -160,6 +160,7 @@ pipeline:
       status: success
       branch: tag
 
+
   # deploy:
   #   image: appleboy/drone-ssh
   #   host: ssh.bonde.org
