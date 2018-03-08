@@ -71,6 +71,18 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
+  deploy-rancher-staging-crontab:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: staging/server-crontab
+    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
   publish:
     image: plugins/docker
     repo: nossas/bonde-server
