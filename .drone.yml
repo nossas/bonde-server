@@ -186,6 +186,7 @@ pipeline:
       event: [ push, tag, build, publish, deployment, pull_request ]
       status: [ success, failure ]
 
+
 services:
   database:
     image: postgres:9.6
