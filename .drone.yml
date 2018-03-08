@@ -92,7 +92,7 @@ pipeline:
   deploy-rancher-production-server:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: production/server
+    service: bonde/server
     docker_image: nossas/bonde-server:${DRONE_TAG##v}
     timeout: 360
     confirm: true
@@ -104,7 +104,7 @@ pipeline:
   deploy-rancher-production-mailers:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: production/server-mailers
+    service: bonde/server-mailers
     docker_image: nossas/bonde-server:${DRONE_TAG##v}
     timeout: 360
     confirm: true
@@ -116,7 +116,7 @@ pipeline:
   deploy-rancher-production-mailchimp:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: production/server-worker
+    service: bonde/server-worker
     docker_image: nossas/bonde-server:${DRONE_TAG##v}
     timeout: 360
     confirm: true
@@ -128,7 +128,7 @@ pipeline:
   deploy-rancher-production-crontab:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: production/server-crontab
+    service: bonde/server-crontab
     docker_image: nossas/bonde-server:${DRONE_TAG##v}
     timeout: 360
     confirm: true
