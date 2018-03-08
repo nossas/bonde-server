@@ -49,6 +49,7 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
+
   deploy-staging-mailers:
     image: peloton/drone-rancher
     group: deploying
