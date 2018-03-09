@@ -2,6 +2,8 @@ require "codeclimate-test-reporter"
 require 'codacy-coverage'
 require 'simplecov'
 
+
+
 Codacy::Reporter.start
 CodeClimate::TestReporter.start
 
