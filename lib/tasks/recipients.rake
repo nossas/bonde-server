@@ -1,35 +1,11 @@
 require './app/services/balance_operations_sync_service'
 namespace :recipients do
-  desc 'sync over all waiting funds balance operations'
-  task sync_waiting_payment_balance_operations: :environment do
+  desc 'sync over all balance operations'
+  task sync_balance_operations: :environment do
     Recipient.find_each do |recipient|
       begin
         operations_sync = BalanceOperationSyncService.new(recipient)
-        operations_sync.sync_balance_operations(status = 'waiting_payment')
-      rescue StandardError => e
-        puts e.inspect
-      end
-    end
-  end
-
-  desc 'sync over all availables balance operations'
-  task sync_availables_balance_operations: :environment do
-    Recipient.find_each do |recipient|
-      begin
-        operations_sync = BalanceOperationSyncService.new(recipient)
-        operations_sync.sync_balance_operations(status = 'available')
-      rescue StandardError => e
-        puts e.inspect
-      end
-    end
-  end
-
-  desc 'sync over all transferred balance operations'
-  task sync_transferred_balance_operations: :environment do
-    Recipient.find_each do |recipient|
-      begin
-        operations_sync = BalanceOperationSyncService.new(recipient)
-        operations_sync.sync_balance_operations(status = 'transferred')
+        operations_sync.sync_balance_operations
       rescue StandardError => e
         puts e.inspect
       end
