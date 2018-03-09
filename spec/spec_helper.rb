@@ -1,4 +1,7 @@
 require "codeclimate-test-reporter"
+require 'codacy-coverage'
+
+Codacy::Reporter.start
 CodeClimate::TestReporter.start
 
 RSpec.configure do |config|
