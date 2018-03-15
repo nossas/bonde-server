@@ -47,7 +47,8 @@ class AddCreateCommunityDnsPostgraphql < ActiveRecord::Migration
       GRANT EXECUTE on FUNCTION microservices.create_community_dns(data json) to microservices;
       GRANT INSERT, SELECT on public.dns_hosted_zones to microservices;
       GRANT USAGE ON SEQUENCE dns_hosted_zones_id_seq to microservices;
-    }
+      GRANT SELECT ON TABLE public.communities to microservices;
+        }
   end
 
   def down
