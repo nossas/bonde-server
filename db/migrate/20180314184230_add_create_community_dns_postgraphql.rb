@@ -16,7 +16,7 @@ class AddCreateCommunityDnsPostgraphql < ActiveRecord::Migration
           select * from public.communities c where c.id = ($1->>'community_id')::integer
           into _community;
 
-          if _community.id is null then
+          if _community is null then
               raise 'community_not_found';
           end if;
 
@@ -27,7 +27,8 @@ class AddCreateCommunityDnsPostgraphql < ActiveRecord::Migration
           returning * into _dns_hosted_zone;
 
           -- after create dns_hosted_zone perform route53
-          perform pg_notify('create_route_53_channel', json_build_object(
+          perform pg_notify('route53_channel', json_build_object(
+              'action', 'create_hosted_zone',
               'id', _dns_hosted_zone.id,
               'created_at', _dns_hosted_zone.created_at
           )::text);
@@ -35,15 +36,17 @@ class AddCreateCommunityDnsPostgraphql < ActiveRecord::Migration
           return json_build_object(
               'id', _dns_hosted_zone.id,
               'community_id', _dns_hosted_zone.community_id,
-              'domain_name', _dns_hosted_zone.domain_name
+              'domain_name', _dns_hosted_zone.domain_name,
+              'comment', _dns_hosted_zone.comment,
+              'ns_ok', _dns_hosted_zone.ns_ok
           );
         end;
       $function$;
 
+      GRANT USAGE ON SCHEMA microservices to postgres;
       GRANT EXECUTE on FUNCTION microservices.create_community_dns(data json) to microservices;
       GRANT INSERT, SELECT on public.dns_hosted_zones to microservices;
       GRANT USAGE ON SEQUENCE dns_hosted_zones_id_seq to microservices;
-      GRANT SELECT ON TABLE public.communities to microservices;
     }
   end
 
