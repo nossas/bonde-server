@@ -34,6 +34,7 @@ BEGIN;
     return next is(_dns_response->>'comment', 'comment from domain', 'should comentary from community');
     return next is((_dns_response->>'ns_ok')::boolean, false, 'should ns_ok is null');
 
+    set local role postgres;
   end;
   $$;
   select * from test_create_community_dns();
