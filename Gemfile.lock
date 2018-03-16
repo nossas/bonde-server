@@ -448,6 +448,7 @@ DEPENDENCIES
   sentry-raven
   shoulda-matchers (< 3.0.0)
   sidekiq
+  simplecov
   spring
   statesman (= 2.0.1)
   test_after_commit
