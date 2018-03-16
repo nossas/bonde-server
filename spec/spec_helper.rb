@@ -44,15 +44,3 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!(allow: %r{https://api.codacy.com/2.0/coverage/})
   end
 end
-
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Codacy::Formatter
-])
-
-SimpleCov.start do
-  add_filter '.gems'
-  add_filter 'pkg'
-  add_filter 'spec'
-  add_filter 'vendor'
-end
