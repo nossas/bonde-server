@@ -5,6 +5,13 @@ require 'simplecov'
 Codacy::Reporter.start
 CodeClimate::TestReporter.start
 
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  Codacy::Formatter
+])
+
+SimpleCov.start
+
 RSpec.configure do |config|
   config.before(:each) do
     ENV["JWT_SECRET"]="secret123"
@@ -35,16 +42,4 @@ RSpec.configure do |config|
   config.after(:suite) do
     WebMock.disable_net_connect!(:allow => 'codeclimate.com')
   end
-end
-
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Codacy::Formatter
-])
-
-SimpleCov.start do
-  add_filter '.gems'
-  add_filter 'pkg'
-  add_filter 'spec'
-  add_filter 'vendor'
 end
