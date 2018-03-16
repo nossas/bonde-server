@@ -11,12 +11,8 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   Codacy::Formatter
 ])
 
-SimpleCov.start do
-  add_filter '.gems'
-  add_filter 'pkg'
-  add_filter 'spec'
-  add_filter 'vendor'
-end
+SimpleCov.start
+
 VCR.configure do |config|
   config.hook_into :webmock
   config.allow_http_connections_when_no_cassette = false
