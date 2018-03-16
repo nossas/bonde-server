@@ -40,7 +40,6 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
-
     WebMock.disable_net_connect!(:allow => 'codeclimate.com')
     WebMock.disable_net_connect!(allow: %r{https://api.codacy.com/2.0/coverage/})
   end
