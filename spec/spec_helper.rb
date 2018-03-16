@@ -10,6 +10,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   Codacy::Formatter
 ])
 
+
 SimpleCov.start
 
 RSpec.configure do |config|
