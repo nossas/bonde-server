@@ -56,4 +56,5 @@ group :test do
   gem 'webmock', '2.3.1'
   gem "fakeredis", require: "fakeredis/rspec"
   gem 'simplecov', require: false
+  gem 'vcr'
 end
