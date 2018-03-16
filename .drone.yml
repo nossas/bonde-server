@@ -9,16 +9,18 @@ pipeline:
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
       - echo "America/Sao_Paulo" > /etc/timezone
       - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test
+      - export CODACY_PROJECT_TOKEN=$CODACY_TOKEN
       - psql -c 'create role bonde SUPERUSER LOGIN;' -hdatabase -Upostgres
       - psql -c 'create database hub_api_test;' -hdatabase -Upostgres
       - bundle install
       - rake db:migrate
       - bundle exec rspec spec
+    secrets: [ codacy_token ]
     when:
       event: [push, tag]
 
   db-tests:
-    image: nossas/docker-pgtap 
+    image: nossas/docker-pgtap
     commands:
       - /test.sh -h database -u bonde -w 3x4mpl3 -d hub_api_test -t './spec/**/**/*.sql'
 
