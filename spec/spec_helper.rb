@@ -2,7 +2,6 @@ require "codeclimate-test-reporter"
 require 'codacy-coverage'
 require 'simplecov'
 
-
 Codacy::Reporter.start
 CodeClimate::TestReporter.start
 
@@ -13,13 +12,6 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
 
 SimpleCov.start
 
-VCR.configure do |config|
-  config.hook_into :webmock
-  config.allow_http_connections_when_no_cassette = false
-  config.ignore_hosts 'api.codacy.com'
-end
-
->>>>>>> remove filters for simplecov
 RSpec.configure do |config|
   config.before(:each) do
     ENV["JWT_SECRET"]="secret123"
