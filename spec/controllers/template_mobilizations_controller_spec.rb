@@ -3,19 +3,20 @@ require 'rails_helper'
 RSpec.describe TemplateMobilizationsController, type: :controller do
   before do
     @user1 = User.make!
+    @community = Community.make!
     stub_current_user(@user1)
   end
 
-  context "GET #index" do 
+  context "GET #index" do
     before do
-  	  @template1 = TemplateMobilization.make! user:@user1
-  	  @template2 = TemplateMobilization.make! user:@user1, global: true
-  	  @template3 = TemplateMobilization.make!
+      @template1 = TemplateMobilization.make! user: @user1, community: @community
+      @template2 = TemplateMobilization.make! user: @user1, community: @community
+      @template3 = TemplateMobilization.make! user: @user1
   	  @template4 = TemplateMobilization.make! global: true
     end
     describe "user templates" do
-      it "should return only user's templates" do
-        get :index
+      it "should return only company templates" do
+        get :index, community_id: @community.id
 
         expect(response.body).to include(@template1.name)
         expect(response.body).to include(@template2.name)
@@ -25,12 +26,12 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
     end
 
     describe "with global option" do
-      it "should return only global templates" do
-        get :index, global: 'true'
+      it "should return only current user templates" do
+        get :index
         expect(response.body).to include(@template2.name)
-        expect(response.body).to include(@template4.name)
-        expect(response.body).to_not include(@template1.name)
-        expect(response.body).to_not include(@template3.name)
+        expect(response.body).to include(@template1.name)
+        expect(response.body).to include(@template3.name)
+        expect(response.body).to_not include(@template4.name)
       end
     end
   end
