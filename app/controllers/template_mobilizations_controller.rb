@@ -6,12 +6,12 @@ class TemplateMobilizationsController < ApplicationController
 
   def index
   	template_mobilizations = policy_scope(TemplateMobilization)
-	if params[:global] == 'true'
-		template_mobilizations = template_mobilizations.where('global=true')
-	else
-		template_mobilizations = template_mobilizations.where("user_id = #{current_user.id}")
-	end
-	render json:template_mobilizations
+    if params[:community_id].present?
+      template_mobilizations = template_mobilizations.where(community_id: params[:community_id])
+    else
+      template_mobilizations = template_mobilizations.where("user_id = #{current_user.id}")
+    end
+    render json:template_mobilizations
   end
 
   def destroy
