@@ -4,13 +4,13 @@ RSpec.describe "Communities", type: :request do
   let(:user) { create :user }
 
   describe "GET /communities" do
-    context 'unlogged user' do 
+    context 'unlogged user' do
       before { get communities_path }
-      
+
       it { expect(response).to have_http_status(401) }
     end
 
-    context 'logged user' do 
+    context 'logged user' do
       before do
         stub_current_user(user)
         get communities_path
@@ -23,11 +23,11 @@ RSpec.describe "Communities", type: :request do
   describe 'POST /communities/:community_id/invitation' do
     let(:valid_invitation) { { email: 'ask@me.com', role: 1 } }
 
-    context 'valid invitation' do 
+    context 'valid invitation' do
       let!(:user) { create :user }
       let!(:community) { create :community }
       let(:returned) { JSON.parse(response.body) }
-      
+
       before do
         CommunityUser.create user: user, community: community, role: 1
         stub_current_user user
@@ -36,11 +36,11 @@ RSpec.describe "Communities", type: :request do
       end
 
       it { expect(response).to have_http_status(200) }
-      
+
       it do
         expect(returned['email']).to eq('ask@me.com')
       end
-      
+
       it do
         expect(returned['role']).to eq(1)
       end
@@ -123,6 +123,7 @@ RSpec.describe "Communities", type: :request do
       end
 
       it { expect(response).to have_http_status(302) }
+
       it 'should not create community user' do
         expect(CommunityUser.where(user_id: user.id).count).to eq(0)
       end
