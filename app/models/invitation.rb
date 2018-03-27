@@ -23,7 +23,6 @@ class Invitation < ActiveRecord::Base
 
   def create_community_user
     invited_user = User.find_by_email self.email
-    #invited_user = generate_user unless invited_user
 
     if invited_user
        if invitation_expired?

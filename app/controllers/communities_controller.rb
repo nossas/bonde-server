@@ -114,7 +114,15 @@ class CommunitiesController < ApplicationController
       code: params['code'])
     invitation.create_community_user if invitation
 
-    redirect_to (Rails.env.staging? ? 'https://staging.bonde.org' : 'https://app.bonde.org')
+
+    domain = ENV["APP_DOMAIN"]
+    path = "/register/?invitation_code=#{invitation.code}"
+ 
+    if domain
+      redirect_to "#{domain}#{path}"
+    else
+      redirect_to (Rails.env.staging? ? "https://staging.bonde.org#{path}" : "https://app.bonde.org#{path}")
+    end
   end
 
   def create_invitation
