@@ -114,15 +114,19 @@ class CommunitiesController < ApplicationController
       code: params['code'])
     invitation.create_community_user if invitation
 
-
     domain = ENV["APP_DOMAIN"]
-    path = "/register/?invitation_code=#{invitation.code}"
- 
-    if domain
-      redirect_to "#{domain}#{path}"
+
+    if invitation
+      path = "/register/?invitation_code=#{invitation.code}"
+      if domain
+        redirect_to "#{domain}#{path}"
+      else
+        redirect_to (Rails.env.staging? ? "https://staging.bonde.org#{path}" : "https://app.bonde.org#{path}")
+      end
     else
-      redirect_to (Rails.env.staging? ? "https://staging.bonde.org#{path}" : "https://app.bonde.org#{path}")
+      render json: { msg: 'Invitation not found' }, status: 302
     end
+
   end
 
   def create_invitation
