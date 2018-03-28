@@ -1,4 +1,9 @@
 <div>
-  <h1>Você acaba de ser convidado para ingressar na comunidade <%= @invitation.community.name %></h1>
-  <p>Para aceitar o convite, basta acessar o link <%= link_to 'aqui', @invitation.link, target: 'blank' %></p>
+  <p>Olá! Você acabou de ser convidado(a) a entrar na comunidade <%= @invitation.community.name %> no BONDE.</p>
+  <% if @has_user %>
+  <p>Para começar a causar, é só clicar <%= link_to 'aqui', @invitation.link, target: 'blank' %> e vamos te levar direto a sua comunidade.</p>
+  <% else %>
+  <p>Para começar a causar, você deve antes se cadastrar na plataforma clicando <%= link_to 'aqui', @invitation.link, target: 'blank' %>. Uma vez cadastrado(a), é só fazer login e você vai poder acessar sua nova comunidade.</p>
+  <% end %> 
+  <p>Dúvidas? Veja nosso tutorial em <a href="http://trilho.bonde.org">trilho.bonde.org</a> ou nosso FAQ em <a href="http://faq.bonde.org">faq.bonde.org</a> :)</p>
 </div>
