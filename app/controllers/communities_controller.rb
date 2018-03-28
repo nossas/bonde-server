@@ -121,7 +121,7 @@ class CommunitiesController < ApplicationController
       if domain
         redirect_to "#{domain}#{path}"
       else
-        redirect_to (Rails.env.staging? ? "https://staging.bonde.org#{path}" : "https://app.bonde.org#{path}")
+        redirect_to (Rails.env.staging? ? "https://app.staging.bonde.org#{path}" : "https://app.bonde.org#{path}")
       end
     else
       render json: { msg: 'Invitation not found' }, status: 302
