@@ -111,18 +111,20 @@ class CommunitiesController < ApplicationController
     skip_authorization
     invitation = Invitation.find_by(
       email: params['email'],
-      code: params['code'])
-    invitation.create_community_user if invitation
-
-    domain = ENV["APP_DOMAIN"]
-
+      code: params['code']) 
+    
     if invitation
-      path = "/register/?invitation_code=#{invitation.code}"
-      if domain
-        redirect_to "#{domain}#{path}"
+      community_user = invitation.create_community_user
+
+      domain = ENV["APP_DOMAIN"] ? ENV["APP_DOMAIN"] : (Rails.env.staging? ? "https://app.staging.bonde.org" : "https://app.bonde.org")
+
+      if community_user
+        redirect_to domain
       else
-        redirect_to (Rails.env.staging? ? "https://app.staging.bonde.org#{path}" : "https://app.bonde.org#{path}")
+        path = "/register/?invitation_code=#{invitation.code}"
+        redirect_to "#{domain}#{path}"
       end
+    
     else
       render json: { msg: 'Invitation not found' }, status: 302
     end
