@@ -18,7 +18,7 @@ class Invitation < ActiveRecord::Base
   end
 
   def invitation_email
-    CommunityMailer.invite_email(self).deliver_now
+    CommunityMailer.invite_email(self, User.where(email: self.email).exists?).deliver_now
   end
 
   def create_community_user
