@@ -1,7 +1,7 @@
 class CommunityMailer < ApplicationMailer
-    def invite_email(invitation, has_user)
+    def invite_email(invitation, invited_user)
     @invitation = invitation
-    @has_user = has_user
+    @invited_user = invited_user
 
     headers['X-SMTPAPI'] = %#{
       "filters": {
