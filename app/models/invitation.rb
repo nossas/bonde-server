@@ -18,12 +18,11 @@ class Invitation < ActiveRecord::Base
   end
 
   def invitation_email
-    CommunityMailer.invite_email(self).deliver_now
+    CommunityMailer.invite_email(self, User.find_by_email(self.email)).deliver_now
   end
 
   def create_community_user
     invited_user = User.find_by_email self.email
-    #invited_user = generate_user unless invited_user
 
     if invited_user
        if invitation_expired?

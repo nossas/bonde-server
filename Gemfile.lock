@@ -456,7 +456,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 2.3.6
+   ruby 2.3.7p456
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
