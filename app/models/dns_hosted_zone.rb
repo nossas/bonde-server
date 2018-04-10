@@ -3,15 +3,19 @@ require 'net/dns'
 class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
-  after_create :create_hosted_zone_on_aws, unless: :ignore_syncronization?
-  after_create :create_default_records_on_aws, unless: :ignore_syncronization?
-  after_create :load_record_from_aws, unless: :ignore_syncronization?
+  # after_create :create_hosted_zone_on_aws, unless: :ignore_syncronization?
+  # after_create :create_default_records_on_aws, unless: :ignore_syncronization?
+  # after_create :load_record_from_aws, unless: :ignore_syncronization?
+
+  # run postgres function
+  # This function create a new hosted_zone and default dns_records in route53 (aws-sdk) and updated local database
+  after_create :create_completed_hosted_zone
 
   before_destroy :delete_hosted_zone
 
   has_many :dns_records
   has_many :users, through: :community
-  
+
   validates :community_id, presence: true
   validates :domain_name, presence: true, length: {maximum: 254}
 
@@ -28,6 +32,24 @@ class DnsHostedZone < ActiveRecord::Base
 
   def delegation_set_servers
     self.response['delegation_set']['name_servers'] if self.response
+  end
+
+  def create_completed_hosted_zone
+    # ActiveRecord::Base.connection.execute("select microservices.create_community_dns('{'community_id': '#{self.community.id}', 'domain_name': '#{self.domain_name}', 'comment': '#{self.comment}' }')")
+
+    if self.comment.nil?
+      ActiveRecord::Base.connection.execute(%Q{
+        select microservices.create_community_dns(json_build_object('community_id', '#{self.community.id}', 'domain_name', '#{self.domain_name}'))
+      })
+    else
+      ActiveRecord::Base.connection.execute(%Q{
+        select microservices.create_community_dns(json_build_object('community_id', '#{self.community.id}', 'domain_name', '#{self.domain_name}', 'comment', #{comment}))
+      })
+    end
+  end
+
+  def self.execute_sql(*sql_array)
+   connection.execute(send(:sanitize_sql_array, sql_array))
   end
 
   def hosted_zone_id
