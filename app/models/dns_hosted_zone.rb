@@ -35,15 +35,13 @@ class DnsHostedZone < ActiveRecord::Base
   end
 
   def create_completed_hosted_zone
-    # ActiveRecord::Base.connection.execute("select microservices.create_community_dns('{'community_id': '#{self.community.id}', 'domain_name': '#{self.domain_name}', 'comment': '#{self.comment}' }')")
-
     if self.comment.nil?
       ActiveRecord::Base.connection.execute(%Q{
         select microservices.create_community_dns(json_build_object('community_id', '#{self.community.id}', 'domain_name', '#{self.domain_name}'))
       })
     else
       ActiveRecord::Base.connection.execute(%Q{
-        select microservices.create_community_dns(json_build_object('community_id', '#{self.community.id}', 'domain_name', '#{self.domain_name}', 'comment', #{comment}))
+        select microservices.create_community_dns(json_build_object('community_id', '#{self.community.id}', 'domain_name', '#{self.domain_name}', 'comment', '#{self.comment}'))
       })
     end
   end
