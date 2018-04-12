@@ -2,7 +2,6 @@ class AddMicroServicesSchema < ActiveRecord::Migration
   def change
     execute %Q{
       create schema microservices;
-      create role microservices;
       create type microservices.jwt_token as (
         role text,
         user_id integer
