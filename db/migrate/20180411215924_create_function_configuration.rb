@@ -2,7 +2,7 @@ class CreateFunctionConfiguration < ActiveRecord::Migration
   def change
     def  up
       execute %Q{
-        create or replace function public.configuration(text)
+        create or replace function public.configuration(name text)
         returns text
         language sql
         AS $$
@@ -13,7 +13,7 @@ class CreateFunctionConfiguration < ActiveRecord::Migration
 
     def down
       execute %Q{
-        drop funtion public.configuration(text)
+        drop funtion public.configuration(name text)
       }
     end
   end

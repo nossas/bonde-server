@@ -18,6 +18,7 @@ class DnsHostedZone < ActiveRecord::Base
 
   validates :community_id, presence: true
   validates :domain_name, presence: true, length: {maximum: 254}
+  validates_uniqueness_of :domain_name
 
   validates :domain_name, format: { with: /\A([a-z0-9\-]{0,63}\.)*([a-z0-9\-]{0,63})\z/ , 
       message: I18n.t('activerecord.errors.models.dns_hosted_zone.attributes.domain_name.segments') }
