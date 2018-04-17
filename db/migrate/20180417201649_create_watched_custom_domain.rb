@@ -59,7 +59,7 @@ class CreateWatchedCustomDomain < ActiveRecord::Migration
         END;
       $$;
 
-      GRANT EXECUTE on FUNCTION microservices.verify_custom_domain() to postgraphql, admin, microservices;
+      GRANT EXECUTE on FUNCTION public.verify_custom_domain() to postgraphql, admin, microservices;
 
       DROP TRIGGER IF EXISTS watched_custom_domain ON public.mobilizations;
       CREATE TRIGGER watched_custom_domain AFTER
