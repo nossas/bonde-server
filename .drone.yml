@@ -24,7 +24,7 @@ pipeline:
     commands:
       - /test.sh -h database -u bonde -w 3x4mpl3 -d hub_api_test -t './spec/**/**/*.sql'
 
-  publish-docker-staging:
+  publish-staging:
     image: plugins/docker
     repo: nossas/bonde-server
     secrets: [ docker_username, docker_password ]
@@ -34,8 +34,9 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging-server:
+  deploy-staging-server:
     image: peloton/drone-rancher
+    group: deploying
     url: http://cluster.bonde.org
     service: staging/server
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
@@ -46,8 +47,9 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging-mailers:
+  deploy-staging-mailers:
     image: peloton/drone-rancher
+    group: deploying
     url: http://cluster.bonde.org
     service: staging/server-mailers
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
@@ -58,8 +60,9 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging-mailchimp:
+  deploy-staging-worker:
     image: peloton/drone-rancher
+    group: deploying
     url: http://cluster.bonde.org
     service: staging/server-worker
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
@@ -97,6 +100,7 @@ pipeline:
     group: deploying_prod
     service: bonde/server
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -123,6 +127,7 @@ pipeline:
     group: deploying_prod
     service: bonde/server-worker
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
