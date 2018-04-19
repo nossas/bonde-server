@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.3.6'
+ruby '2.3.7'
 
 gem 'rails', '4.2.7.1'
 gem 'rails-api'
@@ -33,8 +33,9 @@ gem "liquid"
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'aws-sdk', '~> 2'
 gem 'net-dns'
-gem 'test_after_commit', :group => :test
-gem 'whenever', :require => false
+gem 'test_after_commit', group: :test
+gem 'whenever', require: false
+gem 'codacy-coverage', require: false
 
 group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'
@@ -53,5 +54,6 @@ end
 gem 'test_after_commit', :group => :test
 group :test do
   gem 'webmock', '2.3.1'
-  gem "fakeredis", :require => "fakeredis/rspec"
+  gem "fakeredis", require: "fakeredis/rspec"
+  gem 'simplecov', require: false
 end

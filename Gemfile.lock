@@ -65,6 +65,8 @@ GEM
     case_transform (0.2)
       activesupport
     chronic (0.10.2)
+    codacy-coverage (1.1.8)
+      simplecov
     codeclimate-test-reporter (0.6.0)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.1)
@@ -414,6 +416,7 @@ DEPENDENCIES
   bcrypt
   byebug
   carrierwave
+  codacy-coverage
   codeclimate-test-reporter (< 1.0.0)
   factory_girl_rails (~> 4.8)
   fakeredis
@@ -445,6 +448,7 @@ DEPENDENCIES
   sentry-raven
   shoulda-matchers (< 3.0.0)
   sidekiq
+  simplecov
   spring
   statesman (= 2.0.1)
   test_after_commit
@@ -452,7 +456,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 2.3.6
+   ruby 2.3.7p456
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

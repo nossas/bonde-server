@@ -3,13 +3,13 @@ class BalanceOperationSyncService
     @recipient = recipient
   end
 
-  def sync_balance_operations page = 1, peer_page = 50, status
-    balance_ops = gateway_recipient.balance_operations({page: page, peer_page: peer_page, status: status})
+  def sync_balance_operations page = 1, peer_page = 50
+    balance_ops = gateway_recipient.balance_operations page: page, peer_page: peer_page
 
     if balance_ops.size > 1
 
       balance_ops.each do |op|
-        Rails.logger.info "[BALANCE_OPERATIONS_SYNC] #{op.id} for recipient #{@recipient.id} on page #{page} when status = #{status}"
+        Rails.logger.info "[BALANCE_OPERATIONS_SYNC] #{op.id} for recipient #{@recipient.id} on page #{page}"
         create_or_find_operation(op)
       end
 

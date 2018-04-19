@@ -26,3 +26,6 @@ public/uploads
 .DS_Store
 db/structure.sql
 db/schema.rb
+
+# ignore coverage files
+coverage
