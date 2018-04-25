@@ -224,6 +224,8 @@ class Donation < ActiveRecord::Base
       boleto_expiration_date: gateway_data.try(:[], 'boleto_expiration_date'),
       boleto_barcode: gateway_data.try(:[], 'boleto_barcode'),
       boleto_url: gateway_data.try(:[], 'boleto_url'),
+      card_last_digits: gateway_data.try(:[], 'card_last_digits'),
+      created: created_at,
       donation_id: id,
       activist_id: activist_id,
       amount: ( amount / 100),
@@ -234,7 +236,8 @@ class Donation < ActiveRecord::Base
       },
       customer: {
         name: activist.name,
-        first_name: activist.name.split(' ').try(:first)
+        first_name: activist.name.split(' ').try(:first),
+        document_number: activist.try(:document_number)
       }
     }
   end
