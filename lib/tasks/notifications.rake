@@ -6,44 +6,101 @@ namespace :notifications do
     puts 'looking for paid_subscription template'
     sub_template = (%{
 <tr>
-    <td style="height:134px;position:relative;">
-        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+  <td style="padding-bottom: 16px;">
+    <table
+      width="100%"
+      style="
+        border-collapse: collapse;
+        border-radius: 5px;
+        border-style: hidden;
+        background-color: #FFFFFF;
+      "
+    >
+      <tr>
+        <td style="padding: 32px 48px;" align="center">
+          <table>
             <tr>
-                <td>
-Olá {{customer.first_name}}
-<br/><br/>
-Sua doação à {{community.name}} foi processada! Obrigada por mais um mês nos apoiando.
-<br/><br/>
-                </td>
+              <td align="center" style="padding-bottom: 16px; color: #424242; font-size: 18px;">
+                Oi, <span style="color: #EE0099; font-weight: 800;">{{customer.first_name}}</span>!
+              </td>
             </tr>
-{% if community.fb_link %}
             <tr>
-                <td style="padding-bottom:30px;">
-                    <p>
-                        Siga de perto o trabalho da {{community.name}}:
-                    </p>
-                    <div>
-                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
-                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
-                    </div>
-                </td>
+              <td align="center" style="padding-bottom: 32px; color: #424242; font-size: 13px;">
+                Olha a notícia boa: sua contribuição a <b>{{community.name}}</b> foi recebida.
+                Obrigada por acreditar nesse trabalho, seu apoio faz toda a diferença! :)
+              </td>
             </tr>
-{% endif %}
-        </table>
-    </td>
+            <tr>
+              <td align="center" style="padding-bottom: 16px;">
+                <img src="https://s3.amazonaws.com/hub-central-dev/uploads/1524537871_bonde-donation-icon.png">
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 24px; color: #EE0099; font-size: 13px; font-weight: 800;">
+                Comprovante de Contribuição
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 24px; font-size: 9px; font-weight: 700;">
+                <table style="max-width: 335px; border-top: 1px solid #AAAAAA;">
+                  <tr>
+                    <td align="left" style="padding-top: 16px; color: #424242">Nome do apoiador</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{customer.name}}</td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="padding-top: 16px; color: #424242">CPF/CNPJ do apoiador</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{customer.document_number}}</td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="padding-top: 16px; color: #424242">Data da confirmação</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{created}}</td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="padding-top: 16px; color: #424242">Valor da contribuição em BRL</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{amount}}</td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="padding-top: 16px; color: #424242">ID do apoio</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{"#" | append: donation_id}}</td>
+                  </tr>
+                  {% if payment_method == 'credit_card' %}
+                    <tr>
+                      <td align="left" style="padding-top: 16px; color: #424242">Cartão de crédito final</td>
+                      <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****" | append: card_last_digits}} </td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td align="left" style="padding-top: 16px; color: #424242">Boleto</td>
+                      <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{boleto_url}}</td>
+                    </tr>
+                  {% endif %}
+                </table>
+              </td>
+            </tr>
+            <tr align="center">
+              <td align="center" style="padding-bottom: 56px; color: #4A4A4A; font-size: 11px; font-weight: 600;">
+                Em sua fatura, aparecerá a descrição "PG *NOSSAS CIDADES"
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 0; color: #4A4A4A; font-size: 11px;">
+                Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
 </tr>})
+
     label = 'paid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{community.name}} Doação processada!',
+        subject_template: '{{community.name}} ficou tão feliz com sua doação!' ,
         body_template: sub_template
       )
     end
@@ -51,47 +108,72 @@ Sua doação à {{community.name}} foi processada! Obrigada por mais um mês nos
     puts 'looking for unpaid_subscription template'
     sub_template = (%{
 <tr>
-    <td style="height:134px;position:relative;">
-        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%;margin: 0 auto;"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+  <td style="padding-bottom: 16px;">
+    <table
+      width="100%"
+      style="
+        border-collapse: collapse;
+        border-radius: 5px;
+        border-style: hidden;
+        background-color: #FFFFFF;
+      "
+    >
+      <tr>
+        <td style="padding: 32px 48px;" align="center">
+          <table>
             <tr>
-                <td>
-Olá {{customer.first_name}}, sua doação deste mês não foi processada com sucesso. Vamos resolver? Clique no botão a seguir para editar os dados da sua conta e continuar apoiando {{community.name}}
-<br/>
-<br/>
-                  <a href="{{manage_url}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
-                    EDITAR FORMA DE PAGAMENTO
-                  </a>
-                </td>
+              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 18px;">
+                Olá, <span style="color: #EE0099; font-weight: 800;">{{customer.first_name}}</span>!
+              </td>
             </tr>
-
-{% if community.fb_link %}
             <tr>
-                <td style="padding-bottom:30px;">
-                    <p>
-                        Siga de perto o trabalho da {{community.name}}:
-                    </p>
-                    <div>
-                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
-                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
-                    </div>
-                </td>
+              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 13px;">
+                Algo deu errado na sua doação a <b>{{community.name}}</b> este mês -
+                e seu apoio faz muita diferença, então bora resolver juntos? Se você trocou
+                de cartão ou quer alterar a data de cobrança, é só clicar no botão a
+                seguir para editar essas informações:
+              </td>
             </tr>
-{% endif %}
-        </table>
-    </td>
+            <tr>
+              <td align="center" style="padding-bottom: 64px;">
+                <a
+                  href="{{manage_url}}"
+                  style="
+                    display: inline-block;
+                    background-color: #EE0099;
+                    color: #FFFFFF;
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    border-radius: 100px;
+                    text-decoration: none;
+                    padding: 16px 32px;
+                    text-align: center;
+                  "
+                >
+                  Editar minha doação
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 0; color: #4A4A4A; font-size: 11px;">
+                Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
 </tr>})
+
     label = 'unpaid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: 'Ops, deu algo errado com sua doação!',
+        subject_template: '{{community.name}} Sua doação não foi recebida :/',
         body_template: sub_template
       )
     end
@@ -99,34 +181,70 @@ Olá {{customer.first_name}}, sua doação deste mês não foi processada com su
     puts 'looking for canceled_subscription template'
     sub_template = (%{
 <tr>
-    <td style="height:134px;position:relative;">
-        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+  <td style="padding-bottom: 16px;">
+    <table
+      width="100%"
+      style="
+        border-collapse: collapse;
+        border-radius: 5px;
+        border-style: hidden;
+        background-color: #FFFFFF;
+      "
+    >
+      <tr>
+        <td style="padding: 32px 48px;" align="center">
+          <table>
             <tr>
-                <td>
-Olá {{customer.first_name}}, sua doação mensal à {{community.name }} foi cancelada. Agradecemos sua ajuda até então e esperamos que volte a nos apoiar!
-                </td>
+              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 18px;">
+                Olá, <span style="color: #EE0099; font-weight: 800;">{{customer.first_name}}</span>!
+              </td>
             </tr>
-{% if community.fb_link %}
             <tr>
-                <td style="padding-bottom:30px;">
-                    <p>
-                        Siga de perto o trabalho da {{community.name}}:
-                    </p>
-                    <div>
-                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
-                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
-                    </div>
-                </td>
+              <td align="center" style="padding-bottom: 48px; color: #424242; font-size: 13px;">
+                Tentamos reativar seu apoio a <b>{{community.name}}</b> pelos últimos 3 meses.
+                Mas como não tivemos resposta, sua doação foi cancelada…
+                <br>
+                Valeu por sua ajuda até então! :)
+              </td>
             </tr>
-{% endif %}
-        </table>
-    </td>
+            <tr>
+              <td align="center" style="padding-bottom: 24px; color: #424242; font-size: 13px;">
+                E se quiser voltar a apoiar a <b>{{community.name}}</b>, é só editar sua doação:
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 64px;">
+                <a
+                  href="{{manage_url}}"
+                  style="
+                    display: inline-block;
+                    background-color: #EE0099;
+                    color: #FFFFFF;
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    border-radius: 100px;
+                    text-decoration: none;
+                    padding: 16px 32px;
+                    text-align: center;
+                  "
+                >
+                  Editar minha doação
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 0; color: #4A4A4A; font-size: 11px;">
+                Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
 </tr>})
+
     label = 'canceled_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
@@ -141,51 +259,83 @@ Olá {{customer.first_name}}, sua doação mensal à {{community.name }} foi can
     puts 'looking for slip_subscription template'
     sub_template = (%{
 <tr>
-    <td style="height:134px;position:relative;">
-        <div style="background-image:url({{community.image}});background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+  <td style="padding-bottom: 16px;">
+    <table
+      width="100%"
+      style="
+        border-collapse: collapse;
+        border-radius: 5px;
+        border-style: hidden;
+        background-color: #FFFFFF;
+      "
+    >
+      <tr>
+        <td style="padding: 32px 48px;" align="center">
+          <table>
             <tr>
-                <td>
-Olá {{customer.first_name}}, clique no link abaixo para visualizar o boleto e efetuar sua doação mensal a {{community.name}}
-<br/>
-<br/>
-                  <a href="{{last_donation.boleto_url}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
-                    ACESSAR BOLETO
-                  </a>
-<br/>
-<br/>
-O boleto pode ser pago pelo Internet Banking ou agência de qualquer banco até a data de vencimento. Depois de vencido, só será aceito pelo banco emissor.
-
-                </td>
+              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 18px;">
+                Olá, <span style="color: #EE0099; font-weight: 800;">{{customer.first_name}}</span>!
+              </td>
             </tr>
-
-{% if community.fb_link %}
             <tr>
-                <td style="padding-bottom:30px;">
-                    <p>
-                        Siga de perto o trabalho da {{community.name}}:
-                    </p>
-                    <div>
-                        <a href="{{community.fb_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248328_icon-fb.png" width="36" height="36" hspace="5" /></a>
-                        <a href="{{community.twitter_link}}"><img src="https://s3.amazonaws.com/hub-central-dev/uploads/1490248320_icon-ig.png" width="36" height="36" hspace="5" /></a>
-                    </div>
-                </td>
+              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 13px;">
+                Como vai?
+                <br>
+                Emitimos o boleto pra você poder seguir
+                apoiando a <b>{{community.name}}</b>.
+                Pra acessar o boleto, é só clicar no botão:
+              </td>
             </tr>
-{% endif %}
-        </table>
-    </td>
+            <tr>
+              <td align="center" style="padding-bottom: 32px;">
+                <a
+                  href="{{last_donation.boleto_url}}"
+                  style="
+                    display: inline-block;
+                    background-color: #EE0099;
+                    color: #FFFFFF;
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    border-radius: 100px;
+                    text-decoration: none;
+                    padding: 16px 32px;
+                    text-align: center;
+                  "
+                >
+                  Acessar boleto
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 64px; color: #4A4A4A; font-size: 13px;">
+                E pra apoiar é fácil: Ele pode ser pago pelo Internet Banking ou agência
+                de qualquer banco até a data de vencimento. Depois de vencido, só
+                será aceito pelo banco emissor. Se o botão não funcionar, é só
+                clicar neste link:
+                <br>
+                       <a href="{{last_donation.boleto_url}}">{{last_donation.boleto_url}}</a>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 0; color: #4A4A4A; font-size: 11px;">
+                Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
 </tr>})
+
     label = 'slip_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{community.name}} Emissão do boleto para doação',
+        subject_template: '{{community.name}}, um boleto que pode fazer a diferença!',
         body_template: sub_template
       )
     end
