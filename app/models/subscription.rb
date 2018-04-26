@@ -38,6 +38,12 @@ class Subscription < ActiveRecord::Base
     self
   end
 
+  def reached_notification_limit?
+    total_transitions = transitions.order(created_at: :desc).limit(3).pluck(:to_state)
+    return false if total_transitions.count < 3
+
+    total_transitions.all? { |transition| x == 'unpaid' }
+  end
 
   def reached_retry_limit?
     last_transition_created = last_transition.try(:created_at) || DateTime.now
