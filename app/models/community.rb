@@ -10,6 +10,7 @@ class Community < ActiveRecord::Base
   has_many :community_users
   has_many :users, through: :community_users
   has_many :agg_activists
+  has_many :subscription_reports
   has_many :recipients
   has_many :activist_actions
   has_many :dns_hosted_zones

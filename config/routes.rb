@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     get 'mobilizations', to: 'communities#list_mobilizations'
     get 'activists', to: 'communities#list_activists'
     post 'download_activists', to: 'communities#list_activists'
+    post 'download_subscriptions', to: 'communities#subscription_reports'
     post 'activists', to: 'activists#add_activists'
     post 'invitation', to: 'communities#create_invitation'
   end
