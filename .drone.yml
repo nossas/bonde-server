@@ -10,6 +10,7 @@ pipeline:
       - echo "America/Sao_Paulo" > /etc/timezone
       - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test
       - export CODACY_PROJECT_TOKEN=$CODACY_TOKEN
+      - sleep 5;
       - psql -c 'create role bonde SUPERUSER LOGIN;' -hdatabase -Upostgres
       - psql -c 'create database hub_api_test;' -hdatabase -Upostgres
       - bundle install
@@ -39,6 +40,7 @@ pipeline:
     url: http://cluster.bonde.org
     service: staging/server
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    sidekick: migrations nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -74,6 +76,11 @@ pipeline:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     service: staging/server-crontab
+    sidekick: cmd-01 nossas/bonde-server:${DRONE_BRANCH}
+    sidekick: cmd-02 nossas/bonde-server:${DRONE_BRANCH}
+    sidekick: cmd-03 nossas/bonde-server:${DRONE_BRANCH}
+    sidekick: cmd-04 nossas/bonde-server:${DRONE_BRANCH}
+    sidekick: cmd-05 nossas/bonde-server:${DRONE_BRANCH}
     docker_image: nossas/bonde-server:${DRONE_BRANCH}
     timeout: 360
     confirm: true
@@ -96,6 +103,7 @@ pipeline:
     url: http://cluster.bonde.org
     group: deploying_prod
     service: bonde/server
+    sidekick: "migrations nossas/bonde-server:${DRONE_TAG##v}"
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
     confirm: true
@@ -135,6 +143,11 @@ pipeline:
     url: http://cluster.bonde.org
     group: deploying_prod
     service: bonde/server-crontab
+    sidekick: "cmd-01 nossas/bonde-server:${DRONE_TAG##v}"
+    sidekick: "cmd-02 nossas/bonde-server:${DRONE_TAG##v}"
+    sidekick: "cmd-03 nossas/bonde-server:${DRONE_TAG##v}"
+    sidekick: "cmd-04 nossas/bonde-server:${DRONE_TAG##v}"
+    sidekick: "cmd-05 nossas/bonde-server:${DRONE_TAG##v}"
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
     confirm: true
