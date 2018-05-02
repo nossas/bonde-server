@@ -6,7 +6,7 @@ BEGIN;
 
   select has_view('microservices', 'certificates', 'view returns all certificates actives');
 
-  insert into public.certificates (community_id, mobilization_id, dns_hosted_zone_id, domain, is_active, created_at, updated_at)
+  insert into public.certificates (community_id, mobilization_id, dns_hosted_zones_id, domain, is_active, created_at, updated_at)
     values
       (1, 1, 1, 'example.org', true, now(), now()),
       (1, 1, 1, 'example2.org', true, now(), now()),
