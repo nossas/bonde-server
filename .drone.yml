@@ -13,7 +13,7 @@ pipeline:
       - sleep 5;
       - psql -c 'create role bonde SUPERUSER LOGIN;' -hdatabase -Upostgres
       - psql -c 'create database hub_api_test;' -hdatabase -Upostgres
-      - bundles install
+      - bundle install
       - rake db:migrate
       - bundle exec rspec spec
     secrets: [ codacy_token ]
