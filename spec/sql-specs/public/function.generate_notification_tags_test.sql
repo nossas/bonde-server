@@ -1,6 +1,6 @@
 begin;
 
-  \i /specs/sql-support/insert_basic_data.sql;
+  \i /spec/sql-support/insert_basic_data.sql;
 
   select plan(7);
 
