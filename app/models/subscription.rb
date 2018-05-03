@@ -42,7 +42,7 @@ class Subscription < ActiveRecord::Base
     total_transitions = transitions.order(created_at: :desc).limit(3).pluck(:to_state)
     return false if total_transitions.count < 3
 
-    total_transitions.all? { |transition| x == 'unpaid' }
+    total_transitions.all? { |transition| transition == 'unpaid' }
   end
 
   def reached_retry_limit?
