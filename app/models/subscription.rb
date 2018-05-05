@@ -233,7 +233,7 @@ class Subscription < ActiveRecord::Base
           boleto_url: last_donation.gateway_data.try(:[], 'boleto_url'),
           customer_document: last_donation.gateway_data['customer']['document_number'],
           donation_id: last_donation.id,
-          card_last_digits: last_donation.gateway_data.try(:[]. 'card_last_digits')
+          card_last_digits: last_donation.gateway_data.try(:[], 'card_last_digits')
         }
       )
     end
