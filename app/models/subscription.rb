@@ -189,7 +189,7 @@ class Subscription < ActiveRecord::Base
       default_template_vars.merge(template_vars),
       community_id,
       auto_deliver)
-  end
+    end
 
   def process_status_changes(status, data)
     case status
@@ -217,7 +217,8 @@ class Subscription < ActiveRecord::Base
       customer: {
         name: activist.name,
         first_name: activist.name.split(' ').try(:first)
-      }
+      },
+      created: created_at
     }
 
     if last_donation.present?
@@ -230,6 +231,9 @@ class Subscription < ActiveRecord::Base
           boleto_expiration_date: last_donation.gateway_data.try(:[], 'boleto_expiration_date'),
           boleto_barcode: last_donation.gateway_data.try(:[], 'boleto_barcode'),
           boleto_url: last_donation.gateway_data.try(:[], 'boleto_url'),
+          customer_document: last_donation.gateway_data['customer']['document_number'],
+          donation_id: last_donation.id,
+          card_last_digits: last_donation.gateway_data.try(:[]. 'card_last_digits')
         }
       )
     end

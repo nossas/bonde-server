@@ -49,7 +49,7 @@ namespace :notifications do
                   </tr>
                   <tr>
                     <td align="left" style="padding-top: 16px; color: #424242">CPF/CNPJ do apoiador</td>
-                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{customer.document_number}}</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{last_donation.customer_document}}</td>
                   </tr>
                   <tr>
                     <td align="left" style="padding-top: 16px; color: #424242">Data da confirmação</td>
@@ -61,17 +61,17 @@ namespace :notifications do
                   </tr>
                   <tr>
                     <td align="left" style="padding-top: 16px; color: #424242">ID do apoio</td>
-                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{"#" | append: donation_id}}</td>
+                    <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{"#" | append: last_donation.donation_id}}</td>
                   </tr>
                   {% if payment_method == 'credit_card' %}
                     <tr>
                       <td align="left" style="padding-top: 16px; color: #424242">Cartão de crédito final</td>
-                      <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****" | append: card_last_digits}} </td>
+                      <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****" | append: last_donation.card_last_digits}} </td>
                     </tr>
                   {% else %}
                     <tr>
                       <td align="left" style="padding-top: 16px; color: #424242">Boleto</td>
-                      <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{boleto_url}}</td>
+                      <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{last_donation.boleto_url}}</td>
                     </tr>
                   {% endif %}
                 </table>
