@@ -97,6 +97,7 @@ namespace :notifications do
     label = 'paid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
+      nt.update_attribute(:subject_template, '{{community.name}} ficou tão feliz com sua doação!')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
@@ -170,6 +171,7 @@ namespace :notifications do
     label = 'unpaid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
+      nt.update_attribute(:subject_template, '{{community.name}} Sua doação não foi recebida :/')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
@@ -248,13 +250,14 @@ namespace :notifications do
     label = 'canceled_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
+      nt.update_attribute(:subject_template, '{{customer.first_name}}, está por aí?')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{customer.first_name}} perdemos seu apoio?',
+        subject_template: '{{customer.first_name}}, está por aí?',
         body_template: sub_template
       )
-    end
+      end
 
     puts 'looking for slip_subscription template'
     sub_template = (%{
@@ -332,6 +335,7 @@ namespace :notifications do
     label = 'slip_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
+      nt.update_attribute(:subject_template, '{{community.name}}, um boleto que pode fazer a diferença!')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
