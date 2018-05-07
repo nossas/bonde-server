@@ -63,7 +63,7 @@ namespace :notifications do
                     <td align="left" style="padding-top: 16px; color: #424242">ID do apoio</td>
                     <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{"#" | append: last_donation.donation_id}}</td>
                   </tr>
-                  {% if payment_method == 'credit_card' %}
+                  {% if last_donation.payment_method == 'credit_card' %}
                     <tr>
                       <td align="left" style="padding-top: 16px; color: #424242">Cartão de crédito final</td>
                       <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****" | append: last_donation.card_last_digits}} </td>
