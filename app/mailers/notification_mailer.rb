@@ -3,12 +3,16 @@ class NotificationMailer < ApplicationMailer
     @notification = notification
     @template = notification.notification_template
     @body = body.html_safe
-    @community_name = Community.find(notification.template_vars['community']['id'])
+    @community_name = community_name
     configure_xsmtp_headers
     mail(mail_attributes)
   end
 
   private
+
+  def community_name
+    Community.find(notification.template_vars['community']['id']).name if @notification.template_vars.try(:[], 'community').present?
+  end
 
   def subject
     @template.generate_subject(@notification.template_vars)
