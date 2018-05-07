@@ -11,7 +11,7 @@ class NotificationMailer < ApplicationMailer
   private
 
   def community_name
-    Community.find(notification.template_vars['community']['id']).name if @notification.template_vars.try(:[], 'community').present?
+    Community.find(@notification.template_vars['community']['id']).name if @notification.template_vars.try(:[], 'community').present?
   end
 
   def subject
