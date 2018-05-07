@@ -171,11 +171,11 @@ namespace :notifications do
     label = 'unpaid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{community.name}} Sua doação não foi recebida :/')
+      nt.update_attribute(:subject_template, '{{customer.first_name}} Sua doação não foi recebida :/')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{community.name}} Sua doação não foi recebida :/',
+        subject_template: '{{customer.first_name}} Sua doação não foi recebida :/',
         body_template: sub_template
       )
     end
@@ -335,7 +335,7 @@ namespace :notifications do
     label = 'slip_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{community.name}}, um boleto que pode fazer a diferença!')
+      nt.update_attribute(:subject_template, '{{customer.first_name}}, um boleto que pode fazer a diferença!')
     else
       NotificationTemplate.find_or_create_by(
         label: label,

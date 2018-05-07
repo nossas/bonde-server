@@ -3,7 +3,7 @@ class NotificationMailer < ApplicationMailer
     @notification = notification
     @template = notification.notification_template
     @body = body.html_safe
-
+    @community_name = Community.find(notification.template_vars['community']['id'])
     configure_xsmtp_headers
     mail(mail_attributes)
   end
