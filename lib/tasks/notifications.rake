@@ -56,7 +56,7 @@ namespace :notifications do
                     <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{created}}</td>
                   </tr>
                   <tr>
-                    <td align="left" style="padding-top: 16px; color: #424242">Valor da contribuição em BRL</td>
+                    <td align="left" style="padding-top: 16px; color: #424242">Valor da contribuição</td>
                     <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{amount}}</td>
                   </tr>
                   <tr>
@@ -97,11 +97,11 @@ namespace :notifications do
     label = 'paid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{community.name}} ficou tão feliz com sua doação!')
+      nt.update_attribute(:subject_template, '{{community.name}} recebeu sua doação!')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{community.name}} ficou tão feliz com sua doação!' ,
+        subject_template: '{{community.name}} recebeu sua doação!',
         body_template: sub_template
       )
     end
@@ -171,11 +171,11 @@ namespace :notifications do
     label = 'unpaid_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{customer.first_name}} sua doação não foi recebida :/')
+      nt.update_attribute(:subject_template, '{{community.name}} não recebeu sua doação :/')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{customer.first_name}} sua doação não foi recebida :/',
+        subject_template: '{{community.name}} não recebeu sua doação :/',
         body_template: sub_template
       )
     end
@@ -203,36 +203,13 @@ namespace :notifications do
             </tr>
             <tr>
               <td align="center" style="padding-bottom: 48px; color: #424242; font-size: 13px;">
-                Tentamos reativar seu apoio a <b>{{community.name}}</b> pelos últimos 3 meses.
-                Mas como não tivemos resposta, sua doação foi cancelada…
-                <br>
-                Valeu por sua ajuda até então! :)
+                Seu apoio mensal a <b>{{community.name}}</b> foi cancelado...
+                Agradecemos muito sua ajuda até então, pode acreditar que fez muita diferença!
               </td>
             </tr>
             <tr>
               <td align="center" style="padding-bottom: 24px; color: #424242; font-size: 13px;">
-                E se quiser voltar a apoiar a <b>{{community.name}}</b>, é só editar sua doação:
-              </td>
-            </tr>
-            <tr>
-              <td align="center" style="padding-bottom: 64px;">
-                <a
-                  href="{{manage_url}}"
-                  style="
-                    display: inline-block;
-                    background-color: #EE0099;
-                    color: #FFFFFF;
-                    font-size: 11px;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    border-radius: 100px;
-                    text-decoration: none;
-                    padding: 16px 32px;
-                    text-align: center;
-                  "
-                >
-                  Editar minha doação
-                </a>
+                E se quiser voltar a apoiar <b>{{community.name}}</b>, é só entrar no site e criar uma nova doação :)
               </td>
             </tr>
             <tr>
@@ -286,7 +263,7 @@ namespace :notifications do
                 <br>
                 Emitimos o boleto pra você poder seguir
                 apoiando a <b>{{community.name}}</b>.
-                Pra acessar o boleto, é só clicar no botão:
+                Para acessar o boleto, é só clicar no botão:
               </td>
             </tr>
             <tr>
@@ -312,7 +289,7 @@ namespace :notifications do
             </tr>
             <tr>
               <td align="center" style="padding-bottom: 64px; color: #4A4A4A; font-size: 13px;">
-                E pra apoiar é fácil: Ele pode ser pago pelo Internet Banking ou agência
+                E pra apoiar é fácil: você pode pagar pelo  Internet Banking ou agência
                 de qualquer banco até a data de vencimento. Depois de vencido, só
                 será aceito pelo banco emissor. Se o botão não funcionar, é só
                 clicar neste link:
@@ -335,11 +312,11 @@ namespace :notifications do
     label = 'slip_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{customer.first_name}}, um boleto que pode fazer a diferença!')
+      nt.update_attribute(:subject_template, '{{customer.first_name}}, um boleto que pode fazer a diferença para {{community.name}}!')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{community.name}}, um boleto que pode fazer a diferença!',
+        subject_template: '{{customer.first_name}}, um boleto que ode fazer a diferença para {{community.name}}',
         body_template: sub_template
       )
     end
