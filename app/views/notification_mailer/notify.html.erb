@@ -30,33 +30,30 @@
 
     <!-- FOOTER -->
     <tr>
-      <td>
-        <table width="100%">
-          <tr>
-            <td align="left" style="color: #4A4A4A; font-size: 12px; padding-left: 16px;">
-              Feito pra causar. Feito com <b>BONDE</b>.
-            </td>
-            <td align="right" style="padding-right: 16px;">
-              <img src="https://s3.amazonaws.com/hub-central-dev/uploads/1524537742_bonde-logo-icon.png">
-            </td>
-          </tr>
-        </table>
-      </td>
+        <td>
+            <table width="100%">
+                <tr>
+                    <td align="left" style="color: #4A4A4A; font-size: 12px; padding-left: 16px;">
+                        Feito pra causar. Feito com <b>BONDE</b>.
+                    </td>
+                    <td align="right" style="padding-right: 16px;">
+                        <img src="https://s3.amazonaws.com/hub-central-dev/uploads/1524537742_bonde-logo-icon.png">
+                    </td>
+                </tr>
+            </table>
+        </td>
     </tr>
     <tr>
-    <% if @community_name.present?  %>
-      <td align="center" style="color: #9B9B9B; font-weight: 300; font-size: 9px; padding: 16px 40px;">
-        O BONDE é a plataforma que <%= @community_name  %> usa para criar e gerenciar as páginas de
-        mobilização, por isso você recebe essas notificações vindas da gente ;)
-        </td>
-      </tr>
-    <% else  %>
-      <tr>
         <td align="center" style="color: #9B9B9B; font-weight: 300; font-size: 9px; padding: 16px 40px;">
-         Feito pra causar. Feito com BONDE.
+            <%  if !@community_name.nil?  %>
+                O BONDE é a plataforma que <%= @community_name %> usa para criar e gerenciar as páginas de
+                mobilizações, por isso você recebe essas notificações vindas da gente ;)
+            <% else %>
+                O BONDE é a plataforma usada para criar e gerenciar as páginas de
+                mobilizações, por isso você recebe essas notificações vindas da gente ;)
+            <% end %>
         </td>
-      </tr>
-    <% end  %>
+    </tr>
     <!-- FOOTER -->
   </table>
 </body>
