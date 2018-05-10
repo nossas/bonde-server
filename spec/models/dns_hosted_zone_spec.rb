@@ -81,4 +81,12 @@ RSpec.describe DnsHostedZone, type: :model do
       end
     end
   end
+
+  describe 'POST /communities/:community_id/dns_hosted_zones/' do
+    let(:resource)  { build(:dns_hosted_zone) }
+    before do
+      expect(resource).to receive(:create_completed_hosted_zone).and_call_original
+    end
+    it { resource.save }
+  end
 end
