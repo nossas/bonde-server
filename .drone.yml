@@ -109,7 +109,6 @@ pipeline:
     service: bonde/server
     sidekick: "migrations nossas/bonde-server:${DRONE_TAG##v}"
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
-
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -136,7 +135,6 @@ pipeline:
     group: deploying_prod
     service: bonde/server-worker
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
-
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -186,6 +184,7 @@ pipeline:
     when:
       event: [ push, tag, build, publish, deployment, pull_request ]
       status: [ success, failure ]
+
 
 services:
   database:
