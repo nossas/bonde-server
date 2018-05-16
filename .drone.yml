@@ -21,27 +21,27 @@ pipeline:
       event: [push, tag]
 
   db-tests:
-    image: nossas/docker-pgtap
+    image: nossas/docker-pgtap:develop
     commands:
       - /test.sh -h database -u bonde -w 3x4mpl3 -d hub_api_test -t './spec/**/**/*.sql'
 
-  publish-staging:
+  staging-publish:
     image: plugins/docker
     repo: nossas/bonde-server
     secrets: [ docker_username, docker_password ]
     tags:
-      - ${DRONE_BRANCH}
+      - ${DRONE_BRANCH/\//-}
     when:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-staging-server:
+  staging-deploy-api-v1:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server
-    docker_image: nossas/bonde-server:${DRONE_BRANCH}
-    sidekick: migrations nossas/bonde-server:${DRONE_BRANCH}
+    service: webservers/api-v1
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    sidekick: migrations nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -49,12 +49,12 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-staging-mailers:
+  staging-deploy-mailchimp:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server-mailers
-    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    service: workers/mailchimp
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -62,12 +62,12 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-staging-worker:
+  staging-deploy-mailers:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: staging/server-worker
-    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    service: workers/mailers
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -75,16 +75,12 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  deploy-rancher-staging-crontab:
+  staging-deploy-migrations:
     image: peloton/drone-rancher
+    group: deploying
     url: http://cluster.bonde.org
-    service: staging/server-crontab
-    sidekick: cmd-01 nossas/bonde-server:${DRONE_BRANCH}
-    sidekick: cmd-02 nossas/bonde-server:${DRONE_BRANCH}
-    sidekick: cmd-03 nossas/bonde-server:${DRONE_BRANCH}
-    sidekick: cmd-04 nossas/bonde-server:${DRONE_BRANCH}
-    sidekick: cmd-05 nossas/bonde-server:${DRONE_BRANCH}
-    docker_image: nossas/bonde-server:${DRONE_BRANCH}
+    service: workers/migrations
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
@@ -92,7 +88,74 @@ pipeline:
       status: success
       branch: [hotfix-*, release-*, feature-*, develop]
 
-  publish-docker-production:
+  staging-deploy-donations:
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: cronjobs/donations
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+  staging-deploy-donations-recovery-from-metadata:
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-recovery-from-metadata
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+  staging-deploy-donations-schedule-charges :
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-schedule-charges
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+
+  staging-deploy-donations-sync-balance-operations :
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-sync-balance-operations
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+
+  staging-deploy-donations-sync-gateway-transactions :
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-sync-gateway-transactions
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix-*, release-*, feature-*, develop]
+
+  production-publish:
     image: plugins/docker
     repo: nossas/bonde-server
     secrets: [ docker_username, docker_password ]
@@ -102,11 +165,11 @@ pipeline:
       status: success
       event: tag
 
-  deploy-rancher-production-server:
+  production-deploy-api-v1:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     group: deploying_prod
-    service: bonde/server
+    service: webservers/api-v1
     sidekick: "migrations nossas/bonde-server:${DRONE_TAG##v}"
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
@@ -116,11 +179,11 @@ pipeline:
       status: success
       branch: tag
 
-  deploy-rancher-production-mailers:
+  production-deploy-mailers:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     group: deploying_prod
-    service: bonde/server-mailers
+    service: workers/mailers
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
     confirm: true
@@ -129,11 +192,11 @@ pipeline:
       status: success
       branch: tag
 
-  deploy-rancher-production-mailchimp:
+  production-deploy-mailchimp:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     group: deploying_prod
-    service: bonde/server-worker
+    service: workers/mailchimp
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
     confirm: true
@@ -142,39 +205,36 @@ pipeline:
       status: success
       branch: tag
 
-  deploy-rancher-production-crontab:
+  production-deploy-migrations:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     group: deploying_prod
-    service: bonde/server-crontab
+    service: workers/migrations
+    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: tag
+
+  production-deploy-crontab:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    group: deploying_prod
+    service: cronjobs/donations
     sidekick: "cmd-01 nossas/bonde-server:${DRONE_TAG##v}"
     sidekick: "cmd-02 nossas/bonde-server:${DRONE_TAG##v}"
     sidekick: "cmd-03 nossas/bonde-server:${DRONE_TAG##v}"
     sidekick: "cmd-04 nossas/bonde-server:${DRONE_TAG##v}"
     sidekick: "cmd-05 nossas/bonde-server:${DRONE_TAG##v}"
-    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+    docker_image: "busybox"
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
       branch: tag
-
-  # deploy:
-  #   image: appleboy/drone-ssh
-  #   host: ssh.bonde.org
-  #   username: ubuntu
-  #   port: 22
-  #   command_timeout: 180
-  #   secrets: [ ssh_key ]
-  #   script:
-  #     - sudo docker pull nossas/bonde-server:${DRONE_TAG##v}
-  #     - sudo docker tag nossas/bonde-server:${DRONE_TAG##v} dokku/api:latest
-  #     - dokku tags:deploy api latest
-  #     - dokku run api bin/rake db:migrate
-  #   when:
-  #     status: success
-  #     event: tag
 
   notify:
     image: plugins/slack
