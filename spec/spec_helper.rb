@@ -44,3 +44,4 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!(allow: %r{https://api.codacy.com/2.0/coverage/})
   end
 end
+

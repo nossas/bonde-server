@@ -10,7 +10,7 @@ RSpec.describe DnsHostedZone, type: :model do
   subject { build :dns_hosted_zone, community: (create :community) }
 
   it { should belong_to :community }
-  
+
   it { should have_many :users }
   it { should have_many :dns_records }
 
@@ -69,7 +69,7 @@ RSpec.describe DnsHostedZone, type: :model do
           before do
             expect_any_instance_of(DnsHostedZone).to receive(:compare_ns).and_return(contexto)
           end
-        
+
           it { expect(subject.check_ns_correctly_filled!).to be contexto }
 
           it do
@@ -80,5 +80,13 @@ RSpec.describe DnsHostedZone, type: :model do
         end
       end
     end
+  end
+
+  describe 'POST /communities/:community_id/dns_hosted_zones/' do
+    let(:resource)  { build(:dns_hosted_zone) }
+    before do
+      expect(resource).to receive(:create_completed_hosted_zone).and_call_original
+    end
+    it { resource.save }
   end
 end

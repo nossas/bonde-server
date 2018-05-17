@@ -151,13 +151,13 @@ class Donation < ActiveRecord::Base
 
     obj['address'] = address if not_empty_val(address)
     obj['phone'] = phone if not_empty_val(phone)
-    
+
     if trans['customer']
       fill_customer_in_transaction trans, obj
     else
       fill_no_customer_in_transaction trans, obj
     end
-    return obj    
+    return obj
   end
 
   def not_empty_val var
@@ -170,7 +170,7 @@ class Donation < ActiveRecord::Base
     customer_obj['document_number'] = trans['customer']['document_number'] if trans['customer']['document_number'] 
     customer_obj['document_type'] = trans['customer']['document_type'] if trans['customer']['doc_type'] 
   end
-  
+
   def fill_no_customer_in_transaction trans, customer_obj
     if trans.try(:card)
       customer_obj['name'] = trans.card.holder_name  if trans.card.holder_name
