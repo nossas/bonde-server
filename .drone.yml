@@ -33,7 +33,7 @@ pipeline:
       - ${DRONE_BRANCH/\//-}
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-api-v1:
     image: peloton/drone-rancher
@@ -47,7 +47,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-mailchimp:
     image: peloton/drone-rancher
@@ -60,7 +60,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-mailers:
     image: peloton/drone-rancher
@@ -73,7 +73,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-migrations:
     image: peloton/drone-rancher
@@ -86,7 +86,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-donations:
     image: peloton/drone-rancher
@@ -99,7 +99,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-donations-recovery-from-metadata:
     image: peloton/drone-rancher
@@ -112,7 +112,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   staging-deploy-donations-schedule-charges :
     image: peloton/drone-rancher
@@ -125,7 +125,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
 
   staging-deploy-donations-sync-balance-operations :
@@ -139,7 +139,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
 
   staging-deploy-donations-sync-gateway-transactions :
@@ -153,7 +153,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: [hotfix-*, release-*, feature-*, develop]
+      branch: [hotfix/*, release/*, feature/*, develop]
 
   production-publish:
     image: plugins/docker
