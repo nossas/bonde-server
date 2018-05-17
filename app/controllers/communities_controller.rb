@@ -67,6 +67,17 @@ class CommunitiesController < ApplicationController
     end
   end
 
+  def subscription_reports
+    community = Community.find params[:community_id]
+    authorize community
+
+    respond_with do |format|
+      format.csv do
+        send_data community.subscription_reports.copy_to_string, type: Mime::CSV, disposition: "attachment; filename=subscription_report_#{community.name.parameterize}.csv"
+      end
+    end
+  end
+
   def list_activists
     community = Community.find params[:community_id]
 
