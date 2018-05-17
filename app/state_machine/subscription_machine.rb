@@ -30,7 +30,7 @@ class SubscriptionMachine
   end
 
   after_transition(to: :unpaid) do |subscription, transition|
-    subscription.notify_activist(:unpaid_subscription)
+    subscription.notify_activist(:unpaid_subscription) unless subscription.reached_notification_limit?
     unless subscription.reached_retry_limit?
       SubscriptionWorker.perform_at(
         subscription.community.subscription_retry_interval.days.from_now,
