@@ -4,8 +4,8 @@ begin;
 
   select plan(6);
 
-  select has_function('postgraphql', 'create_mobilization', ARRAY['json']);
-  select function_returns('postgraphql', 'create_mobilization', ARRAY['json'], 'json');
+  select has_function('postgraphql', 'create_tags', ARRAY['text', 'text']);
+  select function_returns('postgraphql', 'create_tags', ARRAY['text', 'text'], 'json');
 
   create or replace function test_create_tags_not_auth()
   returns setof text language plpgsql as $$
