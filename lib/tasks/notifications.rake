@@ -26,7 +26,7 @@ namespace :notifications do
             </tr>
             <tr>
               <td align="center" style="padding-bottom: 32px; color: #424242; font-size: 13px;">
-                Olha a notícia boa: sua contribuição a <b>{{community.name}}</b> foi recebida.
+                Olha a notícia boa: sua contribuição a(o) <b>{{community.name}}</b> foi recebida.
                 Obrigada por acreditar nesse trabalho, seu apoio faz toda a diferença! :)
               </td>
             </tr>
@@ -66,7 +66,7 @@ namespace :notifications do
                   {% if last_donation.payment_method == 'credit_card' %}
                     <tr>
                       <td align="left" style="padding-top: 16px; color: #424242">Cartão de crédito final</td>
-                      <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****" | append: last_donation.card_last_digits}} </td>
+                      <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****." | append: last_donation.card_last_digits}} </td>
                     </tr>
                   {% else %}
                     <tr>
@@ -203,7 +203,7 @@ namespace :notifications do
             </tr>
             <tr>
               <td align="center" style="padding-bottom: 48px; color: #424242; font-size: 13px;">
-                Seu apoio mensal a <b>{{community.name}}</b> foi cancelado...
+                Seu apoio recorrente a(o) <b>{{community.name}}</b> foi cancelado...
                 Agradecemos muito sua ajuda até então, pode acreditar que fez muita diferença!
               </td>
             </tr>
@@ -227,11 +227,11 @@ namespace :notifications do
     label = 'canceled_subscription'
     if nt = NotificationTemplate.find_by_label(label)
       nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{customer.first_name}}, está por aí?')
+      nt.update_attribute(:subject_template, 'Olá {{customer.first_name}}, sua doação foi cancelada :(')
     else
       NotificationTemplate.find_or_create_by(
         label: label,
-        subject_template: '{{customer.first_name}}, está por aí?',
+        subject_template: 'Olá {{customer.first_name}}, sua doação foi cancelada :(',
         body_template: sub_template
       )
       end
@@ -262,7 +262,7 @@ namespace :notifications do
                 Como vai?
                 <br>
                 Emitimos o boleto pra você poder seguir
-                apoiando a <b>{{community.name}}</b>.
+                apoiando <b>{{community.name}}</b>.
                 Para acessar o boleto, é só clicar no botão:
               </td>
             </tr>
@@ -289,7 +289,7 @@ namespace :notifications do
             </tr>
             <tr>
               <td align="center" style="padding-bottom: 64px; color: #4A4A4A; font-size: 13px;">
-                E pra apoiar é fácil: você pode pagar pelo  Internet Banking ou agência
+                E pra apoiar é fácil: você pode pagar pelo Internet Banking ou agência
                 de qualquer banco até a data de vencimento. Depois de vencido, só
                 será aceito pelo banco emissor. Se o botão não funcionar, é só
                 clicar neste link:
