@@ -1,4 +1,3 @@
-# coding: utf-8
 class Subscription < ActiveRecord::Base
   include Mailchimpable
 
@@ -167,7 +166,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def community_rule(options = {})
-    recipient ||= community.recipient.pagarme_recipient_id’
+    recipient ||= community.recipient.pagarme_recipient_id
     PagarMe::SplitRule.new(
       {
         charge_processing_fee: false,
