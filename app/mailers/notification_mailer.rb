@@ -4,6 +4,7 @@ class NotificationMailer < ApplicationMailer
     @template = notification.notification_template
     @body = body.html_safe
     @community_name = community_name
+    @community_image = community_image
     configure_xsmtp_headers
     mail(mail_attributes)
   end
@@ -12,6 +13,10 @@ class NotificationMailer < ApplicationMailer
 
   def community_name
     Community.find(@notification.template_vars['community']['id']).name if @notification.template_vars.try(:[], 'community').present?
+  end
+
+  def community_image
+    Community.find(@notification.template_vars['community']['id']).image if @notification.template_vars.try(:[], 'community').present?
   end
 
   def subject
