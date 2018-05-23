@@ -554,60 +554,6 @@ Sua doação continua válida e você continuará sendo debitado na data correta
       )
     end
 
-    puts 'looking for refused_donation template'
-    sub_template = (%{
-<tr>
-  <td style="padding-bottom: 16px;">
-    <table
-      width="100%"
-      style="
-        border-collapse: collapse;
-        border-radius: 5px;
-        border-style: hidden;
-        background-color: #FFFFFF;
-      "
-    >
-      <tr>
-        <td style="padding: 32px 48px;" align="center">
-          <table>
-            <tr>
-              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 18px;">
-                Olá, <span style="color: #EE0099; font-weight: 800;">{{customer.first_name}}</span>!
-              </td>
-            </tr>
-            <tr>
-              <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 13px;">
-                Algo deu errado na sua doação a(o) <b>{{community.name}}</b>  -
-                e seu apoio faz muita diferença, então bora resolver juntos? Se você trocou
-                de cartão ou quer alterar a data de cobrança, é só clicar no botão a
-                seguir para editar essas informações:
-                Tente novamente e certifique-se de que todas as informações inseridas estão corretas.
-              </td>
-            </tr>
-            <tr>
-              <td align="center" style="padding-bottom: 0; color: #4A4A4A; font-size: 11px;">
-                Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>})
-    label = 'refused_donation'
-    if nt = NotificationTemplate.find_by_label(label)
-      nt.update_attribute(:body_template, sub_template)
-      nt.update_attribute(:subject_template, '{{community.name}} não recebeu sua doação :/')
-    else
-      NotificationTemplate.find_or_create_by(
-        label: label,
-        subject_template: '{{community.name}} não recebeu sua doação :/',
-        body_template: sub_template
-      )
-    end
-
-
     puts 'looking for waiting_payment_donation template'
     sub_template = (%{
 <tr>
@@ -666,7 +612,7 @@ Sua doação continua válida e você continuará sendo debitado na data correta
                 será aceito pelo banco emissor. Se o botão não funcionar, é só
                 clicar neste link:
                 <br>
-?                      <a href="{{boleto_url}}">{{boleto_url}}</a>
+                      <a href="{{boleto_url}}">{{boleto_url}}</a>
               </td>
             </tr>
             <tr>
@@ -819,10 +765,8 @@ Sua doação continua válida e você continuará sendo debitado na data correta
             <tr>
               <td align="center" style="padding-bottom: 40px; color: #424242; font-size: 13px;">
                 Algo deu errado na sua doação a(o) <b>{{community.name}}</b>  -
-                e seu apoio faz muita diferença, então bora resolver juntos? Se você trocou
-                de cartão ou quer alterar a data de cobrança, é só clicar no botão a
-                seguir para editar essas informações:
-                Tente novamente e certifique-se de que todas as informações inseridas estão corretas.
+                e seu apoio faz muita diferença, então bora resolver juntos?
+                Basta tentar novamente em nosso site e verificar se todas as informações inseridas estão corretas :)
               </td>
             </tr>
             <tr>
