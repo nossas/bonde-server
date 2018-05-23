@@ -225,7 +225,7 @@ class Donation < ActiveRecord::Base
       boleto_barcode: gateway_data.try(:[], 'boleto_barcode'),
       boleto_url: gateway_data.try(:[], 'boleto_url'),
       card_last_digits: gateway_data.try(:[], 'card_last_digits'),
-      created: created_at,
+      created: created_at.strftime("%d/%m/%Y"),
       donation_id: id,
       activist_id: activist_id,
       amount: ( amount / 100),
