@@ -225,10 +225,11 @@ class Donation < ActiveRecord::Base
       boleto_barcode: gateway_data.try(:[], 'boleto_barcode'),
       boleto_url: gateway_data.try(:[], 'boleto_url'),
       card_last_digits: gateway_data.try(:[], 'card_last_digits'),
-      created: created_at,
+      created: created_at.strftime("%d/%m/%Y"),
       donation_id: id,
       activist_id: activist_id,
       amount: ( amount / 100),
+      customer_document: (gateway_data['customer']['document_number']).gsub(/\A(\d{3})(\d{3})(\d{3})(\d{2})\Z/, "\\1.\\2.\\3-\\4"),
       community: {
         id: community.id,
         name: community.name,
