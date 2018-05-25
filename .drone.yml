@@ -177,7 +177,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: tag
+      event: tag
 
   production-deploy-mailers:
     image: peloton/drone-rancher
@@ -190,7 +190,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: tag
+      event: tag
 
   production-deploy-mailchimp:
     image: peloton/drone-rancher
@@ -203,7 +203,7 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: tag
+      event: tag
 
   production-deploy-migrations:
     image: peloton/drone-rancher
@@ -216,25 +216,70 @@ pipeline:
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: tag
+      event: tag
 
-  production-deploy-crontab:
+  production-deploy-donations:
     image: peloton/drone-rancher
-    url: http://cluster.bonde.org
     group: deploying_prod
+    url: http://cluster.bonde.org
     service: cronjobs/donations
-    sidekick: "cmd-01 nossas/bonde-server:${DRONE_TAG##v}"
-    sidekick: "cmd-02 nossas/bonde-server:${DRONE_TAG##v}"
-    sidekick: "cmd-03 nossas/bonde-server:${DRONE_TAG##v}"
-    sidekick: "cmd-04 nossas/bonde-server:${DRONE_TAG##v}"
-    sidekick: "cmd-05 nossas/bonde-server:${DRONE_TAG##v}"
-    docker_image: "busybox"
+    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
     confirm: true
     secrets: [ rancher_access_key, rancher_secret_key ]
     when:
       status: success
-      branch: tag
+      event: tag
+  production-deploy-donations-recovery-from-metadata:
+    image: peloton/drone-rancher
+    group: deploying_prod
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-recovery-from-metadata
+    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      event: tag
+  production-deploy-donations-schedule-charges :
+    image: peloton/drone-rancher
+    group: deploying_prod
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-schedule-charges
+    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      event: tag
+
+  production-deploy-donations-sync-balance-operations :
+    image: peloton/drone-rancher
+    group: deploying_prod
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-sync-balance-operations
+    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      event: tag
+
+  production-deploy-donations-sync-gateway-transactions :
+    image: peloton/drone-rancher
+    group: deploying_prod
+    url: http://cluster.bonde.org
+    service: cronjobs/donations-sync-gateway-transactions
+    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      event: tag
 
   notify:
     image: plugins/slack
@@ -244,7 +289,6 @@ pipeline:
     when:
       event: [ push, tag, build, publish, deployment, pull_request ]
       status: [ success, failure ]
-
 
 services:
   database:
