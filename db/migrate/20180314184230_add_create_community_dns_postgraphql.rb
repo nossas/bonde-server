@@ -43,7 +43,6 @@ class AddCreateCommunityDnsPostgraphql < ActiveRecord::Migration
         end;
       $function$;
 
-      GRANT USAGE ON SCHEMA microservices to postgres;
       GRANT EXECUTE on FUNCTION microservices.create_community_dns(data json) to microservices;
       GRANT INSERT, SELECT on public.dns_hosted_zones to microservices;
       GRANT USAGE ON SEQUENCE dns_hosted_zones_id_seq to microservices;

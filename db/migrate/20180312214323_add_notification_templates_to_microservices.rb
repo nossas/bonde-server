@@ -15,7 +15,6 @@ create or replace view microservices.notifications as
 
 
 grant usage on schema microservices to microservices;
-grant usage on schema microservices to postgres;
 grant select on notification_templates to microservices;
 grant select on notifications to microservices;
 grant select on microservices.notification_templates to microservices;
