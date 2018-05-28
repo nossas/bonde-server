@@ -91,19 +91,19 @@ RSpec.describe Donation, type: :model do
     before do
       allow(donation).to receive(:notify_activist)
     end
-    let(:donation) { Donation.make! transaction_status: 'pending' }
+    let(:donation) { Donation.make! transaction_status: 'pending', subscription: false }
 
-    context "when donation has from local subcription" do
+    context "when donation has not from local subcription" do
       before do
-        allow(donation).to receive(:local_subscription_id).and_return(143)
         expect(donation).not_to receive(:notify_activist)
       end
 
       it { donation.notify_when_not_subscription :template_name }
     end
 
-    context "when donation has not from local subscription" do
+    context "when donation has from local subscription" do
       before do
+        allow(donation).to receive(:subscription).and_return(true)
         expect(donation).to receive(:notify_activist).with(:template_name)
       end
 
