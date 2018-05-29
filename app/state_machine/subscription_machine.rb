@@ -20,9 +20,10 @@ class SubscriptionMachine
     MailchimpSyncWorker.perform_async(subscription.id, 'subscription')
   end
 
-  after_transition(from: :pending, to: :unpaid) do |subscription|
-    subscription.notify_activist(:unpaid_subscription)
-  end
+  # TODO: Trying to setup custom notification at first attempt to charge
+  # after_transition(from: :pending, to: :unpaid) do |subscription|
+  #   subscription.notify_activist(:unpaid_subscription)
+  # end
 
   after_transition(to: :canceled) do |subscription|
     subscription.notify_activist(:canceled_subscription)
@@ -41,7 +42,7 @@ class SubscriptionMachine
     MailchimpSyncWorker.perform_async(subscription.id, 'subscription')
   end
 
-  after_transition do |subscription, transition| 
+  after_transition do |subscription, transition|
     subscription.update_attributes status: transition.to_state
   end
 end
