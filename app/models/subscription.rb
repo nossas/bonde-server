@@ -238,7 +238,7 @@ class Subscription < ActiveRecord::Base
           boleto_expiration_date: last_donation.gateway_data.try(:[], 'boleto_expiration_date'),
           boleto_barcode: last_donation.gateway_data.try(:[], 'boleto_barcode'),
           boleto_url: last_donation.gateway_data.try(:[], 'boleto_url'),
-          customer_document: (last_donation.gateway_data.try(:[],['customer']).try(:[], ['document_number'])).nil? ? '' : (last_donation.gateway_data.try(:[],['customer']).try(:[], ['document_number'])).gsub(/\A(\d{3})(\d{3})(\d{3})(\d{2})\Z/, "\\1.\\2.\\3-\\4"),
+          customer_document: (last_donation.gateway_data.try(:[], 'customer').try(:[], 'document_number')).nil? ? '' : (last_donation.gateway_data.try(:[], 'customer').try(:[], 'document_number')).gsub(/\A(\d{3})(\d{3})(\d{3})(\d{2})\Z/, "\\1.\\2.\\3-\\4"),
           donation_id: last_donation.id,
           card_last_digits: last_donation.gateway_data.try(:[], 'card_last_digits')
         }
