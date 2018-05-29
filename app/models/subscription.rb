@@ -119,7 +119,8 @@ class Subscription < ActiveRecord::Base
         amount: amount,
         email: activist.email,
         transaction_status: 'processing',
-        activist: activist
+        activist: activist,
+        subscription: true
       )
       transaction = PagarMe::Transaction.new(
         {
