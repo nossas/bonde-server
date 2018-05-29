@@ -1,3 +1,4 @@
+# coding: utf-8
 # See https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md#configure-your-test-suite for information
 
 FactoryGirl.define do

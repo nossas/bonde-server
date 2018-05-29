@@ -137,7 +137,7 @@ class Donation < ActiveRecord::Base
   end
 
   def notify_when_not_subscription template_name
-    unless local_subscription_id.present?
+    unless subscription?
       notify_activist(template_name.to_sym)
     end
   end

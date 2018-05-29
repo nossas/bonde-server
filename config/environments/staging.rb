@@ -80,5 +80,5 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  default_url_options[:host] = "api.staging.bonde.org"
+  default_url_options[:host] = ENV['API_HOST'] = "api-v1.staging.bonde.org"
 end
