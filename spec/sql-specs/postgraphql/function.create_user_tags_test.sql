@@ -43,7 +43,7 @@ begin;
       )
     );
 
-    return next is(_result->>'msg', 'user tags created successfully', 'check msg about created user tags');
+    return next is(_result->>0, 'user_nossas-label', 'check created user tags');
   end;
   $$;
   select * from test_create_user_tags_as_valid();
