@@ -834,5 +834,116 @@ Você requisitou uam troca de senha para o bonde, clique no link abaixo para tro
         body_template: sub_template
       )
     end
+
+
+    puts 'looking for welcome_user template'
+    sub_template = (%{
+<tr>
+    <td style="height:134px;position:relative;">
+        <div style="background-image:url();background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+            <tr>
+                <td>
+Olá {{user.first_name}}
+<br/><br/>
+Você está recebendo este email por que acaba de embarcar no BONDE :)
+<br/><br/>
+Se tiver dúvidas nessa chegada, pode dar uma olhada em nosso tutorial no <a href="https://trilho.bonde.org">trilho.bonde.org</a> ou nas respostas de nossas perguntas frequentes em <a href="https://faq.bonde.org">faq.bonde.org</a> :)
+<br/><br/>
+Caso você não tenha realizado este cadastro, ignore este e-mail
+<br/><br/>
+
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>})
+    label = 'welcome_user'
+    subject = 'Você acaba de embarcar no BONDE!'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: notification_layout(sub_template),
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: notification_layout(sub_template)
+      )
+    end
   end
+end
+
+def notification_layout(body)
+  %Q{
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>BONDE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800" rel="stylesheet">
+  <style type="text/css">
+    a, a:link, a:visited, a:hover, a:active { color: #EE0099; }
+  </style>
+</head>
+<body style="margin: 0; padding: 16px; background-color: #EEEEEE; text-align: center;">
+  <table
+    align="center"
+    cellpadding="0"
+    cellspacing="0"
+    style="font-family: 'Nunito', sans-serif; max-width: 600px;"
+  >
+    <!-- HEADER -->
+    <tr>
+      <td align="center" style="padding: 16px;">
+        <img src="https://s3.amazonaws.com/hub-central-dev/uploads/1524537731_bonde-logo.png" style="vertical-align: middle;">
+        {%- if community.image  %}
+          <div style="width: 1px; height: 26px; background-color: #AAAAAA; margin: 0 20px; display: inline-block; vertical-align: middle;"></div>
+          <img src="{{community.image}}" width="20%" style="vertical-align: middle;">
+        {% endif %}
+      </td>
+    </tr>
+    <!-- HEADER -->
+
+    <!-- MAIN -->
+    #{body}
+    <!-- MAIN -->
+
+    <!-- FOOTER -->
+    <tr>
+        <td>
+            <table width="100%">
+                <tr>
+                    <td align="left" style="color: #4A4A4A; font-size: 12px; padding-left: 16px;">
+                        Feito pra causar. Feito com <b>BONDE</b>.
+                    </td>
+                    <td align="right" style="padding-right: 16px;">
+                        <img src="https://s3.amazonaws.com/hub-central-dev/uploads/1524537742_bonde-logo-icon.png">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="color: #9B9B9B; font-weight: 300; font-size: 9px; padding: 16px 40px;">
+            {%  if community.name  %}
+                O BONDE é a plataforma que {{ community.name }} usa para criar e gerenciar as páginas de
+                mobilizações, por isso você recebe essas notificações vindas da gente ;)
+            {% else %}
+                O BONDE é a plataforma usada para criar e gerenciar as páginas de
+                mobilizações, por isso você recebe essas notificações vindas da gente ;)
+            {% end %}
+        </td>
+    </tr>
+    <!-- FOOTER -->
+  </table>
+</body>
+</html>
+}
 end
