@@ -854,7 +854,9 @@ Você está recebendo este email por que acaba de embarcar no BONDE :)
 <br/><br/>
 Se tiver dúvidas nessa chegada, pode dar uma olhada em nosso tutorial no <a href="https://trilho.bonde.org">trilho.bonde.org</a> ou nas respostas de nossas perguntas frequentes em <a href="https://faq.bonde.org">faq.bonde.org</a> :)
 <br/><br/>
-Caso você não tenha realizado este cadastro, ignore este e-mail
+Um abraço,
+<br/>
+Equipe do BONDE.
 <br/><br/>
 
                 </td>
