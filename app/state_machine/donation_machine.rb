@@ -16,17 +16,17 @@ class DonationMachine
   transition from: :paid, to: %i(refunded chargeback pending_refund)
   transition from: :pending_refund, to: %i(refunded)
 
-  after_transition from: :pending, to: :waiting_payment do |donation, transition| 
+  after_transition from: :pending, to: :waiting_payment do |donation, transition|
     donation.notify_when_not_subscription :waiting_payment_donation
   end
 
-  after_transition from: :pending, to: :paid do |donation, transaction|
-    donation.notify_when_not_subscription :paid_donation
-  end
+  # after_transition from: :pending, to: :paid do |donation, transaction|
+  #   donation.notify_when_not_subscription :paid_donation
+  # end
 
-  after_transition from: :waiting_payment, to: :paid do |donation, transaction|
-    donation.notify_when_not_subscription :paid_donation
-  end
+  # after_transition from: :waiting_payment, to: :paid do |donation, transaction|
+  #   donation.notify_when_not_subscription :paid_donation
+  # end
 
   after_transition to: :refused do |donation|
     donation.notify_when_not_subscription :refused_donation
@@ -37,6 +37,7 @@ class DonationMachine
   end
 
   after_transition(to: :paid) do |donation|
+    donation.notify_when_not_subscription :paid_donation
     donation.update_attributes synchronized: false
     donation.async_update_mailchimp
   end
