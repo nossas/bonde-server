@@ -1,13 +1,19 @@
 begin;
-  select plan(12);
+  \i ./spec/sql-support/insert_basic_data.sql;
+
+  select plan(13);
 
   select has_function('postgraphql', 'register', ARRAY['json']);
   select function_returns('postgraphql', 'register', ARRAY['json'], 'postgraphql.jwt_token');
+
+  insert into public.notification_templates(label,subject_template,body_template,created_at,updated_at)
+  values ('welcome_user','test subject', 'test body', now(), now());
 
   create or replace function test_register_with_common_user()
   returns setof text language plpgsql as $$
   declare
   begin
+
     set local role common_user;
     return next throws_matching(
       'select postgraphql.register(''{"first_name": "lorem", "email": "lorem@lorem.com", "password": "123456"}''::json)',
@@ -77,6 +83,14 @@ begin;
      );
      return next is(_token.role, 'common_user', 'should jwt with role common_user');
      return next is(_token.user_id is not null, true, 'should jwt with user_id filled');
+
+    -- should generate welcome notification
+    return next is((
+      select true from notifications n
+        join notification_templates nt on nt.id = n.notification_template_id
+        where n.user_id = _token.user_id
+        and nt.label = 'welcome_user'
+    ), true, 'should have generate welcome_user notification after registration');
 
     -- should aise error when email already take
     return next throws_matching(
