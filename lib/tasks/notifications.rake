@@ -940,7 +940,7 @@ def notification_layout(body)
             {% else %}
                 O BONDE é a plataforma usada para criar e gerenciar as páginas de
                 mobilizações, por isso você recebe essas notificações vindas da gente ;)
-            {% end %}
+            {% endif %}
         </td>
     </tr>
     <!-- FOOTER -->
