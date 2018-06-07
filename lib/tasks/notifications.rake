@@ -697,20 +697,17 @@ Sua doação continua válida e você continuará sendo debitado na data correta
                       <td align="left" style="padding-top: 16px; color: #424242">Cartão de crédito final</td>
                       <td align="right" style="padding-top: 16px; color: #AAAAAA;"> {{"****.****.****." | append: card_last_digits}} </td>
                     </tr>
-                  {% else %}
-                    <tr>
-                      <td align="left" style="padding-top: 16px; color: #424242">Boleto</td>
-                      <td align="right" style="padding-top: 16px; color: #AAAAAA;">{{boleto_url}}</td>
-                    </tr>
                   {% endif %}
                 </table>
               </td>
             </tr>
+            {% if payment_method == 'credit_card' %}
             <tr align="center">
               <td align="center" style="padding-bottom: 56px; color: #4A4A4A; font-size: 11px; font-weight: 600;">
                 Em sua fatura, aparecerá a descrição "PG *NOSSAS CIDADES"
               </td>
             </tr>
+            {% endif %}
             <tr>
               <td align="center" style="padding-bottom: 0; color: #4A4A4A; font-size: 11px;">
                 Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
