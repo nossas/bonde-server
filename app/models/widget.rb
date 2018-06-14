@@ -1,8 +1,10 @@
+# coding: utf-8
 class Widget < ActiveRecord::Base
   include Mailchimpable
 
   validates :sm_size, :md_size, :lg_size, :kind, presence: true
   validates :mailchimp_segment_id, uniqueness: true, allow_nil: true
+  validates_numericality_of :goal, greater_than: 0, less_than: 1000000, allow_nil: true
 
   belongs_to :block
 
