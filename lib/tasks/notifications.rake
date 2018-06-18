@@ -829,12 +829,12 @@ Você requisitou uam troca de senha para o bonde, clique no link abaixo para tro
 
     puts 'looking for welcome_user template'
     sub_template = (%{
-<tr>
-    <td style="height:134px;position:relative;">
-        <div style="background-image:url();background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
-    </td>
-</tr>
-<tr>
+<tr width="100%" style="
+        border-collapse: collapse;
+        border-radius: 5px;
+        border-style: hidden;
+        background-color: #FFFFFF;
+      ">
     <td>
         <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
             <tr>
