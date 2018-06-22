@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
-ruby '2.3.7'
+ruby '2.4.4'
 
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.10'
 gem 'rails-api'
 gem 'spring', group: :development
 gem 'pg'
