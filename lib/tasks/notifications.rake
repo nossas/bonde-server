@@ -841,7 +841,7 @@ Você requisitou uam troca de senha para o bonde, clique no link abaixo para tro
                 <td>
 Olá {{user.first_name}}
 <br/><br/>
-Você está recebendo este email por que acaba de embarcar no BONDE :)
+Você está recebendo este email porque acaba de embarcar no BONDE!
 <br/><br/>
 Se tiver dúvidas nessa chegada, pode dar uma olhada em nosso tutorial no <a href="https://trilho.bonde.org">trilho.bonde.org</a> ou nas respostas de nossas perguntas frequentes em <a href="https://faq.bonde.org">faq.bonde.org</a> :)
 <br/><br/>
