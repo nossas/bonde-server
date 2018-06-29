@@ -7,7 +7,7 @@ returns trigger
 language plpgsql
 as $$
     begin
-        if new.traefik_host_rule <> old.traefik_host_rule then
+        if new.traefik_host_rule is not null then
             perform pg_notify('dns_channel', pgjwt.sign(json_build_object(
                 'action', 'refresh_frontend',
                 'id', new.id,
