@@ -22,6 +22,7 @@ class Mobilization < ActiveRecord::Base
 
   before_validation :slugify
   before_save :set_color_scheme
+  before_save :refresh_host_rule
   before_create :set_twitter_share_text
 
   scope :not_deleted, -> { where(deleted_at: nil) }
@@ -46,6 +47,12 @@ class Mobilization < ActiveRecord::Base
     self.custom_domain = template.custom_domain
     self.twitter_share_text = template.twitter_share_text
     self
+  end
+
+  def refresh_host_rule
+    if custom_domain_changed?
+      self.traefik_host_rule = "Host:#{custom_domain.downcase}"
+    end
   end
 
   private
