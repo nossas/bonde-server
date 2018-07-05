@@ -51,7 +51,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def reached_retry_interval?
-    last_donation.created_at + community.subscription_retry_interval.days > DateTime.now && last_donation.transaction_status == 'refused'
+    last_donation.created_at + community.subscription_retry_interval.days < DateTime.now && last_donation.transaction_status == 'refused'
   end
 
   def last_transition
