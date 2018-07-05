@@ -2,16 +2,11 @@ namespace :subscriptions do
   desc "charge on all subscriptions"
   task schedule_charges: [:environment] do
     Subscription.find_each do |subscription|
-      current_state = subscription.current_state
-      can_process = (
-        current_state == 'paid' || (
-          subscription.current_state == 'unpaid' &&
-            !subscription.reached_retry_limit? && subscription.reached_retry_interval?))
-
-      if can_process
-        if subscription.next_transaction_charge_date <= DateTime.now
-          SubscriptionWorker.perform_async(subscription.id)
-        end
+      begin
+        Rails.logger.info "Starting subscription schedule -> #{subscription.id}"
+        SubscriptionSchedulesService.schedule_charges(subscription)
+      rescue Exception => e
+        Rails.logger.info "Subscription #{subscription.id} not synched #{e.inspect}"
       end
     end
   end
