@@ -157,6 +157,19 @@ pipeline:
       status: success
       branch: [hotfix/*, release/*, feature/*, develop]
 
+  staging-deploy-templates-email:
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: workers/templates-email
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix/*, release/*, feature/*, develop]
+
   production-publish:
     image: plugins/docker
     repo: nossas/bonde-server
