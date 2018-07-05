@@ -6,7 +6,7 @@ namespace :subscriptions do
       can_process = (
         current_state == 'paid' || (
           subscription.current_state == 'unpaid' &&
-            !subscription.reached_retry_limit? && reached_retry_interval?))
+            !subscription.reached_retry_limit? && subscription.reached_retry_interval?))
 
       if can_process
         if subscription.next_transaction_charge_date <= DateTime.now
