@@ -12,13 +12,18 @@ pipeline:
       - echo "America/Sao_Paulo" > /etc/timezone
       - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test
       - export CODACY_PROJECT_TOKEN=$CODACY_TOKEN
+      - export CC_TEST_REPORTER_ID=$CODECLIMATE_TOKEN
+      - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      - chmod +x ./cc-test-reporter
+      - ./cc-test-reporter before-build
       - sleep 5;
       - psql -c 'create role bonde SUPERUSER LOGIN;' -hdatabase -Upostgres
       - psql -c 'create database hub_api_test;' -hdatabase -Upostgres
       - bundle install
       - rake db:migrate
       - bundle exec rspec spec
-    secrets: [ codacy_token ]
+      - ./cc-test-reporter after-build --exit-code $EXIT_CODE
+    secrets: [ codacy_token, codeclimate_token ]
     when:
       event: [push, tag]
 
