@@ -1,18 +1,14 @@
 FROM ruby:2.4.4-alpine
-MAINTAINER Nossas <tech@nossas.org>
+LABEL author="Nossas<tech@nossas.org>"
 
-ENV BUILD_PACKAGES postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
+ENV PACKAGES postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git imagemagick=6.9.6.8-r1 imagemagick-dev=6.9.6.8-r1
 # ENV RUBY_PACKAGES ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
 ENV RAILS_ENV=production RACK_ENV=production DISABLE_SSL=true
 
 # Update and install all of the required packages.
 # At the end, remove the apk cache
-RUN apk update && \
-    apk upgrade && \
-    apk --update add --virtual build_deps $BUILD_PACKAGES
-
 RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.5/main' >> /etc/apk/repositories
-RUN apk add --no-cache imagemagick=6.9.6.8-r1 imagemagick-dev=6.9.6.8-r1
+RUN apk add --no-cache --update $PACKAGES
 
 RUN mkdir /usr/app
 WORKDIR /usr/app

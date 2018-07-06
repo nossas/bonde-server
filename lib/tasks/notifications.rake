@@ -1,5 +1,8 @@
 # coding: utf-8
 namespace :notifications do
+  desc "Update all notifications templates"
+  task :all => [:recurring_templates, :accounts_templates]
+
   desc 'build first recurring notifications'
   task recurring_templates: :environment do
 
@@ -940,3 +943,4 @@ def notification_layout(body)
 </html>
 }
 end
+

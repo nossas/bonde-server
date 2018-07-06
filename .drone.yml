@@ -2,23 +2,22 @@ pipeline:
   unit-tests:
     image: ruby:2.4.4-alpine
     commands:
-      - apk update
-      - apk upgrade
-      - apk --update add --virtual build_deps postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl-dev libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
-      - apk --update add ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
       - echo 'http://dl-cdn.alpinelinux.org/alpine/v3.5/main' >> /etc/apk/repositories
-      - apk add --no-cache imagemagick=6.9.6.8-r1 imagemagick-dev=6.9.6.8-r1
+      - apk add --no-cache --update postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git imagemagick=6.9.6.8-r1 imagemagick-dev=6.9.6.8-r1
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
       - echo "America/Sao_Paulo" > /etc/timezone
-      - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test
-      - export CODACY_PROJECT_TOKEN=$CODACY_TOKEN
+      - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test CODACY_PROJECT_TOKEN=$CODACY_TOKEN CC_TEST_REPORTER_ID=$CODECLIMATE_TOKEN CODECOV_TOKEN=$CODECOV_TOKEN
+      - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      - chmod +x ./cc-test-reporter
+      - ./cc-test-reporter before-build
       - sleep 5;
       - psql -c 'create role bonde SUPERUSER LOGIN;' -hdatabase -Upostgres
       - psql -c 'create database hub_api_test;' -hdatabase -Upostgres
       - bundle install
       - rake db:migrate
       - bundle exec rspec spec
-    secrets: [ codacy_token ]
+      - ./cc-test-reporter after-build
+    secrets: [ codacy_token, codeclimate_token, codecov_token ]
     when:
       event: [push, tag]
 
@@ -149,6 +148,19 @@ pipeline:
     group: deploying
     url: http://cluster.bonde.org
     service: cronjobs/donations-sync-gateway-transactions
+    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    when:
+      status: success
+      branch: [hotfix/*, release/*, feature/*, develop]
+
+  staging-deploy-templates-email:
+    image: peloton/drone-rancher
+    group: deploying
+    url: http://cluster.bonde.org
+    service: workers/templates-email
     docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
     confirm: true

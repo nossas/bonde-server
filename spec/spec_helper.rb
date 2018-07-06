@@ -1,16 +1,15 @@
-require "codeclimate-test-reporter"
 require 'codacy-coverage'
 require 'simplecov'
+require 'codecov'
 
 Codacy::Reporter.start
-CodeClimate::TestReporter.start
+SimpleCov.start
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
-  Codacy::Formatter
+  Codacy::Formatter,
+  SimpleCov::Formatter::Codecov
 ])
-
-SimpleCov.start
 
 RSpec.configure do |config|
   config.before(:each) do
@@ -40,7 +39,6 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
-    WebMock.disable_net_connect!(:allow => 'codeclimate.com')
     WebMock.disable_net_connect!(allow: %r{https://api.codacy.com/2.0/coverage/})
   end
 end
