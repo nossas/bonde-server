@@ -1,9 +1,9 @@
 class UpdatePayableDetails < ActiveRecord::Migration
-  def up # rubocop:disable Metrics/MethodLength
+  def up
     execute %Q{
 DROP VIEW IF EXISTS public.payable_details;
 
-CREATE OR REPLACE VIEW public.payable_details AS 
+CREATE OR REPLACE VIEW public.payable_details AS
  SELECT c.id AS community_id,
     w.id as widget_id,
     m.id as mobilization_id,
@@ -12,7 +12,7 @@ CREATE OR REPLACE VIEW public.payable_details AS
     d.subscription_id as subscription_id,
     d.transaction_id,
     (dd.value ->> 'id'::text) AS payable_id,
-    (d.amount / 100.0)::double precision as donation_value,    
+    (d.amount / 100.0)::double precision as donation_value,
     (((dd.value ->> 'amount'::text))::double precision / (100.0)::double precision) AS payable_value,
     (CASE
             WHEN ((d.payment_method)::text = 'boleto'::text) THEN (((dd.value ->> 'fee'::text))::double precision / (100.0)::double precision)
@@ -41,8 +41,8 @@ CREATE OR REPLACE VIEW public.payable_details AS
         select
             coalesce(d2.customer->'name', d.customer->'name') as name,
             coalesce(d2.customer->'email', d.customer->'email') as email
-        from donations d2 
-        where 
+        from donations d2
+        where
         CASE WHEN d.parent_id is null then
             d2.id = d.id
         else d2.id = d.parent_id end
@@ -59,11 +59,11 @@ CREATE OR REPLACE VIEW public.payable_details AS
     }
   end
 
-  def down # rubocop:disable Metrics/MethodLength
+  def down
     execute %Q{
 DROP VIEW IF EXISTS public.payable_details;
 
-CREATE OR REPLACE VIEW public.payable_details AS 
+CREATE OR REPLACE VIEW public.payable_details AS
  SELECT o.id AS community_id,
     w.id as widget_id,
     m.id as mobilization_id,
@@ -72,7 +72,7 @@ CREATE OR REPLACE VIEW public.payable_details AS
     d.subscription_id as subscription_id,
     d.transaction_id,
     (dd.value ->> 'id'::text) AS payable_id,
-    (d.amount / 100.0)::double precision as donation_value,    
+    (d.amount / 100.0)::double precision as donation_value,
     (((dd.value ->> 'amount'::text))::double precision / (100.0)::double precision) AS payable_value,
     (CASE
             WHEN ((d.payment_method)::text = 'boleto'::text) THEN (((dd.value ->> 'fee'::text))::double precision / (100.0)::double precision)
@@ -99,8 +99,8 @@ CREATE OR REPLACE VIEW public.payable_details AS
         select
             coalesce(d2.customer->'name', d.customer->'name') as name,
             coalesce(d2.customer->'email', d.customer->'email') as email
-        from donations d2 
-        where 
+        from donations d2
+        where
         CASE WHEN d.parent_id is null then
             d2.id = d.id
         else d2.id = d.parent_id end

@@ -1,5 +1,5 @@
 class WidgetPolicy < ApplicationPolicy
-  def permitted_attributes # rubocop:disable Metrics/MethodLength
+  def permitted_attributes
     if create?
       [:kind, :goal, settings: [
         # Can re-use settings

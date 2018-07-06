@@ -1,5 +1,5 @@
 class AddAggActivists < ActiveRecord::Migration
-  def up # rubocop:disable Metrics/MethodLength
+  def up
     execute %Q{
 create or replace view public.agg_activists as
   select

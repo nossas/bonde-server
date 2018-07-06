@@ -1,12 +1,12 @@
 class AdjustTaxOnPaymentDetails < ActiveRecord::Migration
-  def up # rubocop:disable Metrics/MethodLength
+  def up
     execute %Q{
 create or replace function nossas_recipient_id() returns text
 language SQL as $$
          select 'RECIPIENT_ID_HERE'::text;
 $$;
 DROP VIEW public.payable_details;
-CREATE OR REPLACE VIEW public.payable_details AS 
+CREATE OR REPLACE VIEW public.payable_details AS
     SELECT o.id AS community_id,
         w.id as widget_id,
         m.id as mobilization_id,
@@ -52,8 +52,8 @@ CREATE OR REPLACE VIEW public.payable_details AS
         select
             coalesce(d2.customer->'name', d.customer->'name') as name,
             coalesce(d2.customer->'email', d.customer->'email') as email
-        from donations d2 
-        where 
+        from donations d2
+        where
         CASE WHEN d.parent_id is null then
             d2.id = d.id
         else d2.id = d.parent_id end
@@ -65,7 +65,7 @@ CREATE OR REPLACE VIEW public.payable_details AS
         SELECT
             ((value->>'amount')::double precision/100.0) as amount,
             ((value->>'amount')::double precision / d.amount::double precision)::double precision * 100.0 as percent
-        FROM jsonb_array_elements(d.payables) 
+        FROM jsonb_array_elements(d.payables)
         where value->>'recipient_id'= public.nossas_recipient_id()
     ) nossas_tx on (true)
     LEFT JOIN LATERAL (
@@ -79,18 +79,18 @@ CREATE OR REPLACE VIEW public.payable_details AS
                 ((d.gateway_data ->> 'cost')::int / 100.0) as transaction_cost
         ) as td
     ) payable_summary on (true)
-    WHERE (((dd.value ->> 'type'::text) = 'credit'::text) 
-    AND ((dd.value ->> 'object'::text) = 'payable'::text) 
-    AND (dd.value->>'recipient_id'::text in (select r.pagarme_recipient_id::text from recipients r where r.community_id = o.id )) 
+    WHERE (((dd.value ->> 'type'::text) = 'credit'::text)
+    AND ((dd.value ->> 'object'::text) = 'payable'::text)
+    AND (dd.value->>'recipient_id'::text in (select r.pagarme_recipient_id::text from recipients r where r.community_id = o.id ))
     OR d.subscription);
 }
     # rubocop:enable Metrics/MethodLength
   end
 
-  def down # rubocop:disable Metrics/MethodLength
+  def down
     execute %Q{
 DROP VIEW public.payable_details;
-CREATE OR REPLACE VIEW "payable_details" AS 
+CREATE OR REPLACE VIEW "payable_details" AS
  SELECT c.id AS community_id,
     w.id AS widget_id,
     m.id AS mobilization_id,

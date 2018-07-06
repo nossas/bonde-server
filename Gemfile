@@ -36,6 +36,7 @@ gem 'test_after_commit', group: :test
 gem 'whenever', require: false
 gem 'codacy-coverage', require: false
 gem 'codecov', :require => false, :group => :test
+gem 'rubocop', require: false
 
 group :staging, :production do
   gem 'newrelic_rpm', '3.15.0.314'
