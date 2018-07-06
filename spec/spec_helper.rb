@@ -1,14 +1,15 @@
 require 'codacy-coverage'
 require 'simplecov'
+require 'codecov'
 
 Codacy::Reporter.start
+SimpleCov.start
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
-  Codacy::Formatter
+  Codacy::Formatter,
+  SimpleCov::Formatter::Codecov
 ])
-
-SimpleCov.start
 
 RSpec.configure do |config|
   config.before(:each) do

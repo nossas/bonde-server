@@ -6,7 +6,7 @@ pipeline:
       - apk add --no-cache --update postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git imagemagick=6.9.6.8-r1 imagemagick-dev=6.9.6.8-r1
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
       - echo "America/Sao_Paulo" > /etc/timezone
-      - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test CODACY_PROJECT_TOKEN=$CODACY_TOKEN CC_TEST_REPORTER_ID=$CODECLIMATE_TOKEN
+      - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test CODACY_PROJECT_TOKEN=$CODACY_TOKEN CC_TEST_REPORTER_ID=$CODECLIMATE_TOKEN CODECOV_TOKEN=$CODECOV_TOKEN
       - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
       - chmod +x ./cc-test-reporter
       - ./cc-test-reporter before-build
@@ -17,7 +17,7 @@ pipeline:
       - rake db:migrate
       - bundle exec rspec spec
       - ./cc-test-reporter after-build
-    secrets: [ codacy_token, codeclimate_token ]
+    secrets: [ codacy_token, codeclimate_token, codecov_token ]
     when:
       event: [push, tag]
 

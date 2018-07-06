@@ -66,6 +66,10 @@ GEM
     chronic (0.10.2)
     codacy-coverage (1.1.8)
       simplecov
+    codecov (0.1.10)
+      json
+      simplecov
+      url
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
@@ -399,6 +403,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
+    url (0.3.2)
     webmock (2.3.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -418,6 +423,7 @@ DEPENDENCIES
   byebug
   carrierwave
   codacy-coverage
+  codecov
   factory_girl_rails (~> 4.8)
   fakeredis
   fog
