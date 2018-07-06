@@ -16,6 +16,7 @@ pipeline:
       - bundle install
       - rake db:migrate
       - bundle exec rspec spec
+      - bundle exec rubocop app spec
       - ./cc-test-reporter after-build
     secrets: [ codacy_token, codeclimate_token, codecov_token ]
     when:
