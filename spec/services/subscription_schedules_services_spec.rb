@@ -35,6 +35,13 @@ RSpec.describe SubscriptionSchedulesService do
         donation.update_columns(created_at: DateTime.now - 6.days)
         expect(SubscriptionSchedulesService.can_process(subscription)).to eq(false)
       end
+
+      it 'when the subscription is not paid, last_donation paid and retry interval is less of community config' do
+        subscription.transition_to(:unpaid)
+        donation.update_columns(transaction_status: 'paid')
+        donation.update_columns(created_at: DateTime.now - 6.days)
+        expect(SubscriptionSchedulesService.can_process(subscription)).to eq(false)
+      end
     end
   end
 end
