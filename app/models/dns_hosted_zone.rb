@@ -3,13 +3,13 @@ require 'net/dns'
 class DnsHostedZone < ActiveRecord::Base
   belongs_to :community
 
-  # after_create :create_hosted_zone_on_aws, unless: :ignore_syncronization?
-  # after_create :create_default_records_on_aws, unless: :ignore_syncronization?
-  # after_create :load_record_from_aws, unless: :ignore_syncronization?
+  after_create :create_hosted_zone_on_aws, unless: :ignore_syncronization?
+  after_create :create_default_records_on_aws, unless: :ignore_syncronization?
+  after_create :load_record_from_aws, unless: :ignore_syncronization?
 
   # run postgres function
   # This function create a new hosted_zone and default dns_records in route53 (aws-sdk) and updated local database
-  after_create :create_completed_hosted_zone
+  # after_create :create_completed_hosted_zone
 
   before_destroy :delete_hosted_zone
 
