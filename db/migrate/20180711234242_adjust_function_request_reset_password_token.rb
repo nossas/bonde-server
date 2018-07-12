@@ -76,7 +76,7 @@ comment on function postgraphql.request_reset_password_token(email text, locale 
 
 grant execute on function postgraphql.request_reset_password_token(email text, locale text) to anonymous, postgraphql;
 grant usage on schema pgjwt to postgraphql, anonymous;
-grant execute on function public.configuration to postgraphql, anonymous;
+grant execute on function public.configuration(text) to postgraphql, anonymous;
 grant select on public.configurations to postgraphql, anonymous;
 
 }
