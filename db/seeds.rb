@@ -86,3 +86,27 @@ mobilizations.each do |mob|
   block = Block.create mobilization: mob, bg_class: 'bg-1', position:1, name: 'Tô nessa'
   Widget.create block: block, kind: ['pressure', 'form'][mob.id % 2], sm_size: 1, md_size: 2, lg_size: 4
 end
+
+# run create all tags
+connection = ActiveRecord::Base.connection()
+
+sql = <<-EOL
+  insert into tags ("name", "label") values ('user_meio-ambiente', 'Meio Ambiente') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_direitos-humanos', 'Direitos Humanos') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_segurança-publica', 'Segurança pública') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_mobilidade', 'Mobilidade') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_direito-das-mulheres', 'Direito das Mulheres') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_feminismo', 'Feminismo') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_participacao-social', 'Participação Social') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_educacao', 'Educação') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_transparencia', 'Transparência') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_direito-lgbtqi+', 'Direito LGBTQI+') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_direito-a-moradia', 'Direito à Moradia') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_combate-a-corrupção', 'Combate à Corrupção') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_combate-ao-racismo', 'Combate ao Racismo') ON CONFLICT (name) DO NOTHING;
+  insert into tags ("name", "label") values ('user_saude-publica', 'Saúde Pública') ON CONFLICT (name) DO NOTHING;
+EOL
+
+sql.split(';').each do |s|
+  connection.execute(s.strip) unless s.strip.empty?
+end
