@@ -4,8 +4,11 @@ class Block < ActiveRecord::Base
   has_many :widgets
   accepts_nested_attributes_for :widgets
 
-  before_validation :set_position
-  after_save :switch_position
+  before_validation do
+    unless self.position.present? || self.mobilization.nil?
+      self.position = (self.mobilization.blocks.where(deleted_at: nil).maximum(:position) || 0) + 1
+    end
+  end
 
   after_save do
     mobilization.touch if mobilization.present?
@@ -14,19 +17,6 @@ class Block < ActiveRecord::Base
   scope :not_deleted, -> { where(deleted_at: nil) }
 
   private
-
-  def set_position
-    unless self.position.present? || self.mobilization.nil?
-      self.position = (self.mobilization.blocks.where(deleted_at: nil).maximum(:position) || 0) + 1
-    end
-  end
-
-  def switch_position
-    block = self.mobilization.blocks.where("position >= ? and deleted_at is null and id <> ?", self.position, self.id).order(:position).first
-    if block.present?
-      block.update_attributes(position: block.position + 1)
-    end
-  end
 
   def self.create_from template, mobilization_instance
     block = Block.new
