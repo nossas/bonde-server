@@ -15,9 +15,7 @@ class DonationService
   end
 
   def self.new_transaction(donation)
-    self.find_or_create_card(donation) unless donation.boleto?
-
-    PagarMe::Transaction.new({
+    transaction = {
       card_id: donation.credit_card,
       amount: donation.amount,
       payment_method: donation.payment_method,
@@ -31,7 +29,12 @@ class DonationService
         email: donation.activist.email,
         donation_id: donation.id
       }
-    })
+    }
+
+    transaction[:card_hash] = donation.card_hash if donation.process_card_hash?
+
+    self.find_or_create_card(donation) unless donation.boleto?
+    PagarMe::Transaction.new(transaction)
   end
 
   def self.create_transaction(donation, address)
@@ -62,6 +65,7 @@ class DonationService
         Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
       end
+      donation
     end
   end
 
