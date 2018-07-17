@@ -7,7 +7,8 @@ class UploadsController < ApplicationController
     storage = Fog::Storage.new({
       :provider              => 'AWS',
       :aws_access_key_id     => ENV['AWS_ID'],
-      :aws_secret_access_key => ENV['AWS_SECRET']
+      :aws_secret_access_key => ENV['AWS_SECRET'],
+      :endpoint              => ENV['AWS_ENDPOINT'] || 's3.amazonaws.com'
     })
     options = {path_style: true}
     headers = {"Content-Type" => params[:contentType], "x-amz-acl" => "public-read"}

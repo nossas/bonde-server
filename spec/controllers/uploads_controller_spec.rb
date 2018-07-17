@@ -15,7 +15,8 @@ RSpec.describe UploadsController, type: :controller do
       storage = Fog::Storage.new({
         :provider              => 'AWS',
         :aws_access_key_id     => ENV['AWS_ID'],
-        :aws_secret_access_key => ENV['AWS_SECRET']
+        :aws_secret_access_key => ENV['AWS_SECRET'],
+        :endpoint              => ENV['AWS_ENDPOINT'] || 's3.amazonaws.com'
       })
       options = {path_style: true}
       headers = {"Content-Type" => "image/jpeg", "x-amz-acl" => "public-read"}
