@@ -32,9 +32,10 @@ class Mobilizations::DonationsController < ApplicationController
     if @donation.save!
       address = find_or_create_address(address_params)
 
-      DonationService.run(@donation, address)# unless @donation.subscription?
+      dd = DonationService.run(@donation, address)# unless @donation.subscription?
       #SubscriptionService.run(@donation, address) if @donation.subscription?
 
+      Rails.logger.info("\n==> Donation #{dd}\n")
       render json: @donation
     else
       render json: @donation.errors, status: :unprocessable_entity
