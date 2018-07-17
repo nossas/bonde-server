@@ -52,6 +52,19 @@ class Donation < ActiveRecord::Base
     self.subscription || subscription_relation.present?
   end
 
+
+  def process_card_hash?
+    !self.subscription? or (self.subscription? and self.subscription_donations?)
+  end
+
+  def subscription_donations?
+    if self.subscription? and self.subscription_relation.try(:donations).present?
+      return true if self.subscription_relation.try(:donations).try(:count) < 0
+    else
+      false
+    end
+  end
+
   def self.to_txt
     attributes = %w{
     id email amount_formatted payment_method mobilization_name widget_id
