@@ -14,10 +14,10 @@ begin;
 
   select plan(8);
 
-  select has_function('postgraphql', 'request_reset_password_token', ARRAY['text', 'text']);
-  select function_returns('postgraphql', 'request_reset_password_token', ARRAY['text', 'text'], 'void');
+  select has_function('postgraphql', 'reset_password_token_request', ARRAY['text', 'text']);
+  select function_returns('postgraphql', 'reset_password_token_request', ARRAY['text', 'text'], 'void');
 
-  create or replace function test_request_reset_password_token()
+  create or replace function test_reset_password_token_request()
   returns setof text language plpgsql as $$
   declare
     _user public.users;
@@ -25,7 +25,7 @@ begin;
 
     set local role anonymous;
 
-    perform postgraphql.request_reset_password_token('foo@foo.com');
+    perform postgraphql.reset_password_token_request('foo@foo.com');
     select * from users where id = 1
     into _user;
 
@@ -45,7 +45,7 @@ begin;
     );
 
 
-    perform postgraphql.request_reset_password_token('foo@foo.com', 'es');
+    perform postgraphql.reset_password_token_request('foo@foo.com', 'es');
 
     -- should generate a new password reset token
     return next ok((_user.reset_password_token is not null), 'should generate a reset password token');
@@ -63,7 +63,7 @@ begin;
     );
 
 
-    perform postgraphql.request_reset_password_token('foo@foo.com', 'en');
+    perform postgraphql.reset_password_token_request('foo@foo.com', 'en');
 
     -- should generate a new password reset token
     return next ok((_user.reset_password_token is not null), 'should generate a reset password token');
@@ -85,6 +85,5 @@ begin;
 
   end;
   $$;
-  select * from test_request_reset_password_token();
-
+  select * from test_reset_password_token_request();
 rollback;
