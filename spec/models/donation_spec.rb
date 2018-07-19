@@ -17,7 +17,7 @@ RSpec.describe Donation, type: :model do
   describe '#async_update_mailchimp' do
     let(:donation) { Donation.new id: 52 }
 
-    before do 
+    before do
       donation.async_update_mailchimp
     end
 
@@ -108,6 +108,30 @@ RSpec.describe Donation, type: :model do
       end
 
       it { donation.notify_when_not_subscription "template_name" }
+    end
+  end
+
+  describe ".process_card_hash?" do
+    let(:donation) { Donation.make! transaction_status: 'processing', subscription: false }
+    let(:donation_2) { Donation.make! transaction_status: 'processing' }
+
+    let(:subscription) { Subscription.make!(card_data: { id: 'card_xpto_id'}) }
+
+    context "when a donation is not a subscription and can be process with card_hash" do
+      it 'when the donation is not a subscription can be process_card_hash' do
+        expect(donation.process_card_hash?).to eq(true)
+      end
+
+      it 'when the donation is a subscription and can be process with card_hash' do
+        donation.update_columns(subscription: true)
+        expect(donation.process_card_hash?).to eq(true)
+      end
+
+      it 'when the donation is a subscription and can not be process with card_hash' do
+        donation.update_columns(local_subscription_id: subscription.id)
+        donation_2.update_columns(local_subscription_id: subscription.id)
+        expect(donation.process_card_hash?).to eq(false)
+      end
     end
   end
 end
