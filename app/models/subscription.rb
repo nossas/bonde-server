@@ -39,8 +39,8 @@ class Subscription < ActiveRecord::Base
   end
 
   def reached_notification_limit?
-    total_transitions = transitions.order(created_at: :desc).limit(4).pluck(:to_state)
-    return false if total_transitions.count < 4
+    total_transitions = transitions.order(created_at: :desc).limit(3).pluck(:to_state)
+    return false if total_transitions.count < 3
 
     total_transitions.all? { |transition| transition == 'unpaid' }
   end
@@ -48,6 +48,10 @@ class Subscription < ActiveRecord::Base
   def reached_retry_limit?
     last_transition_created = last_transition.try(:created_at) || DateTime.now
     current_state == 'unpaid' && (last_transition_created - DateTime.now).abs > community.subscription_dead_days_interval.days
+  end
+
+  def reached_retry_interval?
+    last_donation.created_at + community.subscription_retry_interval.days < DateTime.now && last_donation.transaction_status == 'refused'
   end
 
   def last_transition
@@ -196,7 +200,7 @@ class Subscription < ActiveRecord::Base
       default_template_vars.merge(template_vars),
       community_id,
       auto_deliver)
-    end
+  end
 
   def process_status_changes(status, data)
     case status
