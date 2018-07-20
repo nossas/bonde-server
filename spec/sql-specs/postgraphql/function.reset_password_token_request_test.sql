@@ -5,15 +5,19 @@ begin;
         ('reset_password_instructions', 'reset password subject', 'reset password body', now(), now(), 'es');
 
     -- insert test user
-    insert into public.users(id, email, provider, uid, encrypted_password, admin, locale) values 
+    insert into public.users(id, email, provider, uid, encrypted_password, admin, locale) values
         (1, 'foo@foo.com', 'bonde', '1', crypt('123456', gen_salt('bf', 9)), false, 'pt-BR');
+
+    -- insert basic jwt_secret
+    insert into public.configurations(name, value, created_at, updated_at)
+    values('jwt_secret', '1234567899', now(), now());
 
   select plan(8);
 
-  select has_function('postgraphql', 'request_reset_password_token', ARRAY['json']);
-  select function_returns('postgraphql', 'request_reset_password_token', ARRAY['json'], 'void');
+  select has_function('postgraphql', 'reset_password_token_request', ARRAY['text', 'text']);
+  select function_returns('postgraphql', 'reset_password_token_request', ARRAY['text', 'text'], 'void');
 
-  create or replace function test_request_reset_password_token()
+  create or replace function test_reset_password_token_request()
   returns setof text language plpgsql as $$
   declare
     _user public.users;
@@ -21,7 +25,7 @@ begin;
 
     set local role anonymous;
 
-    perform postgraphql.request_reset_password_token(json_build_object('email', 'foo@foo.com', 'locale', 'pt-BR'));
+    perform postgraphql.reset_password_token_request('foo@foo.com');
     select * from users where id = 1
     into _user;
 
@@ -41,7 +45,7 @@ begin;
     );
 
 
-    perform postgraphql.request_reset_password_token(json_build_object('email', 'foo@foo.com', 'locale', 'es'));
+    perform postgraphql.reset_password_token_request('foo@foo.com', 'es');
 
     -- should generate a new password reset token
     return next ok((_user.reset_password_token is not null), 'should generate a reset password token');
@@ -59,7 +63,7 @@ begin;
     );
 
 
-    perform postgraphql.request_reset_password_token(json_build_object('email', 'foo@foo.com', 'locale', 'en'));
+    perform postgraphql.reset_password_token_request('foo@foo.com', 'en');
 
     -- should generate a new password reset token
     return next ok((_user.reset_password_token is not null), 'should generate a reset password token');
@@ -81,6 +85,5 @@ begin;
 
   end;
   $$;
-  select * from test_request_reset_password_token();
-
+  select * from test_reset_password_token_request();
 rollback;
