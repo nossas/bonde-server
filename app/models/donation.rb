@@ -243,7 +243,7 @@ class Donation < ActiveRecord::Base
       donation_id: id,
       activist_id: activist_id,
       amount: ( amount / 100),
-      customer_document: (gateway_data['customer']['document_number']).gsub(/\A(\d{3})(\d{3})(\d{3})(\d{2})\Z/, "\\1.\\2.\\3-\\4"),
+      customer_document: (gateway_data.try(:[], 'customer').try(:[], 'document_number')).nil? ? '' : (last_donation.gateway_data.try(:[], 'customer').try(:[], 'document_number')).gsub(/\A(\d{3})(\d{3})(\d{3})(\d{2})\Z/, "\\1.\\2.\\3-\\4"),
       community: {
         id: community.id,
         name: community.name,
