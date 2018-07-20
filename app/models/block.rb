@@ -16,8 +16,6 @@ class Block < ActiveRecord::Base
 
   scope :not_deleted, -> { where(deleted_at: nil) }
 
-  private
-
   def self.create_from template, mobilization_instance
     block = Block.new
     block.mobilization = mobilization_instance
