@@ -50,9 +50,16 @@ class Mobilization < ActiveRecord::Base
   end
 
   def refresh_host_rule
+    # only used before save
     if custom_domain_changed?
       self.traefik_host_rule = "Host:#{custom_domain.downcase}"
     end
+  end
+
+  def force_refresh_traefik_host!
+    # remove and regenerate host rule to refresh on traefik
+    self.update_attribute(:traefik_host_rule, nil)
+    self.update_attribute(:traefik_host_rule, "Host:#{custom_domain.downcase}")
   end
 
   private
