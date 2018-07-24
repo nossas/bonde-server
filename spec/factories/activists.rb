@@ -10,4 +10,15 @@ FactoryGirl.define do
     activist
     community
   end
+
+  factory :address, class: Address do
+    activist
+    zipcode { "0000000" }
+    street { "Street" }
+    street_number { "000" }
+    complementary { "house" }
+    neighborhood { "Neighborhood" }
+    city { "City" }
+    state { "AA" }
+  end
 end

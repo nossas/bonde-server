@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'machinist/active_record'
 
 User.blueprint do
@@ -75,8 +74,8 @@ FormEntry.blueprint do
         'placeholder': 'Insira aqui o seu email',
         'required': 'true',
         'value': 'zemane@naoexiste.com'
-      }    
-    ].to_json 
+      }
+    ].to_json
   }
 end
 
@@ -85,6 +84,17 @@ Activist.blueprint do
   email { "#{sn}@bar.org" }
   phone { { ddd: "11", number: "999999999" }.to_s }
   document_number { "12345678909" }
+end
+
+Address.blueprint do
+  activist { Activist.make! }
+  zipcode { "0000000" }
+  street { "Street" }
+  street_number { "000" }
+  complementary { "house" }
+  neighborhood { "Neighborhood" }
+  city { "City" }
+  state { "AA" }
 end
 
 ActivistPressure.blueprint do

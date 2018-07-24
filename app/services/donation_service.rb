@@ -15,9 +15,7 @@ class DonationService
   end
 
   def self.new_transaction(donation)
-    self.find_or_create_card(donation) unless donation.boleto?
-
-    PagarMe::Transaction.new({
+    pagarme_data = {
       card_id: donation.credit_card,
       amount: donation.amount,
       payment_method: donation.payment_method,
@@ -31,7 +29,11 @@ class DonationService
         email: donation.activist.email,
         donation_id: donation.id
       }
-    })
+    }
+
+    pagarme_data[:card_hash] = donation.card_hash if donation.process_card_hash?
+
+    PagarMe::Transaction.new(pagarme_data)
   end
 
   def self.create_transaction(donation, address)
@@ -43,6 +45,8 @@ class DonationService
 
       begin
         @transaction.charge
+
+        self.find_or_create_card(donation) unless donation.boleto?
 
         if donation.boleto? && Rails.env.production?
           @transaction.collect_payment({email: donation.email})
@@ -58,9 +62,14 @@ class DonationService
           @transaction.status.to_sym, @transaction.try(:to_json))
         process_subscription(donation)
 
+        status_transaction = PagarMe::Transaction.find_by_id(@transaction.id).status
+
+        return status_transaction
+
       rescue PagarMe::PagarMeError => e
         Raven.capture_exception(e) unless Rails.env.test?
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
+        e
       end
     end
   end
@@ -89,9 +98,9 @@ class DonationService
 
   def self.find_or_create_card(donation)
     return PagarMe::Card.find(donation.credit_card) if donation.credit_card
-    card = PagarMe::Card.new(card_hash: donation.card_hash)
+    card = PagarMe::Card.find(@transaction.try(:card).try(:id))
 
-    if card.create
+    if card.present?
       CreditCard.create(
         last_digits: card.last_digits,
         card_brand: card.brand,

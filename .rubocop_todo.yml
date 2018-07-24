@@ -1194,6 +1194,7 @@ Style/RedundantParentheses:
     - 'app/models/dns_hosted_zone.rb'
     - 'app/models/invitation.rb'
     - 'app/models/subscription.rb'
+    - 'app/models/donation.rb'
     - 'app/models/widget.rb'
     - 'app/policies/dns_record_policy.rb'
     - 'app/workers/mailchimp_sync_worker.rb'
