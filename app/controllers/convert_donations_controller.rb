@@ -2,11 +2,12 @@ class ConvertDonationsController < ApplicationController
   respond_to :json
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
-  before_filter :widget
+  before_filter :catch_widget
 
   def convert
     email = params[:user_email]
-    widget = widget
+    # widget = Widget.find params[:widget_id]
+    widget = catch_widget
     amount = params[:amount]
 
     donation = widget.donations.joins(:activist).
@@ -31,7 +32,7 @@ class ConvertDonationsController < ApplicationController
 
   private
 
-  def widget
+  def catch_widget
     Widget.find params[:widget_id]
   end
 end
