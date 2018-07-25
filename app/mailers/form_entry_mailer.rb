@@ -13,15 +13,15 @@ class FormEntryMailer < ApplicationMailer
                   @mobilization.name
                 end
 
-      headers['X-SMTPAPI'] = %#{
-        "filters": {
-          "subscriptiontrack": {
-            "settings": {
-              "enable": 0
+      headers['X-SMTPAPI'] = {
+        filters: {
+          subscriptiontrack: {
+            settings: {
+              enable: 0
             }
           }
         }
-      }#
+      }.to_json
 
       mail(
         to: form_entry.email,
@@ -40,6 +40,6 @@ class FormEntryMailer < ApplicationMailer
         "#{@mobilization.user.first_name} <#{@mobilization.user.email}>"
       else
         @mobilization.user.email
-      end    
+      end
   end
 end

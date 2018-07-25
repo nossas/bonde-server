@@ -3,15 +3,15 @@ class CommunityMailer < ApplicationMailer
     @invitation = invitation
     @invited_user = invited_user
 
-    headers['X-SMTPAPI'] = %#{
-      "filters": {
-        "subscriptiontrack": {
-          "settings": {
-            "enable": 0
+    headers['X-SMTPAPI'] = {
+      filters: {
+        subscriptiontrack: {
+          settings: {
+            enable: 0
           }
         }
       }
-    }#
+    }.to_json
 
     mail(
       to: invitation.email,
