@@ -12,20 +12,20 @@ class DonationsMailer < ApplicationMailer
 
       from_address = sender ? "#{sender} <#{email_address}>" : email_address
 
-      headers['X-SMTPAPI'] = %#{
-        "filters": {
-          "subscriptiontrack": {
-            "settings": {
-              "enable": 0
+      headers['X-SMTPAPI'] = {
+        filters: {
+          subscriptiontrack: {
+            settings: {
+              enable: 0
             }
           },
-          "bypass_list_management" : {
-            "settings" : {
-              "enable" : 1
+          bypass_list_management: {
+            settings: {
+              enable: 1
             }
           }
         }
-      }#
+      }.to_json
 
       mail(
         to: donation.activist.try(:email) || donation.customer['email'],
