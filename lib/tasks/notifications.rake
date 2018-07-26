@@ -803,7 +803,7 @@ Sua doação continua válida e você continuará sendo debitado na data correta
           <br/><br/>
           <b>Para alterar sua senha, clique aqui:</b>
           <br/><br/>
-          <a href="{{callback_url}}{{user.reset_password_token}}" style="display:block;width:192px;padding:18px 0;border-radius:100px;margin:0 auto;background-color:#ee0099;font-size:11px;color:#fff;font-weight:800;text-transform:uppercase;text-decoration:none;">Alterar senha</a>
+          <a href="{{user.callback_url}}{{user.reset_password_token}}" style="display:block;width:192px;padding:18px 0;border-radius:100px;margin:0 auto;background-color:#ee0099;font-size:11px;color:#fff;font-weight:800;text-transform:uppercase;text-decoration:none;">Alterar senha</a>
           <br/><br/>
           Caso você não tenha feito essa solicitação, ignore este e-mail.
           <br/>
