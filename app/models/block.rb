@@ -4,12 +4,6 @@ class Block < ActiveRecord::Base
   has_many :widgets
   accepts_nested_attributes_for :widgets
 
-  before_validation do
-    unless self.position.present? || self.mobilization.nil?
-      self.position = (self.mobilization.blocks.where(deleted_at: nil).maximum(:position) || 0) + 1
-    end
-  end
-
   after_save do
     mobilization.touch if mobilization.present?
   end
@@ -26,5 +20,19 @@ class Block < ActiveRecord::Base
     block.name = template.name
     block.menu_hidden = template.menu_hidden
     block
+  end
+
+  def self.update_blocks(blocks)
+    Block.transaction do
+      begin
+        blocks.each do |block|
+          Block.where(id: block[:id])
+            .update_all(position: block[:position])
+        end
+        return { blocks: blocks, status: 'success' }
+      rescue ActiveRecord::RecordInvalid => e
+        e
+      end
+    end
   end
 end
