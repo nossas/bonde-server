@@ -10,8 +10,11 @@ class Mobilizations::BlocksController < ApplicationController
   def create
     @block = Block.new(block_params.merge(mobilization_id: params[:mobilization_id]))
     authorize @block
-    @block.save!
-    render json: @block , serializer: BlockSerializer::CompleteBlockSerializer
+    if @block.save
+      render json: @block , serializer: BlockSerializer::CompleteBlockSerializer
+    else
+      render json: @block, status: :unprocessable_entity
+    end
   end
 
   def update

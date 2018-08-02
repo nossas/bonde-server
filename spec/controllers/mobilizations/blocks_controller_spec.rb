@@ -21,13 +21,13 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
   end
 
   describe "POST #create" do
-    it "should create with JSON format and empty params" do
+    it "should not create with JSON format and empty params" do
       mobilization = Mobilization.make!
       expect(mobilization.blocks.count).to eq(0)
       post :create, mobilization_id: mobilization.id, format: :json
 
-      expect(mobilization.blocks.count).to eq(1)
-      expect(response.body).to include(BlockSerializer::CompleteBlockSerializer.new(mobilization.blocks.first).to_json)
+      expect(mobilization.blocks.count).to eq(0)
+      expect(response.status).to eq(422)
     end
 
     it "should create with JSON format and parameters" do
@@ -47,7 +47,8 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
     it "should create nested widgets" do
       mobilization = Mobilization.make!
       expect(mobilization.blocks.count).to eq(0)
-      post :create, mobilization_id: mobilization.id, format: :json, block: { widgets_attributes: [{kind: 'content', sm_size: 8, md_size: 6, lg_size: 6}, {kind: 'weather', sm_size: 12, md_size: 12, lg_size: 4}] }
+      post :create, mobilization_id: mobilization.id, format: :json, block: { position: 12345, bg_class: 'bg-yellow', bg_image: 'foobar.jpg', hidden: true, widgets_attributes: [{kind: 'content', sm_size: 8, md_size: 6, lg_size: 6}, {kind: 'weather', sm_size: 12, md_size: 12, lg_size: 4, position: 1}] }
+
       expect(mobilization.blocks.count).to eq(1)
       block = mobilization.blocks.first
       expect(response.body).to include(BlockSerializer::CompleteBlockSerializer.new(block).to_json)
