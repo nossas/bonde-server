@@ -21,6 +21,7 @@ FactoryGirl.define do
     bg_image { 'icon.png' }
     name { 'test - block #{sn}' }
     menu_hidden { true }
+    position { 1 }
   end
 
   factory :widget, class: Widget do

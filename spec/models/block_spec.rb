@@ -9,7 +9,7 @@ RSpec.describe Block, type: :model do
 
   describe '.not_deleted' do
     context 'should not list blocks that has deleted' do
-      let!(:block_deleted) { create(:block, position: 1, deleted_at: DateTime.now)}
+      let!(:block_deleted) { create(:block, deleted_at: DateTime.now)}
       let!(:block) { create(:block, position: 2) }
 
       subject { Block.not_deleted }
