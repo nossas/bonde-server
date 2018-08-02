@@ -81,6 +81,27 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
     end
   end
 
+  describe "PUT #batch_update" do
+    let!(:mobilization) { Mobilization.make! user: @user }
+    let!(:block) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 1, hidden: false }
+    let!(:block2) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 2, hidden: false }
+    let!(:block3) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 3, hidden: false }
+
+    it 'should update two blocks and change your positions' do
+      put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2}, {"id": block2.id, "position": 1}], format: :json
+
+      block.reload
+      block2.reload
+      expect(block.position).to eq(2)
+      expect(block2.position).to eq(1)
+    end
+
+    it 'should not be update blocks when list for less two' do
+      put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2}], format: :json
+      expect(response.status).to eq(422)
+    end
+  end
+
   describe "DELETE #destroy" do
     let(:mobilization) { create(:mobilization, user: @user) }
     let(:block) { create(:block, mobilization: mobilization,  bg_class: 'bg-white', position: 123, hidden: false) }

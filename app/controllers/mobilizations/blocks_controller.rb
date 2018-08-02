@@ -24,6 +24,23 @@ class Mobilizations::BlocksController < ApplicationController
     render json: @block
   end
 
+  def batch_update
+    @block = Block.find(params[:blocks].first[:id])
+    authorize @block
+
+    if params[:blocks].count >= 2
+      batch = Block.update_blocks(params[:blocks])
+
+      if batch[:status] == 'success'
+        render json: { blocks: batch }, status: 200
+      else
+        render json: { errors: batch.to_json }, status: :unprocessable_entity
+      end
+    else
+      render json: { errors: 'must have two or more blocks in list' }, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @block = Block.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
     authorize @block
