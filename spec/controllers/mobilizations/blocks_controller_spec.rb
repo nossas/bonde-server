@@ -88,12 +88,14 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
     let!(:block3) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 3, hidden: false }
 
     it 'should update two blocks and change your positions' do
-      put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2}, {"id": block2.id, "position": 1}], format: :json
+      put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2, bg_class: 'bg-black2' }, {"id": block2.id, "position": 1, bg_class: 'bg-black' }], format: :json
 
       block.reload
       block2.reload
       expect(block.position).to eq(2)
+      expect(block.bg_class).to eq('bg-black2')
       expect(block2.position).to eq(1)
+      expect(block2.bg_class).to eq('bg-black')
     end
 
     it 'should not be update blocks when list for less two' do

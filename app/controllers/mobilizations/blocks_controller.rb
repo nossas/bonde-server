@@ -29,7 +29,7 @@ class Mobilizations::BlocksController < ApplicationController
     authorize @block
 
     if params[:blocks].count >= 2
-      batch = Block.update_blocks(params[:blocks])
+      batch = Block.update_blocks(blocks_params[:blocks])
 
       if batch[:status] == 'success'
         render json: { blocks: batch }, status: 200
@@ -55,6 +55,12 @@ class Mobilizations::BlocksController < ApplicationController
       params.require(:block).permit(*policy(@block || Block.new).permitted_attributes)
     else
       {}
+    end
+  end
+
+  def blocks_params
+    if params[:blocks]
+      params.permit(blocks: [:id, :bg_class, :position, :hidden, :bg_image, :name, :menu_hidden, :deleted_at])
     end
   end
 end

@@ -26,7 +26,8 @@ class Block < ActiveRecord::Base
     Block.transaction do
       begin
         blocks.each do |block|
-          Block.where(id: block[:id]).update_all(position: block[:position])
+          b = Block.find block[:id]
+          b.update(block)
         end
         return { blocks: blocks, status: 'success' }
       rescue ActiveRecord::RecordInvalid => e
