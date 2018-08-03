@@ -10,8 +10,11 @@ class Mobilizations::BlocksController < ApplicationController
   def create
     @block = Block.new(block_params.merge(mobilization_id: params[:mobilization_id]))
     authorize @block
-    @block.save!
-    render json: @block , serializer: BlockSerializer::CompleteBlockSerializer
+    if @block.save
+      render json: @block , serializer: BlockSerializer::CompleteBlockSerializer
+    else
+      render json: @block, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -19,6 +22,23 @@ class Mobilizations::BlocksController < ApplicationController
     authorize @block
     @block.update!(block_params)
     render json: @block
+  end
+
+  def batch_update
+    @block = Block.find(params[:blocks].first[:id])
+    authorize @block
+
+    if params[:blocks].count >= 2
+      batch = Block.update_blocks(blocks_params[:blocks])
+
+      if batch[:status] == 'success'
+        render json: { blocks: batch }, status: 200
+      else
+        render json: { errors: batch.to_json }, status: :unprocessable_entity
+      end
+    else
+      render json: { errors: 'must have two or more blocks in list' }, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -35,6 +55,12 @@ class Mobilizations::BlocksController < ApplicationController
       params.require(:block).permit(*policy(@block || Block.new).permitted_attributes)
     else
       {}
+    end
+  end
+
+  def blocks_params
+    if params[:blocks]
+      params.permit(blocks: [:id, :bg_class, :position, :hidden, :bg_image, :name, :menu_hidden, :deleted_at])
     end
   end
 end

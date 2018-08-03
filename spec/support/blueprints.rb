@@ -29,6 +29,7 @@ Block.blueprint do
   bg_image { 'icon.png' }
   name { 'test - block #{sn}' }
   menu_hidden { true }
+  position { 1 }
 end
 
 Widget.blueprint do

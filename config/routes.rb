@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :mobilizations, only: [:index, :create, :update] do
     get :published, on: :collection
     resources :blocks, controller: 'mobilizations/blocks', only: [:index, :create, :update, :destroy]
+    put 'blocks', to: 'mobilizations/blocks#batch_update', as: 'update_blocks'
     resources :widgets, controller: 'mobilizations/widgets', only: [:index, :update]
     resources :form_entries, controller: 'mobilizations/form_entries', only: [:create, :index]
     resources :donations, controller: 'mobilizations/donations', only: [:create, :index]
