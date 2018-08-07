@@ -11,7 +11,7 @@ class DnsRecordsController < ApplicationController
 
     @dns_records = @dns_hosted_zone.dns_records
     @dns_records = @dns_records.only_unsensible unless params[:full_data] == 'true'
-      
+
     render json: @dns_records
   end
 
@@ -29,7 +29,6 @@ class DnsRecordsController < ApplicationController
     @dns_record = DnsRecord.new(dns_record_params(true))
     @dns_record.dns_hosted_zone = @dns_hosted_zone
 
-    
     authorize(@dns_hosted_zone.community)
     skip_policy_scope
 
