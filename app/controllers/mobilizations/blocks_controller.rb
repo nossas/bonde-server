@@ -4,7 +4,7 @@ class Mobilizations::BlocksController < ApplicationController
   after_action :verify_policy_scoped, only: %i[index]
 
   def index
-    render json: policy_scope(Block).not_deleted.where(mobilization_id: params[:mobilization_id]).order(:position)
+    render json: policy_scope(Block).where(mobilization_id: params[:mobilization_id]).order(:position)
   end
 
   def create
@@ -18,7 +18,7 @@ class Mobilizations::BlocksController < ApplicationController
   end
 
   def update
-    @block = Block.not_deleted.where(mobilization_id: params[:mobilization_id], id: params[:id]).first
+    @block = Block.find(params[:id])
     authorize @block
     @block.update!(block_params)
     render json: @block
@@ -28,7 +28,7 @@ class Mobilizations::BlocksController < ApplicationController
     @block = Block.find(params[:blocks].first[:id])
     authorize @block
 
-    if params[:blocks].count >= 2
+    if params[:blocks].count >= 1
       batch = Block.update_blocks(blocks_params[:blocks])
 
       if batch[:status] == 'success'
@@ -37,7 +37,7 @@ class Mobilizations::BlocksController < ApplicationController
         render json: { errors: batch.to_json }, status: :unprocessable_entity
       end
     else
-      render json: { errors: 'must have two or more blocks in list' }, status: :unprocessable_entity
+      render json: { errors: 'must have one or more blocks in list' }, status: :unprocessable_entity
     end
   end
 
