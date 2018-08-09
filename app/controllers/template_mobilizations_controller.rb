@@ -77,7 +77,7 @@ class TemplateMobilizationsController < ApplicationController
 				template_block = TemplateBlock.create_from block, template_mobilization
 				template_mobilization.save!
 
-				block.widgets.each do |widget|
+				block.widgets.order(:id).each do |widget|
 					template_widget = TemplateWidget.create_from widget, template_block
 					template_widget.save!
 				end

@@ -80,15 +80,15 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
     end
   end
 
-  context 'POST #create' do 
+  context 'POST #create' do
     describe 'create a template from existing mobilization' do
       let(:mobilization) { Mobilization.make! user:@user1 }
       let(:block1) { Block.make! mobilization: mobilization }
       let(:block2) { Block.make! mobilization: mobilization }
-      let(:widget1_1) {Widget.make! block:block1}
-      let(:widget2_1) {Widget.make! block:block2}
-      let(:widget2_2) {Widget.make! block:block2}
-      let(:block_sequence) { [] }      
+      let(:widget1_1) {Widget.make! block: block1}
+      let(:widget2_1) {Widget.make! block: block2}
+      let(:widget2_2) {Widget.make! block: block2}
+      let(:block_sequence) { [] }
       let(:widget_sequence) { [] }
 
       before do
@@ -106,32 +106,28 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
       end
 
       it 'should create one TemplateMobilization' do
-        expect(TemplateMobilization.count).to eq(@count_mobilization + 1)        
+        expect(TemplateMobilization.count).to eq(@count_mobilization + 1)
       end
 
       it 'should create two blocks' do
-        expect(TemplateBlock.count).to eq(@count_blocks + 2)        
+        expect(TemplateBlock.count).to eq(@count_blocks + 2)
       end
 
       it 'should create three widgets' do
-        expect(TemplateWidget.count).to eq(@count_widgets + 3)        
+        expect(TemplateWidget.count).to eq(@count_widgets + 3)
       end
 
       it 'should save use the name parameter as template\'s name' do
-        expect(TemplateMobilization.last.name).to eq('Pinky & Brain\'s world conquest')        
+        expect(TemplateMobilization.last.name).to eq('Pinky & Brain\'s world conquest')
       end
 
       it 'should save use the goal parameter as template\'s goal' do
-        expect(TemplateMobilization.last.goal).to eq('World conquest')        
-      end
-
-      it 'should return the template created data' do
-        expect(response.body).to include(mobilization.slug)
+        expect(TemplateMobilization.last.goal).to eq('World conquest')
       end
 
       it 'should create all block nested data' do
         data = JSON.parse response.body
-        expect(TemplateBlock.where("template_mobilization_id = #{data['id']}").count).to eq(2) 
+        expect(TemplateBlock.where("template_mobilization_id = #{data['id']}").count).to eq(2)
       end
 
       it 'should create all nested widget data' do
@@ -147,7 +143,7 @@ RSpec.describe TemplateMobilizationsController, type: :controller do
 
       it 'should save template_widgets on the same order than widgets' do
         widgets = TemplateMobilization.last.
-            template_blocks.order(:id).map{|b| b.template_widgets.order(:id)}.
+          template_blocks.order(:id).map{|b| b.template_widgets.order(:id) }.
             flatten.map{|w| w.settings}
 
 
