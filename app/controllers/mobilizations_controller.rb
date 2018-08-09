@@ -55,18 +55,18 @@ class MobilizationsController < ApplicationController
     template_mobilization_id = params[:mobilization][:template_mobilization_id]
     if not @mobilization
       return404
-    elsif template_mobilization_id
+    elsif template_mobilization_id and !@mobilization.blocks.present?
       template = TemplateMobilization.find_by({id: template_mobilization_id})
       if template
         authorize @mobilization
         @mobilization.copy_from template
-        Mobilization.transaction do 
+        Mobilization.transaction do
           @mobilization.save
 
-          template.template_blocks.order(:id).each do |template_block|
+          template.template_blocks.each do |template_block|
             block = Block.create_from template_block, @mobilization
             block.save!
-            template_block.template_widgets.order(:id).each do |template_widget|
+            template_block.template_widgets.each do |template_widget|
               widget = Widget.create_from template_widget, block
               widget.save!
             end
