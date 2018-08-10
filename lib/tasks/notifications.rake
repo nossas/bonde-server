@@ -1,7 +1,7 @@
 # coding: utf-8
 namespace :notifications do
   desc "Update all notifications templates"
-  task :all => [:recurring_templates, :accounts_templates]
+  task :all => [:recurring_templates, :accounts_templates, :thank_you_templates]
 
   desc 'build first recurring notifications'
   task recurring_templates: :environment do
@@ -872,6 +872,34 @@ Equipe do BONDE.
         label: label,
         subject_template: subject,
         body_template: notification_layout(sub_template)
+      )
+    end
+  end
+
+  desc 'auto_fire notifications'
+  task thank_you_templates: :environment do
+    puts 'looking for thank_you_donation template'
+    sub_template = (%{
+      {% if email_text %}
+        email_text
+      {% else %}
+        <p>Olá! </p>
+        <p>Recebemos sua doação e ficamos muito contentes em saber que você acredita nesta iniciativa! A ação coletiva em rede é fundamental nesses momentos. Agora, precisamos da sua ajuda para que mais gente colabore com esta iniciativa. Compartilhe a página no seu Facebook e estimule seus amigos e amigas a apoiarem também!</p>
+        <p>Obrigado!</p>
+      {% endif %}
+    })
+    label = 'thank_you_donation'
+    subject = '{{subject}}'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: sub_template,
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: sub_template
       )
     end
   end
