@@ -19,14 +19,26 @@ RSpec.describe Widget, type: :model do
   it { should have_many :matches }
   it { should have_many :activist_pressures }
 
-  describe '.not_deleted' do
-    let!(:deleted) { create(:widget, deleted_at: DateTime.now) }
-    let!(:wiget) { create(:widget, deleted_at: nil) }
+  describe 'default_scope' do
+    let!(:deleted_1) { create(:widget, deleted_at: DateTime.now) }
+    let!(:deleted_2) { create(:widget, deleted_at: DateTime.now) }
+    let!(:deleted_3) { create(:widget, deleted_at: DateTime.now) }
+    let!(:widget_1) { create(:widget, deleted_at: nil) }
+    let!(:widget_2) { create(:widget, deleted_at: nil) }
+    let!(:widget_3) { create(:widget, deleted_at: nil) }
 
-    subject { Widget.not_deleted }
+    subject { Widget.all }
 
     it 'deleted widget should not be returned' do
-      expect(subject).to_not include(deleted)
+      expect(subject).to_not include(deleted_1)
+      expect(subject).to_not include(deleted_2)
+      expect(subject).to_not include(deleted_3)
+    end
+
+    it 'widgets not deleted should be returned' do
+      expect(subject).to include(widget_1)
+      expect(subject).to include(widget_2)
+      expect(subject).to include(widget_3)
     end
   end
 

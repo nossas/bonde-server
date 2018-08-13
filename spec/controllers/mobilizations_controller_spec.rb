@@ -88,12 +88,12 @@ RSpec.describe MobilizationsController, type: :controller do
     let(:saved_mobilization) { Mobilization.find mobilization.id }
 
     context "update an existing Mobilization from an existing template" do
-      let(:template_block_1) { TemplateBlock.make! template_mobilization:template }
-      let(:tempalte_widget_1_1) { TemplateWidget.make! template_block:template_block_1 }
-      let(:tempalte_widget_1_2) { TemplateWidget.make! template_block:template_block_1 }
-      let(:template_block_2) { TemplateBlock.make! template_mobilization:template }
-      let(:tempalte_widget_2_1) { TemplateWidget.make! template_block:template_block_2 }
-      let(:tempalte_widget_2_2) { TemplateWidget.make! template_block:template_block_2 }
+      let(:template_block_1) { TemplateBlock.make! template_mobilization: template }
+      let(:tempalte_widget_1_1) { TemplateWidget.make! template_block: template_block_1 }
+      let(:tempalte_widget_1_2) { TemplateWidget.make! template_block: template_block_1 }
+      let(:template_block_2) { TemplateBlock.make! template_mobilization: template }
+      let(:tempalte_widget_2_1) { TemplateWidget.make! template_block: template_block_2 }
+      let(:tempalte_widget_2_2) { TemplateWidget.make! template_block: template_block_2 }
 
       before do
         @template_blocks  = [template_block_1, template_block_2]
@@ -103,7 +103,6 @@ RSpec.describe MobilizationsController, type: :controller do
       end
 
       it { should respond_with 200 }
-
 
       it "should update data from a template" do
         expect(saved_mobilization.header_font).to eq(template.header_font)

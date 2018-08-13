@@ -98,9 +98,9 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
       expect(block2.bg_class).to eq('bg-black')
     end
 
-    it 'should not be update blocks when list for less two' do
+    it 'should be update blocks when list for equals one' do
       put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2}], format: :json
-      expect(response.status).to eq(422)
+      expect(response.status).to eq(200)
     end
   end
 

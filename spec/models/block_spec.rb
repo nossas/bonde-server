@@ -7,15 +7,19 @@ RSpec.describe Block, type: :model do
   it { should validate_presence_of :position }
   it { should accept_nested_attributes_for :widgets }
 
-  describe '.not_deleted' do
+  describe '.default_scope' do
     context 'should not list blocks that has deleted' do
       let!(:block_deleted) { create(:block, deleted_at: DateTime.now)}
+      let!(:block_deleted_2) { create(:block, deleted_at: DateTime.now)}
+      let!(:block_deleted_3) { create(:block, deleted_at: DateTime.now)}
       let!(:block) { create(:block, position: 2) }
 
-      subject { Block.not_deleted }
+      subject { Block.all }
 
       it 'should not include deleted' do
         expect(subject).to_not include(block_deleted)
+        expect(subject).to_not include(block_deleted_2)
+        expect(subject).to_not include(block_deleted_3)
       end
     end
   end

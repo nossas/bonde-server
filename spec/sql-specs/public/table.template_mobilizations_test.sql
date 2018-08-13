@@ -1,12 +1,11 @@
 BEGIN;
-    SELECT plan(6);
+    SELECT plan(5);
 
     -- check table presence
     SELECT has_table('public'::name, 'template_mobilizations'::name);
 
     -- check not nulls
     SELECT col_not_null('public', 'template_mobilizations', 'id', 'should be not null');
-    SELECT col_not_null('public', 'template_mobilizations', 'slug', 'should be not null');
     SELECT col_not_null('public', 'template_mobilizations', 'created_at', 'should be not null');
     SELECT col_not_null('public', 'template_mobilizations', 'updated_at', 'should be not null');
 

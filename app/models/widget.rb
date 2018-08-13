@@ -20,7 +20,7 @@ class Widget < ActiveRecord::Base
 
   delegate :user, to: :mobilization
 
-  scope :not_deleted, -> { where(deleted_at: nil) }
+  default_scope -> { where(deleted_at: nil) }
 
   after_save do
     mobilization.touch if mobilization.present?

@@ -51,16 +51,8 @@ RSpec.describe TemplateMobilization, type: :model do
 	  		expect(@template.facebook_share_image).to eq(@mobilization.facebook_share_image)
 	  	end
 
-	  	it "should have the same slug as original mobilization" do
-	  		expect(@template.slug).to eq(@mobilization.slug)
-	  	end
-
 	  	it "should have custom_domain to nil" do
 	  		expect(@template.custom_domain).to be_nil
-	  	end
-
-	  	it "should have the same twitter_share_text as original mobilization" do
-	  		expect(@template.twitter_share_text).to eq(@mobilization.twitter_share_text)
 	  	end
 
 	  	it "should have the same community_id as original mobilization" do

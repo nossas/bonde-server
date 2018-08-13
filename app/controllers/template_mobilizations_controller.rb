@@ -73,7 +73,7 @@ class TemplateMobilizationsController < ApplicationController
 		TemplateMobilization.transaction do
 			template_mobilization.save!
 
-			mobilization.blocks.order(:id).each do |block|
+			mobilization.blocks.each do |block|
 				template_block = TemplateBlock.create_from block, template_mobilization
 				template_mobilization.save!
 
