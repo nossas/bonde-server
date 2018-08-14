@@ -39,8 +39,8 @@ class Subscription < ActiveRecord::Base
   end
 
   def reached_notification_limit?
-    total_transitions = transitions.order(created_at: :desc).limit(3).pluck(:to_state)
-    return false if total_transitions.count < 3
+    total_transitions = transitions.order(created_at: :desc).limit(4).pluck(:to_state)
+    return false if total_transitions.count < 4
 
     total_transitions.all? { |transition| transition == 'unpaid' }
   end
