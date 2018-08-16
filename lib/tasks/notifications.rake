@@ -881,7 +881,7 @@ Equipe do BONDE.
     puts 'looking for thank_you_donation template'
     sub_template = (%{
       {% if email_text %}
-        {{email_text}}
+        {{email_text | newline_to_br}}
       {% else %}
         <p>Olá! </p>
         <p>Recebemos sua doação e ficamos muito contentes em saber que você acredita nesta iniciativa! A ação coletiva em rede é fundamental nesses momentos. Agora, precisamos da sua ajuda para que mais gente colabore com esta iniciativa. Compartilhe a página no seu Facebook e estimule seus amigos e amigas a apoiarem também!</p>
