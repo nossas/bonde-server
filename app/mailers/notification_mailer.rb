@@ -9,6 +9,16 @@ class NotificationMailer < ApplicationMailer
     mail(mail_attributes)
   end
 
+  def auto_fire(notification)
+    @notification = notification
+    @template = notification.notification_template
+    @body = body.html_safe
+    @community_name = community_name
+    @community_image = community_image
+    configure_xsmtp_headers
+    mail(mail_attributes)
+  end
+
   private
 
   def community_name

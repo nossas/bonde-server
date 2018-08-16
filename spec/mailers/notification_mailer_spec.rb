@@ -34,7 +34,7 @@ RSpec.describe NotificationMailer, type: :mailer do
         expect(mail.body.encoded).to include('World lorem2')
         expect(mail['X-SMTPAPI'].present?).to eq(true)
       end
-    end 
+    end
 
     context "Addressed to an email" do
       let(:mail) { NotificationMailer.notify(notification3) }
