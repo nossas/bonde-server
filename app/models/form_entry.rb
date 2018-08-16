@@ -19,7 +19,6 @@ class FormEntry < ActiveRecord::Base
   after_commit :async_update_mailchimp, on: :create
   after_commit :send_email, on: :create
   after_commit :add_automatic_tags, on: :create
-  
 
   def link_activist
     self.activist = (Activist.by_email(email) || create_activist(name: complete_name, email: email)) if email.present?
@@ -93,7 +92,7 @@ class FormEntry < ActiveRecord::Base
 
   def send_email
     if self.email.present?
-      FormEntryMailer.thank_you_email(self).deliver_later
+      notify_thanks(:thank_you_form_entry)
     end
   end
 
@@ -107,6 +106,25 @@ class FormEntry < ActiveRecord::Base
       self.activist = activist_found
       self.save!(validate: false)
     end
+  end
+
+
+  def notify_thanks(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
+    Notification.notify!(
+      activist_id,
+      template_name,
+      thanks_template_vars.merge(template_vars),
+      community.id,
+      auto_deliver,
+      auto_fire)
+  end
+
+  def thanks_template_vars
+    global = {
+      email_text: self.widget.settings['email_text'],
+      from_address: self.widget.settings['sender_email'].nil? ? "#{mobilization.user.first_name} <#{mobilization.user.email}>" : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
+      subject: self.widget.settings['email_subject'].nil? ? "#{mobilization.try(:name)}" : self.widget.settings['email_subject']
+    }
   end
 
   private

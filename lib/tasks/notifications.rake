@@ -902,6 +902,32 @@ Equipe do BONDE.
         body_template: sub_template
       )
     end
+
+    puts 'looking for thank_you_form_entry template'
+    sub_template = (%{
+      {% if email_text %}
+        {{email_text | newline_to_br}}
+      {% else %}
+        <p>Obrigado por apostar na força da ação coletiva em rede.</p>
+        <p>Sua participação é muito importante e, agora, precisamos da sua ajuda para que mais gente colabore com esta mobilização.</p>
+        <p>Compartilhe nas suas redes clicando em um dos links abaixo. </p>
+        <p>Um abraço.</p>
+      {% endif %}
+                    })
+    label = 'thank_you_form_entry'
+    subject = '{{subject}}'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: sub_template,
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: sub_template
+      )
+    end
   end
 end
 
