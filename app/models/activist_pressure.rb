@@ -29,7 +29,7 @@ class ActivistPressure < ActiveRecord::Base
   end
 
   def send_thank_you_email
-    ActivistPressureMailer.thank_you_email(self.id).deliver_later
+    notify_thanks(:thank_you_activist_pressure)
   end
 
   def send_pressure_email
@@ -38,6 +38,25 @@ class ActivistPressure < ActiveRecord::Base
       mail[:cc] = recipient
       ActivistPressureMailer.pressure_email(self.id, mail).deliver_later
     end
+  end
+
+  def notify_thanks(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
+    Notification.notify!(
+      activist_id,
+      template_name,
+      thanks_template_vars.merge(template_vars),
+      community.id,
+      auto_deliver,
+      auto_fire
+    )
+  end
+
+  def thanks_template_vars
+    global = {
+      email_text: self.widget.settings['email_text'],
+      from_address: self.widget.settings['sender_email'].nil? ? "#{mobilization.user.first_name} <#{mobilization.user.email}>" : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
+      subject: self.widget.settings['email_subject'].nil? ? mobilization.try(:name) : self.widget.settings['email_subject']
+    }
   end
 
   private
