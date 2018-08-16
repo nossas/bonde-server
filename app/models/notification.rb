@@ -62,9 +62,9 @@ class Notification < ActiveRecord::Base
     transaction do
       update_column(:delivered_at, DateTime.now)
       if self.auto_fire
-        mail.deliver_now!
-      else
         auto_fire_mail.deliver_now!
+      else
+        mail.deliver_now!
       end
     end
   end
