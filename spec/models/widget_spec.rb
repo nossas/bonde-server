@@ -220,6 +220,7 @@ RSpec.describe Widget, type: :model do
 
   describe 'resync_all' do
     let(:widget) { create(:widget) }
+    let!(:notification_template) { create(:notification_template, label: 'thank_you_form_entry') }
     let!(:form_entry) { create(:form_entry, widget: widget)}
     let!(:donation) { create(:donation, widget: widget)}
     let!(:activist_pressure) { create(:activist_pressure, widget: widget)}
@@ -228,6 +229,7 @@ RSpec.describe Widget, type: :model do
       expect_any_instance_of(FormEntry).to receive(:async_update_mailchimp)
       expect_any_instance_of(Donation).to receive(:async_update_mailchimp)
       expect_any_instance_of(ActivistPressure).to receive(:async_update_mailchimp)
+      notification_template
     end
 
     it 'should call async mailchimp update on related entities' do

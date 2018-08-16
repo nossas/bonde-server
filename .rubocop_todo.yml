@@ -663,6 +663,7 @@ Lint/UselessAssignment:
   Exclude:
     - 'app/controllers/subscriptions_controller.rb'
     - 'app/models/donation.rb'
+    - 'app/models/form_entry.rb'
     - 'app/models/subscription.rb'
     - 'app/services/dns_service.rb'
     - 'lib/tasks/donation.rake'

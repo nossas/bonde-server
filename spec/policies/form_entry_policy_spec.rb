@@ -1,7 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe FormEntryPolicy do
+  let(:notification_template) { create(:notification_template, label: 'thank_you_form_entry') }
+
+  before do
+    notification_template
+  end
+
   context "for a visitor" do
+
     subject { described_class.new(nil, FormEntry.make!) }
     it { should allows(:create) }
     it "should have complete scope" do

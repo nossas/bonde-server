@@ -108,7 +108,6 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
-
   def notify_thanks(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
     Notification.notify!(
       activist_id,
@@ -116,14 +115,15 @@ class FormEntry < ActiveRecord::Base
       thanks_template_vars.merge(template_vars),
       community.id,
       auto_deliver,
-      auto_fire)
+      auto_fire
+    )
   end
 
   def thanks_template_vars
     global = {
       email_text: self.widget.settings['email_text'],
       from_address: self.widget.settings['sender_email'].nil? ? "#{mobilization.user.first_name} <#{mobilization.user.email}>" : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
-      subject: self.widget.settings['email_subject'].nil? ? "#{mobilization.try(:name)}" : self.widget.settings['email_subject']
+      subject: self.widget.settings['email_subject'].nil? ? mobilization.try(:name) : self.widget.settings['email_subject']
     }
   end
 

@@ -8,10 +8,12 @@ RSpec.describe Mobilizations::FormEntriesController, type: :controller do
   let(:widget) { Widget.make! block: block }
   let(:widget2) { Widget.make! block: block }
   let(:current_user) { User.make! admin: false }
+  let(:notification_template) { create(:notification_template, label: 'thank_you_form_entry') }
 
   before do
     widget
     widget2
+    notification_template
     stub_current_user(current_user)
   end
 

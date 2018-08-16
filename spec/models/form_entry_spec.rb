@@ -5,6 +5,7 @@ RSpec.describe FormEntry, type: :model do
   let(:activist) { Activist.make! }
   let(:build_form_entry) { FormEntry.make }
   let(:email) { nil }
+  let(:notification_template) { create(:notification_template, label: 'thank_you_form_entry') }
 
   it { should belong_to :widget }
   it { should belong_to :activist }
@@ -15,6 +16,7 @@ RSpec.describe FormEntry, type: :model do
   before do
     allow(build_form_entry).to receive(:email).and_return(email)
     allow(build_form_entry).to receive(:first_name).and_return('Foo bar')
+    notification_template
   end
 
   describe '#link_activist' do
