@@ -18,7 +18,30 @@ class Invitation < ActiveRecord::Base
   end
 
   def invitation_email
-    CommunityMailer.invite_email(self, User.find_by_email(self.email)).deliver_now
+    invitation_mailer(:community_invite)
+  end
+
+  def invitation_mailer(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
+    Notification.notify!(
+      User.find_by_email(self.email),
+      template_name,
+      invitation_template_vars.merge(template_vars),
+      community.id,
+      auto_deliver,
+      auto_fire
+    )
+  end
+
+  def invitation_template_vars
+    global = {
+      invited_user: {
+        first_name: User.find_by_email(self.email).present? ? User.find_by_email(self.email).first_name : ''
+      },
+      invitation: {
+        link: self.link,
+        community_name: self.community.name
+      }
+    }
   end
 
   def create_community_user

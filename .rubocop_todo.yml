@@ -665,6 +665,7 @@ Lint/UselessAssignment:
     - 'app/models/donation.rb'
     - 'app/models/form_entry.rb'
     - 'app/models/activist_pressure.rb'
+    - 'app/models/invitation.rb'
     - 'app/models/subscription.rb'
     - 'app/services/dns_service.rb'
     - 'lib/tasks/donation.rake'

@@ -954,6 +954,45 @@ Equipe do BONDE.
         body_template: sub_template
       )
     end
+
+		puts 'looking for community_invite template'
+		sub_template = (%{
+			<div>
+				{% if invited_user %}
+					<p>Olá  {{invited_user.first_name}}!</p>
+				{% else %}
+					<p>Olá!</p>
+				{% endif %}
+					<br />
+				<p>Você acabou de ser convidado(a) a entrar na comunidade {{invitation.community_name}} no BONDE.</p>
+				{% if invited_user %}
+					<p>Para chegar junto, é só <a href="{{invitation.link}} target="_blank"">clicar aqui</a>, entrar no BONDE e começar a causar.</p>
+				{% else %}
+					<p>Para começar a causar, é só <a href="{{invitation.link}} target="_blank"">clicar aqui</a> e criar sua conta na plataforma.</p>
+				{% endif %}
+				<br />
+				<p>Se ficar com alguma dúvida, é só <a href="http://trilho.bonde.org">entrar no trilho</a>, onde tem um tutorial pra te ajudar.</p>
+				<p>Tem também um FAQ cheio de respostas aqui: <a href="http://faq.bonde.org">faq.bonde.org</a> :)</p>
+				<br />
+				<br />
+				<p>Um abraço,</p>
+				<p>Equipe <b>B</b>ONDE</p>
+			</div>
+										})
+		label = 'community_invite'
+    subject = '{{subject}}'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: sub_template,
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: sub_template
+      )
+    end
   end
 end
 

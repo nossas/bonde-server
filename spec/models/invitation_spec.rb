@@ -25,10 +25,19 @@ RSpec.describe Invitation, type: :model do
   end
 
   describe '#invitation_email' do
-    let(:invitation) { create(:invitation) }
+    let(:invitation) { create(:invitation, email: 'bonde@example.org') }
+    let(:user) { create(:user, email: 'bonde@example.org') }
+    let(:notification_template) { create(:notification_template, label: 'community_invite') }
+
+    before do
+      user
+      notification_template
+    end
+
     it 'should send an email' do
-      expect { invitation.invitation_email }
-        .to change { ActionMailer::Base.deliveries.count }.by(1)
+      invitation.invitation_email
+      expect(Notification.count).to eq(1)
+      expect(Notification.last.notification_template.label).to eq(notification_template.label)
     end
   end
 

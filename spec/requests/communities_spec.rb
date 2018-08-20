@@ -27,10 +27,12 @@ RSpec.describe "Communities", type: :request do
       let!(:user) { create :user }
       let!(:community) { create :community }
       let(:returned) { JSON.parse(response.body) }
+      let(:notification_template) { create(:notification_template, label: 'community_invite') }
 
       before do
         CommunityUser.create user: user, community: community, role: 1
         stub_current_user user
+        notification_template
 
         post "/communities/#{community.id}/invitation", { format: :json, invitation: valid_invitation }
       end
