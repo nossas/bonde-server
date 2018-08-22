@@ -18,7 +18,7 @@ RSpec.describe Notification, type: :model do
     context "notification from community" do
 
       context "to an activist through it's activist id" do
-        subject { Notification.notify!(activist.id, notification_template.label, { name: 'lorem1'}, community.id) }
+        subject { Notification.notify!(activist.id, notification_template.label, { name: 'lorem1'}, community.id, 'notification_type') }
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: community.id).and_call_original
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label).and_call_original
@@ -31,12 +31,13 @@ RSpec.describe Notification, type: :model do
           expect(subject.community).to eq(community)
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
 
       context "to an activist" do
-        subject { Notification.notify!(activist, notification_template.label, { name: 'lorem1'}, community.id) }
+        subject { Notification.notify!(activist, notification_template.label, { name: 'lorem1'}, community.id, 'notification_type') }
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: community.id).and_call_original
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label).and_call_original
@@ -49,12 +50,13 @@ RSpec.describe Notification, type: :model do
           expect(subject.community).to eq(community)
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
 
       context "to an user" do
-        subject { Notification.notify!(user, notification_template.label, { name: 'lorem1'}, community.id) }
+        subject { Notification.notify!(user, notification_template.label, { name: 'lorem1'}, community.id, 'notification_type') }
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: community.id).and_call_original
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label).and_call_original
@@ -67,13 +69,14 @@ RSpec.describe Notification, type: :model do
           expect(subject.community).to eq(community)
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
 
 
       context "to an email" do
-        subject { Notification.notify!("ask@me.com", notification_template.label, { name: 'lorem1'}, community.id) }
+        subject { Notification.notify!("ask@me.com", notification_template.label, { name: 'lorem1'}, community.id, 'notification_type') }
 
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: community.id).and_call_original
@@ -86,6 +89,7 @@ RSpec.describe Notification, type: :model do
           expect(subject.user).not_to be
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
@@ -95,7 +99,7 @@ RSpec.describe Notification, type: :model do
 
     context "notification without community" do
       context "to an activist through it's activist id" do
-        subject { Notification.notify!(activist.id, notification_template.label, { name: 'lorem1'}) }
+        subject { Notification.notify!(activist.id, notification_template.label, { name: 'lorem1'}, 'notification_type') }
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: nil).and_call_original
         end
@@ -106,12 +110,13 @@ RSpec.describe Notification, type: :model do
           expect(subject.user).not_to be
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
 
       context "to an activist" do
-        subject { Notification.notify!(activist, notification_template.label, { name: 'lorem1'}) }
+        subject { Notification.notify!(activist, notification_template.label, { name: 'lorem1'}, 'notification_type') }
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: nil).and_call_original
         end
@@ -122,12 +127,13 @@ RSpec.describe Notification, type: :model do
           expect(subject.user).not_to be
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
 
       context "to an user" do
-        subject { Notification.notify!(user, notification_template.label, { name: 'lorem1'}) }
+        subject { Notification.notify!(user, notification_template.label, { name: 'lorem1'}, 'notification_type') }
 
         before do
           allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: nil).and_call_original
@@ -139,13 +145,14 @@ RSpec.describe Notification, type: :model do
           expect(subject.user).to eq(user)
           expect(subject.notification_template).to eq(notification_template)
           expect(subject.template_vars).to_not be_nil
+          expect(subject.notification_type).to eq('notification_type')
           expect(subject.persisted?).to eq(true)
         end
       end
     end
 
     context "to an email" do
-      subject { Notification.notify!("ask@me.com", notification_template.label, { name: 'lorem1'}) }
+      subject { Notification.notify!("ask@me.com", notification_template.label, { name: 'lorem1'}, 'notification_type') }
 
       before do
         allow(NotificationTemplate).to receive(:find_by).with(label: notification_template.label, community_id: nil).and_call_original
@@ -157,14 +164,15 @@ RSpec.describe Notification, type: :model do
         expect(subject.user).not_to be
         expect(subject.notification_template).to eq(notification_template)
         expect(subject.template_vars).to_not be_nil
+        expect(subject.notification_type).to eq('notification_type')
         expect(subject.persisted?).to eq(true)
       end
     end
   end
 
   describe "#deliver_without_queue" do
-    subject { Notification.notify!(activist.id, notification_template.label, { name: 'lorem1'}) }
-  
+    subject { Notification.notify!(activist.id, notification_template.label, { name: 'lorem1'}, 'notification_type') }
+
     let(:delivered) { subject.deliver_without_queue }
 
     it do

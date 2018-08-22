@@ -6,7 +6,7 @@ class Notification < ActiveRecord::Base
 
   validates :notification_template, presence: true
 
-  def self.notify!(to, template_name, template_vars, from_community_id = nil, auto_deliver = true, auto_fire = false)
+  def self.notify!(to, template_name, template_vars, from_community_id = nil, auto_deliver = true, notification_type)
     notification_template = find_template_by_attributes(label: template_name.to_s, community_id: from_community_id) || find_template_by_attributes(label: template_name.to_s)
 
     raise StandardError.new "template name does not exists: #{template_name}" unless notification_template
@@ -15,7 +15,7 @@ class Notification < ActiveRecord::Base
       notification_template: notification_template,
       template_vars: template_vars.to_json,
       community_id: from_community_id,
-      auto_fire: auto_fire
+      notification_type: notification_type
     }
 
     if to.is_a? User
@@ -43,7 +43,7 @@ class Notification < ActiveRecord::Base
   end
 
   def custom_from_email
-    if self.auto_fire
+    if self.notification_type == 'auto_fire' or self.notification_type == 'pressure'
       template_vars['from_address']
     else
       community.try(:email_template_from)
@@ -61,7 +61,7 @@ class Notification < ActiveRecord::Base
   def deliver_without_queue
     transaction do
       update_column(:delivered_at, DateTime.now)
-      if self.auto_fire
+      if self.notification_type == 'auto_fire' or self.notification_type == 'pressure'
         auto_fire_mail.deliver_now!
       else
         mail.deliver_now!
