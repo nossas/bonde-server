@@ -2,8 +2,6 @@ class ActivistPressure < ActiveRecord::Base
   include Mailchimpable
   include TagAnActivistOmatic
 
-  attr_accessor :firstname, :lastname, :mail
-
   validates :widget, presence: true
   belongs_to :activist
   belongs_to :widget
@@ -34,28 +32,45 @@ class ActivistPressure < ActiveRecord::Base
 
   def send_pressure_email
     self.mail[:cc].each do |recipient|
-      mail = self.mail.dup
-      mail[:cc] = recipient
-      ActivistPressureMailer.pressure_email(self.id, mail).deliver_later
+      notify_pressure(recipient, :pressure_template)
     end
   end
 
-  def notify_thanks(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
+  def notify_thanks(template_name, template_vars = {}, auto_deliver = true, notification_type = 'auto_fire')
     Notification.notify!(
       activist_id,
       template_name,
       thanks_template_vars.merge(template_vars),
       community.id,
       auto_deliver,
-      auto_fire
+      notification_type
+    )
+  end
+
+  def notify_pressure(to, template_name, template_vars = {}, auto_deliver = true, notification_type = 'pressure')
+    Notification.notify!(
+      to,
+      template_name,
+      pressure_template_vars.merge(template_vars),
+      community.id,
+      auto_deliver,
+      notification_type
     )
   end
 
   def thanks_template_vars
     global = {
       email_text: self.widget.settings['email_text'],
-      from_address: self.widget.settings['sender_email'].nil? ? "#{mobilization.user.first_name} <#{mobilization.user.email}>" : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
+      from_address: self.widget.settings['sender_email'].nil? ? community.try(:email_template_from) : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
       subject: self.widget.settings['email_subject'].nil? ? mobilization.try(:name) : self.widget.settings['email_subject']
+    }
+  end
+
+  def pressure_template_vars
+    global = {
+      subject: self.mail[:subject],
+      from_address: activist_pressure.activist.present? ? "#{activist_pressure.activist.name} <#{activist_pressure.activist.email}>" : community.try(:email_template_from),
+      pressure_id: self.id
     }
   end
 
