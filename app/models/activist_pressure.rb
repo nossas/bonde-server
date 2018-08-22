@@ -69,7 +69,7 @@ class ActivistPressure < ActiveRecord::Base
   def pressure_template_vars
     global = {
       subject: self.mail[:subject],
-      from_address: activist_pressure.activist.present? ? "#{activist_pressure.activist.name} <#{activist_pressure.activist.email}>" : community.try(:email_template_from),
+      from_address: activist.present? ? "#{activist.name} <#{activist.email}>" : community.try(:email_template_from),
       pressure_id: self.id
     }
   end
