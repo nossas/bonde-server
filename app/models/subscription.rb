@@ -193,13 +193,15 @@ class Subscription < ActiveRecord::Base
     )
   end
 
-  def notify_activist(template_name, template_vars = {}, auto_deliver = true)
+  def notify_activist(template_name, template_vars = {}, auto_deliver = true, notification_type = 'payments')
     Notification.notify!(
       activist_id,
       template_name,
       default_template_vars.merge(template_vars),
       community_id,
-      auto_deliver)
+      auto_deliver,
+      notification_type
+    )
   end
 
   def process_status_changes(status, data)

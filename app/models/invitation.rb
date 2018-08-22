@@ -21,14 +21,14 @@ class Invitation < ActiveRecord::Base
     invitation_mailer(:community_invite)
   end
 
-  def invitation_mailer(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
+  def invitation_mailer(template_name, template_vars = {}, auto_deliver = true, notification_type = 'invite')
     Notification.notify!(
       self.email,
       template_name,
       invitation_template_vars.merge(template_vars),
       community.id,
       auto_deliver,
-      auto_fire
+      notification_type
     )
   end
 

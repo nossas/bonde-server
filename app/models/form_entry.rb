@@ -108,14 +108,14 @@ class FormEntry < ActiveRecord::Base
     end
   end
 
-  def notify_thanks(template_name, template_vars = {}, auto_deliver = true, auto_fire = true)
+  def notify_thanks(template_name, template_vars = {}, auto_deliver = true, notification_type = 'auto_fire')
     Notification.notify!(
       activist_id,
       template_name,
       thanks_template_vars.merge(template_vars),
       community.id,
       auto_deliver,
-      auto_fire
+      notification_type
     )
   end
 
