@@ -993,6 +993,25 @@ Equipe do BONDE.
         body_template: sub_template
       )
     end
+
+    puts 'looking for pressure_template template'
+    sub_template = (%{
+        {{email_text | newline_to_br}}
+      })
+    label = 'pressure_template'
+    subject = '{{subject}}'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: sub_template,
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: sub_template
+      )
+    end
   end
 end
 
