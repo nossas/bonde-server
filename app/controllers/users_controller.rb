@@ -46,7 +46,7 @@ class UsersController < ApplicationController
       Notification.notify! user, :bonde_password_retrieve, {
         new_password: pass,
         user: user
-      }
+      }, 'password_retrieve'
       status = :ok
     end
     render nothing: true, status: status
