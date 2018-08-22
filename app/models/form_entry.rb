@@ -122,7 +122,7 @@ class FormEntry < ActiveRecord::Base
   def thanks_template_vars
     global = {
       email_text: self.widget.settings['email_text'],
-      from_address: self.widget.settings['sender_email'].nil? ? "#{mobilization.user.first_name} <#{mobilization.user.email}>" : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
+      from_address: self.widget.settings['sender_email'].nil? ? community.try(:email_template_from) : "#{self.widget.settings['sender_name']} <#{self.widget.settings['sender_email']}>",
       subject: self.widget.settings['email_subject'].nil? ? mobilization.try(:name) : self.widget.settings['email_subject']
     }
   end

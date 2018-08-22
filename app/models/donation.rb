@@ -273,7 +273,7 @@ class Donation < ActiveRecord::Base
   def thanks_template_vars
     global = {
       email_text: widget.settings['email_text'],
-      from_address: widget.settings['sender_email'].nil? ? "#{mobilization.user.first_name} <#{mobilization.user.email}>" : "#{widget.settings['sender_name']} <#{widget.settings['sender_email']}>",
+      from_address: widget.settings['sender_email'].nil? ? community.try(:email_template_from) : "#{widget.settings['sender_name']} <#{widget.settings['sender_email']}>",
       subject: widget.settings['email_subject'].nil? ? "[#{mobilization.try(:name)}] Obrigada por doar!" : widget.settings['email_subject']
     }
   end
