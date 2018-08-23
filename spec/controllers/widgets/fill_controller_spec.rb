@@ -61,19 +61,19 @@ RSpec.describe Widgets::FillController, type: :controller do
       before {
         widget.kind = 'pressure'
         widget.save!
-        post :create, widget_id: widget, fill: { 
-          activist: { 
-            firstname: 'test201611241458', 
-            lastname: 'test201611241458', 
-            email: 'test201611241459@email.com', 
+        post :create, widget_id: widget, fill: {
+          activist: {
+            firstname: 'test201611241458',
+            lastname: 'test201611241458',
+            email: 'test201611241459@email.com',
             city: 'São Paulo'
-          }, 
+          },
           mail: {
-            cc: [ 'target1@email.com',  
-                  'target2@email.com', 
-                  'target3@email.com', 
-                  'target4@email.com', 
-                  'target5@email.com' ], 
+            cc: [ 'target1@email.com',
+                  'target2@email.com',
+                  'target3@email.com',
+                  'target4@email.com',
+                  'target5@email.com' ],
             subject: 'Assunto do email!',
             body: 'Corpo do email que será enviado.'
           }
