@@ -185,4 +185,25 @@ RSpec.describe Notification, type: :model do
       expect(deliveries.last).to eq(delivered)
     end
   end
+
+  describe 'auto_fire notifications' do
+    let(:activist) { create(:activist, email: "activist@gmail.com") }
+    let(:user) { create(:user) }
+    let(:community) { create(:community, email_template_from: 'custom@email.com') }
+    let(:template_donation) { create(:notification_template, label: 'thank_you_donation', subject_template: '{{subject}}', body_template: "{{body}}") }
+
+    context 'send a thank you donation' do
+      subject { Notification.notify!(activist.id, template_donation.label, { name: 'John Doe', subject: 'Thanks', body: 'body message'}, community.id, 'thank_you_donation') }
+
+      it 'spec_name' do
+        expect(subject.activist).to eq(activist)
+        expect(subject.email).to be_nil
+        expect(subject.user).not_to be
+        expect(subject.notification_template).to eq(template_donation)
+        expect(subject.template_vars).to_not be_nil
+        expect(subject.notification_type).to eq('thank_you_donation')
+        expect(subject.persisted?).to eq(true)
+      end
+    end
+  end
 end
