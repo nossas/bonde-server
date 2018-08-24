@@ -69,11 +69,13 @@ RSpec.describe Widgets::FillController, type: :controller do
             city: 'São Paulo'
           },
           mail: {
-            cc: ['target1@email.com',
-                  'target2@email.com',
-                  'target3@email.com',
-                  'target4@email.com',
-                  'target5@email.com'],
+            cc: [
+              'target1@email.com',
+              'target2@email.com',
+              'target3@email.com',
+              'target4@email.com',
+              'target5@email.com'
+            ],
             subject: 'Assunto do email!',
             body: 'Corpo do email que será enviado.'
           }
