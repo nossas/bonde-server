@@ -63,5 +63,28 @@ RSpec.describe SubscriptionSchedulesService do
         expect(SubscriptionSchedulesService.can_process?(subscription)).to eq(false)
       end
     end
+
+    context 'when the subscription was processed 3 times, should be process again but should not send a notification unpaid' do
+      let(:subs) { Subscription.make!(card_data: { id: 'card_xpto_id'}) }
+      let!(:donation_1) { Donation.make!(transaction_status: 'paid', created_at: '05/03/2018', local_subscription_id: subs.id) }
+      let!(:donation_2) { Donation.make!(transaction_status: 'refused', created_at: '05/04/2018', local_subscription_id: subs.id) }
+      let!(:donation_3) { Donation.make!(transaction_status: 'refused', created_at: '05/05/2018', local_subscription_id: subs.id) }
+      let!(:donation_4) { Donation.make!(transaction_status: 'refused', created_at: '05/06/2018', local_subscription_id: subs.id) }
+      let!(:donation_5) { Donation.make!(transaction_status: 'refused', created_at: '05/07/2018', local_subscription_id: subs.id) }
+
+      it 'should not generate notification' do
+        subs.transition_to(:paid)
+        subs.transition_to(:unpaid)
+        subs.transition_to(:unpaid)
+        subs.transition_to(:unpaid)
+        subs.transition_to(:unpaid)
+        donation_5.update_columns(created_at: DateTime.now - 4.months)
+        notifications = Notification.where("template_vars->>'subscription_id' = ?", subs.id.to_s)
+
+        expect(SubscriptionSchedulesService.can_process?(subs)).to eq(true)
+        expect(subs.reached_notification_limit?).to eq(true)
+        expect(notifications.count).to eq(4)
+      end
+    end
   end
 end
