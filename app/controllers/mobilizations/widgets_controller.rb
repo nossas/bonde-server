@@ -19,7 +19,7 @@ class Mobilizations::WidgetsController < ApplicationController
     @widget = Widget.find(params[:id])
     authorize @widget
 
-    if @widget.update!(widget_params)
+    if @widget.update(widget_params)
       render json: @widget
     else
       render json: @widget.errors, status: :unprocessable_entity
