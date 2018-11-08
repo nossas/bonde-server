@@ -26,35 +26,21 @@ user_admin = User.find_or_create_by(email: 'admin_foo@bar.com') do |u|
 end
 
 communities = Community.create([
-  { name: "Minha Blumenau", city: "Blumenau" },
-  { name: "Minha Campinas", city: "Campinas" },
-  { name: "Minha Curitiba", city: "Curitiba" },
-  { name: "Minha Garopaba", city: "Garopaba" },
-  { name: "Minha Ouro Preto", city: "Ouro Preto" },
-  { name: "Minha Porto Alegre", city: "Porto Alegre" },
-  { name: "Meu Recife", city: "Recife" },
-  { name: "Meu Rio", city: "Rio de Janeiro" },
-  { name: "Minha Sampa", city: "São Paulo" },
-  { name: "Nossas Cidades", city:"Nossas Cidades" },
-  { name: "Nuestras Ciudades", city:"Nuestras Ciudades" },
-  { name: "Our Cities", city:"Our Cities" },
-  { name: "Minha Jampa", city:"João Pessoa" },
-  { name: "Meu Oiapoque", city:"Oiapoque" },
-  { name: "Mi Ciudad Mx", city:"Ciudad de México" },
-  { name: "Caracas Mi Convive", city:"Caracas" },
-  { name: "Redes ayuda", city:"Redes ayuda" },
-  { name: "ASJ", city:"ASJ" },
-  { name: "Jóvenes Contra la Violencia", city:"Jóvenes Contra la Violencia" },
-  { name: "Corporación para el Desarrollo Regional", city:"Corporación para el Desarrollo Regional" },
-  { name: "Fósforo", city:"Fósforo" },
-  { name: "Enjambre digital", city:"Enjambre digital" },
-  { name: "Casa de las Estrategias", city:"Casa de las Estrategias" }
+  { name: "Bonde", city:"Rio de Janeiro" },
+  { name: "Nossas", city:"Rio de Janeiro" },
 ])
 
 communities.each do |c|
   CommunityUser.create([
     {
       user_id: user.id,
+      community_id: c.id,
+      role: 1
+    }
+  ])
+  CommunityUser.create([
+    {
+      user_id: user_admin.id,
       community_id: c.id,
       role: 1
     }
@@ -69,7 +55,7 @@ mobilizations = Mobilization.create([
     color_scheme: 'minhasampa-scheme',
     header_font: 'ubuntu',
     body_font: 'open-sans',
-    community_id: communities.select{|c|c.name=='Minha Sampa'}[0].id
+    community_id: communities.select{|c|c.name=='Bonde'}[0].id
   },
   {
     name: 'Save the Whales!',
@@ -78,14 +64,9 @@ mobilizations = Mobilization.create([
     color_scheme: 'meurio-scheme',
     header_font: 'ubuntu',
     body_font: 'open-sans',
-    community_id: communities.select{|c|c.name=='Meu Rio'}[0].id
+    community_id: communities.select{|c|c.name=='Bonde'}[0].id
   }
 ])
-
-mobilizations.each do |mob|
-  block = Block.create mobilization: mob, bg_class: 'bg-1', position:1, name: 'Tô nessa'
-  Widget.create block: block, kind: ['pressure', 'form'][mob.id % 2], sm_size: 1, md_size: 2, lg_size: 4
-end
 
 # run create all tags
 connection = ActiveRecord::Base.connection()
@@ -105,6 +86,7 @@ sql = <<-EOL
   insert into tags ("name", "label") values ('user_combate-a-corrupção', 'Combate à Corrupção') ON CONFLICT (name) DO NOTHING;
   insert into tags ("name", "label") values ('user_combate-ao-racismo', 'Combate ao Racismo') ON CONFLICT (name) DO NOTHING;
   insert into tags ("name", "label") values ('user_saude-publica', 'Saúde Pública') ON CONFLICT (name) DO NOTHING;
+  insert into configurations ("name", "value", "created_at", "updated_at") values ('jwt_secret', #{ENV['JWT_SECRET']}, now(), now()) ON CONFLICT (name) DO NOTHING;
 EOL
 
 sql.split(';').each do |s|
