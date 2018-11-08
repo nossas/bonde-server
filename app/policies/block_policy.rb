@@ -61,7 +61,15 @@ class BlockPolicy < ApplicationPolicy
     end
   end
 
+  def batch_update?
+    authenticated?
+  end
+
   private
+
+  def authenticated?
+    user.present?
+  end
 
   def is_owned_by?(user)
     user.present? && record.mobilization.user == user

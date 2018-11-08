@@ -6,7 +6,6 @@ class Mobilizations::WidgetsController < ApplicationController
   def index
     @widgets = policy_scope(Widget).
       joins(:block).
-      not_deleted.
       where({
       blocks: {
         deleted_at: nil,
@@ -17,7 +16,7 @@ class Mobilizations::WidgetsController < ApplicationController
   end
 
   def update
-    @widget = Widget.not_deleted.find(params[:id])
+    @widget = Widget.find(params[:id])
     authorize @widget
 
     if @widget.update(widget_params)

@@ -6,7 +6,6 @@ RSpec.describe TemplateWidget, type: :model do
 	it { should validate_presence_of :md_size }
 	it { should validate_presence_of :lg_size }
 	it { should validate_presence_of :kind }
-	it { should validate_uniqueness_of :mailchimp_segment_id }
 
 	describe "create_from" do
 		context "create an instance from Widget" do
@@ -40,15 +39,11 @@ RSpec.describe TemplateWidget, type: :model do
 				expect(@templateWidget.lg_size).to eq(@widget.lg_size)
 			end
 
-			it "should have same mailchimp_segment_id value" do 
-				expect(@templateWidget.mailchimp_segment_id).to eq(@widget.mailchimp_segment_id)
-			end
-
 			it "should have same action_community value" do 
 				expect(@templateWidget.action_community).to eq(@widget.action_community)
 			end
 
-			it "should have same exported_at value" do 
+			it "should have same exported_at value" do
 				expect(@templateWidget.exported_at).to eq(@widget.exported_at)
 			end
 		end

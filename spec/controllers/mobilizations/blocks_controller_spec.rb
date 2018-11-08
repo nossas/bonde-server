@@ -21,13 +21,13 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
   end
 
   describe "POST #create" do
-    it "should create with JSON format and empty params" do
+    it "should not create with JSON format and empty params" do
       mobilization = Mobilization.make!
       expect(mobilization.blocks.count).to eq(0)
       post :create, mobilization_id: mobilization.id, format: :json
 
-      expect(mobilization.blocks.count).to eq(1)
-      expect(response.body).to include(BlockSerializer::CompleteBlockSerializer.new(mobilization.blocks.first).to_json)
+      expect(mobilization.blocks.count).to eq(0)
+      expect(response.status).to eq(422)
     end
 
     it "should create with JSON format and parameters" do
@@ -47,7 +47,8 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
     it "should create nested widgets" do
       mobilization = Mobilization.make!
       expect(mobilization.blocks.count).to eq(0)
-      post :create, mobilization_id: mobilization.id, format: :json, block: { widgets_attributes: [{kind: 'content', sm_size: 8, md_size: 6, lg_size: 6}, {kind: 'weather', sm_size: 12, md_size: 12, lg_size: 4}] }
+      post :create, mobilization_id: mobilization.id, format: :json, block: { position: 12345, bg_class: 'bg-yellow', bg_image: 'foobar.jpg', hidden: true, widgets_attributes: [{kind: 'content', sm_size: 8, md_size: 6, lg_size: 6}, {kind: 'weather', sm_size: 12, md_size: 12, lg_size: 4, position: 1}] }
+
       expect(mobilization.blocks.count).to eq(1)
       block = mobilization.blocks.first
       expect(response.body).to include(BlockSerializer::CompleteBlockSerializer.new(block).to_json)
@@ -77,6 +78,29 @@ RSpec.describe Mobilizations::BlocksController, type: :controller do
       expect(block.bg_image).to eq('foobar.jpg')
       expect(block.hidden).to eq(true)
       expect(response.body).to include(block.to_json)
+    end
+  end
+
+  describe "PUT #batch_update" do
+    let!(:mobilization) { Mobilization.make! user: @user }
+    let!(:block) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 1, hidden: false }
+    let!(:block2) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 2, hidden: false }
+    let!(:block3) { Block.make! mobilization: mobilization, bg_class: 'bg-white', position: 3, hidden: false }
+
+    it 'should update two blocks and change your positions' do
+      put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2, bg_class: 'bg-black2' }, {"id": block2.id, "position": 1, bg_class: 'bg-black' }], format: :json
+
+      block.reload
+      block2.reload
+      expect(block.position).to eq(2)
+      expect(block.bg_class).to eq('bg-black2')
+      expect(block2.position).to eq(1)
+      expect(block2.bg_class).to eq('bg-black')
+    end
+
+    it 'should be update blocks when list for equals one' do
+      put 'batch_update', mobilization_id: mobilization.id, blocks: [{"id": block.id, "position": 2}], format: :json
+      expect(response.status).to eq(200)
     end
   end
 

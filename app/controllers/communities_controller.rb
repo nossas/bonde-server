@@ -135,7 +135,7 @@ class CommunitiesController < ApplicationController
         path = "/register/?invitation_code=#{invitation.code}"
         redirect_to "#{domain}#{path}"
       end
-    
+
     else
       render json: { msg: 'Invitation not found' }, status: 302
     end
@@ -170,7 +170,7 @@ class CommunitiesController < ApplicationController
     end
   end
 
-  private 
+  private
 
   def load_community
     @community = current_user.communities.find_by({id: params['community_id']}) if current_user

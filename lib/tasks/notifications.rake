@@ -791,29 +791,31 @@ Sua doação continua válida e você continuará sendo debitado na data correta
   task accounts_templates: :environment do
     puts 'looking for reset_password_instructions template'
     sub_template = (%{
+<link href="https://fonts.googleapis.com/css?family=Nunito:400,800" rel="stylesheet">  
 <tr>
-    <td style="height:134px;position:relative;">
-        <div style="background-image:url();background-size:100%;left:50%;margin-left:-56px;width:112px;height:112px;background-color:#d8d8d8;border:5px solid #ffffff;border-radius:50%; margin: 0 auto;"></div>
-    </td>
+  <td> 
+    <table style="width:532px;margin:80px auto;text-align:center;color:#222;font-size:13px;font-family:Nunito;"> 
+      <tr> 
+        <td>
+          <b style="font-size:18px;">Olá!</b> 
+          <br/><br/>
+          Você está recebendo este e-mail pois houve uma solicitação de alteração da senha do seu usuário do <b>BONDE</b>.
+          <br/><br/>
+          <b>Para alterar sua senha, clique aqui:</b>
+          <br/><br/>
+          <a href="{{user.callback_url}}{{user.reset_password_token}}" style="display:block;width:192px;padding:18px 0;border-radius:100px;margin:0 auto;background-color:#ee0099;font-size:11px;color:#fff;font-weight:800;text-transform:uppercase;text-decoration:none;">Alterar senha</a>
+          <br/><br/>
+          Caso você não tenha feito essa solicitação, ignore este e-mail.
+          <br/>
+          Este link irá expirar em 24h.
+          <br/><br /><br />
+          <span style="font-size:11px;">Dúvidas? Só mandar um e-mail pra: <a href="#" style="color:#ee0099;">suporte@bonde.org</a></span>
+        </td>
+      </tr>
+    </table> 
+  </td> 
 </tr>
-<tr>
-    <td>
-        <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
-            <tr>
-                <td>
-Olá {{user.first_name}}
-<br/><br/>
-Você requisitou uam troca de senha para o bonde, clique no link abaixo para trocar sua senha:
-<br/><br/>
-
-                  <a href="http://app.bonde.org/?reset_password_token={{user.reset_password_token}}" style="display:block;width:230px;padding:18px 0;margin:0 auto;background-color:#222222;font-size:16px;color:#fff;font-weight:600;text-transform:uppercase;text-decoration:none;">
-                    TROCAR SENHA
-                  </a>
-                </td>
-            </tr>
-        </table>
-    </td>
-</tr>})
+})
     label = 'reset_password_instructions'
     subject = 'Instruções para alteração de senha'
     if nt = NotificationTemplate.find_by_label(label)
