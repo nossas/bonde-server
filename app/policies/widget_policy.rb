@@ -42,6 +42,7 @@ class WidgetPolicy < ApplicationPolicy
         :payment_methods,
         :customer_data,
         :goal_date_limit,
+        :external_resource,
 
         # Match Widget
         :choicesA,
