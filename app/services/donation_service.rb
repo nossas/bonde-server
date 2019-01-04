@@ -48,10 +48,6 @@ class DonationService
 
         self.find_or_create_card(donation) unless donation.boleto?
 
-        if donation.boleto? && Rails.env.production?
-          @transaction.collect_payment({email: donation.email})
-        end
-
         donation.update_attributes(
           transaction_id: @transaction.id,
           gateway_data: @transaction.try(:to_json),
