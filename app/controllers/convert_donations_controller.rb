@@ -36,13 +36,14 @@ class ConvertDonationsController < ApplicationController
     widget = catch_widget
     amount = params[:amount]
 
-    donation = widget.donations.joins(:activist).
-                 where('activists.email = ? and subscription is null or not subscription', email).last
+    donation = Donation.find_by_email(email).
+      where('donations.transaction_status =  ?', 'paid').last
 
     if donation.present?
       new_donation = Donation.new(donation.attributes)
       new_donation.id = nil
       new_donation.transaction_id = nil
+      new_donation.widget_id = widget.id
       new_donation.amount = amount if amount.present?
       new_donation.converted_from = donation.id
       new_donation.save
