@@ -42,7 +42,7 @@ class ConvertDonationsController < ApplicationController
     if donation.present?
       new_donation = Donation.new(donation.attributes)
       new_donation.id = nil
-      ew_donation.amount = amount if amount.present?
+      new_donation.amount = amount if amount.present?
       new_donation.converted_from = donation.id
       new_donation.save
 
