@@ -27,6 +27,14 @@ And the server is on fire :fire:
 
 # Tests
 ```
-rake spec
+DATABASE_URL=postgres://monkey_user:monkey_pass@10.0.0.12:5432/bonde_test bundle exec rspec spec
 ```
+
+# Docker Commands
+
+```
+$ docker-compose exec api-v1 bundle exec rake db:migrate DATABASE_URL=postgres://monkey_user:monkey_pass@10.0.0.12:5432/bonde_test RAILS_ENV=test 
+
+```
+
 And the green lights start to pop up :green_heart:

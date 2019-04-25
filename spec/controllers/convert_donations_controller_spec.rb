@@ -8,6 +8,32 @@ RSpec.describe ConvertDonationsController, type: :controller do
     allow(SubscriptionService).to receive(:run).and_return(true)
   end
 
+  describe 'GET /replay' do
+    context 'when user_email and widget_id has match' do
+      before do
+        get :convert, user_email: donation.activist.email, widget_id: donation.widget_id
+      end
+
+      it 'should replay the donation with new amout' do
+        expect(response.status).to eq(200)
+        expect(ActiveSupport::JSON.decode(response.body)['converted_from']).to eq(donation.id)
+        expect(ActiveSupport::JSON.decode(response.body)['amount']).to eq(1000)
+      end
+    end
+
+    context 'should change value when passing amount' do
+      before do
+        get :convert, amount: 2000, user_email: donation.activist.email, widget_id: donation.widget_id
+      end
+
+      it 'should convert using new amount' do
+        expect(response.status).to eq(200)
+        expect(ActiveSupport::JSON.decode(response.body)['converted_from']).to eq(donation.id)
+        expect(ActiveSupport::JSON.decode(response.body)['amount']).to eq(2000)
+      end
+    end
+  end
+
   describe 'GET /convert' do
     context 'when user_email and widget_id has match' do
       before do
