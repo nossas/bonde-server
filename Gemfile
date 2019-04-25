@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.4.4'
 
-gem 'rails', '4.2.10'
+gem 'rails', '4.2.11'
 gem 'rails-api'
 gem 'spring', group: :development
 gem 'pg'
@@ -19,7 +19,7 @@ gem 'active_model_serializers'
 gem 'machinist', '>= 2.0.0.beta2'
 gem 'pundit'
 gem 'gibbon', '>= 2'
-gem 'redis', '3.3.0'
+gem 'redis', '3.3.3'
 gem 'sidekiq'
 gem 'puma'
 gem 'platform-api'
@@ -32,7 +32,6 @@ gem "liquid"
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'aws-sdk', '~> 2'
 gem 'net-dns'
-gem 'test_after_commit', group: :test
 gem 'whenever', require: false
 gem 'codacy-coverage', require: false
 gem 'codecov', :require => false, :group => :test
