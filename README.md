@@ -7,8 +7,10 @@
 ```
 # Install Rbenv
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 
 # Install dependencies
+apt-get install -y libssl-dev libreadline-dev build-essentials
 rbenv install 2.4.4
 
 # Enter local folder, ex: cd nossas/bonde-server/
@@ -33,7 +35,8 @@ DATABASE_URL=postgres://monkey_user:monkey_pass@10.0.0.12:5432/bonde_test bundle
 # Docker Commands
 
 ```
-$ docker-compose exec api-v1 bundle exec rake db:migrate DATABASE_URL=postgres://monkey_user:monkey_pass@10.0.0.12:5432/bonde_test RAILS_ENV=test 
+docker-compose exec pgmaster psql -Umonkey_user postgres -c "create database bonde_test"
+docker-compose exec api-v1 bundle exec rake db:migrate DATABASE_URL=postgres://monkey_user:monkey_pass@10.0.0.12:5432/bonde_test RAILS_ENV=test 
 
 ```
 
