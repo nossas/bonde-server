@@ -25,37 +25,48 @@
     <!-- HEADER -->
 
     <!-- MAIN -->
-
-<tr>
-    <td style="padding-bottom: 16px;">
+    <tr>
+      <td style="padding-bottom: 16px;">
         <table width="100%" style=" border-collapse: collapse; border-radius: 5px; border-style: hidden; background-color: #FFFFFF; ">
-            <tr>
-                <td style="padding: 32px 48px;" align="center">
-                    <table>
-                        <tr>
-                          <td align="center" style="padding-bottom: 16px; color: #424242; font-size: 18px;">
-                            <p style="font-size: 36px;">Oi, <span style="color: #059046; font-weight: 800;"><%= @donation.customer['name'] %> </span>!</p> 
-                            <p>Muito obrigada pelo seu apoio à XXX que teve seu marido brutalmente assassinado pelos militares do exército.</p>
-                            <p>Sua doação está sendo processada e logo você receberá a confirmação por email.</p>
-                            <p><span style="color: #059046; font-weight: 800;">Detalhes da Doação</span></p>
-                            <p>
-                              <strong>Valor doado:</strong> R$ <%= @donation.amount/100 %> <br>
-                              <strong>Data da doação:</strong> <%= @donation.created_at.strftime("%d/%m/%Y") %> <br>
-                              <strong>Recebedor:</strong> XX</p>
-                            <p>Obrigada por apoiar essa causa, seu apoio faz toda a diferença! :)</p>
-                            <p>Um forte abraço .</p>
-                            <p>Livia, Bela e toda a equipe do Meu Rio</p>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-              <td align="center" style="padding-bottom: 32px; color: #4A4A4A; font-size: 11px;"> Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a> </td>
-            </tr>
+          <tr>
+            <td style="padding: 32px 48px;" align="center">
+            <% if params[:utf8].nil? %>
+              <%= form_tag("/replay-donation", method: "get") do %>
+                <%= hidden_field_tag "user_email", params[:user_email] %>
+                <%= hidden_field_tag "amount", params[:amount] %>
+                <%= hidden_field_tag "widget_id", params[:widget_id] %>
+                <p>Você está prestes a fazer uma doação de <%= (params[:amount].to_i / 100) %> reais para a família do Luciano, assassinado pelo Exército no Rio de Janeiro.</p>
+                <p> Podemos confirmar sua doação? </p>
+                <%= submit_tag("Confirmar", :style => "border:0; font-size: 18px; padding: 10px; cursor: pointer; background-color: #059046; color: #fff;") %>
+              <% end %>
+            <% else %>
+              <table>
+                <tr>
+                  <td align="center" style="padding-bottom: 16px; color: #424242; font-size: 18px;">
+                    <p style="font-size: 36px;">Oi, <span style="color: #059046; font-weight: 800;"><%= @activist['name'] %> </span>!</p> 
+                    <p>Muito obrigada mais uma vez! É incrível saber que podemos contar com você.</p>
+                    <p>Agora sua doação está sendo processada, logo mais você deve receber a confirmação no seu email ;)</p>
+                    <%# <p><span style="color: #059046; font-weight: 800;">Detalhes da Doação</span></p> %>
+                    <%# <p> %>
+                    <%#   <strong>Valor doado:</strong> R$ <%= @donation.amount/100 %1> <br> %>
+                    <%#   <strong>Data da doação:</strong> <%= @donation.created_at.strftime("%d/%m/%Y") %1> <br> %>
+                    <%#   <strong>Recebedor:</strong> XX</p> %>
+                    <%# <p>Obrigada por apoiar essa causa, seu apoio faz toda a diferença! :)</p> %>
+                    <p>Forte abraço <3</p>
+                    <p>Livia, Bela e toda a equipe do Meu Rio</p>
+                    </td>
+                </tr>
+              </table>
+            <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding-bottom: 32px; color: #4A4A4A; font-size: 11px;"> Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>  
+            </td>
+          </tr>
         </table>
-    </td>
-</tr>
+      </td>
+    </tr>
     <!-- MAIN -->
 
     <!-- FOOTER -->

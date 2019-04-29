@@ -37,8 +37,7 @@ class ConvertDonationsController < ApplicationController
     amount = params[:amount]
 
     valid_donation = Donation.where('donations.email = ? and donations.transaction_status =  ? and donations.widget_id = ? and donations.created_at::timestamp < (now() - interval \'24 hour\')', email, 'paid', widget.id).last
-
-    if valid_donation.present?
+    if params[:utf8].nil? && valid_donation.present?
       valid_donation.converted_from = valid_donation.id
       valid_donation.id = nil
       valid_donation.transaction_id = nil
@@ -57,27 +56,23 @@ class ConvertDonationsController < ApplicationController
       @donation.cached_community_id = @donation.try(:mobilization).try(:community_id)
 
       if @donation.save!
-        address = find_or_create_address(valid_donation['activist_id'])
+        address = @donation.activist.addresses.last 
         donation_service = DonationService.run(@donation, address)
 
         if donation_service == 'refused'
           render json: { transaction_status: donation_service }, status: :unprocessable_entity
-        else
-          render 'replay' 
         end
       else
         render json: @donation.errors, status: :unprocessable_entity
       end
-    else
-      raise ActiveRecord::RecordNotFound
+      # else
+      #   raise ActiveRecord::RecordNotFound
     end
+    @activist = valid_donation.customer 
+    render 'replay' 
   end
 
   private
-
-  def find_or_create_address(activist_id)
-    @donation.activist.addresses.find(activist_id)
-  end
 
   def catch_widget
     Widget.find params[:widget_id]
