@@ -50,6 +50,7 @@ Rails.application.routes.draw do
   end
 
   get '/invitation', to: 'communities#accept_invitation', as: 'accept_invitation'
-  get '/convert-donation/:user_email/:widget_id' =>  'convert_donations#convert'
+  get '/convert-donation', to: 'convert_donations#convert'
+  get '/replay-donation', to: 'convert_donations#replay'
   post '/retrieve', to: 'users#retrieve'
 end
