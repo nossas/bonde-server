@@ -37,7 +37,8 @@ class ConvertDonationsController < ApplicationController
     amount = params[:amount]
 
     valid_donation = Donation.where('donations.email = ? and donations.transaction_status =  ? and donations.widget_id = ? and donations.created_at::timestamp < (now() - interval \'24 hour\')', email, 'paid', widget.id).last
-    if params[:utf8].nil? && valid_donation.present?
+
+    if !params[:utf8].nil? && valid_donation.present?
       valid_donation.converted_from = valid_donation.id
       valid_donation.id = nil
       valid_donation.transaction_id = nil
@@ -68,7 +69,7 @@ class ConvertDonationsController < ApplicationController
       # else
       #   raise ActiveRecord::RecordNotFound
     end
-    @activist = valid_donation.customer 
+    @activist = valid_donation['customer'] 
     render 'replay' 
   end
 
