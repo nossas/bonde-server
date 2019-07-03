@@ -23,13 +23,16 @@ class ConvertDonationsController < ApplicationController
   end
 
   def replay
+    t = Time.now
+    t -= (60 * 60 * 24)
+
     email = params[:user_email]
-    # widget = Widget.find params[:widget_id]
-    widget = catch_widget
     amount = params[:amount]
 
-    valid_donation = Donation.where('donations.email = ? and donations.transaction_status =  ? and donations.widget_id = ? and donations.created_at::timestamp < (now() - interval \'24 hour\')', email, 'paid', widget.id).last
-    if params[:utf8].nil? && valid_donation.present?
+    widget = catch_widget
+    valid_donation = Donation.where('donations.email = ? and donations.transaction_status =  ? and donations.widget_id = ?', email, 'paid', widget.id).order("created_at DESC").first
+
+    if params[:utf8].present? && valid_donation.present? && Time.parse(valid_donation.created_at) > t
       valid_donation.converted_from = valid_donation.id
       valid_donation.id = nil
       valid_donation.transaction_id = nil
