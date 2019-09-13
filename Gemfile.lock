@@ -81,6 +81,9 @@ GEM
     docile (1.1.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
+    elastic-apm (2.10.0)
+      concurrent-ruby (~> 1.0)
+      http (>= 3.0)
     erubis (2.7.0)
     excon (0.55.0)
     factory_girl (4.8.0)
@@ -245,8 +248,15 @@ GEM
       erubis (~> 2.0)
       excon
       multi_json (>= 1.9.2)
+    http (4.1.1)
+      addressable (~> 2.3)
+      http-cookie (~> 1.0)
+      http-form_data (~> 2.0)
+      http_parser.rb (~> 0.6.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    http-form_data (2.1.1)
+    http_parser.rb (0.6.0)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     inflecto (0.0.2)
@@ -275,7 +285,6 @@ GEM
     multipart-post (2.0.0)
     net-dns (0.8.0)
     netrc (0.11.0)
-    newrelic_rpm (3.15.0.314)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
     omniauth (1.6.1)
@@ -352,7 +361,6 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rmagick (2.16.0)
     rspec-activemodel-mocks (1.0.3)
       activemodel (>= 3.0)
       activesupport (>= 3.0)
@@ -384,8 +392,6 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.9.0)
     safe_yaml (1.0.4)
-    sentry-raven (2.4.0)
-      faraday (>= 0.7.6, < 1.0)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
     sidekiq (4.2.10)
@@ -441,6 +447,7 @@ DEPENDENCIES
   carrierwave
   codacy-coverage
   codecov
+  elastic-apm
   factory_girl_rails (~> 4.8)
   fakeredis
   fog
@@ -450,7 +457,6 @@ DEPENDENCIES
   liquid
   machinist_redux (>= 3.0.4)
   net-dns
-  newrelic_rpm (= 3.15.0.314)
   omniauth
   pagarme (= 2.1.2)
   pg
@@ -465,11 +471,9 @@ DEPENDENCIES
   rails_stdout_logging
   redis (= 3.3.3)
   responders
-  rmagick
   rspec-activemodel-mocks
   rspec-rails
   rubocop
-  sentry-raven
   shoulda-matchers (< 3.0.0)
   sidekiq
   simplecov
@@ -480,7 +484,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 2.4.4p296
+   ruby 2.4.6p354
 
 BUNDLED WITH
    1.17.3
