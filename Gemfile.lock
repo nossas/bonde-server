@@ -285,7 +285,7 @@ GEM
     multipart-post (2.0.0)
     net-dns (0.8.0)
     netrc (0.11.0)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
@@ -457,6 +457,7 @@ DEPENDENCIES
   liquid
   machinist_redux (>= 3.0.4)
   net-dns
+  nokogiri (>= 1.10.4)
   omniauth
   pagarme (= 2.1.2)
   pg

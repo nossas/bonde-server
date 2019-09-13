@@ -36,6 +36,7 @@ gem 'codacy-coverage', require: false
 gem 'codecov', :require => false, :group => :test
 gem 'rubocop', require: false
 gem 'elastic-apm'
+gem 'nokogiri', ">= 1.10.4"
 
 group :staging, :production do
   gem 'elastic-apm'
