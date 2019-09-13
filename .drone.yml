@@ -36,11 +36,11 @@ pipeline:
       status: success
       branch: [hotfix/*, release/*, feature/*, develop]
 
-  staging-deploy-api-v1:
+  staging-deploy-api-rest:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: webservers/api-v1
+    service: webservers/api-rest
     docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     sidekick: migrations nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
@@ -166,11 +166,11 @@ pipeline:
       status: success
       event: tag
 
-  production-deploy-api-v1:
+  production-deploy-api-rest:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     group: deploying_prod
-    service: webservers/api-v1
+    service: webservers/api-rest
     sidekick: "migrations nossas/bonde-server:${DRONE_TAG##v}"
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
