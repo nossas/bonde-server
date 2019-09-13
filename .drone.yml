@@ -2,7 +2,7 @@ pipeline:
   unit-tests:
     image: ruby:2.4.6-alpine
     commands:
-      - apk add --no-cache --update postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git imagemagick imagemagick-dev
+      - apk add --no-cache --update postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git
       - cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
       - echo "America/Sao_Paulo" > /etc/timezone
       - export RAILS_ENV=test RACK_ENV=test DATABASE_URL=postgres://bonde@database/hub_api_test CODACY_PROJECT_TOKEN=$CODACY_TOKEN CC_TEST_REPORTER_ID=$CODECLIMATE_TOKEN CODECOV_TOKEN=$CODECOV_TOKEN
@@ -36,11 +36,11 @@ pipeline:
       status: success
       branch: [hotfix/*, release/*, feature/*, develop]
 
-  staging-deploy-api-v1:
+  staging-deploy-api-rest:
     image: peloton/drone-rancher
     group: deploying
     url: http://cluster.bonde.org
-    service: webservers/api-v1
+    service: webservers/api-rest
     docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     sidekick: migrations nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
@@ -68,19 +68,6 @@ pipeline:
     group: deploying
     url: http://cluster.bonde.org
     service: workers/mailers
-    docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
-    timeout: 360
-    confirm: true
-    secrets: [ rancher_access_key, rancher_secret_key ]
-    when:
-      status: success
-      branch: [hotfix/*, release/*, feature/*, develop]
-
-  staging-deploy-migrations:
-    image: peloton/drone-rancher
-    group: deploying
-    url: http://cluster.bonde.org
-    service: workers/migrations
     docker_image: nossas/bonde-server:${DRONE_BRANCH/\//-}
     timeout: 360
     confirm: true
@@ -179,11 +166,11 @@ pipeline:
       status: success
       event: tag
 
-  production-deploy-api-v1:
+  production-deploy-api-rest:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
     group: deploying_prod
-    service: webservers/api-v1
+    service: webservers/api-rest
     sidekick: "migrations nossas/bonde-server:${DRONE_TAG##v}"
     docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
     timeout: 360
@@ -231,23 +218,6 @@ pipeline:
       status: success
       event: tag
 
-  production-deploy-migrations:
-    image: peloton/drone-rancher
-    url: http://cluster.bonde.org
-    group: deploying_prod
-    service: workers/migrations
-    docker_image: "nossas/bonde-server:${DRONE_TAG##v}"
-    timeout: 360
-    confirm: true
-    secrets:
-      - source: rancher_access_key_prod
-        target: rancher_access_key
-      - source: rancher_secret_key_prod
-        target: rancher_secret_key
-    when:
-      status: success
-      event: tag
-
   production-deploy-donations:
     image: peloton/drone-rancher
     group: deploying_prod
@@ -264,6 +234,7 @@ pipeline:
     when:
       status: success
       event: tag
+
   production-deploy-donations-recovery-from-metadata:
     image: peloton/drone-rancher
     group: deploying_prod
@@ -280,6 +251,7 @@ pipeline:
     when:
       status: success
       event: tag
+
   production-deploy-donations-schedule-charges :
     image: peloton/drone-rancher
     group: deploying_prod
@@ -316,12 +288,12 @@ pipeline:
 
   notify:
     image: plugins/slack
-    webhook: https://hooks.slack.com/services/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
     channel: bonde_bots
     username: CI - ${DRONE_REPO_NAME}
     when:
       event: [ push, tag, build, publish, deployment, pull_request ]
       status: [ success, failure ]
+    secrets: [ slack_webhook ]
 
 services:
   database:

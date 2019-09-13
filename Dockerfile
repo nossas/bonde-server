@@ -1,7 +1,7 @@
 FROM ruby:2.4.6-alpine
 LABEL author="Nossas<tech@nossas.org>"
 
-ENV PACKAGES postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql git imagemagick imagemagick-dev
+ENV PACKAGES postgresql-dev libxml2-dev libxslt-dev openssl libpq libffi-dev bash curl libstdc++ tzdata bash ca-certificates build-base ruby-dev libc-dev linux-headers postgresql-client postgresql
 # ENV RUBY_PACKAGES ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal ruby-json
 ENV RAILS_ENV=production RACK_ENV=production DISABLE_SSL=true
 

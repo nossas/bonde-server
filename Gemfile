@@ -24,7 +24,6 @@ gem 'sidekiq'
 gem 'puma'
 gem 'platform-api'
 gem 'pagarme', '2.1.2'
-gem 'sentry-raven'
 gem 'has_scope'
 gem 'postgres-copy'
 gem 'statesman', '2.0.1'
@@ -36,9 +35,11 @@ gem 'whenever', require: false
 gem 'codacy-coverage', require: false
 gem 'codecov', :require => false, :group => :test
 gem 'rubocop', require: false
+gem 'elastic-apm'
+gem 'nokogiri', ">= 1.10.4"
 
 group :staging, :production do
-  gem 'newrelic_rpm', '3.15.0.314'
+  gem 'elastic-apm'
   gem 'rails_stdout_logging'
 end
 
