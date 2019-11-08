@@ -2,43 +2,38 @@ class ConvertDonationsController < ApplicationController
   respond_to :json
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
-  before_filter :catch_widget
+  # before_filter :catch_widget
 
   def convert
-    email = params[:user_email]
-    # widget = Widget.find params[:widget_id]
-    widget = catch_widget
     amount = params[:amount]
 
-    donation = widget.donations.joins(:activist).
-                 where('activists.email = ? and subscription is null or not subscription', email).last
+    donation = Donation.find params[:donation_id]
 
     if donation.present?
-      new_donation = Donation.new(donation.attributes)
-      new_donation.id = nil
-      new_donation.subscription = true
-      new_donation.amount = amount if amount.present?
-      new_donation.converted_from = donation.id
-      new_donation.save
+      donation.subscription = true
+      donation.amount = amount if amount.present?
+      donation.save
 
-      address = new_donation.activist.addresses.last
-      SubscriptionService.run(new_donation, address)
+      DonationService.process_subscription(donation)
 
-      return render json: new_donation
+      return render json: donation
     else
       raise ActiveRecord::RecordNotFound
     end
   end
 
   def replay
+    t = Time.now
+    t -= (60 * 60 * 24)
+
     email = params[:user_email]
-    # widget = Widget.find params[:widget_id]
-    widget = catch_widget
     amount = params[:amount]
 
-    valid_donation = Donation.where('donations.email = ? and donations.transaction_status =  ? and donations.widget_id = ? and donations.created_at::timestamp < (now() - interval \'24 hour\')', email, 'paid', widget.id).last
-
-    if !params[:utf8].nil? && valid_donation.present?
+     widget = catch_widget 
+     valid_donation = Donation.where('donations.email = ? and donations.transaction_status =  ? and donations.widget_id = ?', email, 'paid', widget.id).order("created_at DESC").first 
+      
+    if params[:utf8].present? && valid_donation.present? && Time.parse(valid_donation.created_at) > t
+            
       valid_donation.converted_from = valid_donation.id
       valid_donation.id = nil
       valid_donation.transaction_id = nil
