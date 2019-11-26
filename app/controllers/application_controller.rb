@@ -28,13 +28,13 @@ class ApplicationController < ActionController::API
   private
 
   def pagarme_error(error)
-    Raven.capture_exception(error) unless Rails.env.test?
+    ElasticAPM.report(error) unless Rails.env.test?
     render json: { errors: error.to_json }, status: :internal_server_error
   end
 
   def mailchimpable_exception(exception)
     unless exception.message =~ /.*title="Member Exists".*/
-      Raven.capture_message("Erro ao gravar usuário na lista:\nEmail: #{email}\nMergeVars: #{merge_vars.to_json unless merge_vars.nil?}\nOptions: #{options.to_json}\n#{exception}") unless Rails.env.test?
+      ElasticAPM.report_message("Erro ao gravar usuário na lista:\nEmail: #{email}\nMergeVars: #{merge_vars.to_json unless merge_vars.nil?}\nOptions: #{options.to_json}\n#{exception}") unless Rails.env.test?
       logger.error("List signature error:\nParams: (email: '#{email}', merge_vars: '#{merge_vars}', options: '#{options}')\nError:#{exception}")
     end
   end

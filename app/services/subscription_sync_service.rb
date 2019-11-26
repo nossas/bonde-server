@@ -29,7 +29,7 @@ class SubscriptionSyncService
       gateway_subscription = GatewaySubscription.find_or_create_by(subscription_id: @subscription.id)
       gateway_subscription.update_attributes(gateway_data: @subscription.to_json)
     rescue Exception => e
-      Raven.capture_exception(e)
+      ElasticAPM.report(e)
     end
 
     transactions.each do |transaction|

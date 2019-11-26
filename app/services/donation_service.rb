@@ -63,7 +63,7 @@ class DonationService
         return status_transaction
 
       rescue PagarMe::PagarMeError => e
-        Raven.capture_exception(e) unless Rails.env.test?
+        ElasticAPM.report(e) unless Rails.env.test?
         Rails.logger.error("\n==> DONATION ERROR: #{e.inspect}\n")
         e
       end

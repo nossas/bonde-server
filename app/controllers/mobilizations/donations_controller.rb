@@ -54,7 +54,7 @@ class Mobilizations::DonationsController < ApplicationController
       end
     else
       @donation.create_activist(activist_params.permit(*policy(Activist.new).permitted_attributes))
-      Raven.capture_message "Ativista não gravado !\nDonation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
+      ElasticAPM.report_message "Ativista não gravado !\nDonation: #{@donation.to_json}\nParametros: #{params.to_json}\nActivist: #{activist_params}" unless @donation.try(:activist)||@donation.try(:activist_id)
     end
   end
 
