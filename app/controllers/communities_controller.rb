@@ -45,7 +45,7 @@ class CommunitiesController < ApplicationController
         Community.transaction do
           authorize community
           if (recipient_data = params[:community][:recipient])
-            recipients community, recipient_data 
+            recipients community, recipient_data
           end
           community.update!(community_params)
         end
@@ -110,7 +110,7 @@ class CommunitiesController < ApplicationController
         @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
         render json: policy_scope(@mobilizations)
       rescue StandardError => e
-        Raven.capture_exception(e) unless Rails.env.test?
+        ElasticAPM.report(e) unless Rails.env.test?
         Rails.logger.error e
       end
     else
@@ -122,8 +122,8 @@ class CommunitiesController < ApplicationController
     skip_authorization
     invitation = Invitation.find_by(
       email: params['email'],
-      code: params['code']) 
-    
+      code: params['code'])
+
     if invitation
       community_user = invitation.create_community_user
 

@@ -95,7 +95,7 @@ class Donation < ActiveRecord::Base
         DonationsMailer.thank_you_email(self).deliver_later!
       end
     rescue StandardError => e
-      Raven.capture_exception(e) unless Rails.env.test?
+      ElasticAPM.report(e) unless Rails.env.test?
       logger.error("\n==> ERROR SENDING DONATION EMAIL: #{e.inspect}\n")
     end
   end
@@ -120,7 +120,7 @@ class Donation < ActiveRecord::Base
     subscribe_to_segment(self.widget.mailchimp_segment_id, self.activist.email)
     if self.current_state.to_sym == :paid
       widget.create_mailchimp_donators_segments
-      subscribe_to_segment(self.widget.mailchimp_unique_segment_id, self.activist.email) 
+      subscribe_to_segment(self.widget.mailchimp_unique_segment_id, self.activist.email)
     end
     update_member(self.activist.email, { groupings: groupings }) if groupings
   end
@@ -130,11 +130,11 @@ class Donation < ActiveRecord::Base
       activist_email = self.customer['email']
       activist_found = Activist.by_email activist_email
       if activist_found
-        self.activist = activist_found 
+        self.activist = activist_found
       else
         activist_name = self.customer['name']
         doc_number = self.customer['document_number']
-        self.create_activist name: activist_name, email: activist_email, phone: self.customer['phone'], document_number: doc_number, 
+        self.create_activist name: activist_name, email: activist_email, phone: self.customer['phone'], document_number: doc_number,
           document_type: doc_type(doc_number), city: self.customer['city']
       end
       self.save
@@ -179,10 +179,10 @@ class Donation < ActiveRecord::Base
   end
 
   def fill_customer_in_transaction trans, customer_obj
-    customer_obj['name'] = trans['customer']['name'] if trans['customer']['name'] 
-    customer_obj['email'] = trans['customer']['email'] if trans['customer']['email'] 
-    customer_obj['document_number'] = trans['customer']['document_number'] if trans['customer']['document_number'] 
-    customer_obj['document_type'] = trans['customer']['document_type'] if trans['customer']['doc_type'] 
+    customer_obj['name'] = trans['customer']['name'] if trans['customer']['name']
+    customer_obj['email'] = trans['customer']['email'] if trans['customer']['email']
+    customer_obj['document_number'] = trans['customer']['document_number'] if trans['customer']['document_number']
+    customer_obj['document_type'] = trans['customer']['document_type'] if trans['customer']['doc_type']
   end
 
   def fill_no_customer_in_transaction trans, customer_obj
@@ -195,7 +195,7 @@ class Donation < ActiveRecord::Base
   end
 
   def activistable?
-    cus = try(:customer) || { } 
+    cus = try(:customer) || { }
     return ( cus['name'] && cus['email'] )
   end
 
@@ -205,7 +205,7 @@ class Donation < ActiveRecord::Base
       return 'cpf'
     when 14
       return 'cnpj'
-    else 
+    else
       return nil
     end
   end
