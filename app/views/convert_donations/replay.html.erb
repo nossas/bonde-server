@@ -35,7 +35,8 @@
                 <%= hidden_field_tag "user_email", params[:user_email] %>
                 <%= hidden_field_tag "amount", params[:amount] %>
                 <%= hidden_field_tag "widget_id", params[:widget_id] %>
-                <p>Você está prestes a fazer uma doação de <%= (params[:amount].to_i / 100) %> reais para fortalecer o sonho de centenas de jovens periféricos que querem entrar na universidade. </p>
+
+                <p>Ao clicar no botão abaixo, você fará uma doação de <%= (params[:amount].to_i / 100) %> reais para o Mapa do Acolhimento, ajudando a garantir que nenhuma mulher que sofreu violência fique desamparada.</p>
                 <p> Podemos confirmar sua doação? </p>
                 <%= submit_tag("Confirmar", :style => "border:0; font-size: 18px; padding: 10px; cursor: pointer; background-color: #059046; color: #fff;") %>
               <% end %>
@@ -43,7 +44,7 @@
               <table>
                 <tr>
                   <td align="center" style="padding-bottom: 16px; color: #424242; font-size: 18px;">
-                    <p style="font-size: 36px;">Oi, <span style="color: #059046; font-weight: 800;"><%= @activist['name'] %> </span>!</p> 
+                    <p style="font-size: 36px;">Oi, <span style="color: #059046; font-weight: 800;"><%= @activist['name'] %> </span>!</p>
                     <p>Muito obrigada mais uma vez! É incrível saber que podemos contar com você.</p>
                     <p>Agora sua doação está sendo processada, logo mais você deve receber a confirmação no seu email ;)</p>
                     <%# <p><span style="color: #059046; font-weight: 800;">Detalhes da Doação</span></p> %>
@@ -61,7 +62,7 @@
             </td>
           </tr>
           <tr>
-            <td align="center" style="padding-bottom: 32px; color: #4A4A4A; font-size: 11px;"> Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>  
+            <td align="center" style="padding-bottom: 32px; color: #4A4A4A; font-size: 11px;"> Dúvidas? Só mandar um e-mail pra: <a href="mailto:suporte@bonde.org">suporte@bonde.org</a>
             </td>
           </tr>
         </table>
