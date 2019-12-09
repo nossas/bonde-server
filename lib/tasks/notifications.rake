@@ -874,6 +874,49 @@ Equipe do BONDE.
         body_template: notification_layout(sub_template)
       )
     end
+
+    puts 'looking for invite template'
+    sub_template = (%{
+<tr width="100%" style="
+    border-collapse: collapse;
+    border-radius: 5px;
+    border-style: hidden;
+    background-color: #FFFFFF;
+  ">
+  <td>
+    <table style="width:420px;margin:80px auto;text-align:center;color:#222;font-size:17px;">
+      <tr>
+        <td>
+          <p>Olá!</p>
+          <p>Você acabou de ser convidado(a) a entrar na comunidade {{community.name}} no BONDE.</p>
+          <p>Para chegar junto, é só <a href="{{invite_url}}" target="_blank">clicar aqui</a>, entrar no BONDE e começar a causar.</p>
+          <br/>
+          Se tiver dúvidas nessa chegada, pode dar uma olhada em nosso tutorial no <a href="https://trilho.bonde.org">trilho.bonde.org</a> ou nas respostas de nossas perguntas frequentes em <a href="https://faq.bonde.org">faq.bonde.org</a> :)
+          <br/><br/>
+          Um abraço,
+          <br/>
+          Equipe do BONDE.
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+    })
+    label = 'invite'
+    subject = 'Você foi convidado(a) a entrar em uma comunidade no BONDE!'
+    if nt = NotificationTemplate.find_by_label(label)
+      nt.update_attributes(
+        body_template: notification_layout(sub_template),
+        subject_template: subject
+      )
+    else
+      NotificationTemplate.find_or_create_by(
+        label: label,
+        subject_template: subject,
+        body_template: notification_layout(sub_template)
+      )
+    end
+
   end
 end
 
