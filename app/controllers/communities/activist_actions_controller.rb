@@ -5,7 +5,7 @@ class Communities::ActivistActionsController < ApplicationController
 
   def index
     authorize community, :can_handle_with_activist_actions?
-    collection = apply_scopes(community.activist_actions.order(action_created_date: :desc))
+    collection = apply_scopes(community.activist_actions.order(action_created_at: :desc))
 
     respond_with do |format|
       format.json do
