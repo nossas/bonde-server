@@ -285,7 +285,7 @@ GEM
     multipart-post (2.0.0)
     net-dns (0.8.0)
     netrc (0.11.0)
-    nokogiri (1.10.4)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
