@@ -7,8 +7,9 @@ class FormEntryMailer < ApplicationMailer
       ws = @widget.settings
 
 
-      if @widget.settings['email_text'].scan(/\$total_inscricoes/).count > 0
-        @widget.settings['email_text'] = @widget.settings['email_text'].gsub(/\$total_inscricoes/, @widget.form_entries.count())
+      if @widget.settings['email_text'].scan(/\$total_inscricoes/).count.positive?
+        count = @widget.form_entries.count
+        @widget.settings['email_text'] = @widget.settings['email_text'].gsub(/\$total_inscricoes/, count.to_s)
       end
 
       from_address = get_from_address(ws)
