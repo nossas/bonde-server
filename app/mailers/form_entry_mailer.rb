@@ -6,6 +6,11 @@ class FormEntryMailer < ApplicationMailer
       @mobilization = @widget.mobilization
       ws = @widget.settings
 
+
+      if @widget.settings['email_text'].scan(/\$total_inscricoes/).count > 0
+        @widget.settings['email_text'] = @widget.settings['email_text'].gsub(/\$total_inscricoes/, @widget.form_entries.count())
+      end
+
       from_address = get_from_address(ws)
       subject = if ws['email_subject']
                   ws['email_subject']
