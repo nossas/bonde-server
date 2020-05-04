@@ -85,7 +85,7 @@ GEM
       concurrent-ruby (~> 1.0)
       http (>= 3.0)
     erubis (2.7.0)
-    excon (0.55.0)
+    excon (0.71.0)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.8.0)
@@ -243,7 +243,6 @@ GEM
       actionpack (>= 4.1, < 5.1)
       activesupport (>= 4.1, < 5.1)
     hashdiff (0.3.2)
-    hashie (3.5.5)
     heroics (0.0.21)
       erubis (~> 2.0)
       excon
@@ -267,7 +266,7 @@ GEM
     jsonapi-renderer (0.1.2)
     jwt (1.5.6)
     liquid (4.0.0)
-    loofah (2.2.3)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     machinist_redux (3.0.4)
@@ -285,11 +284,8 @@ GEM
     multipart-post (2.0.0)
     net-dns (0.8.0)
     netrc (0.11.0)
-    nokogiri (1.10.4)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
-    omniauth (1.6.1)
-      hashie (>= 3.4.6, < 3.6.0)
-      rack (>= 1.6.2, < 3)
     pagarme (2.1.2)
       multi_json
       rest-client
@@ -310,11 +306,12 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     public_suffix (2.0.5)
-    puma (3.8.2)
+    puma (3.12.4)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
-    rack (1.6.11)
-    rack-cors (0.4.1)
+    rack (1.6.12)
+    rack-cors (1.0.6)
+      rack (>= 1.6.0)
     rack-protection (2.0.3)
       rack
     rack-test (0.6.3)
@@ -348,7 +345,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
-    rake (12.3.2)
+    rake (13.0.1)
     rbvmomi (1.11.0)
       builder (~> 3.0)
       json (>= 1.8)
@@ -457,8 +454,7 @@ DEPENDENCIES
   liquid
   machinist_redux (>= 3.0.4)
   net-dns
-  nokogiri (>= 1.10.4)
-  omniauth
+  nokogiri (>= 1.10.8)
   pagarme (= 2.1.2)
   pg
   platform-api
