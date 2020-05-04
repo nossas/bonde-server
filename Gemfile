@@ -9,7 +9,7 @@ gem 'pg'
 #gem 'devise-jwt'
 gem 'bcrypt'
 gem 'jwt'
-gem 'omniauth'
+# gem 'omniauth'
 gem 'rack-cors', require: 'rack/cors'
 gem 'carrierwave'
 gem 'responders'
@@ -35,8 +35,7 @@ gem 'whenever', require: false
 gem 'codacy-coverage', require: false
 gem 'codecov', :require => false, :group => :test
 gem 'rubocop', require: false
-gem 'elastic-apm'
-gem 'nokogiri', ">= 1.10.4"
+gem 'nokogiri', ">= 1.10.8"
 
 group :staging, :production do
   gem 'elastic-apm'

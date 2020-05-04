@@ -19,7 +19,7 @@ class FormEntry < ActiveRecord::Base
   after_commit :async_update_mailchimp, on: :create
   after_commit :send_email, on: :create
   after_commit :add_automatic_tags, on: :create
-  
+
 
   def link_activist
     self.activist = (Activist.by_email(email) || create_activist(name: complete_name, email: email)) if email.present?
@@ -101,7 +101,7 @@ class FormEntry < ActiveRecord::Base
     if activistable?
       activist_found = Activist.by_email self.email
       unless activist_found
-        activist_found = Activist.new(name: "#{self.first_name.strip} #{self.last_name}".strip, email: self.email, city: self.city, phone: self.phone) 
+        activist_found = Activist.new(name: "#{self.first_name.strip} #{self.last_name}".strip, email: self.email, city: self.city, phone: self.phone)
         activist_found.save!
       end
       self.activist = activist_found
@@ -113,7 +113,7 @@ class FormEntry < ActiveRecord::Base
 
   def activistable?
     return false if first_name.nil? or email.nil?
-    return ! (self.email =~ Devise.email_regexp).nil? unless  self.first_name.empty? 
+    return ! (self.email =~ URI::MailTo::EMAIL_REGEXP).nil? unless  self.first_name.empty?
     false
   end
 
@@ -128,7 +128,7 @@ class FormEntry < ActiveRecord::Base
   def field_decode list_field_names
     return_value = nil
     fields_as_json.each do |field|
-      if field['label'] 
+      if field['label']
           return_value = (field['value']||'').strip  if in_list?(list_field_names, field['label'] )
       end
     end if fields
