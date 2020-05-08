@@ -45,6 +45,7 @@ class Mobilization < ActiveRecord::Base
     self.body_font = template.body_font
     self.facebook_share_image = template.facebook_share_image
     self.twitter_share_text = template.twitter_share_text
+    self.favicon = template.favicon
     self
   end
 

@@ -16,6 +16,10 @@ class TemplateMobilization < ActiveRecord::Base
     template.header_font = mobilization.header_font
     template.body_font = mobilization.body_font
     template.facebook_share_image = mobilization.facebook_share_image
+    template.facebook_share_title = mobilization.facebook_share_title
+    template.facebook_share_description = mobilization.facebook_share_description
+    template.twitter_share_text = mobilization.twitter_share_text
+    template.favicon = mobilization.favicon
 
     # TODO: discus about implementation of community context
     template.community_id = mobilization.community_id
