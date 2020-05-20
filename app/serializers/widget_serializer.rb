@@ -17,18 +17,13 @@ class WidgetSerializer < ActiveModel::Serializer
     object.activist_pressures.count
   end
 
-  def settings
-    return unless object.settings
-    json = {}
-    object.settings.keys.each do |key|
-      if key == 'fields'
-        json[key] = JSON.parse(object.settings[key])
-      else
-        json[key] = object.settings[key]
-      end
-    end
-    json
-  end
+  # def settings
+  #   return unless object.settings
+  #   if 'fields' in object.settings
+  #      object.settings[:fields] = JSON.parse(object.settings[:fields])
+  #   end
+  #   object.settings
+  # end
 
   def form_entries_count
     object.form_entries.count

@@ -2,7 +2,7 @@ class CreateTemplateWidgets < ActiveRecord::Migration
   def change
     create_table :template_widgets do |t|
       t.integer :template_block_id
-      t.hstore :settings
+      t.jsonb :settings
       t.string :kind
       t.integer :sm_size
       t.integer :md_size
