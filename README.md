@@ -10,20 +10,20 @@ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-install
 echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 
 # Install dependencies
-apt-get install -y libssl-dev libreadline-dev build-essentials
-rbenv install 2.4.4
+apt-get install -y libssl-dev libreadline-dev build-essential zlib1g-dev
+rbenv install 2.4.6
 
 # Enter local folder, ex: cd nossas/bonde-server/
-rbenv local 2.4.4
+rbenv local 2.4.6
 sudo apt-get install libpq-dev imagemagick libmagickwand-dev
-gem install bundler -v 1.17.3
+rbenv exec gem install bundler -v 1.17.3
 ```
 
 # Install
 ```
-bundle
-rake db:create db:migrate db:seed
-bundle exec puma -C config/puma.rb
+rbenv exec bundle
+rbenv exec rake db:create db:migrate db:seed
+rbenv exec bundle exec puma -C config/puma.rb
 ```
 And the server is on fire :fire:
 

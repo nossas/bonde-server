@@ -31,8 +31,11 @@ class DonationService
       }
     }
 
-    pagarme_data[:card_hash] = donation.card_hash if donation.process_card_hash?
-
+    if !donation.boleto? && donation.process_card_hash?
+      pagarme_data[:card_hash] = donation.card_hash
+      puts "inserting card_hash"
+    end
+    
     PagarMe::Transaction.new(pagarme_data)
   end
 

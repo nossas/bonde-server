@@ -33,7 +33,7 @@ gem 'aws-sdk', '~> 2'
 gem 'net-dns'
 gem 'whenever', require: false
 gem 'codacy-coverage', require: false
-gem 'codecov', :require => false, :group => :test
+gem 'codecov', '~> 0.2.0', :require => false, :group => :test
 gem 'rubocop', require: false
 gem 'nokogiri', ">= 1.10.8"
 
