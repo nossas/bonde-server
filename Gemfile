@@ -7,7 +7,7 @@ gem 'spring', group: :development
 gem 'pg'
 #gem 'devise_token_auth'
 #gem 'devise-jwt'
-gem 'bcrypt'
+gem 'bcrypt', '3.1.11'
 gem 'jwt'
 # gem 'omniauth'
 gem 'rack-cors', require: 'rack/cors'
