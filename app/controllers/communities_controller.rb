@@ -104,6 +104,7 @@ class CommunitiesController < ApplicationController
       (render_status :unauthorized) and return
     elsif @community
       begin
+        @mobilizations = @community.mobilizations.order('updated_at DESC')
         @mobilizations = @mobilizations.where(custom_domain: params[:custom_domain]) if params[:custom_domain].present?
         @mobilizations = @mobilizations.where(slug: params[:slug]) if params[:slug].present?
         @mobilizations = @mobilizations.where(id: params[:ids]) if params[:ids].present?
