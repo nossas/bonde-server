@@ -47,7 +47,8 @@ RSpec.describe MobilizationPolicy do
         :community_id,
         :tag_list,
         :favicon,
-        :status
+        :status,
+        :language
       ]
     end
   end
@@ -82,7 +83,8 @@ RSpec.describe MobilizationPolicy do
         :community_id,
         :tag_list,
         :favicon,
-        :status
+        :status,
+        :language
       ]
     end
   end
