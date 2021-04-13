@@ -55,7 +55,7 @@ GEM
     aws-sdk-resources (2.9.5)
       aws-sdk-core (= 2.9.5)
     aws-sigv4 (1.0.0)
-    bcrypt (3.1.11)
+    bcrypt (3.1.15)
     builder (3.2.3)
     byebug (9.0.6)
     carrierwave (1.0.0)
@@ -437,7 +437,7 @@ DEPENDENCIES
   active_model_serializers
   acts-as-taggable-on (~> 4.0)
   aws-sdk (~> 2)
-  bcrypt (= 3.1.11)
+  bcrypt (= 3.1.15)
   byebug
   carrierwave
   codacy-coverage
