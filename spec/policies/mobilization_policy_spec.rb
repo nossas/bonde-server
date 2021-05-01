@@ -31,23 +31,24 @@ RSpec.describe MobilizationPolicy do
       expect(subject.scope).to eq Mobilization
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [
-        :name,
-        :color_scheme,
-        :google_analytics_code,
-        :goal,
-        :facebook_share_title,
-        :facebook_share_description,
-        :facebook_share_image,
-        :twitter_share_text,
-        :header_font,
-        :body_font,
-        :custom_domain,
-        :slug,
-        :community_id,
-        :tag_list,
-        :favicon,
-        :status
+      expect(subject.permitted_attributes).to eq %i[
+        name
+        color_scheme
+        google_analytics_code
+        goal
+        facebook_share_title
+        facebook_share_description
+        facebook_share_image
+        twitter_share_text
+        header_font
+        body_font
+        custom_domain
+        slug
+        community_id
+        tag_list
+        favicon
+        status
+        language
       ]
     end
   end
@@ -66,23 +67,24 @@ RSpec.describe MobilizationPolicy do
       expect(subject.scope).to eq Mobilization
     end
     it "should return permitted attributes" do
-      expect(subject.permitted_attributes).to eq [
-        :name,
-        :color_scheme,
-        :google_analytics_code,
-        :goal,
-        :facebook_share_title,
-        :facebook_share_description,
-        :facebook_share_image,
-        :twitter_share_text,
-        :header_font,
-        :body_font,
-        :custom_domain,
-        :slug,
-        :community_id,
-        :tag_list,
-        :favicon,
-        :status
+      expect(subject.permitted_attributes).to eq %i[
+        name
+        color_scheme
+        google_analytics_code
+        goal
+        facebook_share_title
+        facebook_share_description
+        facebook_share_image
+        twitter_share_text
+        header_font
+        body_font
+        custom_domain
+        slug
+        community_id
+        tag_list
+        favicon
+        status
+        language
       ]
     end
   end
