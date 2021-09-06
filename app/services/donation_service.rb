@@ -18,6 +18,7 @@ class DonationService
     pagarme_data = {
       card_id: donation.credit_card,
       amount: donation.amount,
+      async: false,
       payment_method: donation.payment_method,
       split_rules: self.rules(donation),
       postback_url: Rails.application.routes.url_helpers.create_postback_url(protocol: 'https'),

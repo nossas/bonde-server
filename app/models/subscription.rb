@@ -131,6 +131,7 @@ class Subscription < ActiveRecord::Base
           customer: { id: customer["id"] },
           postback_url: Rails.application.routes.url_helpers.create_postback_url(protocol: 'https'),
           amount: amount,
+          async: false,
           split_rules: base_rules,
           metadata: {
             widget_id: widget.id,
