@@ -296,6 +296,7 @@ RSpec.describe Subscription, type: :model do
           customer: { id: '12345' },
           postback_url: Rails.application.routes.url_helpers.create_postback_url(protocol: 'https'),
           amount: subscription.amount,
+          async: false,
           split_rules: subscription.base_rules,
           metadata: {
             widget_id: subscription.widget.id,
