@@ -34,7 +34,7 @@ class PostbacksController < ApplicationController
   end
 
   def donation
-    @donation ||= Donation.find_by(transaction_id: params[:id])
+    @donation ||= Donation.find params[:transaction][:metadata][:donation_id]
   end
 
   def valid_postback?
