@@ -16,7 +16,7 @@ config/initializers/01_env_vars.rb
 public/uploads
 
 # Ignore rbenv config and gems
-.ruby-version
+#.ruby-version
 .rbenv-gemsets
 .gems
 
